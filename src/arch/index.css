@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #0f172a;
+    background-color: #f8fafc;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* ---- Architecture Explosion cinematic sequence (login hero) ---- */
+@keyframes arch-layer-explode {
+  0%, 12% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+  45%, 58% {
+    transform: translate3d(var(--ex-x, 0px), var(--ex-y, 0px), 0) rotate(var(--ex-r, 0deg)) scale(1.015);
+  }
+  90%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes arch-connector-fade {
+  0%, 15% { opacity: 0; }
+  40%, 62% { opacity: 1; }
+  85%, 100% { opacity: 0; }
+}
+
+@keyframes arch-glow-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.85; }
+}
+
+@keyframes arch-drift {
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-1.5%, -2%, 0) scale(1.04); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes arch-particle-float {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.4; }
+  100% { transform: translateY(-140px) translateX(12px); opacity: 0; }
+}
+
+@keyframes arch-scan-sweep {
+  0% { transform: translateY(-100%); opacity: 0; }
+  8% { opacity: 0.5; }
+  50% { opacity: 0.15; }
+  92% { opacity: 0.5; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
+.arch-explode-layer {
+  animation: arch-layer-explode 7s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.arch-explode-connector {
+  animation: arch-connector-fade 7s ease-in-out infinite;
+}
+
+.arch-glow-pulse {
+  animation: arch-glow-pulse 4.5s ease-in-out infinite;
+}
+
+.arch-drift-scene {
+  animation: arch-drift 14s ease-in-out infinite;
+}
+
+.arch-particle {
+  animation-name: arch-particle-float;
+  animation-timing-function: ease-out;
+  animation-iteration-count: infinite;
+}
+
+.arch-scan-sweep {
+  animation: arch-scan-sweep 6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arch-explode-layer,
+  .arch-explode-connector,
+  .arch-glow-pulse,
+  .arch-drift-scene,
+  .arch-particle,
+  .arch-scan-sweep {
+    animation: none !important;
+  }
+}
