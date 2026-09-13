@@ -1017,7 +1017,7 @@ export async function createApp(isServerless: boolean = false) {
 
 async function startServer() {
   const app = await createApp(false);
-  const PORT = Number(process.env.PORT) || 3000;
+  const PORT = 3000;
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`[Build Storys ERP] Server successfully running on http://0.0.0.0:${PORT}`);
   });

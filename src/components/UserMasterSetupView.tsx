@@ -483,17 +483,17 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
       {/* USER MASTER TABLE */}
       <div className="bg-white rounded-lg border border-[#EDEBE9] shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+          <table className="w-full min-w-[1080px] text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-[#FAF9F8] border-b border-[#EDEBE9] text-[#605E5C] text-[11px] font-bold uppercase tracking-wider">
-                <th className="py-2.5 px-3">User ID / Username</th>
-                <th className="py-2.5 px-3">Full Name &amp; Dept</th>
-                <th className="py-2.5 px-3">Email &amp; Phone</th>
-                <th className="py-2.5 px-3">Security Role</th>
-                <th className="py-2.5 px-3">Status</th>
-                <th className="py-2.5 px-3">Commercial Permissions</th>
-                <th className="py-2.5 px-3">Module Access</th>
-                <th className="py-2.5 px-3 text-right">Actions (Login / Edit / Delete)</th>
+              <tr className="bg-[#FAF9F8] border-b border-[#EDEBE9] text-[#605E5C] text-[11px] font-bold uppercase tracking-wider select-none">
+                <th className="py-2.5 px-3 whitespace-nowrap">User ID / Username</th>
+                <th className="py-2.5 px-3 whitespace-nowrap">Full Name &amp; Dept</th>
+                <th className="py-2.5 px-3 whitespace-nowrap">Email &amp; Phone</th>
+                <th className="py-2.5 px-3 whitespace-nowrap">Security Role</th>
+                <th className="py-2.5 px-3 whitespace-nowrap">Status</th>
+                <th className="py-2.5 px-3 whitespace-nowrap">Commercial Permissions</th>
+                <th className="py-2.5 px-3 whitespace-nowrap">Module Access</th>
+                <th className="py-2.5 px-3 text-right whitespace-nowrap">Actions (Login / Edit / Delete)</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#EDEBE9]">

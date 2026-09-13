@@ -360,23 +360,23 @@ export const BOQGrid: React.FC<BOQGridProps> = ({
       {/* Main BOQ Table */}
       <div className="rounded-xl border border-[#E5DFD7] bg-white shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+          <table className="w-full min-w-[1260px] text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-[#E8E2D9] bg-[#FAF8F5] text-[11px] font-semibold text-[#6C6356]">
-                <th className="p-3 w-10">#</th>
-                <th className="p-3">Item Code & Trade</th>
-                <th className="p-3">Room / Zone</th>
-                <th className="p-3 min-w-[220px]">Description & Approved Spec</th>
-                <th className="p-3">Unit</th>
-                <th className="p-3 text-right">Base Qty</th>
-                <th className="p-3 text-right">Waste %</th>
-                <th className="p-3 text-right">Final Qty</th>
-                {!isClient && <th className="p-3 text-right">Unit Cost</th>}
-                {!isClient && <th className="p-3 text-right">Total Cost</th>}
-                <th className="p-3 text-right">Selling Rate</th>
-                <th className="p-3 text-right">Selling Amount</th>
-                <th className="p-3 text-center">Status</th>
-                <th className="p-3 text-right">Actions</th>
+              <tr className="border-b border-[#E8E2D9] bg-[#FAF8F5] text-[11px] font-semibold text-[#6C6356] select-none">
+                <th className="p-3 w-10 text-center whitespace-nowrap">#</th>
+                <th className="p-3 whitespace-nowrap">Item Code &amp; Trade</th>
+                <th className="p-3 whitespace-nowrap">Room / Zone</th>
+                <th className="p-3 min-w-[240px] whitespace-nowrap">Description &amp; Approved Spec</th>
+                <th className="p-3 text-right whitespace-nowrap">Unit</th>
+                <th className="p-3 text-right whitespace-nowrap">Base Qty</th>
+                <th className="p-3 text-right whitespace-nowrap">Waste %</th>
+                <th className="p-3 text-right whitespace-nowrap">Final Qty</th>
+                {!isClient && <th className="p-3 text-right whitespace-nowrap">Unit Cost</th>}
+                {!isClient && <th className="p-3 text-right whitespace-nowrap">Total Cost</th>}
+                <th className="p-3 text-right whitespace-nowrap">Selling Rate</th>
+                <th className="p-3 text-right whitespace-nowrap">Selling Amount</th>
+                <th className="p-3 text-center whitespace-nowrap">Status</th>
+                <th className="p-3 text-right whitespace-nowrap">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F2EDE5]">
@@ -385,13 +385,13 @@ export const BOQGrid: React.FC<BOQGridProps> = ({
                 return (
                   <React.Fragment key={item.id}>
                     <tr className="hover:bg-[#FCFAF7] transition group">
-                      <td className="p-3 text-[#9CA3AF] font-mono text-[10px]">{idx + 1}</td>
-                      <td className="p-3">
+                      <td className="p-3 text-[#9CA3AF] font-mono text-[10px] text-center whitespace-nowrap">{idx + 1}</td>
+                      <td className="p-3 whitespace-nowrap">
                         <div className="font-mono font-bold text-[#1F2421]">{item.itemCode}</div>
                         <div className="text-[10px] text-[#8C8275]">{item.trade}</div>
                       </td>
-                      <td className="p-3 font-medium text-[#423C33]">{item.roomZone}</td>
-                      <td className="p-3">
+                      <td className="p-3 font-medium text-[#423C33] whitespace-nowrap">{item.roomZone}</td>
+                      <td className="p-3 min-w-[240px]">
                         <div className="font-semibold text-[#1F2421]">{item.description}</div>
                         <div className="mt-0.5 text-[11px] text-[#6B7280]">{item.brandGrade}</div>
                         {item.uncertaintyFlags && (
@@ -401,31 +401,31 @@ export const BOQGrid: React.FC<BOQGridProps> = ({
                           </div>
                         )}
                       </td>
-                      <td className="p-3 font-mono text-[#554E45]">{item.unit}</td>
-                      <td className="p-3 text-right font-mono">{item.baseQuantity}</td>
-                      <td className="p-3 text-right font-mono text-[#78716C]">{item.wastagePercent}%</td>
-                      <td className="p-3 text-right font-mono font-bold text-[#1F2421]">{item.finalQuantity}</td>
+                      <td className="p-3 font-mono text-[#554E45] text-right whitespace-nowrap">{item.unit}</td>
+                      <td className="p-3 text-right font-mono whitespace-nowrap tabular-nums">{item.baseQuantity}</td>
+                      <td className="p-3 text-right font-mono text-[#78716C] whitespace-nowrap tabular-nums">{item.wastagePercent}%</td>
+                      <td className="p-3 text-right font-mono font-bold text-[#1F2421] whitespace-nowrap tabular-nums">{item.finalQuantity}</td>
                       
                       {/* Internal Costs - Hidden for Client */}
                       {!isClient && (
-                        <td className="p-3 text-right font-mono text-[#5D5549]">
+                        <td className="p-3 text-right font-mono text-[#5D5549] whitespace-nowrap tabular-nums">
                           ₹{item.unitCost.toLocaleString('en-IN')}
                         </td>
                       )}
                       {!isClient && (
-                        <td className="p-3 text-right font-mono font-semibold text-[#1F2421]">
+                        <td className="p-3 text-right font-mono font-semibold text-[#1F2421] whitespace-nowrap tabular-nums">
                           ₹{item.totalCost.toLocaleString('en-IN')}
                         </td>
                       )}
 
-                      <td className="p-3 text-right font-mono text-[#795548]">
+                      <td className="p-3 text-right font-mono text-[#795548] whitespace-nowrap tabular-nums">
                         ₹{item.sellingRate.toLocaleString('en-IN')}
                       </td>
-                      <td className="p-3 text-right font-mono font-bold text-[#1F2421]">
+                      <td className="p-3 text-right font-mono font-bold text-[#1F2421] whitespace-nowrap tabular-nums">
                         ₹{item.sellingAmount.toLocaleString('en-IN')}
                       </td>
 
-                      <td className="p-3 text-center">
+                      <td className="p-3 text-center whitespace-nowrap">
                         <span className={`inline-block rounded px-1.5 py-0.5 text-[9px] font-bold ${
                           item.quantityType === 'PROVISIONAL_ALLOWANCE'
                             ? 'bg-[#FEF3C7] text-[#92400E]'

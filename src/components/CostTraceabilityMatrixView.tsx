@@ -287,7 +287,7 @@ export const CostTraceabilityMatrixView: React.FC<CostTraceabilityMatrixViewProp
       {/* 5. The Comprehensive Traceability Table */}
       <div className="bg-white border border-slate-200 rounded shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+          <table className="w-full min-w-[1240px] text-left text-xs border-collapse">
             <thead>
               <tr className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
                 <th className="py-2.5 px-3 whitespace-nowrap">BOQ Code & Scope</th>

@@ -37,7 +37,9 @@ import {
   Truck,
   HardHat,
   ClipboardCheck,
-  Award
+  Award,
+  PanelLeft,
+  Menu
 } from 'lucide-react';
 import { UserSession, ProjectRecord } from '../types/erp';
 
@@ -56,6 +58,12 @@ interface D365ShellProps {
   onOpenLoginPortal?: () => void;
   onLogout?: () => void;
   onOpenProfile?: (initialTab?: 'profile' | 'security') => void;
+  isSidebarCollapsed?: boolean;
+  onToggleSidebar?: () => void;
+  onOpenMobileSidebar?: () => void;
+  onExportToExcel?: () => void;
+  onToggleFactBox?: () => void;
+  isFactBoxOpen?: boolean;
 }
 
 export const D365Shell: React.FC<D365ShellProps> = ({
@@ -72,7 +80,13 @@ export const D365Shell: React.FC<D365ShellProps> = ({
   onOpenStatusModal,
   onOpenLoginPortal,
   onLogout,
-  onOpenProfile
+  onOpenProfile,
+  isSidebarCollapsed = false,
+  onToggleSidebar,
+  onOpenMobileSidebar,
+  onExportToExcel,
+  onToggleFactBox,
+  isFactBoxOpen = false
 }) => {
   const handleNavigate = (tab: string) => {
     if (typeof onNavigateTab === 'function') {
@@ -187,17 +201,119 @@ export const D365Shell: React.FC<D365ShellProps> = ({
     }
   };
 
+  const getModuleBreadcrumb = (tab: string) => {
+    switch (tab) {
+      case 'dashboard':
+        return { category: 'Role Center', name: 'Role Center Dashboard', code: 'ROLE' };
+      case 'general':
+        return { category: 'Jobs & Projects', name: 'Active Job Card', code: 'JOB' };
+      case 'projects':
+        return { category: 'Jobs & Projects', name: 'All Projects Register', code: 'REG' };
+      case 'project_hub':
+        return { category: 'Execution & Ops', name: 'Project Management Hub & Tasks', code: 'M29' };
+      case 'timesheets':
+        return { category: 'Execution & Ops', name: 'Employee Timesheet Log', code: 'M27' };
+      case 'resources':
+        return { category: 'Execution & Ops', name: 'Resource Deployment Matrix', code: 'M28' };
+      case 'crm':
+        return { category: 'Enquiry & CRM', name: 'CRM & Lead Funnel', code: 'M01' };
+      case 'contacts':
+        return { category: 'Enquiry & CRM', name: 'Customers & Contacts Directory', code: 'M02' };
+      case 'survey':
+        return { category: 'Survey & Design', name: 'Site Survey & Laser Scan Hub', code: 'M03' };
+      case 'drawings':
+      case 'architecture':
+        return { category: 'Survey & Design', name: 'Architectural Drawings & 3D Renders', code: 'M04' };
+      case 'materials':
+        return { category: 'Survey & Design', name: 'Material & Sample Approvals', code: 'M05' };
+      case 'masters':
+      case 'rates':
+        return { category: 'Masters & Catalog', name: 'Master Schedule of Rates', code: 'M06' };
+      case 'boq':
+        return { category: 'Estimation & BOQ', name: 'BOQ Estimating Engine', code: 'M07' };
+      case 'budget':
+        return { category: 'Estimation & BOQ', name: 'Cost Budget & Margin Analysis', code: 'M08' };
+      case 'traceability':
+        return { category: 'Estimation & BOQ', name: 'End-to-End Cost Traceability', code: 'M09' };
+      case 'quotation':
+        return { category: 'Commercial & Sales', name: 'Customer Sales Quotations & VE', code: 'M10' };
+      case 'contracts':
+        return { category: 'Commercial & Contracts', name: 'Commercial Contracts & Terms', code: 'M11' };
+      case 'variations':
+        return { category: 'Commercial & Contracts', name: 'Variation Orders & Scope Changes', code: 'M12' };
+      case 'schedule':
+        return { category: 'Execution & Site Ops', name: 'Site Execution & Master WBS', code: 'M13' };
+      case 'site_execution':
+        return { category: 'Execution & Site Ops', name: 'Daily Progress Reports (DPR)', code: 'M14' };
+      case 'procurement':
+        return { category: 'Execution & Site Ops', name: 'Procurement & Purchase Orders', code: 'M15' };
+      case 'inventory':
+        return { category: 'Execution & Site Ops', name: 'Material Inward & GRN Stock', code: 'M16' };
+      case 'contractors':
+      case 'subcontractors':
+        return { category: 'Execution & Site Ops', name: 'Subcontractors & Joint MB', code: 'M17' };
+      case 'snags':
+        return { category: 'Quality & Handover', name: 'Quality Audits & Snags Register', code: 'M18' };
+      case 'billing':
+        return { category: 'Billing & Finance', name: 'Customer Billing & RA Invoices', code: 'M19' };
+      case 'finance':
+        return { category: 'Billing & Finance', name: 'Financial Ledger & Cash Flow', code: 'M20' };
+      case 'handover':
+        return { category: 'Quality & Handover', name: 'Project Handover & Keys Package', code: 'M21' };
+      case 'warranty':
+        return { category: 'Quality & Handover', name: 'Warranty Registry & DLP', code: 'M22' };
+      case 'portal':
+        return { category: 'Client Care', name: 'Customer Satisfaction Portal', code: 'M23' };
+      case 'compliance':
+        return { category: 'Governance', name: 'Compliance, Licenses & PTW', code: 'M24' };
+      case 'documents':
+        return { category: 'Governance', name: 'Documents & Transmittals Cloud Store', code: 'M25' };
+      case 'reports':
+        return { category: 'MIS & Analytics', name: 'Mandatory Reports Hub (22 Reports)', code: 'M26' };
+      case 'ai_workspace':
+        return { category: 'Intelligence', name: 'Agentic AI Copilot Action Center', code: 'AI' };
+      case 'users':
+        return { category: 'Administration', name: 'User Administration & Security', code: 'RBAC' };
+      default:
+        return { category: 'ERP Modules', name: tab.replace(/_/g, ' ').toUpperCase(), code: 'MOD' };
+    }
+  };
+
+  const breadcrumb = getModuleBreadcrumb(activeTab);
+
   return (
     <header className="erp-shell sticky top-0 z-40 select-none shadow-xs">
       {/* 1. TOPMOST MICROSOFT OFFICE 365 / DYNAMICS 365 SHELL BAR */}
       <div className="bg-[#002050] text-white flex items-center justify-between px-3 py-1.5 text-xs">
-        {/* Left: 9-Dot App Launcher + Dynamics 365 Brand + Company */}
-        <div className="flex items-center gap-3">
+        {/* Left: Hamburger/Mobile Sidebar Button + 9-Dot App Launcher + Dynamics 365 Brand + Company */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Mobile Sidebar Trigger */}
+          {onOpenMobileSidebar && (
+            <button
+              onClick={onOpenMobileSidebar}
+              className="lg:hidden p-1.5 rounded hover:bg-[#001833] text-white/90 hover:text-white transition cursor-pointer"
+              title="Open ERP Modules Left Sidebar"
+            >
+              <Menu className="h-4 w-4" />
+            </button>
+          )}
+
+          {/* Desktop Sidebar Toggle in Top Bar */}
+          {onToggleSidebar && (
+            <button
+              onClick={onToggleSidebar}
+              className="hidden lg:flex p-1.5 rounded hover:bg-[#001833] text-white/90 hover:text-white transition cursor-pointer"
+              title={isSidebarCollapsed ? 'Expand Left Sidebar Menu' : 'Collapse Left Sidebar Menu'}
+            >
+              <PanelLeft className="h-4 w-4 text-[#89BBE9]" />
+            </button>
+          )}
+
           {/* 9-dot Waffle */}
           <div className="relative">
             <button
               onClick={() => setWaffleOpen(!waffleOpen)}
-              className="p-1.5 rounded hover:bg-[#001833] text-white/90 hover:text-white transition"
+              className="p-1.5 rounded hover:bg-[#001833] text-white/90 hover:text-white transition cursor-pointer"
               title="Microsoft 365 App Launcher"
             >
               <Grid className="h-4 w-4" />
@@ -526,1073 +642,127 @@ export const D365Shell: React.FC<D365ShellProps> = ({
         </div>
       </div>
 
-      {/* 2. BUILDSTORYS ENACT360 ROLE CENTER NAVIGATION RIBBON */}
-      <div className="bg-white border-b border-[#E1DFDD] px-3 sm:px-4 py-1 flex items-center justify-between text-xs relative z-40 min-w-0 shadow-[0_1px_3px_rgba(0,0,0,0.03)]" ref={navDropdownRef}>
-        <nav className="shell-navigation min-w-0 flex-1 flex flex-wrap items-center gap-1 py-1">
-          {/* TAB 0: ROLE DASHBOARD */}
-          <button
-            onClick={() => {
-              setNavDropdownOpen(null);
-              handleNavigate('dashboard');
-            }}
-            className={`px-3 py-1 text-xs font-semibold rounded transition flex items-center gap-1.5 shrink-0 shadow-2xs ${
-              activeTab === 'dashboard'
-                ? 'bg-[#002050] text-white ring-1 ring-[#002050]'
-                : 'bg-slate-100/90 text-slate-700 hover:bg-[#EFF6FC] hover:text-[#0F6CBD] border border-slate-200'
-            }`}
-            title={`Open Role Center Dashboard tailored to your assigned role (${currentUser.role})`}
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-yellow-400" />
-            <span>Role Dashboard</span>
-            <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono font-medium ${
-              activeTab === 'dashboard' ? 'bg-white/20 text-white' : 'bg-white text-slate-700 border border-slate-200'
-            }`}>
-              {currentUser.role}
+      {/* 2. BUILDSTORYS ENACT360 BREADCRUMB & CONTEXT SUB-HEADER (All Modules moved to Left Sidebar) */}
+      <div className="bg-white border-b border-[#E1DFDD] px-3 sm:px-4 py-1.5 flex items-center justify-between text-xs relative z-30 min-w-0 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          {/* Mobile Sidebar Trigger */}
+          {onOpenMobileSidebar && (
+            <button
+              onClick={onOpenMobileSidebar}
+              className="lg:hidden p-1 text-slate-700 hover:bg-slate-100 rounded flex items-center gap-1 border border-slate-200 cursor-pointer"
+              title="Open ERP Modules Menu"
+            >
+              <Menu className="w-4 h-4 text-[#0F6CBD]" />
+              <span className="text-[11px] font-semibold text-[#0F6CBD]">Modules</span>
+            </button>
+          )}
+
+          {/* Desktop Sidebar Toggle Button */}
+          {onToggleSidebar && (
+            <button
+              onClick={onToggleSidebar}
+              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 text-slate-700 hover:bg-slate-100 hover:text-[#0F6CBD] rounded border border-slate-200/90 transition cursor-pointer"
+              title={isSidebarCollapsed ? "Expand Left Sidebar (Ctrl+\\)" : "Collapse Left Sidebar"}
+            >
+              <PanelLeft className="w-3.5 h-3.5 text-[#0F6CBD]" />
+              <span className="text-[11px] font-medium text-slate-700">
+                {isSidebarCollapsed ? "Show Modules" : "Collapse Menu"}
+              </span>
+            </button>
+          )}
+
+          <div className="h-4 w-px bg-slate-200 hidden sm:block" />
+
+          {/* Active Module Breadcrumb */}
+          <div className="flex items-center gap-1.5 min-w-0 text-xs">
+            <span className="text-slate-400 font-medium hidden sm:inline">BuildStorys</span>
+            <span className="text-slate-300 hidden sm:inline">/</span>
+            <span className="text-slate-500 font-medium hidden md:inline truncate">
+              {breadcrumb.category}
             </span>
-          </button>
-
-          {/* TAB 1: JOBS (PROJECTS) */}
-          <div className="relative">
-            <div className={`inline-flex items-center rounded text-xs font-semibold transition ${
-              activeTab === 'general' || activeTab === 'projects'
-                ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
-                : 'text-[#323130] hover:bg-[#F3F2F1]'
-            }`}>
-              <button
-                onClick={() => {
-                  setNavDropdownOpen(null);
-                  handleNavigate('general');
-                }}
-                className="px-2.5 py-1 text-xs font-semibold focus:outline-none"
-              >
-                Jobs (Projects)
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setNavDropdownOpen(prev => prev === 'jobs' ? null : 'jobs');
-                }}
-                className="px-1 py-1 hover:bg-[#DEECF9] rounded-r text-[#605E5C] hover:text-[#0F6CBD]"
-                title="Jobs Menu"
-              >
-                <ChevronDown className={`h-3 w-3 transition ${navDropdownOpen === 'jobs' ? 'rotate-180 text-[#0F6CBD]' : ''}`} />
-              </button>
-            </div>
-
-            {navDropdownOpen === 'jobs' && (
-              <ViewportMenu className="absolute left-0 top-full mt-1 w-64 bg-white rounded-lg shadow-xl border border-[#EDEBE9] py-1.5 z-50 text-xs animate-in fade-in duration-100">
-                <div className="px-3 py-1 font-bold text-[10px] uppercase tracking-wider text-[#8A8886]">
-                  Job Card &amp; Project Navigation
-                </div>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('general');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E] flex items-center justify-between"
-                >
-                  <span className="font-semibold">Active Job Card ({activeProject?.projectCode})</span>
-                  <span className="text-[10px] text-[#0F6CBD] font-mono">Current</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('projects');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E] flex items-center justify-between"
-                >
-                  <span>All Jobs Register (Page 89)</span>
-                  <span className="text-[10px] bg-[#F3F2F1] text-[#605E5C] px-1.5 py-0.2 rounded">{projects.length} Jobs</span>
-                </button>
-                <div className="my-1 border-t border-[#EDEBE9]" />
-                <div className="px-3 py-1 font-bold text-[10px] uppercase tracking-wider text-[#8A8886]">
-                  Switch Active Job
-                </div>
-                <div className="max-h-36 overflow-y-auto">
-                  {projects.map(p => (
-                    <button
-                      key={p.id}
-                      onClick={() => {
-                        setNavDropdownOpen(null);
-                        onSelectProject(p.id);
-                        handleNavigate('general');
-                      }}
-                      className={`w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-xs flex items-center justify-between ${
-                        p.id === activeProject?.id ? 'bg-[#EFF6FC] text-[#0F6CBD] font-bold' : 'text-[#323130]'
-                      }`}
-                    >
-                      <span className="truncate max-w-[150px]">{p.clientName}</span>
-                      <span className="font-mono text-[10px] text-[#8A8886]">{p.projectCode}</span>
-                    </button>
-                  ))}
-                </div>
-                <div className="my-1 border-t border-[#EDEBE9]" />
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('projects');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#0F6CBD] font-semibold flex items-center gap-1.5"
-                >
-                  <span>+ Create New Job Card</span>
-                </button>
-              </ViewportMenu>
-            )}
-          </div>
-
-          {/* TAB: CRM & LEADS */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setNavDropdownOpen(null);
-                handleNavigate('crm');
-              }}
-              className={`px-2.5 py-1 text-xs font-semibold rounded transition flex items-center gap-1.5 ${
-                activeTab === 'crm' || activeTab === 'contacts'
-                  ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
-                  : 'text-[#323130] hover:bg-[#F3F2F1]'
-              }`}
-              title="CRM, Customer Inquiries, Requirement Recording & Leads Pipeline"
-            >
-              <Users className="w-3.5 h-3.5 text-[#0F6CBD]" />
-              <span>CRM & Leads</span>
-              <span className="bg-emerald-50 text-emerald-700 text-[10px] px-1 py-0.2 rounded border border-emerald-200 font-mono font-bold">
-                Leads
-              </span>
-            </button>
-          </div>
-
-          {/* TAB: AI DESIGN STUDIO & 3D */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setNavDropdownOpen(null);
-                handleNavigate('drawings');
-              }}
-              className={`px-2.5 py-1 text-xs font-semibold rounded transition flex items-center gap-1.5 ${
-                activeTab === 'drawings' || activeTab === 'materials'
-                  ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
-                  : 'text-[#323130] hover:bg-[#F3F2F1]'
-              }`}
-              title="AI Design Studio, 3D Photorealistic Renders & GFC Drawings Register"
-            >
-              <Palette className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Design & 3D</span>
-              <span className="bg-indigo-50 text-indigo-700 text-[10px] px-1 py-0.2 rounded border border-indigo-200 font-mono font-bold">
-                Rev B
-              </span>
-            </button>
-          </div>
-
-          {/* TAB 2: SITE SURVEY & DIMENSIONS */}
-          <div className="relative">
-            <div className={`inline-flex items-center rounded text-xs font-semibold transition ${
-              activeTab === 'survey'
-                ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
-                : 'text-[#323130] hover:bg-[#F3F2F1]'
-            }`}>
-              <button
-                onClick={() => {
-                  setNavDropdownOpen(null);
-                  handleNavigate('survey');
-                }}
-                className="px-2.5 py-1 text-xs font-semibold focus:outline-none"
-              >
-                Site Survey &amp; Dimensions
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setNavDropdownOpen(prev => prev === 'survey' ? null : 'survey');
-                }}
-                className="px-1 py-1 hover:bg-[#DEECF9] rounded-r text-[#605E5C] hover:text-[#0F6CBD]"
-                title="Survey Menu"
-              >
-                <ChevronDown className={`h-3 w-3 transition ${navDropdownOpen === 'survey' ? 'rotate-180 text-[#0F6CBD]' : ''}`} />
-              </button>
-            </div>
-
-            {navDropdownOpen === 'survey' && (
-              <ViewportMenu className="absolute left-0 top-full mt-1 w-64 bg-white rounded-lg shadow-xl border border-[#EDEBE9] py-1.5 z-50 text-xs animate-in fade-in duration-100">
-                <div className="px-3 py-1 font-bold text-[10px] uppercase tracking-wider text-[#8A8886]">
-                  Spatial Measurements &amp; Survey
-                </div>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('survey');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E] flex items-center justify-between"
-                >
-                  <span className="font-semibold">Room Dimensions Matrix</span>
-                  <span className="text-[10px] text-[#0F6CBD] font-mono">6 Rooms</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('survey');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  Laser Distance Meter Log (GLM 50)
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('survey');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  Society Constraints &amp; Lift Dimensions
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('survey');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  Architectural CAD Drawings (Rev B)
-                </button>
-                <div className="my-1 border-t border-[#EDEBE9]" />
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('survey');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#0F6CBD] font-semibold"
-                >
-                  Copilot Brief &amp; Gap Analysis
-                </button>
-              </ViewportMenu>
-            )}
-          </div>
-
-          {/* TAB 3: JOB PLANNING LINES (BOQ STUDIO) */}
-          <div className="relative">
-            <div className={`inline-flex items-center rounded text-xs font-semibold transition ${
-              activeTab === 'boq'
-                ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
-                : 'text-[#323130] hover:bg-[#F3F2F1]'
-            }`}>
-              <button
-                onClick={() => {
-                  setNavDropdownOpen(null);
-                  handleNavigate('boq');
-                }}
-                className="px-2.5 py-1 text-xs font-semibold flex items-center gap-1.5 focus:outline-none"
-              >
-                <span>Job Planning Lines (BOQ Studio)</span>
-                <span className="bg-[#DFF6DD] text-[#107C41] text-[10px] px-1.5 py-0.2 rounded font-bold">
-                  15 Lines
+            <span className="text-slate-300 hidden md:inline">/</span>
+            <span className="font-bold text-[#0F172A] truncate flex items-center gap-1.5">
+              <span>{breadcrumb.name}</span>
+              {breadcrumb.code && (
+                <span className="bg-[#EFF6FC] text-[#0F6CBD] border border-[#C7E0F4] text-[10px] font-mono px-1.5 py-0.2 rounded font-bold">
+                  {breadcrumb.code}
                 </span>
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setNavDropdownOpen(prev => prev === 'boq' ? null : 'boq');
-                }}
-                className="px-1 py-1 hover:bg-[#DEECF9] rounded-r text-[#605E5C] hover:text-[#0F6CBD]"
-                title="Planning Lines Menu"
-              >
-                <ChevronDown className={`h-3 w-3 transition ${navDropdownOpen === 'boq' ? 'rotate-180 text-[#0F6CBD]' : ''}`} />
-              </button>
-            </div>
-
-            {navDropdownOpen === 'boq' && (
-              <ViewportMenu className="absolute left-0 top-full mt-1 w-64 bg-white rounded-lg shadow-xl border border-[#EDEBE9] py-1.5 z-50 text-xs animate-in fade-in duration-100">
-                <div className="px-3 py-1 font-bold text-[10px] uppercase tracking-wider text-[#8A8886]">
-                  Planning Lines &amp; Takeoff Filters
-                </div>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('boq');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E] flex items-center justify-between"
-                >
-                  <span className="font-semibold">All Planning Lines</span>
-                  <span className="text-[10px] bg-[#DFF6DD] text-[#107C41] font-bold px-1 rounded">15 Lines</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('boq');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  Civil &amp; Waterproofing (4 lines)
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('boq');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  Flooring &amp; False Ceilings (3 lines)
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('boq');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  Carpentry, Wardrobes &amp; Millwork (6 lines)
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('boq');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  Electrical &amp; Automation (2 lines)
-                </button>
-                <div className="my-1 border-t border-[#EDEBE9]" />
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('boq');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#0F6CBD] font-semibold"
-                >
-                  + Add Line from Master Rates
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('boq');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#107C41] font-semibold"
-                >
-                  Export Planning Lines to Excel
-                </button>
-              </ViewportMenu>
-            )}
+              )}
+            </span>
           </div>
+        </div>
 
-          {/* TAB 4: COST ACCOUNTING & BUDGETS */}
-          <div className="relative">
-            <div className={`inline-flex items-center rounded text-xs font-semibold transition ${
-              activeTab === 'budget'
-                ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
-                : 'text-[#323130] hover:bg-[#F3F2F1]'
-            }`}>
-              <button
-                onClick={() => {
-                  setNavDropdownOpen(null);
-                  handleNavigate('budget');
-                }}
-                className="px-2.5 py-1 text-xs font-semibold focus:outline-none"
-              >
-                Cost Accounting &amp; Budgets
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setNavDropdownOpen(prev => prev === 'budget' ? null : 'budget');
-                }}
-                className="px-1 py-1 hover:bg-[#DEECF9] rounded-r text-[#605E5C] hover:text-[#0F6CBD]"
-                title="Budget Menu"
-              >
-                <ChevronDown className={`h-3 w-3 transition ${navDropdownOpen === 'budget' ? 'rotate-180 text-[#0F6CBD]' : ''}`} />
-              </button>
-            </div>
-
-            {navDropdownOpen === 'budget' && (
-              <ViewportMenu className="absolute left-0 top-full mt-1 w-64 bg-white rounded-lg shadow-xl border border-[#EDEBE9] py-1.5 z-50 text-xs animate-in fade-in duration-100">
-                <div className="px-3 py-1 font-bold text-[10px] uppercase tracking-wider text-[#8A8886]">
-                  Commercial Costing &amp; Calibration
-                </div>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('budget');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E] flex items-center justify-between"
-                >
-                  <span className="font-semibold">Comprehensive Budget Sheet</span>
-                  <span className="text-[10px] text-[#0F6CBD] font-mono">₹29.88L</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('budget');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  Direct Costs (Material, Labour, Equip)
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('budget');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  Site Overheads (5%) &amp; Contingency (3%)
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('budget');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  Target Gross Margin Calibration (26.0%)
-                </button>
-                <div className="my-1 border-t border-[#EDEBE9]" />
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('budget');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#0F6CBD] font-semibold"
-                >
-                  3-Tier Value Engineering Analysis
-                </button>
-              </ViewportMenu>
-            )}
-          </div>
-
-          {/* TAB 5: CUSTOMER QUOTATIONS & SALES */}
-          <div className="relative">
-            <div className={`inline-flex items-center rounded text-xs font-semibold transition ${
-              activeTab === 'quotation'
-                ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
-                : 'text-[#323130] hover:bg-[#F3F2F1]'
-            }`}>
-              <button
-                onClick={() => {
-                  setNavDropdownOpen(null);
-                  handleNavigate('quotation');
-                }}
-                className="px-2.5 py-1 text-xs font-semibold focus:outline-none"
-              >
-                Customer Quotations &amp; Sales
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setNavDropdownOpen(prev => prev === 'quotation' ? null : 'quotation');
-                }}
-                className="px-1 py-1 hover:bg-[#DEECF9] rounded-r text-[#605E5C] hover:text-[#0F6CBD]"
-                title="Quotation Menu"
-              >
-                <ChevronDown className={`h-3 w-3 transition ${navDropdownOpen === 'quotation' ? 'rotate-180 text-[#0F6CBD]' : ''}`} />
-              </button>
-            </div>
-
-            {navDropdownOpen === 'quotation' && (
-              <ViewportMenu className="absolute left-0 top-full mt-1 w-64 bg-white rounded-lg shadow-xl border border-[#EDEBE9] py-1.5 z-50 text-xs animate-in fade-in duration-100">
-                <div className="px-3 py-1 font-bold text-[10px] uppercase tracking-wider text-[#8A8886]">
-                  Sales Proposal &amp; Terms
-                </div>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('quotation');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E] flex items-center justify-between"
-                >
-                  <span className="font-semibold">Customer Sales Proposal</span>
-                  <span className="text-[10px] text-[#107C41] font-mono">₹43.50L</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('quotation');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  Payment Milestones (6 Tranches)
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('quotation');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  Composite Works GST Schedule (18%)
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('quotation');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  Legal Terms, Exclusions &amp; Warranty
-                </button>
-                <div className="my-1 border-t border-[#EDEBE9]" />
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    window.print();
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#0F6CBD] font-semibold"
-                >
-                  Print / Export Quotation PDF (Ctrl+P)
-                </button>
-              </ViewportMenu>
-            )}
-          </div>
-
-          {/* TAB: SITE EXECUTION & DPR */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setNavDropdownOpen(null);
-                handleNavigate('site_execution');
-              }}
-              className={`px-2.5 py-1 text-xs font-semibold rounded transition flex items-center gap-1.5 ${
-                activeTab === 'site_execution' || activeTab === 'schedule'
-                  ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
-                  : 'text-[#323130] hover:bg-[#F3F2F1]'
-              }`}
-              title="Site Operations, Daily Progress Reports (DPR), Weather & Labor Counts"
-            >
-              <HardHat className="w-3.5 h-3.5 text-amber-600" />
-              <span>Site Execution (DPR)</span>
-            </button>
-          </div>
-
-          {/* TAB: PROCUREMENT & INVENTORY */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setNavDropdownOpen(null);
-                handleNavigate('procurement');
-              }}
-              className={`px-2.5 py-1 text-xs font-semibold rounded transition flex items-center gap-1.5 ${
-                activeTab === 'procurement' || activeTab === 'inventory'
-                  ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
-                  : 'text-[#323130] hover:bg-[#F3F2F1]'
-              }`}
-              title="Purchase Orders, Vendor POs, GRN Inward & Material Stock"
-            >
-              <Truck className="w-3.5 h-3.5 text-blue-600" />
-              <span>Procurement & POs</span>
-            </button>
-          </div>
-
-          {/* TAB: SUBCONTRACTORS & JOINT MB */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setNavDropdownOpen(null);
-                handleNavigate('contractors');
-              }}
-              className={`px-2.5 py-1 text-xs font-semibold rounded transition flex items-center gap-1.5 ${
-                activeTab === 'contractors' || activeTab === 'subcontractors'
-                  ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
-                  : 'text-[#323130] hover:bg-[#F3F2F1]'
-              }`}
-              title="Subcontractor Work Orders, Joint Measurement Book (MB) & Certification"
-            >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-slate-700" />
-              <span>Subcontractors & MB</span>
-            </button>
-          </div>
-
-          {/* TAB: QUALITY & SAFETY NCR */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setNavDropdownOpen(null);
-                handleNavigate('compliance');
-              }}
-              className={`px-2.5 py-1 text-xs font-semibold rounded transition flex items-center gap-1.5 ${
-                activeTab === 'compliance' || activeTab === 'snags'
-                  ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
-                  : 'text-[#323130] hover:bg-[#F3F2F1]'
-              }`}
-              title="Quality Snagging, Non-Conformance Reports (NCR) & Safety PTW"
-            >
-              <ClipboardCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Quality & Safety</span>
-            </button>
-          </div>
-
-          {/* TAB: HANDOVER & WARRANTY */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setNavDropdownOpen(null);
-                handleNavigate('handover');
-              }}
-              className={`px-2.5 py-1 text-xs font-semibold rounded transition flex items-center gap-1.5 ${
-                activeTab === 'handover' || activeTab === 'warranty' || activeTab === 'portal'
-                  ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
-                  : 'text-[#323130] hover:bg-[#F3F2F1]'
-              }`}
-              title="Handover Certificate, Warranty Dossier & Maintenance Helpdesk Tickets"
-            >
-              <Award className="w-3.5 h-3.5 text-amber-500" />
-              <span>Handover & Warranty</span>
-            </button>
-          </div>
-
-          {/* TAB 6: MASTER SECTION */}
-          <div className="relative">
-            <div className={`inline-flex items-center rounded text-xs font-semibold transition ${
-              activeTab === 'masters' || activeTab === 'rates'
-                ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
-                : 'text-[#323130] hover:bg-[#F3F2F1]'
-            }`}>
-              <button
-                onClick={() => {
-                  setNavDropdownOpen(null);
-                  handleNavigate('masters');
-                }}
-                className="px-2.5 py-1 text-xs font-semibold flex items-center gap-1.5 focus:outline-none"
-              >
-                <span>Master Section</span>
-                <span className="bg-[#EFF6FC] text-[#0F6CBD] text-[10px] px-1 py-0.2 rounded border border-[#C7E0F4] font-bold">
-                  Items • Cust • Vend • Crew
-                </span>
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setNavDropdownOpen(prev => prev === 'masters' ? null : 'masters');
-                }}
-                className="px-1 py-1 hover:bg-[#DEECF9] rounded-r text-[#605E5C] hover:text-[#0F6CBD]"
-                title="Master Section Menu"
-              >
-                <ChevronDown className={`h-3 w-3 transition ${navDropdownOpen === 'masters' ? 'rotate-180 text-[#0F6CBD]' : ''}`} />
-              </button>
-            </div>
-
-            {navDropdownOpen === 'masters' && (
-              <ViewportMenu className="absolute left-0 top-full mt-1 w-64 bg-white rounded-lg shadow-xl border border-[#EDEBE9] py-1.5 z-50 text-xs animate-in fade-in duration-100">
-                <div className="px-3 py-1 font-bold text-[10px] uppercase tracking-wider text-[#8A8886]">
-                  Enterprise Master Catalogs (D365)
-                </div>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('masters');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E] flex items-center justify-between"
-                >
-                  <span className="font-semibold">Items &amp; Master Rates (Table 27)</span>
-                  <span className="text-[10px] text-[#0F6CBD] font-mono">28 items</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('masters');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E] flex items-center justify-between"
-                >
-                  <span>Customer Directory (Table 18)</span>
-                  <span className="text-[10px] text-[#605E5C] font-mono">4 clients</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('masters');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E] flex items-center justify-between"
-                >
-                  <span>Vendor &amp; Subcontractor (Table 23)</span>
-                  <span className="text-[10px] text-[#605E5C] font-mono">5 vendors</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('masters');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E] flex items-center justify-between"
-                >
-                  <span>Resource &amp; Labour Wages (Table 156)</span>
-                  <span className="text-[10px] text-[#605E5C] font-mono">6 crews</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('masters');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  WBS Packages &amp; Wastage Norms
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('masters');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  UOM &amp; GST Tax Schedules
-                </button>
-                <div className="my-1 border-t border-[#EDEBE9]" />
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('masters');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#0F6CBD] font-semibold"
-                >
-                  + Add New Master Rate Item
-                </button>
-              </ViewportMenu>
-            )}
-          </div>
-
-          {/* TAB 7: AUDIT TRAIL */}
-          <div className="relative">
-            <div className="inline-flex items-center rounded text-xs font-semibold text-[#605E5C] hover:bg-[#F3F2F1] hover:text-[#201F1E] transition">
-              <button
-                onClick={() => {
-                  setNavDropdownOpen(null);
-                  onOpenAuditLogs();
-                }}
-                className="px-2.5 py-1 text-xs font-medium focus:outline-none"
-              >
-                Audit Trail
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setNavDropdownOpen(prev => prev === 'audit' ? null : 'audit');
-                }}
-                className="px-1 py-1 hover:bg-[#EDEBE9] rounded-r text-[#605E5C]"
-                title="Audit Menu"
-              >
-                <ChevronDown className={`h-3 w-3 transition ${navDropdownOpen === 'audit' ? 'rotate-180 text-[#0F6CBD]' : ''}`} />
-              </button>
-            </div>
-
-            {navDropdownOpen === 'audit' && (
-              <ViewportMenu className="absolute left-0 top-full mt-1 w-56 bg-white rounded-lg shadow-xl border border-[#EDEBE9] py-1.5 z-50 text-xs animate-in fade-in duration-100">
-                <div className="px-3 py-1 font-bold text-[10px] uppercase tracking-wider text-[#8A8886]">
-                  Enterprise Telemetry &amp; Compliance
-                </div>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    onOpenAuditLogs();
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E] font-semibold"
-                >
-                  Enterprise Telemetry Logs
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    onOpenAuditLogs();
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  Estimator Approval Sign-offs
-                </button>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    onOpenAuditLogs();
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#201F1E]"
-                >
-                  System Security &amp; Access Records
-                </button>
-              </ViewportMenu>
-            )}
-          </div>
-
-          {/* TAB: BOQ COST TRACEABILITY (CORE INTEGRATION) */}
-          <div className="relative shrink-0">
-            <button
-              id="nav-tab-traceability"
-              onClick={() => {
-                setNavDropdownOpen(null);
-                handleNavigate('traceability');
-              }}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold transition ${
-                activeTab === 'traceability'
-                  ? 'bg-[#FFB900]/20 text-[#8F6B00] ring-1 ring-[#FFB900]/60 font-bold'
-                  : 'text-[#323130] hover:bg-[#F3F2F1]'
-              }`}
-              title="Link every BOQ item → budget line → purchase or subcontract order → material consumption/work certification → actual project cost"
-            >
-              <Network className="h-3.5 w-3.5 text-[#8F6B00]" />
-              <span>Cost Traceability</span>
-              <span className="bg-[#FFF4CE] text-[#795B00] text-[9px] px-1 py-0.2 rounded font-mono font-bold">
-                BOQ→Cost
-              </span>
-            </button>
-          </div>
-
-          {/* TAB: MANDATORY REPORTS (MANAGEMENT & OPERATIONAL) */}
-          <div className="relative shrink-0">
-            <button
-              id="nav-tab-mandatory-reports"
-              onClick={() => {
-                setNavDropdownOpen(null);
-                handleNavigate('reports');
-              }}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold transition ${
-                activeTab === 'reports'
-                  ? 'bg-[#DFF6DD] text-[#107C41] ring-1 ring-[#107C41]/50 font-bold shadow-2xs'
-                  : 'text-[#323130] hover:bg-[#F3F2F1]'
-              }`}
-              title="All 12 Module Mandatory Reports: Management EVM, Cash Flow, WBS Variance, GST & Site DPRs"
-            >
-              <BarChart3 className="h-3.5 w-3.5 text-[#107C41]" />
-              <span>Mandatory Reports</span>
-              <span className="bg-[#107C41] text-white text-[9px] px-1.5 py-0.2 rounded-full font-mono font-bold">
-                12
-              </span>
-            </button>
-          </div>
-
-          {/* TAB: TIMESHEET MANAGEMENT (PROJECT-BASED) */}
-          <div className="relative shrink-0">
-            <button
-              id="nav-tab-timesheets"
-              onClick={() => {
-                setNavDropdownOpen(null);
-                handleNavigate('timesheets');
-              }}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold transition ${
-                activeTab === 'timesheets'
-                  ? 'bg-[#002050] text-white ring-1 ring-[#002050] font-bold shadow-2xs'
-                  : 'text-[#323130] hover:bg-[#F3F2F1]'
-              }`}
-              title="Employee timesheet logging, stopwatch tracker, billable hours, and project cost allocations"
-            >
-              <Clock className="h-3.5 w-3.5 text-[#0F6CBD]" />
-              <span>Timesheets</span>
-              <span className={`text-[9px] px-1 py-0.2 rounded font-mono font-bold ${
-                activeTab === 'timesheets' ? 'bg-white/20 text-white' : 'bg-[#EFF6FC] text-[#0F6CBD]'
-              }`}>
-                Live
-              </span>
-            </button>
-          </div>
-
-          {/* TAB: RESOURCE DEPLOYMENT (PROJECT-WISE) */}
-          <div className="relative shrink-0">
-            <button
-              id="nav-tab-resources"
-              onClick={() => {
-                setNavDropdownOpen(null);
-                handleNavigate('resources');
-              }}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold transition ${
-                activeTab === 'resources'
-                  ? 'bg-[#107C41] text-white ring-1 ring-[#107C41] font-bold shadow-2xs'
-                  : 'text-[#323130] hover:bg-[#F3F2F1]'
-              }`}
-              title="Project-wise resource deployment matrix for skilled manpower, teams, and machinery shifts"
-            >
-              <Users className="h-3.5 w-3.5 text-[#107C41]" />
-              <span>Resource Matrix</span>
-              <span className={`text-[9px] px-1 py-0.2 rounded font-mono font-bold ${
-                activeTab === 'resources' ? 'bg-white/20 text-white' : 'bg-[#DFF6DD] text-[#107C41]'
-              }`}>
-                Shifts
-              </span>
-            </button>
-          </div>
-
-          {/* TAB: PROJECT MANAGEMENT HUB */}
-          <div className="relative shrink-0">
-            <button
-              id="nav-tab-project-hub"
-              onClick={() => {
-                setNavDropdownOpen(null);
-                handleNavigate('project_hub');
-              }}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold transition ${
-                activeTab === 'project_hub'
-                  ? 'bg-[#5c2d91] text-white ring-1 ring-[#5c2d91] font-bold shadow-2xs'
-                  : 'text-[#323130] hover:bg-[#F3F2F1]'
-              }`}
-              title="Project management hub with Kanban task boards, timesheet tracking, and milestone deliverables"
-            >
-              <FolderKanban className="h-3.5 w-3.5 text-[#5c2d91]" />
-              <span>Project Hub</span>
-            </button>
-          </div>
-
-          {/* TAB: 26+ JOURNEY MODULES HUB */}
-          <div className="relative shrink-0" ref={navDropdownOpen === 'modules' ? navDropdownRef : undefined}>
-            <div className={`inline-flex items-center rounded text-xs font-semibold transition ${
-              ['crm', 'contacts', 'drawings', 'materials', 'contracts', 'variations', 'schedule', 'site_execution', 'procurement', 'inventory', 'contractors', 'snags', 'handover', 'portal', 'reports', 'timesheets', 'resources', 'project_hub', 'modules'].includes(activeTab)
-                ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
-                : 'text-[#323130] hover:bg-[#F3F2F1]'
-            }`}>
-              <button
-                id="nav-tab-modules"
-                onClick={() => {
-                  setNavDropdownOpen(null);
-                  handleNavigate('modules');
-                }}
-                className="px-2.5 py-1 text-xs font-semibold flex items-center gap-1.5 focus:outline-none"
-              >
-                <Compass className="h-3.5 w-3.5 text-[#0F6CBD]" />
-                <span>26 Journey Modules</span>
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setNavDropdownOpen(prev => prev === 'modules' ? null : 'modules');
-                }}
-                className="px-1 py-1 hover:bg-[#DEECF9] rounded-r text-[#605E5C] hover:text-[#0F6CBD]"
-                title="Modules Menu"
-              >
-                <ChevronDown className={`h-3 w-3 transition ${navDropdownOpen === 'modules' ? 'rotate-180 text-[#0F6CBD]' : ''}`} />
-              </button>
-            </div>
-
-            {navDropdownOpen === 'modules' && (
-              <ViewportMenu className="absolute left-0 top-full mt-1 w-80 bg-white rounded-lg shadow-xl border border-[#EDEBE9] py-2 z-50 text-xs animate-in fade-in duration-100 max-h-96 overflow-y-auto">
-                <div className="px-3 py-1 font-bold text-[10px] uppercase tracking-wider text-[#8A8886]">
-                  Full Architecture Journey Modules (26)
-                </div>
-                <div className="my-1 border-t border-[#EDEBE9]" />
-
-                <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase">1. Enquiry & Sales</div>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('crm'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E] flex justify-between">
-                  <span>M01: CRM & Sales Pipeline</span>
-                  <span className="text-[10px] text-emerald-600 font-mono">18 Leads</span>
-                </button>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('contacts'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E]">
-                  M02: Customer & Multi-Site Directory
-                </button>
-
-                <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase mt-1">2. Survey & Design</div>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('drawings'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E] flex justify-between">
-                  <span>M04: Design & Drawings Register</span>
-                  <span className="text-[10px] text-blue-600 font-mono">Rev B (GFC)</span>
-                </button>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('materials'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E]">
-                  M05: Material & Finish Palette
-                </button>
-
-                <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase mt-1">4. Commercial & Execution</div>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('timesheets'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E] flex justify-between">
-                  <span>M27: Employee Timesheets & Hours</span>
-                  <span className="text-[10px] text-emerald-600 font-mono">Live Timer</span>
-                </button>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('resources'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E] flex justify-between">
-                  <span>M28: Resource Deployment Matrix</span>
-                  <span className="text-[10px] text-blue-600 font-mono">Shifts</span>
-                </button>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('project_hub'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E] flex justify-between">
-                  <span>M29: Project Hub & Tasks Kanban</span>
-                  <span className="text-[10px] text-purple-600 font-mono">Hub</span>
-                </button>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('contracts'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E]">
-                  M09: Contracts, Retention (5%) & DLP
-                </button>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('site_execution'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E] flex justify-between">
-                  <span>M11: Site Execution & Daily DPRs</span>
-                  <span className="text-[10px] text-blue-600 font-mono">DPR-024</span>
-                </button>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('variations'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E] flex justify-between">
-                  <span>M12: Variation Orders (VO Register)</span>
-                  <span className="text-[10px] text-amber-600 font-mono">2 Active</span>
-                </button>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('procurement'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E]">
-                  M13: Procurement & Vendor POs
-                </button>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('contractors'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E]">
-                  M15: Subcontractor Work Orders
-                </button>
-
-                <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase mt-1">7. Handover & Warranty</div>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('snags'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E]">
-                  M19: Quality & Snags Matrix
-                </button>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('handover'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E]">
-                  M20: Handover Pack & OEM Warranties
-                </button>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('portal'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E]">
-                  M21: Customer Portal (Client View)
-                </button>
-                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('reports'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E]">
-                  M25: Executive KPI Dashboards
-                </button>
-
-                <div className="my-1 border-t border-[#EDEBE9]" />
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('modules');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-[#EFF6FC] text-[#0F6CBD] font-semibold flex items-center justify-between"
-                >
-                  <span>Open Full 26 Modules Catalog</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </ViewportMenu>
-            )}
-          </div>
-
-          {/* TAB: AGENTIC AI WORKSPACE */}
-          <div className="relative">
-            <button
-              id="nav-tab-agentic-ai"
-              onClick={() => {
-                setNavDropdownOpen(null);
-                handleNavigate('ai_workspace');
-              }}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold transition ${
-                activeTab === 'ai_workspace'
-                  ? 'bg-gradient-to-r from-[#5c2d91] to-[#0078d4] text-white shadow-xs'
-                  : 'bg-purple-50 text-purple-900 hover:bg-purple-100 border border-purple-200'
-              }`}
-              title="Central workspace to review suggestions and approve actions across all 9 AI assistants"
-            >
-              <Sparkles className="h-3.5 w-3.5 text-yellow-500 animate-pulse" />
-              <span>Agentic AI Copilot</span>
-              <span className="bg-yellow-400 text-slate-900 text-[9px] px-1 py-0.2 rounded-full font-bold">
-                9
-              </span>
-            </button>
-          </div>
-
-          {/* TAB 8: USERS & PERMISSIONS (RBAC) */}
-          {(currentUser.role === 'ADMIN' || currentUser.permissions?.canManageUsers) && (
-            <div className="relative">
-              <div className={`inline-flex items-center rounded text-xs font-semibold transition ${
-                activeTab === 'users'
-                  ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
-                  : 'text-[#323130] hover:bg-[#F3F2F1]'
-              }`}>
-                <button
-                  onClick={() => {
-                    setNavDropdownOpen(null);
-                    handleNavigate('users');
-                  }}
-                  className="px-2.5 py-1 text-xs font-semibold flex items-center gap-1.5 focus:outline-none"
-                >
-                  <Shield className="h-3.5 w-3.5 text-[#0F6CBD]" />
-                  <span>Users &amp; Roles</span>
-                  <span className="bg-[#EFF6FC] text-[#0F6CBD] text-[10px] px-1.5 py-0.2 rounded font-bold border border-[#C7E0F4]">
-                    {allUsers.length}
-                  </span>
-                </button>
-              </div>
+        {/* Right side: Active Project pill & quick tools */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Active Job badge */}
+          {activeProject && (
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FAF9F8] border border-[#EDEBE9] text-[11px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+              <span className="font-mono font-bold text-[#201F1E]">{activeProject.projectCode}</span>
+              <span className="text-slate-400 hidden lg:inline">•</span>
+              <span className="text-slate-600 truncate max-w-[150px] hidden lg:inline">{activeProject.clientName}</span>
             </div>
           )}
-        </nav>
 
-        {/* Active Project Pill on the right */}
-        <div className="hidden lg:flex items-center gap-2 pl-4 border-l border-[#EDEBE9]">
-          <span className="text-[11px] text-[#605E5C]">Active Job:</span>
-          <span className="font-semibold text-xs text-[#201F1E] font-mono">
-            {activeProject?.projectCode}
-          </span>
-          <span className="text-xs text-[#605E5C] truncate max-w-[150px]">
-            {activeProject?.title}
-          </span>
+          {/* AI Copilot shortcut */}
+          <button
+            onClick={() => handleNavigate("ai_workspace")}
+            className={`flex items-center gap-1 px-2.5 py-1 rounded text-xs font-semibold transition cursor-pointer ${
+              activeTab === "ai_workspace"
+                ? "bg-indigo-600 text-white"
+                : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200"
+            }`}
+            title="Open Agentic AI Copilot Action Center"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
+            <span className="hidden md:inline">AI Copilot</span>
+          </button>
+
+          {/* Export to Excel button */}
+          {onExportToExcel && ['boq', 'general', 'budget'].includes(activeTab) && (
+            <button
+              onClick={onExportToExcel}
+              className="hidden sm:flex items-center gap-1 px-2 py-1 text-[#107C41] hover:bg-emerald-50 rounded text-xs border border-emerald-200 transition cursor-pointer font-medium"
+              title="Export Job Planning Lines to Microsoft Excel (.xlsx)"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <span className="hidden xl:inline">Export Excel</span>
+            </button>
+          )}
+
+          {/* FactBox Toggle */}
+          {onToggleFactBox && ['general', 'boq', 'budget', 'quotation', 'survey'].includes(activeTab) && (
+            <button
+              onClick={onToggleFactBox}
+              className={`hidden sm:flex items-center gap-1 px-2 py-1 rounded text-xs border transition cursor-pointer font-medium ${
+                isFactBoxOpen
+                  ? 'bg-slate-100 text-slate-800 border-slate-300'
+                  : 'text-slate-600 hover:bg-slate-100 border-slate-200'
+              }`}
+              title={isFactBoxOpen ? 'Hide FactBox details pane' : 'Show FactBox details pane'}
+            >
+              <Info className="w-3.5 h-3.5 text-[#0F6CBD]" />
+              <span className="hidden xl:inline">FactBox</span>
+            </button>
+          )}
+
+          {/* Telemetry / Audit shortcut */}
+          <button
+            onClick={onOpenAuditLogs}
+            className="hidden md:flex items-center gap-1 px-2 py-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded text-xs border border-transparent hover:border-slate-200 transition cursor-pointer"
+            title="Enterprise Audit Logs & Telemetry"
+          >
+            <span>Audit Trail</span>
+          </button>
+
+          {/* Inspect Data Shortcut */}
+          <button
+            onClick={onOpenInspectData}
+            className="hidden xl:flex items-center gap-1 px-2 py-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded text-[11px] font-mono cursor-pointer"
+            title="Page Inspection (Ctrl+Alt+F1)"
+          >
+            <span>Ctrl+Alt+F1</span>
+          </button>
         </div>
       </div>
 

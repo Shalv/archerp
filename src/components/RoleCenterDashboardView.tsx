@@ -1,7 +1,11 @@
 /**
  * BuildStorys Enact360 - Role-Based Role Center Dashboard
  * Dynamically tailored to the assigned role, responsibilities, permissions, and daily duties of the active user:
- * Estimator, Project Manager, Site Engineer, Admin/Executive, Client, etc.
+ * - ADMIN / EXECUTIVE (Managing Director & Principal Architect)
+ * - ESTIMATOR (Lead Quantity Surveyor & Cost Planner)
+ * - PROJECT_MANAGER (Senior Project Manager & Construction Head)
+ * - SITE_ENGINEER (Site Execution & Quality Engineer)
+ * - CLIENT (Project Sponsor & Owner)
  */
 
 import React, { useState } from 'react';
@@ -38,7 +42,14 @@ import {
   RefreshCw,
   FolderKanban,
   Wrench,
-  Package
+  Package,
+  Check,
+  AlertCircle,
+  Clock4,
+  Zap,
+  Image as ImageIcon,
+  CheckCheck,
+  TrendingDown
 } from 'lucide-react';
 import { UserSession, ProjectRecord, CostBudgetSummary, UserRole } from '../types/erp';
 
@@ -54,17 +65,6 @@ interface RoleCenterDashboardViewProps {
   onOpenAIWorkspace?: () => void;
 }
 
-interface RoleTaskItem {
-  id: string;
-  title: string;
-  description: string;
-  priority: 'HIGH' | 'MEDIUM' | 'LOW';
-  category: string;
-  targetTab: string;
-  actionLabel: string;
-  done: boolean;
-}
-
 export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = ({
   currentUser,
   allUsers,
@@ -78,6 +78,15 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
 }) => {
   // Local state for completed tasks in this session
   const [completedTasks, setCompletedTasks] = useState<Record<string, boolean>>({});
+  const [activeTabRole, setActiveTabRole] = useState<UserRole>(currentUser.role || 'ADMIN');
+  const [approvedItems, setApprovedItems] = useState<Record<string, boolean>>({});
+
+  // Sync activeTabRole when currentUser changes
+  React.useEffect(() => {
+    if (currentUser.role) {
+      setActiveTabRole(currentUser.role);
+    }
+  }, [currentUser.role]);
 
   const toggleTask = (taskId: string) => {
     setCompletedTasks(prev => ({
@@ -86,14 +95,31 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
     }));
   };
 
-  const role = currentUser.role;
+  const toggleApproval = (id: string) => {
+    setApprovedItems(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
+  // Role switching handler: finds user with target role or switches preview
+  const handleRolePillClick = (targetRole: UserRole) => {
+    setActiveTabRole(targetRole);
+    const matchingUser = allUsers.find(u => u.role === targetRole);
+    if (matchingUser) {
+      onSwitchUser(matchingUser);
+    }
+  };
+
+  const role = activeTabRole;
 
   // Role Metadata & Responsibilities Definition
   const getRoleProfile = () => {
     switch (role) {
       case 'ESTIMATOR':
         return {
-          title: currentUser.roleTitle || 'Lead Quantity Surveyor & Cost Planner',
+          roleKey: 'ESTIMATOR' as UserRole,
+          title: 'Lead Quantity Surveyor & Cost Planner',
           dept: 'Pre-Construction, Estimation & Commercial',
           badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-300',
           icon: Calculator,
@@ -131,7 +157,8 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
 
       case 'PROJECT_MANAGER':
         return {
-          title: currentUser.roleTitle || 'Senior Project Manager & Construction Head',
+          roleKey: 'PROJECT_MANAGER' as UserRole,
+          title: 'Senior Project Manager & Construction Head',
           dept: 'Site Operations, Projects Delivery & Execution',
           badgeColor: 'bg-blue-100 text-blue-800 border-blue-300',
           icon: HardHat,
@@ -160,7 +187,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
             { label: 'Open Quality Snags', value: '8 items', subtext: '2 high severity (bedroom cove alignment)', trend: 'In rectification', color: 'text-red-600', targetTab: 'snags' }
           ],
           tasks: [
-            { id: 'pm-1', title: 'Approve Today\'s Site Daily Progress Report (DPR)', description: 'Verify labour head-count (24 onsite) and delivery of 18mm marine plywood batch', priority: 'HIGH', category: 'Site Operations', targetTab: 'site_execution', actionLabel: 'Review DPR' },
+            { id: 'pm-1', title: "Approve Today's Site Daily Progress Report (DPR)", description: 'Verify labour head-count (24 onsite) and delivery of 18mm marine plywood batch', priority: 'HIGH', category: 'Site Operations', targetTab: 'site_execution', actionLabel: 'Review DPR' },
             { id: 'pm-2', title: 'Process Variation Request VO-002 (Cove Lighting)', description: 'Check electrical cable rerouting and additional cost of ₹32,000 with client', priority: 'HIGH', category: 'Variations', targetTab: 'variations', actionLabel: 'View VO' },
             { id: 'pm-3', title: 'Inspect Marvel Interiors Carpentry Framework', description: 'Conduct structural framing inspection before acoustic rockwool insulation closure', priority: 'MEDIUM', category: 'Quality & Snags', targetTab: 'snags', actionLabel: 'Snag Log' },
             { id: 'pm-4', title: 'Review Subcontractor Measurement Sheet RA-02', description: 'Cross-check certified plastering area before forwarding to finance for payment', priority: 'LOW', category: 'Subcontractors', targetTab: 'contractors', actionLabel: 'View Subcontracts' }
@@ -169,7 +196,8 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
 
       case 'SITE_ENGINEER':
         return {
-          title: currentUser.roleTitle || 'Site Execution & Quality Engineer',
+          roleKey: 'SITE_ENGINEER' as UserRole,
+          title: 'Site Execution & Quality Engineer',
           dept: 'Field Engineering & Physical Construction',
           badgeColor: 'bg-amber-100 text-amber-800 border-amber-300',
           icon: Wrench,
@@ -192,7 +220,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
             'Security Permissions & User Management'
           ],
           kpis: [
-            { label: 'Today\'s DPR Status', value: 'Draft / In-Progress', subtext: 'Morning attendance logged; evening wrap pending', trend: 'Log today', color: 'text-amber-600', targetTab: 'site_execution' },
+            { label: "Today's DPR Status", value: 'Draft / In-Progress', subtext: 'Morning attendance logged; evening wrap pending', trend: 'Log today', color: 'text-amber-600', targetTab: 'site_execution' },
             { label: 'Material Inward Today', value: '3 batches', subtext: 'Marine plywood, copper wiring, gypsum channel', trend: 'Received', color: 'text-slate-900', targetTab: 'materials' },
             { label: 'Assigned Snag Rectifications', value: '5 pending', subtext: '3 closed today by drywall contractor', trend: '2 remaining', color: 'text-red-600', targetTab: 'snags' },
             { label: 'Zero-Accident Safety Days', value: '42 Days', subtext: 'Zero reportable incidents onsite', trend: 'HSE Compliant', color: 'text-emerald-700', targetTab: 'reports' }
@@ -207,7 +235,8 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
 
       case 'ADMIN':
         return {
-          title: currentUser.roleTitle || 'Managing Director & Principal Architect',
+          roleKey: 'ADMIN' as UserRole,
+          title: 'Managing Director & Principal Architect',
           dept: 'Executive Board, Architecture Studio & Corporate Governance',
           badgeColor: 'bg-purple-100 text-purple-800 border-purple-300',
           icon: ShieldCheck,
@@ -245,7 +274,8 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
       case 'CLIENT':
       default:
         return {
-          title: currentUser.roleTitle || 'Client & Project Sponsor',
+          roleKey: 'CLIENT' as UserRole,
+          title: 'Client & Project Sponsor',
           dept: 'Owner & Project Sponsor Representative',
           badgeColor: 'bg-teal-100 text-teal-800 border-teal-300',
           icon: UserCheck,
@@ -351,9 +381,61 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
 
   const shortcuts = getShortcuts();
 
+  // Roles Definition for the interactive selector bar
+  const ROLES_LIST: { role: UserRole; label: string; icon: any; color: string; desc: string }[] = [
+    { role: 'ADMIN', label: 'Executive / MD', icon: ShieldCheck, color: 'text-purple-700 bg-purple-50 border-purple-200', desc: 'Executive EVM, Financials & RBAC' },
+    { role: 'ESTIMATOR', label: 'Lead Estimator (QS)', icon: Calculator, color: 'text-emerald-700 bg-emerald-50 border-emerald-200', desc: 'BOQ Takeoffs & Master Rates' },
+    { role: 'PROJECT_MANAGER', label: 'Project Manager', icon: HardHat, color: 'text-blue-700 bg-blue-50 border-blue-200', desc: 'Site Operations, SPI & Crew' },
+    { role: 'SITE_ENGINEER', label: 'Site Engineer', icon: Wrench, color: 'text-amber-700 bg-amber-50 border-amber-200', desc: 'DPR Logs, Materials & Snags' },
+    { role: 'CLIENT', label: 'Client / Owner', icon: UserCheck, color: 'text-teal-700 bg-teal-50 border-teal-200', desc: 'Milestones & 3D Approvals' }
+  ];
+
   return (
-    <div id="role-center-dashboard" className="space-y-4 max-w-[1700px] mx-auto text-xs pb-10">
+    <div id="role-center-dashboard" className="space-y-4 max-w-[1700px] mx-auto text-xs pb-12 animate-in fade-in duration-200">
       
+      {/* 0. INTERACTIVE ROLE SELECTOR BAR */}
+      <div className="bg-white rounded-lg border border-slate-200 p-2.5 shadow-2xs flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-2">
+          <div className="p-1.5 bg-[#EFF6FC] text-[#0F6CBD] rounded-md">
+            <Users className="w-4 h-4" />
+          </div>
+          <div>
+            <span className="text-xs font-bold text-slate-800">
+              Role Center Dashboard
+            </span>
+            <span className="text-[11px] text-slate-500 hidden sm:inline ml-2">
+              Select any role to view their specialized view &amp; operational duties:
+            </span>
+          </div>
+        </div>
+
+        {/* Role Quick Switch Buttons */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {ROLES_LIST.map((r) => {
+            const RIcon = r.icon;
+            const isSelected = activeTabRole === r.role;
+            return (
+              <button
+                key={r.role}
+                onClick={() => handleRolePillClick(r.role)}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer border ${
+                  isSelected
+                    ? 'bg-[#002050] text-white border-[#002050] shadow-xs'
+                    : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
+                }`}
+                title={r.desc}
+              >
+                <RIcon className={`w-3.5 h-3.5 ${isSelected ? 'text-yellow-300' : 'text-slate-500'}`} />
+                <span>{r.label}</span>
+                {isSelected && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* 1. ROLE-BASED WELCOME BANNER & IDENTITY CARD */}
       <div className="bg-gradient-to-r from-[#002050] via-[#003366] to-[#0a4b88] text-white rounded-lg shadow-md border border-[#004080] p-4 sm:p-5 relative overflow-hidden">
         <div className="absolute right-0 top-0 bottom-0 w-96 bg-radial from-blue-400/10 to-transparent pointer-events-none" />
@@ -370,34 +452,32 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
                   BuildStorys Enact360 • Role Center
                 </span>
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${profile.badgeColor}`}>
-                  Role: {currentUser.role}
+                  Role: {profile.roleKey}
                 </span>
                 <span className="text-[10px] bg-white/15 text-white/90 px-2 py-0.5 rounded font-mono">
-                  ID: {currentUser.id}
+                  Active User: {currentUser.name}
                 </span>
               </div>
 
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white mt-1">
-                Welcome back, {currentUser.name}
+                {profile.title}
               </h1>
 
               <div className="text-xs text-[#C7E0F4] mt-0.5 flex items-center gap-2 flex-wrap">
-                <span className="font-semibold text-white">{profile.title}</span>
-                <span>•</span>
-                <span>{profile.dept}</span>
+                <span className="font-semibold text-white">{profile.dept}</span>
                 <span>•</span>
                 <span className="text-yellow-300 font-mono">
-                  Active Project: {activeProject?.projectCode} ({activeProject?.title})
+                  Active Project: {activeProject?.projectCode || 'PROJ-SKYLINE-1402'} ({activeProject?.title || 'Skyline Penthouse'})
                 </span>
               </div>
             </div>
           </div>
 
-          {/* User Switching / Role Profile Quick Trigger */}
+          {/* User Persona Switcher */}
           <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
             <div className="bg-white/10 backdrop-blur-xs border border-white/20 rounded-lg p-2 flex items-center gap-3">
               <div className="text-right hidden sm:block">
-                <div className="text-[10px] text-[#89BBE9] font-medium">Switch Persona</div>
+                <div className="text-[10px] text-[#89BBE9] font-medium">Logged-in Persona</div>
                 <div className="text-xs font-bold text-white truncate max-w-[140px]">{currentUser.name}</div>
               </div>
 
@@ -472,10 +552,582 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
         ))}
       </div>
 
+      {/* 2.5 DEEP ROLE-SPECIFIC OPERATIONAL & ANALYTICAL WIDGETS */}
+      {role === 'ADMIN' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* EVM Pulse */}
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between border-b pb-2.5">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-[#0F6CBD]" />
+                <h3 className="font-bold text-slate-900 text-xs">Earned Value Management (EVM)</h3>
+              </div>
+              <span className="text-[10px] bg-emerald-50 text-emerald-700 font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-200">
+                CPI: 1.04 • SPI: 1.03
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-[11px]">
+              <div className="bg-slate-50 p-2 rounded border border-slate-200">
+                <div className="text-slate-500 text-[10px]">Planned Value (PV)</div>
+                <div className="font-bold text-slate-900">₹19,80,000</div>
+              </div>
+              <div className="bg-slate-50 p-2 rounded border border-slate-200">
+                <div className="text-slate-500 text-[10px]">Earned Value (EV)</div>
+                <div className="font-bold text-emerald-700">₹20,53,800</div>
+              </div>
+              <div className="bg-slate-50 p-2 rounded border border-slate-200">
+                <div className="text-slate-500 text-[10px]">Actual Cost (AC)</div>
+                <div className="font-bold text-slate-900">₹19,74,800</div>
+              </div>
+              <div className="bg-slate-50 p-2 rounded border border-slate-200">
+                <div className="text-slate-500 text-[10px]">Cost Variance (CV)</div>
+                <div className="font-bold text-emerald-700">+₹79,000 (Favorable)</div>
+              </div>
+            </div>
+            <div className="pt-1">
+              <button 
+                onClick={() => onNavigateTab('reports')}
+                className="w-full py-1.5 text-center text-xs font-semibold text-[#0F6CBD] bg-[#EFF6FC] hover:bg-[#DEECF9] rounded transition"
+              >
+                Open 12 Mandatory Management Reports →
+              </button>
+            </div>
+          </div>
+
+          {/* Pending Executive Approvals */}
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between border-b pb-2.5">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-purple-600" />
+                <h3 className="font-bold text-slate-900 text-xs">Pending Executive Authorizations</h3>
+              </div>
+              <span className="text-[10px] bg-amber-50 text-amber-700 font-mono font-bold px-1.5 py-0.5 rounded border border-amber-200">
+                3 Pending
+              </span>
+            </div>
+            <div className="space-y-2">
+              <div className="p-2 bg-slate-50 rounded border border-slate-200 flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-slate-900 text-xs">PO-2024-001 (Plywood Batch)</div>
+                  <div className="text-[10px] text-slate-500">₹1,85,000 • CenturyPly 710 Marine</div>
+                </div>
+                <button 
+                  onClick={() => toggleApproval('po1')}
+                  className={`px-2 py-1 rounded text-[10px] font-semibold transition ${
+                    approvedItems['po1'] ? 'bg-emerald-600 text-white' : 'bg-[#002050] text-white hover:bg-slate-800'
+                  }`}
+                >
+                  {approvedItems['po1'] ? 'Authorized ✓' : 'Authorize'}
+                </button>
+              </div>
+              <div className="p-2 bg-slate-50 rounded border border-slate-200 flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-slate-900 text-xs">Variation VO-002 (Cove Lighting)</div>
+                  <div className="text-[10px] text-slate-500">₹32,000 • Client sign-off required</div>
+                </div>
+                <button 
+                  onClick={() => toggleApproval('vo2')}
+                  className={`px-2 py-1 rounded text-[10px] font-semibold transition ${
+                    approvedItems['vo2'] ? 'bg-emerald-600 text-white' : 'bg-[#002050] text-white hover:bg-slate-800'
+                  }`}
+                >
+                  {approvedItems['vo2'] ? 'Signed ✓' : 'Sign Off'}
+                </button>
+              </div>
+              <div className="p-2 bg-slate-50 rounded border border-slate-200 flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-slate-900 text-xs">Milestone 2 Tax Invoice</div>
+                  <div className="text-[10px] text-slate-500">₹2,31,062 • Civil &amp; Framing complete</div>
+                </div>
+                <button 
+                  onClick={() => onNavigateTab('traceability')}
+                  className="px-2 py-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded text-[10px] font-semibold transition"
+                >
+                  Review
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Security & RBAC Status */}
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between border-b pb-2.5">
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-emerald-600" />
+                <h3 className="font-bold text-slate-900 text-xs">RBAC &amp; Security Compliance</h3>
+              </div>
+              <span className="text-[10px] bg-emerald-50 text-emerald-700 font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-200">
+                Enforced
+              </span>
+            </div>
+            <div className="space-y-1.5 text-[11px]">
+              <div className="flex items-center justify-between py-1 border-b border-slate-100">
+                <span className="text-slate-600">Active User Profiles:</span>
+                <span className="font-bold text-slate-900">{allUsers.length} Users Configured</span>
+              </div>
+              <div className="flex items-center justify-between py-1 border-b border-slate-100">
+                <span className="text-slate-600">Cost Confidentiality:</span>
+                <span className="font-semibold text-emerald-700">Protected (Site/Client Hidden)</span>
+              </div>
+              <div className="flex items-center justify-between py-1 border-b border-slate-100">
+                <span className="text-slate-600">Audit Logging:</span>
+                <span className="font-semibold text-emerald-700">100% Operations Recorded</span>
+              </div>
+              <div className="flex items-center justify-between py-1">
+                <span className="text-slate-600">Security Anomalies:</span>
+                <span className="font-bold text-slate-900">0 Detected</span>
+              </div>
+            </div>
+            <div className="pt-1">
+              <button 
+                onClick={() => onNavigateTab('users')}
+                className="w-full py-1.5 text-center text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 rounded transition border border-purple-200"
+              >
+                Manage Enterprise Users &amp; Permissions →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {role === 'ESTIMATOR' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Trade-wise Takeoff Breakdown */}
+          <div className="lg:col-span-2 bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between border-b pb-2.5">
+              <div className="flex items-center gap-2">
+                <Layers className="w-4 h-4 text-emerald-600" />
+                <h3 className="font-bold text-slate-900 text-xs">Trade Package BOQ Takeoff &amp; Margin Analysis</h3>
+              </div>
+              <span className="text-[10px] text-slate-500 font-mono">
+                Revision: {activeProject?.activeRevisionId || 'REV-01'}
+              </span>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-[11px]">
+                <thead>
+                  <tr className="border-b border-slate-200 text-slate-500 text-[10px] uppercase font-bold">
+                    <th className="py-1.5">Trade Package</th>
+                    <th className="py-1.5">Takeoff Items</th>
+                    <th className="py-1.5 text-right">Direct Cost</th>
+                    <th className="py-1.5 text-right">Client Price</th>
+                    <th className="py-1.5 text-right">Margin %</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-mono">
+                  <tr>
+                    <td className="py-2 font-sans font-medium text-slate-900">Civil &amp; Masonry Works</td>
+                    <td className="py-2 text-slate-600">6 items</td>
+                    <td className="py-2 text-right text-slate-700">₹4,20,000</td>
+                    <td className="py-2 text-right font-bold text-slate-900">₹5,60,000</td>
+                    <td className="py-2 text-right font-bold text-emerald-700">25.0%</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 font-sans font-medium text-slate-900">Carpentry &amp; Modular Woodwork</td>
+                    <td className="py-2 text-slate-600">14 items</td>
+                    <td className="py-2 text-right text-slate-700">₹18,40,000</td>
+                    <td className="py-2 text-right font-bold text-slate-900">₹25,20,000</td>
+                    <td className="py-2 text-right font-bold text-emerald-700">27.0%</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 font-sans font-medium text-slate-900">POP &amp; False Ceiling</td>
+                    <td className="py-2 text-slate-600">5 items</td>
+                    <td className="py-2 text-right text-slate-700">₹3,80,000</td>
+                    <td className="py-2 text-right font-bold text-slate-900">₹5,10,000</td>
+                    <td className="py-2 text-right font-bold text-emerald-700">25.5%</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 font-sans font-medium text-slate-900">Electrical &amp; Smart Automation</td>
+                    <td className="py-2 text-slate-600">8 items</td>
+                    <td className="py-2 text-right text-slate-700">₹5,10,000</td>
+                    <td className="py-2 text-right font-bold text-slate-900">₹6,90,000</td>
+                    <td className="py-2 text-right font-bold text-emerald-700">26.1%</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 font-sans font-medium text-slate-900">Plumbing &amp; Sanitaryware</td>
+                    <td className="py-2 text-slate-600">4 items</td>
+                    <td className="py-2 text-right text-slate-700">₹3,40,000</td>
+                    <td className="py-2 text-right font-bold text-slate-900">₹4,60,000</td>
+                    <td className="py-2 text-right font-bold text-emerald-700">26.1%</td>
+                  </tr>
+                  <tr className="bg-slate-50 font-bold">
+                    <td className="py-2 font-sans text-slate-900">Total Contractual BOQ</td>
+                    <td className="py-2 text-slate-700">37 items</td>
+                    <td className="py-2 text-right text-slate-800">₹34,90,000</td>
+                    <td className="py-2 text-right text-slate-900">₹47,40,000</td>
+                    <td className="py-2 text-right text-emerald-700">26.4%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Master Rate Benchmarks & AI Suggestions */}
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between border-b pb-2.5">
+              <div className="flex items-center gap-2">
+                <Calculator className="w-4 h-4 text-[#0F6CBD]" />
+                <h3 className="font-bold text-slate-900 text-xs">Rate Benchmarking &amp; AI</h3>
+              </div>
+              <span className="text-[10px] bg-purple-50 text-purple-700 font-mono font-bold px-1.5 py-0.5 rounded border border-purple-200">
+                Copilot Ready
+              </span>
+            </div>
+            <div className="space-y-2 text-[11px]">
+              <div className="p-2 bg-amber-50 rounded border border-amber-200">
+                <div className="font-bold text-amber-900 text-xs flex items-center gap-1">
+                  <AlertCircle className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Rate Benchmark Alert</span>
+                </div>
+                <p className="text-amber-800 text-[11px] mt-0.5">
+                  Asian Paints Royale Luxury price shifted +3.5% in Delhi NCR market. Update Master Price Library.
+                </p>
+                <button 
+                  onClick={() => onNavigateTab('masters')}
+                  className="mt-1.5 text-[10px] font-bold text-amber-900 underline cursor-pointer"
+                >
+                  Review in Rate Library →
+                </button>
+              </div>
+
+              <div className="p-2 bg-purple-50 rounded border border-purple-200">
+                <div className="font-bold text-purple-900 text-xs flex items-center gap-1">
+                  <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+                  <span>Copilot AI Takeoff Gap</span>
+                </div>
+                <p className="text-purple-800 text-[11px] mt-0.5">
+                  9 potential takeoff items auto-detected from room survey: cove perimeter channel, acoustic glass wool.
+                </p>
+                <button 
+                  onClick={() => onNavigateTab('ai_workspace')}
+                  className="mt-1.5 text-[10px] font-bold text-purple-900 underline cursor-pointer"
+                >
+                  Open Copilot Takeoff Review →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {role === 'PROJECT_MANAGER' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Milestone Critical Path */}
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between border-b pb-2.5">
+              <div className="flex items-center gap-2">
+                <FolderKanban className="w-4 h-4 text-blue-600" />
+                <h3 className="font-bold text-slate-900 text-xs">Milestone Critical Path</h3>
+              </div>
+              <span className="text-[10px] bg-emerald-50 text-emerald-700 font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-200">
+                SPI: 1.03
+              </span>
+            </div>
+            <div className="space-y-2.5">
+              <div>
+                <div className="flex justify-between text-[11px] font-semibold text-slate-700 mb-1">
+                  <span>M1: Site Mobilization &amp; Demolition</span>
+                  <span className="text-emerald-700">100% Complete</span>
+                </div>
+                <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-500 rounded-full w-full" />
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between text-[11px] font-semibold text-slate-700 mb-1">
+                  <span>M2: Civil Masonry &amp; False Ceiling</span>
+                  <span className="text-blue-700">75% In-Progress</span>
+                </div>
+                <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-blue-600 rounded-full w-[75%]" />
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between text-[11px] font-semibold text-slate-700 mb-1">
+                  <span>M3: Modular Kitchen &amp; Wardrobes</span>
+                  <span className="text-slate-400">Scheduled (12 days)</span>
+                </div>
+                <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-slate-300 rounded-full w-[0%]" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Onsite Labour Mobilization */}
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between border-b pb-2.5">
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-emerald-600" />
+                <h3 className="font-bold text-slate-900 text-xs">Onsite Trade Workforce (24 Workers)</h3>
+              </div>
+              <span className="text-[10px] bg-slate-100 text-slate-700 font-mono font-bold px-1.5 py-0.5 rounded">
+                Day Shift
+              </span>
+            </div>
+            <div className="space-y-1.5 text-[11px]">
+              <div className="flex items-center justify-between py-1 border-b border-slate-100">
+                <span className="text-slate-700">Carpentry &amp; Joinery (Marvel)</span>
+                <span className="font-bold text-slate-900">8 craftsmen</span>
+              </div>
+              <div className="flex items-center justify-between py-1 border-b border-slate-100">
+                <span className="text-slate-700">Civil &amp; Core Drilling (Apex)</span>
+                <span className="font-bold text-slate-900">6 masons</span>
+              </div>
+              <div className="flex items-center justify-between py-1 border-b border-slate-100">
+                <span className="text-slate-700">POP &amp; False Ceiling Grid</span>
+                <span className="font-bold text-slate-900">5 artisans</span>
+              </div>
+              <div className="flex items-center justify-between py-1">
+                <span className="text-slate-700">Electrical Conduit &amp; Cabling</span>
+                <span className="font-bold text-slate-900">5 technicians</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Variation Orders Register */}
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between border-b pb-2.5">
+              <div className="flex items-center gap-2">
+                <RefreshCw className="w-4 h-4 text-amber-600" />
+                <h3 className="font-bold text-slate-900 text-xs">Active Variations Register</h3>
+              </div>
+              <span className="text-[10px] bg-amber-50 text-amber-700 font-mono font-bold px-1.5 py-0.5 rounded border border-amber-200">
+                ₹1,42,000 Total
+              </span>
+            </div>
+            <div className="space-y-2 text-[11px]">
+              <div className="p-2 bg-slate-50 rounded border border-slate-200">
+                <div className="flex justify-between font-bold text-slate-900">
+                  <span>VO-001: Marble Chamfering</span>
+                  <span className="text-emerald-700">Approved</span>
+                </div>
+                <div className="text-[10px] text-slate-500 mt-0.5">₹24,000 • Invoiced in Milestone 1</div>
+              </div>
+              <div className="p-2 bg-slate-50 rounded border border-slate-200">
+                <div className="flex justify-between font-bold text-slate-900">
+                  <span>VO-002: Cove Illumination</span>
+                  <span className="text-amber-700">In Review</span>
+                </div>
+                <div className="text-[10px] text-slate-500 mt-0.5">₹32,000 • Pending client sign-off</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {role === 'SITE_ENGINEER' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Today's DPR Log */}
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between border-b pb-2.5">
+              <div className="flex items-center gap-2">
+                <HardHat className="w-4 h-4 text-amber-600" />
+                <h3 className="font-bold text-slate-900 text-xs">Today's DPR Shift Checklist</h3>
+              </div>
+              <span className="text-[10px] bg-amber-50 text-amber-700 font-mono font-bold px-1.5 py-0.5 rounded border border-amber-200">
+                In-Progress
+              </span>
+            </div>
+            <div className="space-y-2 text-[11px]">
+              <div className="flex items-start gap-2 text-slate-700">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <div>
+                  <div className="font-semibold text-slate-900">Morning Toolbox Safety Talk</div>
+                  <div className="text-[10px] text-slate-500">24 workers present, 100% PPE compliant</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-2 text-slate-700">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <div>
+                  <div className="font-semibold text-slate-900">Mid-day Ceiling Grid Inspection</div>
+                  <div className="text-[10px] text-slate-500">450 sq.ft perimeter GI channel installed</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-2 text-slate-700">
+                <Clock4 className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                <div>
+                  <div className="font-semibold text-slate-900">Evening Shift Wrap &amp; Photo Log</div>
+                  <div className="text-[10px] text-slate-500">Pending evening sign-off &amp; waste haul</div>
+                </div>
+              </div>
+            </div>
+            <button 
+              onClick={() => onNavigateTab('site_execution')}
+              className="w-full py-1.5 text-center text-xs font-semibold text-white bg-amber-600 hover:bg-amber-700 rounded transition mt-1"
+            >
+              Open Daily Progress Report (DPR) →
+            </button>
+          </div>
+
+          {/* Material Delivery & GRN */}
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between border-b pb-2.5">
+              <div className="flex items-center gap-2">
+                <Package className="w-4 h-4 text-[#0F6CBD]" />
+                <h3 className="font-bold text-slate-900 text-xs">Material Inward &amp; GRN Inspection</h3>
+              </div>
+              <span className="text-[10px] bg-slate-100 text-slate-700 font-mono font-bold px-1.5 py-0.5 rounded">
+                3 Batches
+              </span>
+            </div>
+            <div className="space-y-2 text-[11px]">
+              <div className="p-2 bg-slate-50 rounded border border-slate-200">
+                <div className="font-bold text-slate-900 text-xs">CenturyPly 710 Marine Grade</div>
+                <div className="text-[10px] text-slate-500">45 sheets • Waterproof stamp &amp; caliper checked</div>
+              </div>
+              <div className="p-2 bg-slate-50 rounded border border-slate-200">
+                <div className="font-bold text-slate-900 text-xs">Schneider Electric Switchgear</div>
+                <div className="text-[10px] text-slate-500">60 units • Living Now series batch verified</div>
+              </div>
+              <div className="p-2 bg-slate-50 rounded border border-slate-200">
+                <div className="font-bold text-slate-900 text-xs">UltraTech Super Cement</div>
+                <div className="text-[10px] text-slate-500">25 bags • Dry storage verified</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Snags Rectification */}
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between border-b pb-2.5">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-red-600" />
+                <h3 className="font-bold text-slate-900 text-xs">Active Snags &amp; Rectification</h3>
+              </div>
+              <span className="text-[10px] bg-red-50 text-red-700 font-mono font-bold px-1.5 py-0.5 rounded border border-red-200">
+                3 Pending
+              </span>
+            </div>
+            <div className="space-y-2 text-[11px]">
+              <div className="p-2 bg-slate-50 rounded border border-slate-200 flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-slate-900 text-xs">SNAG-01: Foyer Switchplate</div>
+                  <div className="text-[10px] text-slate-500">Alignment checked with spirit level</div>
+                </div>
+                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                  Rectified
+                </span>
+              </div>
+              <div className="p-2 bg-slate-50 rounded border border-slate-200 flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-slate-900 text-xs">SNAG-02: Balcony Floor Slope</div>
+                  <div className="text-[10px] text-slate-500">Water runoff gradient inspection</div>
+                </div>
+                <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">
+                  In-Progress
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {role === 'CLIENT' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Milestone Payment Tracker */}
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between border-b pb-2.5">
+              <div className="flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-teal-600" />
+                <h3 className="font-bold text-slate-900 text-xs">Milestone Invoicing Schedule</h3>
+              </div>
+              <span className="text-[10px] bg-teal-50 text-teal-700 font-mono font-bold px-1.5 py-0.5 rounded border border-teal-200">
+                ₹48,90,000 Contract
+              </span>
+            </div>
+            <div className="space-y-2.5 text-[11px]">
+              <div className="flex justify-between items-center py-1 border-b border-slate-100">
+                <div>
+                  <div className="font-bold text-slate-900">Milestone 1: Booking Advance (10%)</div>
+                  <div className="text-[10px] text-slate-500">Civil &amp; demolition commencement</div>
+                </div>
+                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                  ₹1,54,041 Paid ✓
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-1 border-b border-slate-100">
+                <div>
+                  <div className="font-bold text-slate-900">Milestone 2: Framing &amp; Grids (15%)</div>
+                  <div className="text-[10px] text-slate-500">False ceiling perimeter completion</div>
+                </div>
+                <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded">
+                  ₹2,31,062 Due Soon
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-1">
+                <div>
+                  <div className="font-bold text-slate-900">Milestone 3: Modular Joinery (35%)</div>
+                  <div className="text-[10px] text-slate-500">Cabinetry &amp; wardrobe factory dispatch</div>
+                </div>
+                <span className="text-[10px] text-slate-500">
+                  ₹5,39,145 (Next)
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* 3D Design Concepts */}
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between border-b pb-2.5">
+              <div className="flex items-center gap-2">
+                <ImageIcon className="w-4 h-4 text-purple-600" />
+                <h3 className="font-bold text-slate-900 text-xs">Approved 3D Design Concepts</h3>
+              </div>
+              <span className="text-[10px] bg-emerald-50 text-emerald-700 font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-200">
+                4 Signed
+              </span>
+            </div>
+            <div className="space-y-1.5 text-[11px]">
+              <div className="p-2 bg-slate-50 rounded border border-slate-200 flex justify-between items-center">
+                <span className="font-semibold text-slate-900">Living &amp; Dining Nordic Suite</span>
+                <span className="text-[10px] font-bold text-emerald-700">Signed ✓</span>
+              </div>
+              <div className="p-2 bg-slate-50 rounded border border-slate-200 flex justify-between items-center">
+                <span className="font-semibold text-slate-900">Master Bedroom Champagne Oak</span>
+                <span className="text-[10px] font-bold text-emerald-700">Signed ✓</span>
+              </div>
+              <div className="p-2 bg-slate-50 rounded border border-slate-200 flex justify-between items-center">
+                <span className="font-semibold text-slate-900">Gourmet Modular Kitchen Island</span>
+                <span className="text-[10px] font-bold text-emerald-700">Signed ✓</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Finish Samples Awaiting Selection */}
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between border-b pb-2.5">
+              <div className="flex items-center gap-2">
+                <Layers className="w-4 h-4 text-teal-600" />
+                <h3 className="font-bold text-slate-900 text-xs">Material Samples for Client Selection</h3>
+              </div>
+              <span className="text-[10px] bg-amber-50 text-amber-700 font-mono font-bold px-1.5 py-0.5 rounded border border-amber-200">
+                Action Required
+              </span>
+            </div>
+            <div className="space-y-2 text-[11px]">
+              <div className="p-2 bg-slate-50 rounded border border-slate-200">
+                <div className="font-bold text-slate-900">TV Unit Accent Veneer</div>
+                <div className="text-[10px] text-slate-500 mt-0.5">Choice: Smoked Eucalyptus vs Royal Teak</div>
+              </div>
+              <div className="p-2 bg-slate-50 rounded border border-slate-200">
+                <div className="font-bold text-slate-900">Vanity Counter Stone</div>
+                <div className="text-[10px] text-slate-500 mt-0.5">Choice: Botticino Marble vs Calacatta Quartz</div>
+              </div>
+            </div>
+            <button 
+              onClick={() => onNavigateTab('materials')}
+              className="w-full py-1.5 text-center text-xs font-semibold text-teal-700 bg-teal-50 hover:bg-teal-100 rounded transition border border-teal-200"
+            >
+              Browse Material Swatches →
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 3. MAIN WORKSPACE GRID: ASSIGNED TASKS + RESPONSIBILITY MATRIX */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         
-        {/* LEFT 2 COLUMNS: DAILY ROLE WORKFLOW & PENDING APPROVALS */}
+        {/* LEFT 2 COLUMNS: DAILY ROLE WORKFLOW & PENDING TASKS */}
         <div className="lg:col-span-2 space-y-4">
           
           {/* Daily Work Queue Card */}
@@ -490,7 +1142,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
                     My Daily Action Queue &amp; Approvals
                   </h2>
                   <p className="text-slate-500 text-[11px]">
-                    Tasks assigned to {currentUser.name} as {profile.title}
+                    Tasks assigned to {profile.title}
                   </p>
                 </div>
               </div>
@@ -516,7 +1168,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
                     <div className="flex items-start gap-3 min-w-0">
                       <button
                         onClick={() => toggleTask(task.id)}
-                        className="mt-0.5 text-slate-400 hover:text-[#0078d4] shrink-0 transition"
+                        className="mt-0.5 text-slate-400 hover:text-[#0078d4] shrink-0 transition cursor-pointer"
                         title={isDone ? 'Mark as incomplete' : 'Mark as complete'}
                       >
                         {isDone ? (
@@ -553,7 +1205,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
 
                     <button
                       onClick={() => onNavigateTab(task.targetTab)}
-                      className="shrink-0 flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-[#EFF6FC] text-[#0F6CBD] border border-[#C7E0F4] rounded text-xs font-semibold shadow-2xs transition"
+                      className="shrink-0 flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-[#EFF6FC] text-[#0F6CBD] border border-[#C7E0F4] rounded text-xs font-semibold shadow-2xs transition cursor-pointer"
                     >
                       <span>{task.actionLabel}</span>
                       <ArrowRight className="w-3 h-3" />
@@ -572,7 +1224,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
                   Role Quick Workspaces
                 </h3>
                 <p className="text-slate-500 text-[11px]">
-                  Direct access to everyday modules and functions for {currentUser.role}
+                  Direct access to everyday modules and functions for {profile.roleKey}
                 </p>
               </div>
               <span className="text-[10px] text-slate-400 font-mono">
@@ -587,7 +1239,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
                   <button
                     key={idx}
                     onClick={() => onNavigateTab(sc.tab)}
-                    className="flex items-start gap-2.5 p-3 rounded-lg border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:border-[#0078d4] hover:shadow-xs transition-all text-left group"
+                    className="flex items-start gap-2.5 p-3 rounded-lg border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:border-[#0078d4] hover:shadow-xs transition-all text-left group cursor-pointer"
                   >
                     <div className="p-2 bg-white rounded-md border border-slate-200 group-hover:border-[#0078d4]/40 group-hover:text-[#0078d4] text-slate-700 shadow-2xs shrink-0">
                       <ScIcon className="w-4 h-4" />
@@ -712,13 +1364,13 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
               <div className="flex items-center gap-2 pt-1">
                 <button
                   onClick={() => onNavigateTab('general')}
-                  className="flex-1 py-1.5 bg-[#0078d4] hover:bg-[#0060aa] text-white rounded font-semibold text-xs transition text-center shadow-2xs"
+                  className="flex-1 py-1.5 bg-[#0078d4] hover:bg-[#0060aa] text-white rounded font-semibold text-xs transition text-center shadow-2xs cursor-pointer"
                 >
                   Open Job Card
                 </button>
                 <button
                   onClick={() => onNavigateTab('projects')}
-                  className="px-2.5 py-1.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded font-semibold text-xs transition"
+                  className="px-2.5 py-1.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded font-semibold text-xs transition cursor-pointer"
                   title="Switch or register new job"
                 >
                   All Jobs
@@ -735,11 +1387,11 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
                 <span>Enact360 Copilot Assistant</span>
               </div>
               <p className="text-purple-800 text-[11px] leading-relaxed">
-                Copilot is active for your role ({currentUser.role}). It continuously audits takeoff quantities, unit rates, and variation orders in real time.
+                Copilot is active for your role ({profile.roleKey}). It continuously audits takeoff quantities, unit rates, and variation orders in real time.
               </p>
               <button
                 onClick={onOpenAIWorkspace}
-                className="w-full py-1.5 bg-purple-700 hover:bg-purple-800 text-white rounded font-semibold text-xs transition flex items-center justify-center gap-1.5 shadow-xs"
+                className="w-full py-1.5 bg-purple-700 hover:bg-purple-800 text-white rounded font-semibold text-xs transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
                 <span>Open Agentic AI Workspace</span>

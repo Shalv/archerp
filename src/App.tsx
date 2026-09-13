@@ -29,7 +29,6 @@ import {
 } from './types/erp';
 
 import { D365Shell } from './components/D365Shell';
-import { D365CommandBar } from './components/D365CommandBar';
 import { D365JobCard } from './components/D365JobCard';
 import { D365FactBoxPane } from './components/D365FactBoxPane';
 import { D365InspectDataModal } from './components/D365InspectDataModal';
@@ -43,7 +42,6 @@ import { LoginPortalModal } from './components/LoginPortalModal';
 import { SystemStatusModal } from './components/SystemStatusModal';
 import { AuditLogsModal } from './components/AuditLogsModal';
 import { exportJobPlanningLinesToExcel } from './utils/excelExport';
-import { JourneyWorkflowBar } from './components/JourneyWorkflowBar';
 import { CostTraceabilityMatrixView } from './components/CostTraceabilityMatrixView';
 import { AgenticAIActionCenter } from './components/AgenticAIActionCenter';
 import { FullJourneyModulesView } from './components/FullJourneyModulesView';
@@ -51,6 +49,8 @@ import { MandatoryReportsHubView } from './components/MandatoryReportsHubView';
 import { TimesheetManagementView } from './components/TimesheetManagementView';
 import { ResourceDeploymentView } from './components/ResourceDeploymentView';
 import { ProjectManagementHubView } from './components/ProjectManagementHubView';
+import { LeftSidebarMenu } from './components/LeftSidebarMenu';
+import { RoleCenterDashboardView } from './components/RoleCenterDashboardView';
 import { getStoredUsers, saveStoredUsers, INITIAL_ERP_USERS, getActiveSessionUser, saveActiveSession, clearActiveSession } from './data/defaultUsers';
 import { getSyntheticDemoProject } from './server/syntheticDemo';
 import { DEFAULT_MASTER_RATES } from './server/mockMasters';
@@ -73,7 +73,7 @@ export default function App() {
   const [budgetSummary, setBudgetSummary] = useState<CostBudgetSummary | null>(null);
 
   // D365 State: Active navigation tab, selected line item, FactBox visibility, inspect modal
-  const [activeTab, setActiveTab] = useState<string>('architecture');
+  const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [selectedItem, setSelectedItem] = useState<BOQItem | null>(null);
   const [isFactBoxOpen, setIsFactBoxOpen] = useState(true);
   const [isInspectOpen, setIsInspectOpen] = useState(false);
@@ -86,6 +86,10 @@ export default function App() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [profileModalTab, setProfileModalTab] = useState<'profile' | 'security'>('security');
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
+
+  // Left Sidebar Menu State (All 30+ ERP modules accessible from the left sidebar)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const handleOpenProfile = (tab: 'profile' | 'security' = 'security') => {
     setProfileModalTab(tab);
@@ -700,49 +704,15 @@ export default function App() {
         onOpenProfile={handleOpenProfile}
         activeTab={activeTab === 'architecture' ? 'drawings' : activeTab}
         onNavigateTab={tab => setActiveTab(tab === 'architecture' ? 'drawings' : tab)}
+        isSidebarCollapsed={isSidebarCollapsed}
+        onToggleSidebar={() => setIsSidebarCollapsed(prev => !prev)}
+        onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
+        onExportToExcel={handleExportToExcel}
+        onToggleFactBox={() => setIsFactBoxOpen(!isFactBoxOpen)}
+        isFactBoxOpen={isFactBoxOpen}
       />
 
-      {/* 2. COMMAND BAR / ACTION RIBBON (Contextual to Job Card) */}
-      {['general', 'boq', 'budget', 'quotation', 'survey'].includes(activeTab) && (
-        <D365CommandBar
-          activeProject={activeProject}
-          currentUser={currentUser}
-          onGenerateAIBOQ={handleGenerateAIBOQ}
-          onCopilotTakeoff={handleGenerateAIBOQ}
-          isGeneratingAI={isGeneratingAI}
-          isGeneratingCopilot={isGeneratingAI}
-          onApproveBaseline={handleApproveBaseline}
-          onRecalculateBudget={() => {
-            if (activeProject) loadBudgetSummary(activeProject.id);
-            showToast('Budget ledger recalculated.');
-            setActiveTab('budget');
-          }}
-          onGenerateQuotation={() => {
-            handleGenerateQuotation('STANDARD');
-            setActiveTab('quotation');
-          }}
-          onExportToExcel={handleExportToExcel}
-          onPrint={() => window.print()}
-          onPrintQuotation={() => window.print()}
-          onToggleFactBox={() => setIsFactBoxOpen(!isFactBoxOpen)}
-          isFactBoxOpen={isFactBoxOpen}
-          onOpenInspectData={() => setIsInspectOpen(true)}
-          onInspectPage={() => setIsInspectOpen(true)}
-          onResetDemo={handleResetDemo}
-          activeTab={activeTab}
-          onNavigateTab={tab => setActiveTab(tab)}
-        />
-      )}
-
-      {/* 2.5 ARCHITECTURAL JOURNEY PIPELINE BAR & QUICK TRACEABILITY */}
-      <JourneyWorkflowBar
-        activeTab={activeTab}
-        onSelectTab={(tab) => setActiveTab(tab)}
-        onOpenAIWorkspace={() => setActiveTab('ai_workspace')}
-        pendingAISuggestionsCount={9}
-      />
-
-      {/* 3. TOAST NOTIFICATION */}
+      {/* 2. TOAST NOTIFICATION */}
       {toastMessage && (
         <div className="fixed bottom-4 right-4 z-50 animate-in fade-in slide-in-from-bottom-3 duration-200">
           <div className={`flex items-center gap-2 rounded px-3.5 py-2.5 text-xs font-semibold shadow-lg border ${
@@ -762,11 +732,41 @@ export default function App() {
         </div>
       )}
 
-      {/* 4. MAIN WORKSPACE (D365 DOCUMENT CANVAS + FACTBOX PANE) */}
+      {/* 4. MAIN WORKSPACE (LEFT SIDEBAR MENU + D365 DOCUMENT CANVAS + FACTBOX PANE) */}
       <div className="erp-workspace flex-1 flex min-w-0">
+        {/* Left Sidebar Menu: Lists all 26+ modules hierarchically as requested */}
+        <LeftSidebarMenu
+          activeTab={activeTab === 'architecture' ? 'drawings' : activeTab}
+          onNavigateTab={tab => setActiveTab(tab === 'architecture' ? 'drawings' : tab)}
+          activeProject={activeProject}
+          projects={projects}
+          onSelectProject={handleSelectProject}
+          currentUser={currentUser}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed(prev => !prev)}
+          isMobileOpen={isMobileSidebarOpen}
+          onCloseMobile={() => setIsMobileSidebarOpen(false)}
+          onOpenAuditLogs={() => setAuditLogsOpen(true)}
+          onOpenInspectData={() => setIsInspectOpen(true)}
+          onOpenStatusModal={() => setStatusModalOpen(true)}
+          onOpenProfile={handleOpenProfile}
+        />
+
         {/* Main Document Body */}
         <main className="erp-main flex-1 min-w-0 p-3 sm:p-4 md:p-5">
-          {activeTab === 'users' ? (
+          {activeTab === 'dashboard' || activeTab === 'role_center' ? (
+            <RoleCenterDashboardView
+              currentUser={currentUser}
+              allUsers={users}
+              onSwitchUser={handleSelectUser}
+              activeProject={activeProject}
+              projects={projects}
+              onSelectProject={handleSelectProject}
+              budgetSummary={budgetSummary}
+              onNavigateTab={(tab) => setActiveTab(tab)}
+              onOpenAIWorkspace={() => setActiveTab('ai_workspace')}
+            />
+          ) : activeTab === 'users' ? (
             <UserMasterSetupView
               users={users}
               currentUser={currentUser}

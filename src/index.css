@@ -17,7 +17,8 @@ body {
 
 .erp-app {
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .erp-app :where(.flex, .grid) > :where(div, section, article, main, form, label) {
@@ -33,10 +34,6 @@ body {
   max-width: 100%;
 }
 
-.erp-app :where(button) {
-  white-space: normal;
-}
-
 .erp-app button > svg {
   flex-shrink: 0;
 }
@@ -50,16 +47,32 @@ body {
   min-width: 0;
 }
 
-.erp-app :where(h1, h2, h3, h4, p, label) {
-  overflow-wrap: anywhere;
-}
-
 .erp-workspace {
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 .erp-main {
-  width: 0;
+  flex: 1 1 0%;
+  min-width: 0;
+  width: 100%;
+}
+
+/* Professional ERP Table & Pill Rules: prevents awkward character wrapping */
+.erp-app table th {
+  white-space: nowrap;
+}
+
+.erp-app td.numeric,
+.erp-app th.numeric,
+.erp-app [data-numeric="true"] {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.erp-app .badge-pill,
+.erp-app .tag-pill {
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .erp-factbox {

@@ -546,36 +546,36 @@ export const D365JobCard: React.FC<D365JobCardProps> = ({
                 <span className="text-[11px] text-[#605E5C]">Ref: Skyline_1402_Architectural_FloorPlan_RevB.pdf</span>
               </div>
               <div className="overflow-x-auto border border-[#E1DFDD] rounded">
-                <table className="w-full text-left text-xs border-collapse">
+                <table className="w-full min-w-[920px] text-left text-xs border-collapse">
                   <thead className="bg-[#F3F2F1] text-[#323130] font-semibold border-b border-[#E1DFDD]">
                     <tr>
-                      <th className="p-2 border-r border-[#E1DFDD]">Room Space</th>
-                      <th className="p-2 border-r border-[#E1DFDD]">Type</th>
-                      <th className="p-2 border-r border-[#E1DFDD]">Dimensions (L × W × H)</th>
-                      <th className="p-2 border-r border-[#E1DFDD] text-right">Carpet Area</th>
-                      <th className="p-2 border-r border-[#E1DFDD]">Floor Finish Spec</th>
-                      <th className="p-2">Ceiling &amp; Joinery Scope</th>
+                      <th className="p-2.5 border-r border-[#E1DFDD] whitespace-nowrap">Room Space</th>
+                      <th className="p-2.5 border-r border-[#E1DFDD] whitespace-nowrap">Type</th>
+                      <th className="p-2.5 border-r border-[#E1DFDD] whitespace-nowrap">Dimensions (L × W × H)</th>
+                      <th className="p-2.5 border-r border-[#E1DFDD] text-right whitespace-nowrap">Carpet Area</th>
+                      <th className="p-2.5 border-r border-[#E1DFDD] whitespace-nowrap">Floor Finish Spec</th>
+                      <th className="p-2.5 whitespace-nowrap">Ceiling &amp; Joinery Scope</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#EDEBE9]">
                     {(project.requirement?.rooms || []).map((room: any, idx) => (
                       <tr key={idx} className="hover:bg-[#FAF9F8]">
-                        <td className="p-2 font-semibold text-[#201F1E] border-r border-[#EDEBE9]">
+                        <td className="p-2.5 font-semibold text-[#201F1E] border-r border-[#EDEBE9] whitespace-nowrap">
                           {room.name}
                         </td>
-                        <td className="p-2 text-[#605E5C] border-r border-[#EDEBE9]">
+                        <td className="p-2.5 text-[#605E5C] border-r border-[#EDEBE9] whitespace-nowrap">
                           {room.roomType || room.zone || 'General'}
                         </td>
-                        <td className="p-2 font-mono text-[#201F1E] border-r border-[#EDEBE9]">
+                        <td className="p-2.5 font-mono text-[#201F1E] border-r border-[#EDEBE9] whitespace-nowrap">
                           {room.lengthFt} ft × {room.widthFt} ft × {room.heightFt || 10.5} ft
                         </td>
-                        <td className="p-2 text-right font-mono font-semibold text-[#201F1E] border-r border-[#EDEBE9]">
+                        <td className="p-2.5 text-right font-mono font-semibold text-[#201F1E] border-r border-[#EDEBE9] whitespace-nowrap">
                           {room.areaSqFt || room.carpetAreaSqFt || Math.round(room.lengthFt * room.widthFt)} sq.ft
                         </td>
-                        <td className="p-2 text-[#323130] border-r border-[#EDEBE9]">
+                        <td className="p-2.5 text-[#323130] border-r border-[#EDEBE9]">
                           {room.flooringFinish || room.existingCondition || 'Vitrified / Italian Marble'}
                         </td>
-                        <td className="p-2 text-[#323130]">
+                        <td className="p-2.5 text-[#323130]">
                           {room.falseCeilingType || 'Acoustic Gypsum False Ceiling'} {room.doorsWindows ? `• ${room.doorsWindows}` : ''}
                         </td>
                       </tr>
@@ -731,30 +731,30 @@ export const D365JobCard: React.FC<D365JobCardProps> = ({
 
             {/* High-density D365 Table */}
             <div className="overflow-x-auto border border-[#E1DFDD] rounded max-h-[550px] overflow-y-auto">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead className="sticky top-0 bg-[#F3F2F1] text-[#323130] font-semibold border-b border-[#E1DFDD] z-10">
+              <table className="w-full min-w-[1420px] text-left text-xs border-collapse">
+                <thead className="sticky top-0 bg-[#F3F2F1] text-[#323130] font-semibold border-b border-[#E1DFDD] z-10 select-none">
                   <tr>
-                    <th className="p-2 border-r border-[#E1DFDD] w-10 text-center">#</th>
-                    <th className="p-2 border-r border-[#E1DFDD] w-14">Type</th>
-                    <th className="p-2 border-r border-[#E1DFDD] w-24">Item No.</th>
-                    <th className="p-2 border-r border-[#E1DFDD] w-32">Trade</th>
-                    <th className="p-2 border-r border-[#E1DFDD] w-32">Room / Zone</th>
-                    <th className="p-2 border-r border-[#E1DFDD]">Description &amp; Specifications</th>
-                    <th className="p-2 border-r border-[#E1DFDD] w-48">Formula Derivation</th>
-                    <th className="p-2 border-r border-[#E1DFDD] text-right w-14">Unit</th>
-                    <th className="p-2 border-r border-[#E1DFDD] text-right w-16">Base Qty</th>
-                    <th className="p-2 border-r border-[#E1DFDD] text-right w-14">Waste %</th>
-                    <th className="p-2 border-r border-[#E1DFDD] text-right w-16">Billable</th>
+                    <th className="p-2.5 border-r border-[#E1DFDD] w-14 text-center whitespace-nowrap">#</th>
+                    <th className="p-2.5 border-r border-[#E1DFDD] w-16 whitespace-nowrap">Type</th>
+                    <th className="p-2.5 border-r border-[#E1DFDD] w-28 whitespace-nowrap">Item No.</th>
+                    <th className="p-2.5 border-r border-[#E1DFDD] w-40 whitespace-nowrap">Trade</th>
+                    <th className="p-2.5 border-r border-[#E1DFDD] w-36 whitespace-nowrap">Room / Zone</th>
+                    <th className="p-2.5 border-r border-[#E1DFDD] min-w-[320px] whitespace-nowrap">Description &amp; Specifications</th>
+                    <th className="p-2.5 border-r border-[#E1DFDD] w-56 whitespace-nowrap">Formula Derivation</th>
+                    <th className="p-2.5 border-r border-[#E1DFDD] text-right w-16 whitespace-nowrap">Unit</th>
+                    <th className="p-2.5 border-r border-[#E1DFDD] text-right w-24 whitespace-nowrap">Base Qty</th>
+                    <th className="p-2.5 border-r border-[#E1DFDD] text-right w-20 whitespace-nowrap">Waste %</th>
+                    <th className="p-2.5 border-r border-[#E1DFDD] text-right w-24 whitespace-nowrap">Billable</th>
                     {!isClient && (
                       <>
-                        <th className="p-2 border-r border-[#E1DFDD] text-right w-20">Unit Cost</th>
-                        <th className="p-2 border-r border-[#E1DFDD] text-right w-24">Line Cost</th>
-                        <th className="p-2 border-r border-[#E1DFDD] text-right w-16">Margin %</th>
+                        <th className="p-2.5 border-r border-[#E1DFDD] text-right w-28 whitespace-nowrap">Unit Cost</th>
+                        <th className="p-2.5 border-r border-[#E1DFDD] text-right w-28 whitespace-nowrap">Line Cost</th>
+                        <th className="p-2.5 border-r border-[#E1DFDD] text-right w-20 whitespace-nowrap">Margin %</th>
                       </>
                     )}
-                    <th className="p-2 border-r border-[#E1DFDD] text-right w-20">Unit Price</th>
-                    <th className="p-2 border-r border-[#E1DFDD] text-right w-24">Line Amount</th>
-                    <th className="p-2 text-center w-16">Actions</th>
+                    <th className="p-2.5 border-r border-[#E1DFDD] text-right w-28 whitespace-nowrap">Unit Price</th>
+                    <th className="p-2.5 border-r border-[#E1DFDD] text-right w-28 whitespace-nowrap">Line Amount</th>
+                    <th className="p-2.5 text-center w-20 whitespace-nowrap">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#EDEBE9]">
@@ -772,81 +772,81 @@ export const D365JobCard: React.FC<D365JobCardProps> = ({
                             : 'hover:bg-[#FAF9F8]'
                         }`}
                       >
-                        <td className="p-2 text-center font-mono text-[#8A8886] border-r border-[#EDEBE9]">
+                        <td className="p-2.5 text-center font-mono text-[#8A8886] border-r border-[#EDEBE9] whitespace-nowrap">
                           {lineNo}
                         </td>
-                        <td className="p-2 text-[#605E5C] border-r border-[#EDEBE9]">
+                        <td className="p-2.5 text-[#605E5C] border-r border-[#EDEBE9] whitespace-nowrap">
                           Item
                         </td>
-                        <td className="p-2 font-mono font-semibold text-[#0F6CBD] border-r border-[#EDEBE9]">
+                        <td className="p-2.5 font-mono font-bold text-[#0F6CBD] border-r border-[#EDEBE9] whitespace-nowrap">
                           {item.itemCode}
                         </td>
-                        <td className="p-2 text-[#201F1E] border-r border-[#EDEBE9]">
-                          <span className="px-1.5 py-0.5 rounded bg-[#FAF9F8] text-[10px] font-medium border border-[#EDEBE9]">
+                        <td className="p-2.5 text-[#201F1E] border-r border-[#EDEBE9] whitespace-nowrap">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded bg-[#FAF9F8] text-[11px] font-medium border border-[#EDEBE9] whitespace-nowrap">
                             {item.trade.replace(/_/g, ' ')}
                           </span>
                         </td>
-                        <td className="p-2 text-[#201F1E] border-r border-[#EDEBE9] truncate max-w-[120px]">
+                        <td className="p-2.5 text-[#201F1E] font-medium border-r border-[#EDEBE9] whitespace-nowrap">
                           {item.roomZone}
                         </td>
-                        <td className="p-2 text-[#201F1E] border-r border-[#EDEBE9]">
-                          <div className="font-semibold text-[#201F1E]">{item.description}</div>
-                          <div className="text-[11px] text-[#605E5C] truncate max-w-sm">
+                        <td className="p-2.5 text-[#201F1E] border-r border-[#EDEBE9] min-w-[300px]">
+                          <div className="font-semibold text-[#201F1E] leading-snug">{item.description}</div>
+                          <div className="text-[11px] text-[#605E5C] mt-0.5 leading-snug">
                             {item.brandGrade} • {item.specification}
                           </div>
                         </td>
-                        <td className="p-2 border-r border-[#EDEBE9]">
-                          <span className="font-mono text-[11px] bg-[#F3F2F1] px-1.5 py-0.5 rounded border border-[#E1DFDD] text-[#201F1E] block truncate max-w-[180px]" title={item.quantityFormula}>
+                        <td className="p-2.5 border-r border-[#EDEBE9] whitespace-nowrap">
+                          <span className="font-mono text-[11px] bg-[#F3F2F1] px-2 py-1 rounded border border-[#E1DFDD] text-[#201F1E] inline-block whitespace-nowrap" title={item.quantityFormula}>
                             {item.quantityFormula || 'Standard allowance'}
                           </span>
                         </td>
-                        <td className="p-2 text-right font-mono text-[#605E5C] border-r border-[#EDEBE9]">
+                        <td className="p-2.5 text-right font-mono text-[#605E5C] border-r border-[#EDEBE9] whitespace-nowrap">
                           {item.unit}
                         </td>
-                        <td className="p-2 text-right font-mono text-[#201F1E] border-r border-[#EDEBE9]">
+                        <td className="p-2.5 text-right font-mono text-[#201F1E] border-r border-[#EDEBE9] whitespace-nowrap tabular-nums">
                           {item.baseQuantity}
                         </td>
-                        <td className="p-2 text-right font-mono text-[#8A8886] border-r border-[#EDEBE9]">
+                        <td className="p-2.5 text-right font-mono text-[#8A8886] border-r border-[#EDEBE9] whitespace-nowrap tabular-nums">
                           +{item.wastagePercent}%
                         </td>
-                        <td className="p-2 text-right font-mono font-bold text-[#201F1E] border-r border-[#EDEBE9]">
+                        <td className="p-2.5 text-right font-mono font-bold text-[#201F1E] border-r border-[#EDEBE9] whitespace-nowrap tabular-nums">
                           {item.finalQuantity}
                         </td>
 
                         {!isClient && (
                           <>
-                            <td className="p-2 text-right font-mono text-[#605E5C] border-r border-[#EDEBE9]">
+                            <td className="p-2.5 text-right font-mono text-[#605E5C] border-r border-[#EDEBE9] whitespace-nowrap tabular-nums">
                               ₹{item.unitCost.toLocaleString('en-IN')}
                             </td>
-                            <td className="p-2 text-right font-mono font-semibold text-[#201F1E] border-r border-[#EDEBE9]">
+                            <td className="p-2.5 text-right font-mono font-semibold text-[#201F1E] border-r border-[#EDEBE9] whitespace-nowrap tabular-nums">
                               ₹{item.totalCost.toLocaleString('en-IN')}
                             </td>
-                            <td className="p-2 text-right font-mono text-[#107C41] border-r border-[#EDEBE9]">
+                            <td className="p-2.5 text-right font-mono font-bold text-[#107C41] border-r border-[#EDEBE9] whitespace-nowrap tabular-nums">
                               {item.markupPercent}%
                             </td>
                           </>
                         )}
 
-                        <td className="p-2 text-right font-mono text-[#0F6CBD] font-semibold border-r border-[#EDEBE9]">
+                        <td className="p-2.5 text-right font-mono text-[#0F6CBD] font-semibold border-r border-[#EDEBE9] whitespace-nowrap tabular-nums">
                           ₹{item.sellingRate.toLocaleString('en-IN')}
                         </td>
-                        <td className="p-2 text-right font-mono font-bold text-[#0F6CBD] border-r border-[#EDEBE9]">
+                        <td className="p-2.5 text-right font-mono font-bold text-[#0F6CBD] border-r border-[#EDEBE9] whitespace-nowrap tabular-nums">
                           ₹{item.sellingAmount.toLocaleString('en-IN')}
                         </td>
-                        <td className="p-2 text-center" onClick={e => e.stopPropagation()}>
+                        <td className="p-2.5 text-center whitespace-nowrap" onClick={e => e.stopPropagation()}>
                           <div className="flex items-center justify-center gap-1">
                             {isEstimatorOrAdmin && !isFrozen && (
                               <>
                                 <button
                                   onClick={() => setEditingItem(item)}
-                                  className="p-1 text-[#605E5C] hover:text-[#0F6CBD] rounded hover:bg-white"
+                                  className="p-1 text-[#605E5C] hover:text-[#0F6CBD] rounded hover:bg-white transition"
                                   title="Edit line item"
                                 >
                                   <Edit3 className="h-3.5 w-3.5" />
                                 </button>
                                 <button
                                   onClick={() => onDeleteItem(item.id)}
-                                  className="p-1 text-[#605E5C] hover:text-[#A80000] rounded hover:bg-white"
+                                  className="p-1 text-[#605E5C] hover:text-[#A80000] rounded hover:bg-white transition"
                                   title="Delete line"
                                 >
                                   <Trash2 className="h-3.5 w-3.5" />

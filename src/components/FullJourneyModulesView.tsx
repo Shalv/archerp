@@ -147,7 +147,7 @@ export const FullJourneyModulesView: React.FC<FullJourneyModulesViewProps> = ({
         </div>
 
         {/* Scrollable Module Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pt-3 scrollbar-none">
+        <div className="flex items-center gap-2 overflow-x-auto pt-3 pb-1.5 scrollbar-thin">
           {ERP_MODULES_REGISTRY
             .filter(m => activeStageFilter === 'ALL' || m.stage === activeStageFilter)
             .map(m => {
@@ -162,16 +162,21 @@ export const FullJourneyModulesView: React.FC<FullJourneyModulesViewProps> = ({
                       onNavigateToCoreTab(m.tabKey);
                     }
                   }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs whitespace-nowrap transition-all ${
+                  className={`shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-xs whitespace-nowrap transition-all select-none border ${
                     isSelected
-                      ? 'bg-[#002050] text-white font-semibold shadow-xs'
-                      : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
+                      ? 'bg-[#002050] text-white font-semibold shadow-xs border-[#002050]'
+                      : 'bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 border-slate-200'
                   }`}
                 >
-                  <span className={`w-1.5 h-1.5 rounded-full ${
+                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${
                     m.priority === 'Essential' ? 'bg-emerald-500' : 'bg-blue-400'
                   }`} />
-                  <span>{m.code}: {m.name}</span>
+                  <span className={`font-mono text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0 ${
+                    isSelected ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
+                  }`}>
+                    {m.code}
+                  </span>
+                  <span className="whitespace-nowrap font-medium">{m.name}</span>
                 </button>
               );
             })}

@@ -191,9 +191,9 @@ export const JourneyWorkflowBar: React.FC<JourneyWorkflowBarProps> = ({
                     {step.stageNumber}
                   </div>
 
-                  <div className="leading-tight">
-                    <div className="text-xs">{step.label}</div>
-                    <div className={`text-[9px] ${isStageActive ? 'text-slate-500' : 'text-slate-400'}`}>
+                  <div className="leading-tight whitespace-nowrap">
+                    <div className="text-xs whitespace-nowrap">{step.label}</div>
+                    <div className={`text-[9px] whitespace-nowrap ${isStageActive ? 'text-slate-500' : 'text-slate-400'}`}>
                       {step.subtext}
                     </div>
                   </div>

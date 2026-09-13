@@ -164,22 +164,22 @@ export const RateLibraryView: React.FC<RateLibraryViewProps> = ({
       {/* D365 Master Rates Grid */}
       <div className="bg-white border border-[#E1DFDD] rounded shadow-2xs overflow-hidden">
         <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead className="sticky top-0 bg-[#F3F2F1] text-[#323130] font-semibold border-b border-[#E1DFDD] z-10">
+          <table className="w-full min-w-[1100px] text-left text-xs border-collapse">
+            <thead className="sticky top-0 bg-[#F3F2F1] text-[#323130] font-semibold border-b border-[#E1DFDD] z-10 select-none">
               <tr>
-                <th className="p-2.5 border-r border-[#E1DFDD] w-24">Item No.</th>
-                <th className="p-2.5 border-r border-[#E1DFDD] w-36">Trade Discipline</th>
-                <th className="p-2.5 border-r border-[#E1DFDD]">Description &amp; Specifications</th>
-                <th className="p-2.5 border-r border-[#E1DFDD] w-32">Brand / Grade</th>
-                <th className="p-2.5 border-r border-[#E1DFDD] text-right w-16">Unit</th>
-                <th className="p-2.5 border-r border-[#E1DFDD] text-right w-20">Material</th>
-                <th className="p-2.5 border-r border-[#E1DFDD] text-right w-20">Labour</th>
-                <th className="p-2.5 border-r border-[#E1DFDD] text-right w-20">Equip/Sub</th>
-                <th className="p-2.5 border-r border-[#E1DFDD] text-right w-24">Unit Cost</th>
-                <th className="p-2.5 border-r border-[#E1DFDD] text-right w-16">Margin %</th>
-                <th className="p-2.5 border-r border-[#E1DFDD] text-right w-24">Sell Price</th>
-                <th className="p-2.5 border-r border-[#E1DFDD] text-center w-20">Status</th>
-                {isEstimatorOrAdmin && <th className="p-2.5 text-center w-16">Edit</th>}
+                <th className="p-2.5 border-r border-[#E1DFDD] w-24 whitespace-nowrap">Item No.</th>
+                <th className="p-2.5 border-r border-[#E1DFDD] w-36 whitespace-nowrap">Trade Discipline</th>
+                <th className="p-2.5 border-r border-[#E1DFDD] min-w-[280px] whitespace-nowrap">Description &amp; Specifications</th>
+                <th className="p-2.5 border-r border-[#E1DFDD] w-32 whitespace-nowrap">Brand / Grade</th>
+                <th className="p-2.5 border-r border-[#E1DFDD] text-right w-16 whitespace-nowrap">Unit</th>
+                <th className="p-2.5 border-r border-[#E1DFDD] text-right w-20 whitespace-nowrap">Material</th>
+                <th className="p-2.5 border-r border-[#E1DFDD] text-right w-20 whitespace-nowrap">Labour</th>
+                <th className="p-2.5 border-r border-[#E1DFDD] text-right w-20 whitespace-nowrap">Equip/Sub</th>
+                <th className="p-2.5 border-r border-[#E1DFDD] text-right w-24 whitespace-nowrap">Unit Cost</th>
+                <th className="p-2.5 border-r border-[#E1DFDD] text-right w-16 whitespace-nowrap">Margin %</th>
+                <th className="p-2.5 border-r border-[#E1DFDD] text-right w-24 whitespace-nowrap">Sell Price</th>
+                <th className="p-2.5 border-r border-[#E1DFDD] text-center w-20 whitespace-nowrap">Status</th>
+                {isEstimatorOrAdmin && <th className="p-2.5 text-center w-16 whitespace-nowrap">Edit</th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-[#EDEBE9]">
