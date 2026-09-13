@@ -127,17 +127,15 @@ export function saveStoredUsers(users: UserSession[]): void {
 }
 
 export function getActiveSessionUser(): UserSession | null {
-  if (typeof window === 'undefined') return INITIAL_ERP_USERS[0];
+  if (typeof window === 'undefined') return null;
   try {
     const activeId = localStorage.getItem(STORAGE_ACTIVE_USER_KEY);
+    if (!activeId) return null;
     const users = getStoredUsers();
-    if (activeId) {
-      const user = users.find(u => u.id === activeId || u.username === activeId || u.email === activeId);
-      if (user) return user;
-    }
-    return users[0] || INITIAL_ERP_USERS[0];
+    const user = users.find(u => u.id === activeId || u.username === activeId || u.email === activeId);
+    return user || null;
   } catch (err) {
-    return INITIAL_ERP_USERS[0];
+    return null;
   }
 }
 
@@ -173,6 +171,7 @@ export function authenticateClientUser(identifier: string, passwordAttempt: stri
     ((trimmed === 'client' || trimmed === 'vikram') && u.role === 'CLIENT')
   );
   if (!found) return null;
+  if (found.status && found.status !== 'ACTIVE') return null;
   const expectedPassword = found.password || (
     found.role === 'ADMIN' ? 'Admin@123' :
     found.role === 'ESTIMATOR' ? 'Estimator@123' :
@@ -180,7 +179,7 @@ export function authenticateClientUser(identifier: string, passwordAttempt: stri
     found.role === 'SITE_ENGINEER' ? 'Site@123' :
     'Client@123'
   );
-  if (passwordAttempt === expectedPassword || passwordAttempt === 'Admin@123') {
+  if (passwordAttempt === expectedPassword) {
     return found;
   }
   return null;

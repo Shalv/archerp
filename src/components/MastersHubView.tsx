@@ -49,6 +49,7 @@ interface MastersHubViewProps {
   onDeleteRate?: (id: string) => void;
   onCreateNewProject?: (projectData: any) => void;
   onSelectProject?: (projId: string) => void;
+  onNavigateToCompanySetup?: () => void;
 }
 
 export const MastersHubView: React.FC<MastersHubViewProps> = ({
@@ -58,7 +59,8 @@ export const MastersHubView: React.FC<MastersHubViewProps> = ({
   onAddRate,
   onDeleteRate,
   onCreateNewProject,
-  onSelectProject
+  onSelectProject,
+  onNavigateToCompanySetup
 }) => {
   // Navigation tabs in Masters Hub
   const [activeMasterTab, setActiveMasterTab] = useState<
@@ -618,6 +620,17 @@ export const MastersHubView: React.FC<MastersHubViewProps> = ({
             <Scale className="h-4 w-4" />
             <span>UOM &amp; Tax Rules (GST)</span>
           </button>
+
+          {onNavigateToCompanySetup && (
+            <button
+              onClick={onNavigateToCompanySetup}
+              className="px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-2 transition bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 shadow-2xs"
+              title="Open Company Setup Master (Finance, Multi-State GST, Banking, GL Mapping & Series)"
+            >
+              <Building2 className="h-4 w-4 text-indigo-600" />
+              <span>Company Setup (Finance)</span>
+            </button>
+          )}
 
           <button
             onClick={() => setActiveMasterTab('NEW_PROJECT')}

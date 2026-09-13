@@ -35,8 +35,10 @@ import {
   ResourceMaster,
   WorkPackageMaster,
   UOMMaster,
-  TaxRuleMaster
+  TaxRuleMaster,
+  CompanyFinanceSetupMaster
 } from '../types/erp';
+import { DEFAULT_COMPANY_FINANCE_SETUP } from '../data/defaultCompanySetup';
 import { DEFAULT_MASTER_RATES } from './mockMasters';
 import { 
   DEFAULT_CUSTOMERS, 
@@ -63,6 +65,7 @@ export interface ERPDatabase {
   workPackages: WorkPackageMaster[];
   uomList: UOMMaster[];
   taxRules: TaxRuleMaster[];
+  companySetup?: CompanyFinanceSetupMaster;
   projects: ProjectRecord[];
   auditLogs: AuditLogEntry[];
 }
@@ -198,6 +201,9 @@ class DatabaseService {
           parsed.workPackages = parsed.workPackages || [...DEFAULT_WORK_PACKAGES];
           parsed.uomList = parsed.uomList || [...DEFAULT_UOMS];
           parsed.taxRules = parsed.taxRules || [...DEFAULT_TAX_RULES];
+          if (!parsed.companySetup) {
+            parsed.companySetup = JSON.parse(JSON.stringify(DEFAULT_COMPANY_FINANCE_SETUP));
+          }
 
           // Normalize users with full permissions and fields
           if (Array.isArray(parsed.users)) {
@@ -242,6 +248,7 @@ class DatabaseService {
       workPackages: [...DEFAULT_WORK_PACKAGES],
       uomList: [...DEFAULT_UOMS],
       taxRules: [...DEFAULT_TAX_RULES],
+      companySetup: JSON.parse(JSON.stringify(DEFAULT_COMPANY_FINANCE_SETUP)),
       projects: [getSyntheticDemoProject()],
       auditLogs: [
         {
@@ -918,6 +925,7 @@ class DatabaseService {
       workPackages: [...DEFAULT_WORK_PACKAGES],
       uomList: [...DEFAULT_UOMS],
       taxRules: [...DEFAULT_TAX_RULES],
+      companySetup: JSON.parse(JSON.stringify(DEFAULT_COMPANY_FINANCE_SETUP)),
       projects: [getSyntheticDemoProject()],
       auditLogs: [
         {
@@ -934,6 +942,54 @@ class DatabaseService {
       ]
     };
     this.persist();
+  }
+
+  // --- Company Setup Master (Finance) ---
+  public getCompanySetup(): CompanyFinanceSetupMaster {
+    if (!this.db.companySetup) {
+      this.db.companySetup = JSON.parse(JSON.stringify(DEFAULT_COMPANY_FINANCE_SETUP));
+      this.persist();
+    }
+    return this.db.companySetup;
+  }
+
+  public updateCompanySetup(user: UserSession, updatedSetup: Partial<CompanyFinanceSetupMaster>): CompanyFinanceSetupMaster {
+    const current = this.getCompanySetup();
+    const merged: CompanyFinanceSetupMaster = {
+      ...current,
+      ...updatedSetup,
+      updatedAt: new Date().toISOString(),
+      updatedBy: `${user.name} (${user.roleTitle || user.role})`
+    };
+    this.db.companySetup = merged;
+    this.persist();
+
+    this.logAudit(
+      user,
+      'UPDATE_COMPANY_SETUP',
+      'FINANCE_MASTER',
+      'COMPANY_SETUP_MASTER',
+      `Updated Financial Company Setup: GSTIN ${merged.taxation?.primaryGstin || 'N/A'}, Fiscal Year ${merged.fiscalYear?.currentYearLabel || 'N/A'}, Currency ${merged.fiscalYear?.baseCurrency || 'INR'}.`
+    );
+
+    return merged;
+  }
+
+  public resetCompanySetup(user: UserSession): CompanyFinanceSetupMaster {
+    this.db.companySetup = JSON.parse(JSON.stringify(DEFAULT_COMPANY_FINANCE_SETUP));
+    this.db.companySetup.updatedAt = new Date().toISOString();
+    this.db.companySetup.updatedBy = `${user.name} (Reset to Standard Compliance Defaults)`;
+    this.persist();
+
+    this.logAudit(
+      user,
+      'RESET_COMPANY_SETUP',
+      'FINANCE_MASTER',
+      'COMPANY_SETUP_MASTER',
+      'Reset Company Setup Master to official statutory and financial compliance baseline.'
+    );
+
+    return this.db.companySetup;
   }
 }
 

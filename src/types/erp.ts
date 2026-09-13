@@ -281,6 +281,147 @@ export interface TaxRuleMaster {
   description: string;
 }
 
+// --- Company Setup Master (Finance & General Ledger) ---
+export interface StateGSTRegistration {
+  stateCode: string;
+  stateName: string;
+  gstin: string;
+  address: string;
+  isPrimary: boolean;
+}
+
+export interface BankAccountSetup {
+  id: string;
+  bankName: string;
+  branch: string;
+  accountType: 'CURRENT' | 'ESCROW' | 'STATUTORY_RESERVE' | 'OVERDRAFT';
+  accountNumber: string;
+  ifscCode: string;
+  swiftCode?: string;
+  upiVpa?: string;
+  isDefaultDisbursement: boolean;
+  isDefaultReceipt: boolean;
+  glAccountCode: string;
+  balanceLimit?: number;
+}
+
+export interface DocumentSeriesSetup {
+  id: string;
+  documentType: string;
+  name: string;
+  prefix: string;
+  suffix?: string;
+  startingNumber: number;
+  lastUsedNumber: number;
+  numberPadding: number;
+  previewExample: string;
+}
+
+export interface GLMappingAccount {
+  accountCode: string;
+  accountName: string;
+  category: 'ASSET' | 'LIABILITY' | 'EQUITY' | 'REVENUE' | 'EXPENSE';
+  nature: 'DEBIT' | 'CREDIT';
+  roleInWorkflow: string;
+  isStatutory: boolean;
+}
+
+export interface CompanyFinanceSetupMaster {
+  // 1. Legal Entity & Brand Details
+  companyLegalName: string;
+  tradeName: string;
+  cinNumber: string;
+  panNumber: string;
+  tanNumber: string;
+  udyamRegistrationNumber: string;
+  enterpriseClassification: 'MICRO' | 'SMALL' | 'MEDIUM' | 'LARGE';
+  registeredAddress: {
+    addressLine1: string;
+    addressLine2: string;
+    city: string;
+    state: string;
+    stateCode: string;
+    pincode: string;
+    country: string;
+  };
+  communication: {
+    officialEmail: string;
+    accountsEmail: string;
+    phone: string;
+    website: string;
+  };
+  authorizedSignatory: {
+    name: string;
+    designation: string;
+    dinOrPan: string;
+    email: string;
+  };
+  logoUrl?: string;
+
+  // 2. Fiscal Year & Accounting Controls
+  fiscalYear: {
+    currentYearLabel: string;
+    startDate: string;
+    endDate: string;
+    postingStatus: 'OPEN' | 'CLOSING_IN_PROGRESS' | 'LOCKED';
+    allowPostingFrom: string;
+    allowPostingTo: string;
+    baseCurrency: string;
+    currencySymbol: string;
+    decimalPlaces: number;
+    revenueRecognitionMethod: 'POCM_IND_AS_115' | 'COMPLETED_CONTRACT' | 'BILLING_MILESTONE';
+    costAccountingMethod: 'JOB_ORDER_COSTING' | 'STANDARD_COSTING';
+  };
+
+  // 3. Taxation & Statutory Rates Master
+  taxation: {
+    primaryGstin: string;
+    gstScheme: 'REGULAR' | 'COMPOSITION';
+    stateRegistrations: StateGSTRegistration[];
+    defaultWorksContractGstPercent: number;
+    architecturalServiceSac: string;
+    interiorDecorationSac: string;
+    turnkeyBuildingSac: string;
+    subcontractorTdsRatePercent: number;
+    professionalConsultantTdsRatePercent: number;
+    machineryRentTdsRatePercent: number;
+    bocwLabourCessPercent: number;
+    eInvoicingEnabled: boolean;
+    eWayBillThreshold: number;
+    reverseChargeApplicable: boolean;
+  };
+
+  // 4. Banking & Treasury Setup
+  banking: {
+    accounts: BankAccountSetup[];
+    defaultCreditPeriodDays: number;
+    clientRetentionPercent: number;
+    subcontractorRetentionPercent: number;
+    mobilizationAdvanceStandardPercent: number;
+    interestOnDelayedPaymentPercent: number;
+  };
+
+  // 5. Document Numbering Series Controls
+  numberSeries: DocumentSeriesSetup[];
+
+  // 6. Chart of Accounts & GL Mapping
+  glMappings: GLMappingAccount[];
+
+  // 7. Audit & Financial Governance Guardrails
+  governance: {
+    dualApprovalThresholdAmount: number;
+    budgetOverrunTolerancePercent: number;
+    autoLockBudgetAfterClientApproval: boolean;
+    requirePOForEveryDirectVendorInvoice: boolean;
+    requireMeasurementBookEntryForSubcontractorBilling: boolean;
+    strictCostCenterAllocation: boolean;
+    enableMakerCheckerForDisbursements: boolean;
+  };
+
+  updatedAt: string;
+  updatedBy: string;
+}
+
 export interface RoomSpace {
   id: string;
   name: string;

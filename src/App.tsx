@@ -51,6 +51,7 @@ import { ResourceDeploymentView } from './components/ResourceDeploymentView';
 import { ProjectManagementHubView } from './components/ProjectManagementHubView';
 import { LeftSidebarMenu } from './components/LeftSidebarMenu';
 import { RoleCenterDashboardView } from './components/RoleCenterDashboardView';
+import { CompanySetupMasterView } from './components/CompanySetupMasterView';
 import { getStoredUsers, saveStoredUsers, INITIAL_ERP_USERS, getActiveSessionUser, saveActiveSession, clearActiveSession } from './data/defaultUsers';
 import { getSyntheticDemoProject } from './server/syntheticDemo';
 import { DEFAULT_MASTER_RATES } from './server/mockMasters';
@@ -158,14 +159,21 @@ export default function App() {
       loadUsers();
       loadProjects();
       loadMasterRates();
-      fetch('/api/auth/me', { credentials: 'same-origin' }).then(async r => {
+      fetch('/api/auth/me', { 
+        credentials: 'same-origin',
+        headers: {
+          'x-user-id': restoredSessionUser.id
+        }
+      }).then(async r => {
         if (r.ok) {
           const serverUser = await r.json();
           setCurrentUser(serverUser);
           saveActiveSession(serverUser.id);
+        } else if (r.status === 401 || r.status === 403) {
+          clearActiveSession();
+          setAuthenticated(false);
+          setIsLoginModalOpen(true);
         }
-        // If the server session is missing (404/401), keep trusting the local session -
-        // it hasn't expired, so there's no reason to log the user out.
       }).catch(() => { /* offline or API unavailable: keep the restored session */ });
       return;
     }
@@ -785,6 +793,7 @@ export default function App() {
               onUpdateRate={handleUpdateMasterRate}
               onAddRate={handleAddMasterRate}
               onDeleteRate={handleDeleteMasterRate}
+              onNavigateToCompanySetup={() => setActiveTab('company_setup')}
               onCreateNewProject={(newProj) => {
                 setProjects(prev => [newProj, ...prev]);
                 setActiveProject(newProj);
@@ -799,6 +808,12 @@ export default function App() {
                   setActiveTab('general');
                 }
               }}
+            />
+          ) : activeTab === 'company_setup' || activeTab === 'company_finance' ? (
+            <CompanySetupMasterView
+              currentUser={currentUser}
+              onNavigateToTab={(tab) => setActiveTab(tab)}
+              onOpenAuditLogs={() => setAuditLogsOpen(true)}
             />
           ) : activeTab === 'projects' ? (
             <ProjectsRegisterView

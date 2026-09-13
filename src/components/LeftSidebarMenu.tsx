@@ -24,6 +24,7 @@ import {
   AlertCircle,
   Receipt,
   TrendingUp,
+  Landmark,
   Key,
   Shield,
   Smile,
@@ -440,6 +441,16 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
           code: 'M20',
           badge: 'Cash Flow',
           badgeColor: 'bg-blue-50 text-blue-700'
+        },
+        {
+          id: 'company_setup',
+          tabKey: 'company_setup',
+          name: 'Company Setup Master (Finance)',
+          shortDesc: 'Legal entity, multi-state GST, GL & banking',
+          icon: Landmark,
+          code: 'M29',
+          badge: 'Finance Setup',
+          badgeColor: 'bg-indigo-50 text-indigo-700 font-semibold'
         }
       ]
     },

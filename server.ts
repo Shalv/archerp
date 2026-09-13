@@ -72,10 +72,9 @@ export async function createApp(isServerless: boolean = false) {
           }
         }
       }
-      // Safe default for dev preview if session cookie is blocked in iframe
-      return dbService.getUserById('USR-DIR-01');
+      return null;
     } catch { 
-      return dbService.getUserById('USR-DIR-01'); 
+      return null; 
     }
   };
   const getUserFromReq = (req: Request): UserSession => {
@@ -536,6 +535,36 @@ export async function createApp(isServerless: boolean = false) {
       uomList: dbService.getUOMs(),
       taxRules: dbService.getTaxRules()
     });
+  });
+
+  // --- Company Setup Master (Finance) ---
+  app.get('/api/masters/company-setup', (req: Request, res: Response) => {
+    try {
+      const setup = dbService.getCompanySetup();
+      res.json(setup);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Failed to fetch company setup master.' });
+    }
+  });
+
+  app.put('/api/masters/company-setup', (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const updated = dbService.updateCompanySetup(user, req.body);
+      res.json(updated);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Failed to update company setup master.' });
+    }
+  });
+
+  app.post('/api/masters/company-setup/reset', (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const resetData = dbService.resetCompanySetup(user);
+      res.json(resetData);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Failed to reset company setup master.' });
+    }
   });
 
   // --- 4. Projects & CRM ---

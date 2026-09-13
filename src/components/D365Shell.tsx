@@ -173,6 +173,7 @@ export const D365Shell: React.FC<D365ShellProps> = ({
     { title: 'Site Survey & Spatial Dimensions', category: 'Pages', action: () => handleNavigate('survey') },
     { title: 'Cost Accounting & Overhead Budget Sheet', category: 'Pages', action: () => handleNavigate('budget') },
     { title: 'Customer Sales Quotation & Payment Milestones', category: 'Pages', action: () => handleNavigate('quotation') },
+    { title: 'Company Setup Master (Finance) - Legal Entity, Multi-State GST, Bank Accounts, Number Series & GL Mappings', category: 'Finance Setup', action: () => handleNavigate('company_setup') },
     { title: 'User Administration & Security Role Assignment (Table 2000000120 User)', category: 'Administration', action: () => handleNavigate('users') },
     { title: 'Audit Trail & Enterprise System Telemetry', category: 'Reports', action: () => onOpenAuditLogs() },
     { title: 'Inspect Pages and Data (Ctrl+Alt+F1)', category: 'Tools', action: () => onOpenInspectData() },
@@ -383,6 +384,19 @@ export const D365Shell: React.FC<D365ShellProps> = ({
                 </div>
                 <div className="p-1.5 hover:bg-[#F3F2F1] rounded text-[#605E5C] cursor-not-allowed">
                   <span>Build Storys Turnkey Sandbox</span>
+                </div>
+                <div className="pt-2 mt-1 border-t border-[#EDEBE9]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCompanyDropdownOpen(false);
+                      handleNavigate('company_setup');
+                    }}
+                    className="w-full text-left p-1.5 hover:bg-[#EFF6FC] text-[#0F6CBD] font-semibold rounded flex items-center justify-between text-[11px] transition"
+                  >
+                    <span>Company Setup Master (Finance)</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </button>
                 </div>
               </ViewportMenu>
             )}
