@@ -4,7 +4,6 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import ArchitectureWorkspace from './arch/App';
 import { 
   Building2, 
   Sparkles, 
@@ -49,6 +48,9 @@ import { CostTraceabilityMatrixView } from './components/CostTraceabilityMatrixV
 import { AgenticAIActionCenter } from './components/AgenticAIActionCenter';
 import { FullJourneyModulesView } from './components/FullJourneyModulesView';
 import { MandatoryReportsHubView } from './components/MandatoryReportsHubView';
+import { TimesheetManagementView } from './components/TimesheetManagementView';
+import { ResourceDeploymentView } from './components/ResourceDeploymentView';
+import { ProjectManagementHubView } from './components/ProjectManagementHubView';
 import { getStoredUsers, saveStoredUsers, INITIAL_ERP_USERS, getActiveSessionUser, saveActiveSession, clearActiveSession } from './data/defaultUsers';
 import { getSyntheticDemoProject } from './server/syntheticDemo';
 import { DEFAULT_MASTER_RATES } from './server/mockMasters';
@@ -682,21 +684,8 @@ export default function App() {
   }
 
   return (
-    <div className="erp-app min-h-screen bg-[#F3F2F1] text-[#201F1E] flex flex-col font-sans selection:bg-[#0F6CBD]/20">
-      <div className="suite-switcher flex flex-wrap items-center gap-2 px-4 py-2 bg-white border-b border-slate-200">
-        <img 
-          src="/images/buildstorys-logo-icon.png" 
-          alt="Build Storys" 
-          className="h-8 w-8 object-contain"
-          style={{ width: '32px', height: '32px', maxWidth: '32px', maxHeight: '32px', objectFit: 'contain' }}
-        />
-        <strong className="mr-auto text-slate-900">Build Storys Workspace</strong>
-        {currentUser.role !== 'CLIENT' && <button onClick={()=>setActiveTab('architecture')} className={'px-4 py-2 rounded-lg text-sm font-semibold '+(activeTab==='architecture'?'bg-slate-900 text-white':'bg-slate-100 text-slate-700')}>Design & CRM</button>}
-        <button onClick={()=>{setActiveTab('projects');loadProjects();}} className={'px-4 py-2 rounded-lg text-sm font-semibold '+(activeTab!=='architecture'?'bg-slate-900 text-white':'bg-slate-100 text-slate-700')}>ERP & Operations</button>
-      </div>
-      {currentUser.role !== 'CLIENT' && <div style={{display:activeTab==='architecture'?'block':'none'}}><ArchitectureWorkspace currentUser={currentUser} onLogout={handleLogout} onOpenProfile={()=>handleOpenProfile('profile')}/></div>}
-      <div style={{display:activeTab==='architecture'?'none':'contents'}}>
-      {/* 1. TOP DYNAMICS 365 SHELL (Waffle, Tell Me, Environment, Role Center Bar) */}
+    <div className="erp-app min-h-screen bg-[#F8FAFC] text-[#0F172A] flex flex-col font-sans selection:bg-[#0F6CBD]/20">
+      {/* 1. TOP DYNAMICS 365 SHELL (Single Unified ERP Control Center) */}
       <D365Shell
         currentUser={currentUser}
         allUsers={users}
@@ -709,39 +698,41 @@ export default function App() {
         onOpenInspectData={() => setIsInspectOpen(true)}
         onLogout={handleLogout}
         onOpenProfile={handleOpenProfile}
-        activeTab={activeTab}
-        onNavigateTab={tab => setActiveTab(tab)}
+        activeTab={activeTab === 'architecture' ? 'drawings' : activeTab}
+        onNavigateTab={tab => setActiveTab(tab === 'architecture' ? 'drawings' : tab)}
       />
 
-      {/* 2. COMMAND BAR / ACTION RIBBON */}
-      <D365CommandBar
-        activeProject={activeProject}
-        currentUser={currentUser}
-        onGenerateAIBOQ={handleGenerateAIBOQ}
-        onCopilotTakeoff={handleGenerateAIBOQ}
-        isGeneratingAI={isGeneratingAI}
-        isGeneratingCopilot={isGeneratingAI}
-        onApproveBaseline={handleApproveBaseline}
-        onRecalculateBudget={() => {
-          if (activeProject) loadBudgetSummary(activeProject.id);
-          showToast('Budget ledger recalculated.');
-          setActiveTab('budget');
-        }}
-        onGenerateQuotation={() => {
-          handleGenerateQuotation('STANDARD');
-          setActiveTab('quotation');
-        }}
-        onExportToExcel={handleExportToExcel}
-        onPrint={() => window.print()}
-        onPrintQuotation={() => window.print()}
-        onToggleFactBox={() => setIsFactBoxOpen(!isFactBoxOpen)}
-        isFactBoxOpen={isFactBoxOpen}
-        onOpenInspectData={() => setIsInspectOpen(true)}
-        onInspectPage={() => setIsInspectOpen(true)}
-        onResetDemo={handleResetDemo}
-        activeTab={activeTab}
-        onNavigateTab={tab => setActiveTab(tab)}
-      />
+      {/* 2. COMMAND BAR / ACTION RIBBON (Contextual to Job Card) */}
+      {['general', 'boq', 'budget', 'quotation', 'survey'].includes(activeTab) && (
+        <D365CommandBar
+          activeProject={activeProject}
+          currentUser={currentUser}
+          onGenerateAIBOQ={handleGenerateAIBOQ}
+          onCopilotTakeoff={handleGenerateAIBOQ}
+          isGeneratingAI={isGeneratingAI}
+          isGeneratingCopilot={isGeneratingAI}
+          onApproveBaseline={handleApproveBaseline}
+          onRecalculateBudget={() => {
+            if (activeProject) loadBudgetSummary(activeProject.id);
+            showToast('Budget ledger recalculated.');
+            setActiveTab('budget');
+          }}
+          onGenerateQuotation={() => {
+            handleGenerateQuotation('STANDARD');
+            setActiveTab('quotation');
+          }}
+          onExportToExcel={handleExportToExcel}
+          onPrint={() => window.print()}
+          onPrintQuotation={() => window.print()}
+          onToggleFactBox={() => setIsFactBoxOpen(!isFactBoxOpen)}
+          isFactBoxOpen={isFactBoxOpen}
+          onOpenInspectData={() => setIsInspectOpen(true)}
+          onInspectPage={() => setIsInspectOpen(true)}
+          onResetDemo={handleResetDemo}
+          activeTab={activeTab}
+          onNavigateTab={tab => setActiveTab(tab)}
+        />
+      )}
 
       {/* 2.5 ARCHITECTURAL JOURNEY PIPELINE BAR & QUICK TRACEABILITY */}
       <JourneyWorkflowBar
@@ -851,9 +842,31 @@ export default function App() {
               onNavigateTab={(tab) => setActiveTab(tab)}
               onOpenAIWorkspace={() => setActiveTab('ai_workspace')}
             />
-          ) : ['crm', 'contacts', 'drawings', 'materials', 'contracts', 'variations', 'schedule', 'site_execution', 'procurement', 'inventory', 'contractors', 'snags', 'handover', 'portal', 'finance', 'billing', 'documents', 'resources', 'assets', 'compliance', 'modules'].includes(activeTab) && activeProject ? (
+          ) : activeTab === 'timesheets' ? (
+            <TimesheetManagementView
+              project={activeProject || undefined}
+              projects={projects}
+              currentUser={currentUser}
+              onNavigateToTab={(tab) => setActiveTab(tab)}
+            />
+          ) : activeTab === 'resources' ? (
+            <ResourceDeploymentView
+              project={activeProject || undefined}
+              projects={projects}
+              currentUser={currentUser}
+              onNavigateToTab={(tab) => setActiveTab(tab)}
+            />
+          ) : activeTab === 'project_hub' ? (
+            <ProjectManagementHubView
+              project={activeProject || undefined}
+              projects={projects}
+              currentUser={currentUser}
+              onNavigateToTab={(tab) => setActiveTab(tab)}
+            />
+          ) : ['crm', 'contacts', 'drawings', 'materials', 'contracts', 'variations', 'schedule', 'site_execution', 'procurement', 'inventory', 'contractors', 'subcontractors', 'snags', 'compliance', 'handover', 'portal', 'warranty', 'finance', 'billing', 'documents', 'assets', 'modules'].includes(activeTab) && activeProject ? (
             <FullJourneyModulesView
               project={activeProject}
+              currentUser={currentUser}
               initialTab={activeTab === 'modules' ? 'crm' : activeTab}
               onNavigateToCoreTab={(tab) => setActiveTab(tab)}
               onOpenAIWorkspace={() => setActiveTab('ai_workspace')}
@@ -900,7 +913,6 @@ export default function App() {
         />
       </div>
 
-      </div>
       {/* 5. D365 PAGE & DATA INSPECTOR MODAL (Ctrl+Alt+F1) */}
       <D365InspectDataModal
         isOpen={isInspectOpen}

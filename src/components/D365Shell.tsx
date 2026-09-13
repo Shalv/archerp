@@ -30,7 +30,14 @@ import {
   LogIn,
   LogOut,
   Key,
-  BarChart3
+  BarChart3,
+  Clock,
+  FolderKanban,
+  Palette,
+  Truck,
+  HardHat,
+  ClipboardCheck,
+  Award
 } from 'lucide-react';
 import { UserSession, ProjectRecord } from '../types/erp';
 
@@ -120,6 +127,9 @@ export const D365Shell: React.FC<D365ShellProps> = ({
     { title: 'Design & Drawing Management (CAD, 3D Renders, Revisions, Approvals)', category: 'Module 4', action: () => handleNavigate('drawings') },
     { title: 'Material & Finish Selection Palette (Samples, Brands, Approvals)', category: 'Module 5', action: () => handleNavigate('materials') },
     { title: 'Contracts & Work Orders (Retention 5%, DLP, Commercial Terms)', category: 'Module 9', action: () => handleNavigate('contracts') },
+    { title: 'Project Timesheet Management (Employee Logged Hours & Billable Rates)', category: 'Execution & Ops', action: () => handleNavigate('timesheets') },
+    { title: 'Project-Wise Resource Deployment (Carpenters, MEP, Supervisors & Machinery)', category: 'Execution & Ops', action: () => handleNavigate('resources') },
+    { title: 'Project Management & Tasks Hub (Kanban Tasks, Timesheets & Resources)', category: 'Execution & Ops', action: () => handleNavigate('project_hub') },
     { title: 'Site Execution & Daily Progress Reports (DPR, Labour, Photos)', category: 'Module 11', action: () => handleNavigate('site_execution') },
     { title: 'Change Orders & Variations (VO Register, Cost/Schedule Impact)', category: 'Module 12', action: () => handleNavigate('variations') },
     { title: 'Procurement & Purchase Orders (RFQ, Vendor Comparison, POs)', category: 'Module 13', action: () => handleNavigate('procurement') },
@@ -630,6 +640,50 @@ export const D365Shell: React.FC<D365ShellProps> = ({
             )}
           </div>
 
+          {/* TAB: CRM & LEADS */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setNavDropdownOpen(null);
+                handleNavigate('crm');
+              }}
+              className={`px-2.5 py-1 text-xs font-semibold rounded transition flex items-center gap-1.5 ${
+                activeTab === 'crm' || activeTab === 'contacts'
+                  ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
+                  : 'text-[#323130] hover:bg-[#F3F2F1]'
+              }`}
+              title="CRM, Customer Inquiries, Requirement Recording & Leads Pipeline"
+            >
+              <Users className="w-3.5 h-3.5 text-[#0F6CBD]" />
+              <span>CRM & Leads</span>
+              <span className="bg-emerald-50 text-emerald-700 text-[10px] px-1 py-0.2 rounded border border-emerald-200 font-mono font-bold">
+                Leads
+              </span>
+            </button>
+          </div>
+
+          {/* TAB: AI DESIGN STUDIO & 3D */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setNavDropdownOpen(null);
+                handleNavigate('drawings');
+              }}
+              className={`px-2.5 py-1 text-xs font-semibold rounded transition flex items-center gap-1.5 ${
+                activeTab === 'drawings' || activeTab === 'materials'
+                  ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
+                  : 'text-[#323130] hover:bg-[#F3F2F1]'
+              }`}
+              title="AI Design Studio, 3D Photorealistic Renders & GFC Drawings Register"
+            >
+              <Palette className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Design & 3D</span>
+              <span className="bg-indigo-50 text-indigo-700 text-[10px] px-1 py-0.2 rounded border border-indigo-200 font-mono font-bold">
+                Rev B
+              </span>
+            </button>
+          </div>
+
           {/* TAB 2: SITE SURVEY & DIMENSIONS */}
           <div className="relative">
             <div className={`inline-flex items-center rounded text-xs font-semibold transition ${
@@ -987,6 +1041,101 @@ export const D365Shell: React.FC<D365ShellProps> = ({
             )}
           </div>
 
+          {/* TAB: SITE EXECUTION & DPR */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setNavDropdownOpen(null);
+                handleNavigate('site_execution');
+              }}
+              className={`px-2.5 py-1 text-xs font-semibold rounded transition flex items-center gap-1.5 ${
+                activeTab === 'site_execution' || activeTab === 'schedule'
+                  ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
+                  : 'text-[#323130] hover:bg-[#F3F2F1]'
+              }`}
+              title="Site Operations, Daily Progress Reports (DPR), Weather & Labor Counts"
+            >
+              <HardHat className="w-3.5 h-3.5 text-amber-600" />
+              <span>Site Execution (DPR)</span>
+            </button>
+          </div>
+
+          {/* TAB: PROCUREMENT & INVENTORY */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setNavDropdownOpen(null);
+                handleNavigate('procurement');
+              }}
+              className={`px-2.5 py-1 text-xs font-semibold rounded transition flex items-center gap-1.5 ${
+                activeTab === 'procurement' || activeTab === 'inventory'
+                  ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
+                  : 'text-[#323130] hover:bg-[#F3F2F1]'
+              }`}
+              title="Purchase Orders, Vendor POs, GRN Inward & Material Stock"
+            >
+              <Truck className="w-3.5 h-3.5 text-blue-600" />
+              <span>Procurement & POs</span>
+            </button>
+          </div>
+
+          {/* TAB: SUBCONTRACTORS & JOINT MB */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setNavDropdownOpen(null);
+                handleNavigate('contractors');
+              }}
+              className={`px-2.5 py-1 text-xs font-semibold rounded transition flex items-center gap-1.5 ${
+                activeTab === 'contractors' || activeTab === 'subcontractors'
+                  ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
+                  : 'text-[#323130] hover:bg-[#F3F2F1]'
+              }`}
+              title="Subcontractor Work Orders, Joint Measurement Book (MB) & Certification"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5 text-slate-700" />
+              <span>Subcontractors & MB</span>
+            </button>
+          </div>
+
+          {/* TAB: QUALITY & SAFETY NCR */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setNavDropdownOpen(null);
+                handleNavigate('compliance');
+              }}
+              className={`px-2.5 py-1 text-xs font-semibold rounded transition flex items-center gap-1.5 ${
+                activeTab === 'compliance' || activeTab === 'snags'
+                  ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
+                  : 'text-[#323130] hover:bg-[#F3F2F1]'
+              }`}
+              title="Quality Snagging, Non-Conformance Reports (NCR) & Safety PTW"
+            >
+              <ClipboardCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Quality & Safety</span>
+            </button>
+          </div>
+
+          {/* TAB: HANDOVER & WARRANTY */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setNavDropdownOpen(null);
+                handleNavigate('handover');
+              }}
+              className={`px-2.5 py-1 text-xs font-semibold rounded transition flex items-center gap-1.5 ${
+                activeTab === 'handover' || activeTab === 'warranty' || activeTab === 'portal'
+                  ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
+                  : 'text-[#323130] hover:bg-[#F3F2F1]'
+              }`}
+              title="Handover Certificate, Warranty Dossier & Maintenance Helpdesk Tickets"
+            >
+              <Award className="w-3.5 h-3.5 text-amber-500" />
+              <span>Handover & Warranty</span>
+            </button>
+          </div>
+
           {/* TAB 6: MASTER SECTION */}
           <div className="relative">
             <div className={`inline-flex items-center rounded text-xs font-semibold transition ${
@@ -1201,10 +1350,80 @@ export const D365Shell: React.FC<D365ShellProps> = ({
             </button>
           </div>
 
-          {/* TAB: 26 JOURNEY MODULES HUB */}
+          {/* TAB: TIMESHEET MANAGEMENT (PROJECT-BASED) */}
+          <div className="relative shrink-0">
+            <button
+              id="nav-tab-timesheets"
+              onClick={() => {
+                setNavDropdownOpen(null);
+                handleNavigate('timesheets');
+              }}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold transition ${
+                activeTab === 'timesheets'
+                  ? 'bg-[#002050] text-white ring-1 ring-[#002050] font-bold shadow-2xs'
+                  : 'text-[#323130] hover:bg-[#F3F2F1]'
+              }`}
+              title="Employee timesheet logging, stopwatch tracker, billable hours, and project cost allocations"
+            >
+              <Clock className="h-3.5 w-3.5 text-[#0F6CBD]" />
+              <span>Timesheets</span>
+              <span className={`text-[9px] px-1 py-0.2 rounded font-mono font-bold ${
+                activeTab === 'timesheets' ? 'bg-white/20 text-white' : 'bg-[#EFF6FC] text-[#0F6CBD]'
+              }`}>
+                Live
+              </span>
+            </button>
+          </div>
+
+          {/* TAB: RESOURCE DEPLOYMENT (PROJECT-WISE) */}
+          <div className="relative shrink-0">
+            <button
+              id="nav-tab-resources"
+              onClick={() => {
+                setNavDropdownOpen(null);
+                handleNavigate('resources');
+              }}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold transition ${
+                activeTab === 'resources'
+                  ? 'bg-[#107C41] text-white ring-1 ring-[#107C41] font-bold shadow-2xs'
+                  : 'text-[#323130] hover:bg-[#F3F2F1]'
+              }`}
+              title="Project-wise resource deployment matrix for skilled manpower, teams, and machinery shifts"
+            >
+              <Users className="h-3.5 w-3.5 text-[#107C41]" />
+              <span>Resource Matrix</span>
+              <span className={`text-[9px] px-1 py-0.2 rounded font-mono font-bold ${
+                activeTab === 'resources' ? 'bg-white/20 text-white' : 'bg-[#DFF6DD] text-[#107C41]'
+              }`}>
+                Shifts
+              </span>
+            </button>
+          </div>
+
+          {/* TAB: PROJECT MANAGEMENT HUB */}
+          <div className="relative shrink-0">
+            <button
+              id="nav-tab-project-hub"
+              onClick={() => {
+                setNavDropdownOpen(null);
+                handleNavigate('project_hub');
+              }}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold transition ${
+                activeTab === 'project_hub'
+                  ? 'bg-[#5c2d91] text-white ring-1 ring-[#5c2d91] font-bold shadow-2xs'
+                  : 'text-[#323130] hover:bg-[#F3F2F1]'
+              }`}
+              title="Project management hub with Kanban task boards, timesheet tracking, and milestone deliverables"
+            >
+              <FolderKanban className="h-3.5 w-3.5 text-[#5c2d91]" />
+              <span>Project Hub</span>
+            </button>
+          </div>
+
+          {/* TAB: 26+ JOURNEY MODULES HUB */}
           <div className="relative shrink-0" ref={navDropdownOpen === 'modules' ? navDropdownRef : undefined}>
             <div className={`inline-flex items-center rounded text-xs font-semibold transition ${
-              ['crm', 'contacts', 'drawings', 'materials', 'contracts', 'variations', 'schedule', 'site_execution', 'procurement', 'inventory', 'contractors', 'snags', 'handover', 'portal', 'reports', 'modules'].includes(activeTab)
+              ['crm', 'contacts', 'drawings', 'materials', 'contracts', 'variations', 'schedule', 'site_execution', 'procurement', 'inventory', 'contractors', 'snags', 'handover', 'portal', 'reports', 'timesheets', 'resources', 'project_hub', 'modules'].includes(activeTab)
                 ? 'bg-[#EFF6FC] text-[#0F6CBD] ring-1 ring-[#0F6CBD]/30'
                 : 'text-[#323130] hover:bg-[#F3F2F1]'
             }`}>
@@ -1257,6 +1476,18 @@ export const D365Shell: React.FC<D365ShellProps> = ({
                 </button>
 
                 <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase mt-1">4. Commercial & Execution</div>
+                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('timesheets'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E] flex justify-between">
+                  <span>M27: Employee Timesheets & Hours</span>
+                  <span className="text-[10px] text-emerald-600 font-mono">Live Timer</span>
+                </button>
+                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('resources'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E] flex justify-between">
+                  <span>M28: Resource Deployment Matrix</span>
+                  <span className="text-[10px] text-blue-600 font-mono">Shifts</span>
+                </button>
+                <button onClick={() => { setNavDropdownOpen(null); handleNavigate('project_hub'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E] flex justify-between">
+                  <span>M29: Project Hub & Tasks Kanban</span>
+                  <span className="text-[10px] text-purple-600 font-mono">Hub</span>
+                </button>
                 <button onClick={() => { setNavDropdownOpen(null); handleNavigate('contracts'); }} className="w-full text-left px-3 py-1 hover:bg-[#EFF6FC] text-[#201F1E]">
                   M09: Contracts, Retention (5%) & DLP
                 </button>

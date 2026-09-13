@@ -43,7 +43,7 @@ import {
   Download,
   FileCheck2
 } from 'lucide-react';
-import { ProjectRecord, ERPJourneyStage, ERPModuleMeta } from '../types/erp';
+import { ProjectRecord, ERPJourneyStage, ERPModuleMeta, UserSession } from '../types/erp';
 import { 
   ERP_MODULES_REGISTRY, 
   DEMO_CRM_LEADS, 
@@ -58,9 +58,22 @@ import {
 } from '../data/modulesRegistry';
 import { OperationalRegister } from './OperationalRegister';
 import { MandatoryReportsHubView } from './MandatoryReportsHubView';
+import { TimesheetManagementView } from './TimesheetManagementView';
+import { ResourceDeploymentView } from './ResourceDeploymentView';
+import { ProjectManagementHubView } from './ProjectManagementHubView';
+import { EndToEndProcessWorkflowBar } from './EndToEndProcessWorkflowBar';
+import { CRMAndLeadView } from './CRMAndLeadView';
+import { DesignAndDrawingsManagementView } from './DesignAndDrawingsManagementView';
+import { ProcurementAndInventoryView } from './ProcurementAndInventoryView';
+import { SubcontractorAndMeasurementBookView } from './SubcontractorAndMeasurementBookView';
+import { SiteExecutionAndDPRView } from './SiteExecutionAndDPRView';
+import { QualityAndSafetyView } from './QualityAndSafetyView';
+import { HandoverAndWarrantyView } from './HandoverAndWarrantyView';
+import { INITIAL_ERP_USERS } from '../data/defaultUsers';
 
 interface FullJourneyModulesViewProps {
   project: ProjectRecord;
+  currentUser?: UserSession;
   initialTab?: string;
   onNavigateToCoreTab?: (tab: string) => void;
   onOpenAIWorkspace?: () => void;
@@ -68,6 +81,7 @@ interface FullJourneyModulesViewProps {
 
 export const FullJourneyModulesView: React.FC<FullJourneyModulesViewProps> = ({
   project,
+  currentUser = INITIAL_ERP_USERS[0],
   initialTab = 'crm',
   onNavigateToCoreTab,
   onOpenAIWorkspace
@@ -81,6 +95,18 @@ export const FullJourneyModulesView: React.FC<FullJourneyModulesViewProps> = ({
 
   return (
     <div className="space-y-4">
+      {/* 15-Step End-to-End Recommended Process Lifecycle Bar */}
+      <EndToEndProcessWorkflowBar
+        activeTab={activeModuleTab}
+        onNavigateTab={(tab) => {
+          setActiveModuleTab(tab);
+          if (['survey', 'boq', 'budget', 'quotation', 'masters', 'traceability', 'reports'].includes(tab) && onNavigateToCoreTab) {
+            onNavigateToCoreTab(tab);
+          }
+        }}
+        onOpenAIWorkspace={onOpenAIWorkspace}
+      />
+
       {/* Module Hub Navigation Strip */}
       <div className="bg-white border border-[#d2d0ce] rounded shadow-xs p-3">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 border-b border-slate-200 pb-3">
@@ -152,7 +178,70 @@ export const FullJourneyModulesView: React.FC<FullJourneyModulesViewProps> = ({
         </div>
       </div>
 
-      <OperationalRegister key={project.id+activeModuleTab} projectId={project.id} moduleId={activeModuleTab} title={currentModule.name}/>
+      {/* Dynamic Module Component Rendering */}
+      {activeModuleTab === 'crm' || activeModuleTab === 'contacts' ? (
+        <CRMAndLeadView
+          project={project}
+          currentUser={currentUser}
+          onNavigateTab={onNavigateToCoreTab}
+        />
+      ) : activeModuleTab === 'drawings' || activeModuleTab === 'materials' ? (
+        <DesignAndDrawingsManagementView
+          project={project}
+          currentUser={currentUser}
+          onNavigateTab={onNavigateToCoreTab}
+        />
+      ) : activeModuleTab === 'procurement' || activeModuleTab === 'inventory' ? (
+        <ProcurementAndInventoryView
+          project={project}
+          currentUser={currentUser}
+          onNavigateTab={onNavigateToCoreTab}
+        />
+      ) : activeModuleTab === 'contractors' || activeModuleTab === 'subcontractors' ? (
+        <SubcontractorAndMeasurementBookView
+          project={project}
+          currentUser={currentUser}
+          onNavigateTab={onNavigateToCoreTab}
+        />
+      ) : activeModuleTab === 'site_execution' || activeModuleTab === 'schedule' ? (
+        <SiteExecutionAndDPRView
+          project={project}
+          currentUser={currentUser}
+          onNavigateTab={onNavigateToCoreTab}
+        />
+      ) : activeModuleTab === 'snags' || activeModuleTab === 'compliance' ? (
+        <QualityAndSafetyView
+          project={project}
+          currentUser={currentUser}
+          onNavigateTab={onNavigateToCoreTab}
+        />
+      ) : activeModuleTab === 'handover' || activeModuleTab === 'portal' ? (
+        <HandoverAndWarrantyView
+          project={project}
+          currentUser={currentUser}
+          onNavigateTab={onNavigateToCoreTab}
+        />
+      ) : activeModuleTab === 'timesheets' ? (
+        <TimesheetManagementView
+          project={project}
+          currentUser={currentUser}
+          onNavigateToTab={onNavigateToCoreTab}
+        />
+      ) : activeModuleTab === 'resources' ? (
+        <ResourceDeploymentView
+          project={project}
+          currentUser={currentUser}
+          onNavigateToTab={onNavigateToCoreTab}
+        />
+      ) : activeModuleTab === 'project_hub' ? (
+        <ProjectManagementHubView
+          project={project}
+          currentUser={currentUser}
+          onNavigateToTab={onNavigateToCoreTab}
+        />
+      ) : (
+        <OperationalRegister key={project.id+activeModuleTab} projectId={project.id} moduleId={activeModuleTab} title={currentModule.name}/>
+      )}
     </div>
   );
 };

@@ -799,3 +799,317 @@ export interface WarrantyRecord {
   policyNumber: string;
   status: 'ACTIVE' | 'EXPIRED';
 }
+
+// Module 27: Employee Project-Based Timesheet Management
+export interface TimesheetEntry {
+  id: string;
+  projectId: string;
+  projectCode: string;
+  projectName: string;
+  employeeId: string;
+  employeeName: string;
+  employeeRole: string;
+  employeeAvatar?: string;
+  date: string; // YYYY-MM-DD
+  weekNumber: string; // e.g. "W47 2024"
+  dayOfWeek?: string; // "Mon", "Tue", etc.
+  taskId?: string;
+  taskTitle: string;
+  category: 'Design' | 'Onsite' | 'Procurement' | 'Admin' | 'Survey' | 'MEP' | 'Consulting';
+  hours: number;
+  overtimeHours?: number;
+  billable: boolean;
+  billableRate: number; // in INR / hr or currency
+  costRate: number; // in INR / hr
+  totalCost: number;
+  totalBillable: number;
+  description: string;
+  status: 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'REJECTED' | 'INVOICED';
+  approvedBy?: string;
+  approvedAt?: string;
+  rejectionReason?: string;
+  invoiceRef?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Module 28: Resource Deployment Project-Wise (People & Equipment Matrix)
+export interface ResourceDeployment {
+  id: string;
+  resourceId: string;
+  resourceName: string;
+  resourceType: 'EMPLOYEE' | 'EQUIPMENT';
+  roleOrCategory: string; // e.g., 'Team Leader', 'Junior Architect', 'Scanner', 'Furniture Tools'
+  avatar?: string;
+  projectId: string;
+  projectCode: string;
+  projectTitle: string;
+  clientName?: string;
+  taskName: string;
+  date: string; // YYYY-MM-DD
+  startTime: string; // e.g. "07:00 AM"
+  endTime: string; // e.g. "11:00 AM"
+  durationHours: number;
+  shiftLabel?: string; // e.g. "7:00 AM - 11:00 AM - Senior..."
+  colorTheme: 'orange' | 'blue' | 'teal' | 'purple' | 'green' | 'amber' | 'indigo';
+  utilizationPercent: number; // 0 to 100+
+  status: 'CONFIRMED' | 'TENTATIVE' | 'COMPLETED';
+  notes?: string;
+}
+
+// Project Tasks Kanban (Tasks, Timesheets, Schedulers)
+export interface ProjectTask {
+  id: string;
+  projectId: string;
+  projectCode: string;
+  projectName: string;
+  clientName: string;
+  title: string;
+  stage: 'New' | 'Assessment' | 'Ongoing' | 'Customer feedback' | 'Done';
+  category: 'Onsite' | 'Design' | 'Procurement' | 'Admin';
+  assigneeId: string;
+  assigneeName: string;
+  assigneeAvatar: string;
+  plannedHours: string; // e.g. "06:00"
+  loggedHours: string; // e.g. "04:30"
+  checklistTotal: number;
+  checklistCompleted: number;
+  priority: 1 | 2 | 3;
+  isMilestone?: boolean;
+  hasWarning?: boolean;
+  imagePreview?: string;
+  dueDate?: string;
+  description?: string;
+}
+
+// ============================================================================
+// EXTENDED ENTERPRISE SCHEMAS FOR 26-PILLAR COMPLETE LIFECYCLE
+// ============================================================================
+
+// 1. AI-Based Requirement & Design Suggestions (4-5 Project Options)
+export interface AIDesignOption {
+  id: string;
+  projectId: string;
+  optionCode: string; // e.g. "OPT-01-BIOPHILIC"
+  optionName: string; // e.g. "Modern Biophilic Luxury"
+  architecturalStyle: string; // e.g. "Contemporary Minimalist with Italian Marble & Warm Teak"
+  lifestyleProfile: string; // e.g. "Working Executives, Frequent Entertainers, Pet-Friendly"
+  layoutConcept: string; // Open-plan living-dining flow with concealed dry pantry
+  spacePlanningSuggestions: string[];
+  materialRecommendations: {
+    trade: string;
+    specification: string;
+    brandTier: string;
+    durabilityRating: string;
+  }[];
+  sustainabilityFeatures: string[];
+  preliminaryBOQSummary: {
+    civilDemolition: number;
+    flooringMarble: number;
+    carpentryMillwork: number;
+    electricalAutomation: number;
+    paintingFinishes: number;
+    hvacPlumbing: number;
+  };
+  budgetRangeMin: number;
+  budgetRangeMax: number;
+  estimatedTimelineWeeks: number;
+  pros: string[];
+  cons: string[];
+  internalApprovalStatus: 'PENDING_INTERNAL_APPROVAL' | 'INTERNAL_APPROVED' | 'SHARED_WITH_CLIENT' | 'CLIENT_SELECTED';
+  approvedByEstimatorOrLead?: string;
+  approvedDate?: string;
+  internalReviewNotes?: string;
+}
+
+// 2. Subcontractor Measurement Book (MB) Entry
+export interface MeasurementBookEntry {
+  id: string;
+  projectId: string;
+  mbNumber: string; // e.g. "MB-2026-04"
+  workOrderId: string; // SCWO-01
+  contractorName: string;
+  itemCode: string;
+  trade: TradeCategory;
+  description: string;
+  locationRoom: string;
+  measurementFormula: string; // "L: 24ft * W: 12ft"
+  unit: MeasurementUnit;
+  contractRate: number; // ₹ per unit
+  previousQuantity: number;
+  currentQuantity: number;
+  cumulativeQuantity: number;
+  totalCertifiedAmount: number; // currentQuantity * contractRate
+  cumulativeCertifiedAmount: number;
+  siteEngineerVerification: boolean;
+  siteEngineerName: string;
+  consultantApproval: boolean;
+  consultantName: string;
+  certifiedDate: string;
+  status: 'DRAFT_ENTRY' | 'ENGINEER_VERIFIED' | 'APPROVED_FOR_BILLING' | 'DISPUTED';
+  notes?: string;
+}
+
+// 3. Quality Non-Conformance Report (NCR) & Inspection Checklists
+export interface QualityNCRRecord {
+  id: string;
+  projectId: string;
+  ncrCode: string; // NCR-2026-012
+  dateRaised: string;
+  roomZone: string;
+  trade: TradeCategory;
+  severity: 'CRITICAL' | 'MAJOR' | 'MINOR';
+  description: string;
+  rootCause: string;
+  correctiveActionPlan: string;
+  assignedContractorOrTeam: string;
+  reworkCostINR: number;
+  targetClosureDate: string;
+  closureDate?: string;
+  status: 'OPEN' | 'IN_PROGRESS' | 'RE-INSPECTION_PENDING' | 'CLOSED_VERIFIED';
+  inspectedBy: string;
+  photoUrl?: string;
+}
+
+// 4. Safety & Compliance: Permit-To-Work (PTW) & ToolBox Talks
+export interface SafetyPermitToWork {
+  id: string;
+  projectId: string;
+  ptwNumber: string; // PTW-2026-088
+  permitType: 'HOT_WORK' | 'WORKING_AT_HEIGHT' | 'ELECTRICAL_ISOLATION' | 'CONFINED_SPACE' | 'CIVIL_DEMOLITION';
+  locationArea: string;
+  contractorOrCrew: string;
+  hazardsIdentified: string[];
+  mandatoryPrecautions: string[];
+  ppeEquipmentsVerified: string[]; // Safety Harness, Welding Visor, Insulated Gloves, Hard Hat
+  issuedByOfficer: string;
+  receivedBySupervisor: string;
+  validFrom: string;
+  validUntil: string;
+  emergencyContact: string;
+  status: 'ACTIVE_PERMIT' | 'EXPIRED' | 'REVOKED' | 'CLOSED';
+}
+
+// 5. Procurement RFQ & Vendor Comparative Statement
+export interface ProcurementRFQ {
+  id: string;
+  projectId: string;
+  rfqNumber: string; // RFQ-2026-045
+  materialRequisitionId: string;
+  itemDescription: string;
+  trade: TradeCategory;
+  requiredQuantity: number;
+  unit: MeasurementUnit;
+  requiredByDate: string;
+  deliverySiteAddress: string;
+  vendorQuotations: {
+    vendorId: string;
+    vendorName: string;
+    unitRateINR: number;
+    taxPercent: number;
+    totalAmountINR: number;
+    deliveryLeadTimeDays: number;
+    paymentTerms: string;
+    vendorRating: number; // 1 to 5
+    isRecommended: boolean;
+  }[];
+  selectedVendorId?: string;
+  status: 'RFQ_SENT' | 'COMPARISON_READY' | 'PO_ISSUED' | 'CANCELLED';
+}
+
+// 6. Goods Receipt Note (GRN) with Quality Inspection
+export interface GoodsReceiptNote {
+  id: string;
+  projectId: string;
+  grnNumber: string; // GRN-2026-104
+  poNumber: string;
+  vendorName: string;
+  receivedDate: string;
+  challanInvoiceNumber: string;
+  itemsReceived: {
+    itemCode: string;
+    description: string;
+    orderedQty: number;
+    receivedQty: number;
+    acceptedQty: number;
+    rejectedQty: number;
+    rejectionReason?: string;
+    unit: string;
+  }[];
+  qualityInspectionStatus: 'PASSED' | 'CONDITIONALLY_ACCEPTED' | 'REJECTED';
+  inspectorName: string;
+  warehouseStorageLocation: string;
+  notes?: string;
+}
+
+// 7. Equipment & Machinery Asset Record
+export interface MachineryAssetRecord {
+  id: string;
+  assetCode: string; // EQ-2026-01
+  assetName: string; // e.g. "Bosch GLM 150-27 C Laser Distance Measurer"
+  category: 'SURVEY_INSTRUMENT' | 'HEAVY_TOOL' | 'CUTTING_MACHINE' | 'SCAFFOLDING' | 'GENERATOR' | 'AIR_COMPRESSOR';
+  ownership: 'COMPANY_OWNED' | 'RENTED';
+  assignedProjectId: string;
+  assignedProjectCode: string;
+  assignedOperator: string;
+  operatorContact: string;
+  dailyRentalRateINR: number;
+  totalUsageHours: number;
+  fuelConsumptionLiters?: number;
+  lastMaintenanceDate: string;
+  nextServiceDueDate: string;
+  conditionStatus: 'EXCELLENT' | 'OPERATIONAL' | 'MAINTENANCE_REQUIRED' | 'BREAKDOWN';
+  qrCodeTag: string;
+}
+
+// 8. Post-Handover Warranty & AMC Maintenance Ticket
+export interface WarrantyMaintenanceTicket {
+  id: string;
+  projectId: string;
+  projectCode: string;
+  clientName: string;
+  ticketNumber: string; // TKT-2026-009
+  componentAffected: string; // e.g. "Kitchen Island Blum Pull-out runner"
+  issueCategory: 'PLUMBING' | 'CARPENTRY_HARDWARE' | 'ELECTRICAL' | 'PAINT_PEELING' | 'MARBLE_SEALANT';
+  complaintDescription: string;
+  slaTargetHours: number; // e.g. 24 hours
+  reportedDate: string;
+  assignedTechnician: string;
+  technicianPhone: string;
+  resolutionStatus: 'REPORTED' | 'TECHNICIAN_DISPATCHED' | 'PARTS_ORDERED' | 'RESOLVED_SIGNED_OFF';
+  sparesConsumed?: string;
+  warrantyCovered: boolean;
+  costIncurredINR: number;
+  clientRating?: number;
+}
+
+// 9. End-to-End 15-Step Recommended Process Lifecycle Definition
+export type ProcessLifecycleStepId = 
+  | 'LEAD_CAPTURE'
+  | 'CUSTOMER_REQUIREMENT'
+  | 'SITE_SURVEY'
+  | 'DESIGN_OPTIONS'
+  | 'ESTIMATE_BOQ'
+  | 'QUOTATION'
+  | 'CONTRACT_APPROVAL'
+  | 'PROJECT_CREATION'
+  | 'PROCUREMENT'
+  | 'SITE_EXECUTION'
+  | 'MEASUREMENT_BILLING'
+  | 'QUALITY_SAFETY'
+  | 'CLIENT_APPROVAL'
+  | 'HANDOVER'
+  | 'WARRANTY_AMC';
+
+export interface ProcessLifecycleStepMeta {
+  stepNumber: number;
+  id: ProcessLifecycleStepId;
+  name: string;
+  shortLabel: string;
+  description: string;
+  responsibleRole: string;
+  primaryTab: string;
+  keyArtifacts: string;
+  status: 'COMPLETED' | 'IN_PROGRESS' | 'PENDING';
+}
+

@@ -305,6 +305,39 @@ export const ERP_MODULES_REGISTRY: ERPModuleMeta[] = [
     keyFunctionality: 'Mandatory reports hub, financial performance metrics, audit trails, and multi-project portfolio exports.',
     tabKey: 'reports',
     iconName: 'BarChart3'
+  },
+  {
+    id: 27,
+    code: 'M27',
+    name: 'Project Timesheets & Billable Hours',
+    stage: 'EXECUTION_OPS',
+    stageLabel: '5. Execution & Site Ops',
+    priority: 'Essential for execution',
+    keyFunctionality: 'Employee project-based time logging, stopwatch live tracker, overtime/regular hours, billable rates, approval workflows, and CSV export.',
+    tabKey: 'timesheets',
+    iconName: 'Clock'
+  },
+  {
+    id: 28,
+    code: 'M28',
+    name: 'Resource Deployment & Shift Matrix',
+    stage: 'EXECUTION_OPS',
+    stageLabel: '5. Execution & Site Ops',
+    priority: 'Essential for execution',
+    keyFunctionality: 'Project-wise allocation for skilled manpower (carpenters, MEP, supervisors) and machinery/equipment (laser meters, scaffoldings, sprayers).',
+    tabKey: 'resources',
+    iconName: 'Users'
+  },
+  {
+    id: 29,
+    code: 'M29',
+    name: 'Project Management & Tasks Hub',
+    stage: 'EXECUTION_OPS',
+    stageLabel: '5. Execution & Site Ops',
+    priority: 'Essential for execution',
+    keyFunctionality: 'Integrated project hub featuring Kanban task board, timesheet logging, resource allocation, and milestone tracking.',
+    tabKey: 'project_hub',
+    iconName: 'FolderKanban'
   }
 ];
 
