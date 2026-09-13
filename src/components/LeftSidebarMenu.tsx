@@ -595,18 +595,18 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
         <div className="h-12 px-3 flex items-center justify-between border-b border-[#E2E8F0] bg-white shrink-0">
           <div className="flex items-center gap-2 min-w-0">
             <div className="w-7 h-7 rounded bg-[#002050] text-white flex items-center justify-center shrink-0 shadow-xs">
-              <Compass className="w-4 h-4 text-amber-400" />
+              <Building2 className="w-4 h-4 text-amber-400" />
             </div>
             {(!isCollapsed || isMobileOpen) && (
               <div className="min-w-0">
                 <div className="text-xs font-bold text-[#0F172A] tracking-tight flex items-center gap-1.5">
-                  <span>Workflow Sequence</span>
-                  <span className="text-[10px] bg-[#EFF6FC] text-[#0F6CBD] font-mono px-1.5 py-0.2 rounded font-bold border border-[#C7E0F4]">
-                    7 Stages
+                  <span>ERP Modules</span>
+                  <span className="text-[10px] bg-slate-100 text-slate-700 font-mono px-1.5 py-0.2 rounded font-bold border border-slate-200">
+                    {totalModulesCount}
                   </span>
                 </div>
                 <div className="text-[10px] text-[#64748B] truncate">
-                  Enquiry → Design → BOQ → Ops → Handover
+                  BuildStorys Business Central
                 </div>
               </div>
             )}
@@ -720,57 +720,6 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
                   <X className="w-3 h-3" />
                 </button>
               )}
-            </div>
-          </div>
-        )}
-
-        {/* 3.5. 7-STAGE WORKFLOW STEPPER RAIL */}
-        {(!isCollapsed || isMobileOpen) && !searchQuery && (
-          <div className="px-2 pt-2 pb-1.5 border-b border-[#E2E8F0] bg-slate-50/80 shrink-0">
-            <div className="flex items-center justify-between text-[10px] font-semibold text-[#64748B] uppercase tracking-wider mb-1 px-0.5">
-              <span>Sequence</span>
-              <span className="text-[#0F6CBD] font-mono text-[9px]">Stages 1-7</span>
-            </div>
-            <div className="grid grid-cols-7 gap-1 text-center">
-              {[
-                { stage: 1, label: 'CRM', catId: 'stage_1_crm' },
-                { stage: 2, label: 'Design', catId: 'stage_2_design' },
-                { stage: 3, label: 'BOQ', catId: 'stage_3_estimation' },
-                { stage: 4, label: 'Quote', catId: 'stage_4_commercial' },
-                { stage: 5, label: 'Ops', catId: 'stage_5_execution' },
-                { stage: 6, label: 'Bill', catId: 'stage_6_billing' },
-                { stage: 7, label: 'Handover', catId: 'stage_7_handover' },
-              ].map((s) => {
-                const targetCat = categories.find(c => c.id === s.catId);
-                const isStageActive = targetCat?.modules.some(
-                  m =>
-                    m.tabKey === activeTab ||
-                    (m.tabKey === 'general' && activeTab === 'general') ||
-                    (m.tabKey === 'drawings' && activeTab === 'architecture')
-                );
-                return (
-                  <button
-                    key={s.stage}
-                    id={`sidebar-stage-pill-${s.stage}`}
-                    onClick={() => {
-                      setCollapsedCategories(prev => ({ ...prev, [s.catId]: false }));
-                      const el = document.getElementById(`sidebar-cat-${s.catId}`);
-                      if (el) {
-                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      }
-                    }}
-                    title={`Jump to Stage ${s.stage}: ${targetCat?.title || s.label}`}
-                    className={`py-1 px-0.5 rounded flex flex-col items-center transition cursor-pointer ${
-                      isStageActive
-                        ? 'bg-[#0F6CBD] text-white font-bold shadow-xs'
-                        : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
-                    }`}
-                  >
-                    <span className="text-[10px] font-mono leading-none">{s.stage}</span>
-                    <span className="text-[8px] leading-tight truncate max-w-full font-medium">{s.label}</span>
-                  </button>
-                );
-              })}
             </div>
           </div>
         )}

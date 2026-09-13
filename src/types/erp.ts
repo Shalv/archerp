@@ -1061,6 +1061,17 @@ export interface AIDesignOption {
   approvedByEstimatorOrLead?: string;
   approvedDate?: string;
   internalReviewNotes?: string;
+  renderImageUrl?: string;
+  layoutImageUrl?: string;
+  suggestedPalette?: string[];
+  flooringRecommendation?: string;
+  wallTreatment?: string;
+  furnitureStyle?: string;
+  lightingStyle?: string;
+  materialSuggestion?: string;
+  clientActionStatus?: 'NONE' | 'LIKED' | 'SHORTLISTED' | 'MODIFIED' | 'REJECTED' | 'QUOTATION_REQUESTED' | 'DISCUSSION_SCHEDULED';
+  clientModificationNotes?: string;
+  discussionScheduleDate?: string;
 }
 
 // 2. Subcontractor Measurement Book (MB) Entry
