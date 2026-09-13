@@ -34,9 +34,11 @@ import {
   Edit3,
   AlertTriangle,
   UserPlus,
-  KeyRound
+  KeyRound,
+  FolderKanban,
+  Briefcase
 } from 'lucide-react';
-import { UserSession, UserRole, UserPermissions, ROLE_DEFAULT_PERMISSIONS } from '../types/erp';
+import { UserSession, UserRole, UserPermissions, ROLE_DEFAULT_PERMISSIONS, ProjectRecord } from '../types/erp';
 import { ERP_MODULES_REGISTRY } from '../data/modulesRegistry';
 
 interface UserMasterSetupViewProps {
@@ -46,7 +48,8 @@ interface UserMasterSetupViewProps {
   onSaveUser: (user: UserSession) => Promise<boolean>;
   onDeleteUser: (userId: string, permanent?: boolean) => Promise<boolean>;
   onSwitchUser: (user: UserSession) => void;
-  onOpenProfile?: (initialTab?: 'profile' | 'security') => void;
+  onOpenProfile?: (initialTab?: 'profile' | 'security' | 'work') => void;
+  projects?: ProjectRecord[];
 }
 
 export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
@@ -56,7 +59,8 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
   onSaveUser,
   onDeleteUser,
   onSwitchUser,
-  onOpenProfile
+  onOpenProfile,
+  projects = []
 }) => {
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<string>('ALL');
@@ -84,9 +88,17 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
   const [formAllowedModules, setFormAllowedModules] = useState<string[]>([]);
   const [formAssignedProjects, setFormAssignedProjects] = useState<string[]>(['PROJ-SKYLINE-1402']);
   const [formNotes, setFormNotes] = useState('');
-  const [activeSetupTab, setActiveSetupTab] = useState<'GENERAL' | 'PERMISSIONS' | 'MODULES' | 'SECURITY'>('GENERAL');
+  const [activeSetupTab, setActiveSetupTab] = useState<'GENERAL' | 'SECURITY' | 'PERMISSIONS' | 'MODULES' | 'ALLOCATION'>('GENERAL');
   const [isSaving, setIsSaving] = useState(false);
   const [feedbackToast, setFeedbackToast] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
+  // Fallback projects if none passed
+  const availableProjects: Array<{ id: string; projectCode?: string; title: string; clientName: string; stage?: string }> = 
+    projects && projects.length > 0 ? projects : [
+      { id: 'PROJ-SKYLINE-1402', projectCode: 'PRJ-SKYLINE-1402', title: 'Skyline Penthouse Luxury Interiors', clientName: 'Vikram Malhotra', stage: 'EXECUTION_ONGOING' },
+      { id: 'PROJ-MALABAR-0801', projectCode: 'PRJ-MALABAR-0801', title: 'Malabar Coastal Villa Renovation', clientName: 'Ananya Deshmukh', stage: 'APPROVED_BUDGET' },
+      { id: 'PROJ-ECO-2204', projectCode: 'PRJ-ECO-2204', title: 'Ecospace Office Tower Fit-out', clientName: 'Horizon Tech Park Ltd', stage: 'CONTRACT_AWARDED' }
+    ];
 
   const isAdmin = currentUser.role === 'ADMIN' || currentUser.permissions?.canManageUsers;
 
@@ -492,6 +504,7 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
                 <th className="py-2.5 px-3 whitespace-nowrap">Security Role</th>
                 <th className="py-2.5 px-3 whitespace-nowrap">Status</th>
                 <th className="py-2.5 px-3 whitespace-nowrap">Commercial Permissions</th>
+                <th className="py-2.5 px-3 whitespace-nowrap">Allocated Projects &amp; Work</th>
                 <th className="py-2.5 px-3 whitespace-nowrap">Module Access</th>
                 <th className="py-2.5 px-3 text-right whitespace-nowrap">Actions (Login / Edit / Delete)</th>
               </tr>
@@ -499,7 +512,7 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
             <tbody className="divide-y divide-[#EDEBE9]">
               {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-[#605E5C]">
+                  <td colSpan={9} className="py-12 text-center text-[#605E5C]">
                     <Users className="w-10 h-10 mx-auto text-[#C8C6C4] mb-2" />
                     <div className="font-semibold text-sm text-[#201F1E]">No user records found</div>
                     <p className="text-xs text-[#605E5C] mt-1 max-w-sm mx-auto">
@@ -593,6 +606,29 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
                             </span>
                           )}
                         </div>
+                      </td>
+
+                      <td className="py-2.5 px-3">
+                        <div className="flex flex-wrap items-center gap-1 max-w-[210px]">
+                          {user.assignedProjectIds && user.assignedProjectIds.length > 0 ? (
+                            user.assignedProjectIds.map((pid) => (
+                              <span key={pid} className="font-mono text-[9px] bg-[#EFF6FC] text-[#0F6CBD] px-1.5 py-0.5 rounded border border-[#C7E0F4] font-bold">
+                                {pid.replace('PROJ-', '')}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="text-[10px] text-[#8A8886] italic">Skyline Default</span>
+                          )}
+                        </div>
+                        {user.notes ? (
+                          <div className="text-[10px] text-[#605E5C] truncate max-w-[200px] mt-0.5" title={user.notes}>
+                            {user.notes}
+                          </div>
+                        ) : (
+                          <div className="text-[10px] text-[#A19F9D] truncate max-w-[200px] mt-0.5">
+                            {user.roleTitle || user.department}
+                          </div>
+                        )}
                       </td>
 
                       <td className="py-2.5 px-3">
@@ -752,6 +788,16 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
                 }`}
               >
                 4. 26 Module Access Control
+              </button>
+              <button
+                onClick={() => setActiveSetupTab('ALLOCATION')}
+                className={`py-2 px-3 border-b-2 transition ${
+                  activeSetupTab === 'ALLOCATION'
+                    ? 'border-[#0F6CBD] text-[#0F6CBD] font-bold'
+                    : 'border-transparent text-[#605E5C] hover:text-[#201F1E]'
+                }`}
+              >
+                5. Project &amp; Work Allocation
               </button>
             </div>
 
@@ -1104,6 +1150,93 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
                           </label>
                         );
                       })}
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 5: PROJECT & WORK ALLOCATION */}
+                {activeSetupTab === 'ALLOCATION' && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between pb-2 border-b border-[#EDEBE9]">
+                      <div>
+                        <span className="text-xs font-bold text-[#323130]">Allocated Projects ({availableProjects.length}):</span>
+                        <span className="text-[11px] text-[#605E5C] ml-2">
+                          {formAssignedProjects.length} Projects Allocated
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setFormAssignedProjects(availableProjects.map(p => p.id))}
+                          className="text-xs text-[#0F6CBD] hover:underline font-semibold"
+                        >
+                          Allocate All Projects
+                        </button>
+                        <span className="text-slate-300">|</span>
+                        <button
+                          type="button"
+                          onClick={() => setFormAssignedProjects(['PROJ-SKYLINE-1402'])}
+                          className="text-xs text-[#0F6CBD] hover:underline font-semibold"
+                        >
+                          Primary Only
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-56 overflow-y-auto pr-1">
+                      {availableProjects.map((proj) => {
+                        const isSelected = formAssignedProjects.includes(proj.id);
+                        return (
+                          <label
+                            key={proj.id}
+                            className={`flex items-start gap-2.5 p-2.5 rounded-lg border cursor-pointer transition ${
+                              isSelected ? 'bg-[#EFF6FC]/60 border-[#0F6CBD]' : 'bg-white border-[#EDEBE9] hover:bg-slate-50'
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => {
+                                if (isSelected) {
+                                  if (formAssignedProjects.length > 1) {
+                                    setFormAssignedProjects(formAssignedProjects.filter(id => id !== proj.id));
+                                  }
+                                } else {
+                                  setFormAssignedProjects([...formAssignedProjects, proj.id]);
+                                }
+                              }}
+                              className="mt-0.5 rounded border-[#8A8886] text-[#0F6CBD] focus:ring-[#0F6CBD]"
+                            />
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center justify-between">
+                                <span className="font-mono text-xs font-bold text-[#0F6CBD]">{proj.projectCode || proj.id}</span>
+                                <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded border border-emerald-200">
+                                  {proj.stage || 'ACTIVE'}
+                                </span>
+                              </div>
+                              <div className="text-xs font-bold text-[#201F1E] truncate mt-0.5">{proj.title}</div>
+                              <div className="text-[10px] text-[#605E5C] truncate">Client: {proj.clientName}</div>
+                            </div>
+                          </label>
+                        );
+                      })}
+                    </div>
+
+                    {/* Work Scope / Trade Responsibilities */}
+                    <div className="pt-2 border-t border-[#EDEBE9]">
+                      <label className="block text-xs font-bold text-[#201F1E] mb-1">
+                        Allocated Work Packages, Trade Responsibilities &amp; Site Notes
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={formNotes}
+                        onChange={(e) => setFormNotes(e.target.value)}
+                        className="w-full px-3 py-2 text-xs border border-[#C8C6C4] rounded focus:border-[#0F6CBD] focus:outline-none bg-white font-sans"
+                        placeholder="e.g. Lead Quantity Surveyor for Skyline Penthouse; Responsible for MEP vendor tender evaluations, civil milestone signoffs, and change order approvals..."
+                      />
+                      <span className="text-[10px] text-[#605E5C] mt-0.5 block">
+                        These work assignments and project allocations remain stored permanently with this user's profile and persist across future logins.
+                      </span>
                     </div>
                   </div>
                 )}

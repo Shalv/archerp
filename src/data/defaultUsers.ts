@@ -187,9 +187,57 @@ export function authenticateClientUser(identifier: string, passwordAttempt: stri
 
 export function updateStoredUserPassword(userId: string, newPassword: string): boolean {
   const users = getStoredUsers();
-  const index = users.findIndex(u => u.id === userId);
+  const index = users.findIndex(u => u.id === userId || u.username === userId || u.email === userId);
   if (index === -1) return false;
   users[index] = { ...users[index], password: newPassword };
   saveStoredUsers(users);
   return true;
 }
+
+export function updateOrInsertStoredUser(userToSave: UserSession): UserSession {
+  const users = getStoredUsers();
+  const index = users.findIndex(u => u.id === userToSave.id || (u.email && u.email.toLowerCase() === userToSave.email?.toLowerCase()));
+  
+  let merged: UserSession;
+  if (index >= 0) {
+    const existing = users[index];
+    merged = {
+      ...existing,
+      ...userToSave,
+      // Preserve password if not provided in update
+      password: userToSave.password || existing.password,
+      // Preserve assigned projects if not specified
+      assignedProjectIds: userToSave.assignedProjectIds !== undefined 
+        ? userToSave.assignedProjectIds 
+        : existing.assignedProjectIds,
+      // Preserve allowed modules if not specified
+      allowedModuleIds: userToSave.allowedModuleIds !== undefined 
+        ? userToSave.allowedModuleIds 
+        : existing.allowedModuleIds,
+      // Preserve permissions if not specified
+      permissions: {
+        ...existing.permissions,
+        ...(userToSave.permissions || {})
+      }
+    };
+    users[index] = merged;
+  } else {
+    merged = {
+      ...userToSave,
+      assignedProjectIds: userToSave.assignedProjectIds || ['PROJ-SKYLINE-1402'],
+      status: userToSave.status || 'ACTIVE'
+    };
+    users.push(merged);
+  }
+  
+  saveStoredUsers(users);
+  
+  // If this user is currently active, ensure active session pointer persists
+  const activeId = localStorage.getItem(STORAGE_ACTIVE_USER_KEY);
+  if (activeId === userToSave.id || activeId === userToSave.email || activeId === userToSave.username) {
+    saveActiveSession(merged.id);
+  }
+  
+  return merged;
+}
+

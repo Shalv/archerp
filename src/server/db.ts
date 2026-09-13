@@ -412,8 +412,12 @@ class DatabaseService {
     const identifiers = [userData.email, userData.username];
     if (this.db.users.some(u => u.id !== previous?.id && [u.email.toLowerCase(), u.username?.toLowerCase(), u.id.toLowerCase()].some(v => v && identifiers.includes(v)))) throw new Error('Email or username is already used by another account.');
     if (userData.password && userData.password !== previous?.password) {
-      if (typeof userData.password !== 'string' || userData.password.length < 4) throw new Error('Password must contain at least 4 characters.');
-      userData.password = hashPassword(userData.password);
+      if (userData.password.startsWith('scrypt$')) {
+        // Already hashed securely
+      } else {
+        if (typeof userData.password !== 'string' || userData.password.length < 4) throw new Error('Password must contain at least 4 characters.');
+        userData.password = hashPassword(userData.password);
+      }
     } else userData.password = previous?.password || hashPassword('Build@2026');
     const initials = userData.name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase() || 'US';
     const defaultPerms = ROLE_DEFAULT_PERMISSIONS[userData.role as keyof typeof ROLE_DEFAULT_PERMISSIONS] || ROLE_DEFAULT_PERMISSIONS.ESTIMATOR;
@@ -426,6 +430,14 @@ class DatabaseService {
         ...userData,
         username: userData.username || existing.username || userData.email.split('@')[0],
         password: userData.password || existing.password || 'Build@2026',
+        role: userData.role || existing.role,
+        roleTitle: userData.roleTitle || existing.roleTitle,
+        department: userData.department !== undefined ? userData.department : existing.department,
+        phone: userData.phone !== undefined ? userData.phone : existing.phone,
+        status: userData.status || existing.status || 'ACTIVE',
+        notes: userData.notes !== undefined ? userData.notes : existing.notes,
+        bio: userData.bio !== undefined ? userData.bio : existing.bio,
+        assignedProjectIds: userData.assignedProjectIds !== undefined ? userData.assignedProjectIds : (existing.assignedProjectIds || ['PROJ-SKYLINE-1402']),
         allowedModuleIds: userData.allowedModuleIds !== undefined ? userData.allowedModuleIds : existing.allowedModuleIds,
         avatar: userData.avatar || existing.avatar || initials,
         permissions: {

@@ -85,14 +85,14 @@ export default function App() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(!restoredSessionUser);
   const [authenticated, setAuthenticated] = useState(!!restoredSessionUser);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [profileModalTab, setProfileModalTab] = useState<'profile' | 'security'>('security');
+  const [profileModalTab, setProfileModalTab] = useState<'profile' | 'security' | 'work'>('security');
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
 
   // Left Sidebar Menu State (All 30+ ERP modules accessible from the left sidebar)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
-  const handleOpenProfile = (tab: 'profile' | 'security' = 'security') => {
+  const handleOpenProfile = (tab: 'profile' | 'security' | 'work' = 'security') => {
     setProfileModalTab(tab);
     setIsProfileModalOpen(true);
   };
@@ -199,12 +199,21 @@ export default function App() {
       })
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
-          setUsers(data);
-          saveStoredUsers(data);
+          const stored = getStoredUsers();
+          // Merge with locally preserved passwords & fields so credentials remain for future login
+          const mergedData = data.map((u: UserSession) => {
+            const found = stored.find(s => s.id === u.id || (s.email && s.email.toLowerCase() === u.email.toLowerCase()));
+            return {
+              ...u,
+              ...(found?.password ? { password: found.password } : {})
+            };
+          });
+          setUsers(mergedData);
+          saveStoredUsers(mergedData);
           setCurrentUser(prev => {
-            const updated = data.find((u: UserSession) => u.id === prev.id);
+            const updated = mergedData.find((u: UserSession) => u.id === prev.id);
             if (updated) return updated;
-            const est = data.find((u: UserSession) => u?.role === 'ESTIMATOR') || data[0];
+            const est = mergedData.find((u: UserSession) => u?.role === 'ESTIMATOR') || mergedData[0];
             return est || prev;
           });
         }
@@ -232,13 +241,34 @@ export default function App() {
         });
         if (res.ok) {
           const data = await res.json();
-          showToast(isNew ? `User ${userToSave.name} created successfully` : `User ${userToSave.name} updated successfully`, 'success');
+          showToast(isNew ? `User ${userToSave.name} created successfully` : `User ${userToSave.name} updated & saved successfully`, 'success');
+          
           setUsers(prev => {
-            const next = isNew ? [...prev, data] : prev.map(u => u.id === data.id ? data : u);
+            const existing = prev.find(u => u.id === data.id);
+            const preservedPassword = userToSave.password || existing?.password;
+            const mergedUser: UserSession = {
+              ...existing,
+              ...data,
+              ...(preservedPassword ? { password: preservedPassword } : {})
+            };
+            const next = isNew ? [...prev, mergedUser] : prev.map(u => u.id === data.id ? mergedUser : u);
             saveStoredUsers(next);
             return next;
           });
-          setCurrentUser(prev => prev.id === data.id ? data : prev);
+
+          setCurrentUser(prev => {
+            if (prev.id === data.id) {
+              const preservedPassword = userToSave.password || prev.password;
+              const mergedUser: UserSession = {
+                ...prev,
+                ...data,
+                ...(preservedPassword ? { password: preservedPassword } : {})
+              };
+              saveActiveSession(mergedUser.id);
+              return mergedUser;
+            }
+            return prev;
+          });
           return true;
         }
         const error = await res.json().catch(() => ({}));
@@ -785,6 +815,7 @@ export default function App() {
                 handleSelectUser(u);
               }}
               onOpenProfile={handleOpenProfile}
+              projects={projects}
             />
           ) : activeTab === 'masters' || activeTab === 'rates' ? (
             <MastersHubView
@@ -957,10 +988,23 @@ export default function App() {
           onClose={() => setIsProfileModalOpen(false)}
           currentUser={currentUser}
           initialTab={profileModalTab}
+          projects={projects}
+          onSelectProject={(pid) => handleSelectProject(pid)}
           onUserUpdated={(updated) => {
-            setCurrentUser(updated);
-            setUsers(prev => prev.map(u => u.id === updated.id ? { ...u, ...updated } : u));
-            showToast('Profile and security details updated successfully', 'success');
+            const preservedPassword = updated.password || currentUser.password || users.find(u => u.id === updated.id)?.password;
+            const fullUser: UserSession = {
+              ...currentUser,
+              ...updated,
+              ...(preservedPassword ? { password: preservedPassword } : {})
+            };
+            setCurrentUser(fullUser);
+            setUsers(prev => {
+              const next = prev.map(u => u.id === fullUser.id ? { ...u, ...fullUser } : u);
+              saveStoredUsers(next);
+              return next;
+            });
+            saveActiveSession(fullUser.id);
+            showToast('User profile & allocated work saved for future login', 'success');
           }}
         />
       )}
