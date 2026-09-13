@@ -13,7 +13,7 @@ const PORT = 3000;
 app.use(express.json({ limit: '10mb' }));
 
 // Serve static architectural assets
-app.use('/assets/images', express.static(path.join(process.cwd(), 'src', 'assets', 'images')));
+app.use('/assets/images', express.static(path.join(process.cwd(), 'public', 'assets', 'images')));
 
 // Lazy initialize Gemini client if key is set
 function getGeminiClient(): GoogleGenAI | null {
