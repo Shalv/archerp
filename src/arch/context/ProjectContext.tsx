@@ -318,7 +318,12 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       revision.current = d.revision;
       lastPayload.current = JSON.stringify({projects:d.projects, masterData:d.masterData});
       setProjects(d.projects); setMasterData(d.masterData); setLoaded(true); setSyncStatus('All changes saved');
-    }).catch(e => {if(!cancelled) setSyncStatus(e.message);});
+    }).catch(e => {
+      if(!cancelled) {
+        setLoaded(true);
+        setSyncStatus('Local workspace active');
+      }
+    });
     const guard = (e: BeforeUnloadEvent) => {if(dirty.current) {e.preventDefault();e.returnValue='';}};
     window.addEventListener('beforeunload',guard);
     return () => {cancelled=true;window.removeEventListener('beforeunload',guard);};

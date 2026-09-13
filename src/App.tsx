@@ -57,17 +57,11 @@ export default function App() {
   const [users, setUsers] = useState<UserSession[]>(() => getStoredUsers());
   // Restore a still-valid session (survives page refresh even if the server cookie
   // session doesn't round-trip, e.g. in preview/iframe environments).
-  const restoredSessionUser = null;
+  const restoredSessionUser = getActiveSessionUser();
   const [currentUser, setCurrentUser] = useState<UserSession>(() => {
     if (restoredSessionUser) return restoredSessionUser;
     const all = getStoredUsers();
-    return all.find(u => u.role === 'ADMIN') || all[0] || {
-      id: 'USR-DIR-01',
-      name: 'Aarav Singhania',
-      email: 'aarav@buildstorys.com',
-      role: 'ADMIN',
-      roleTitle: 'Managing Director & Partner'
-    };
+    return all.find(u => u.role === 'ADMIN') || all[0] || INITIAL_ERP_USERS[0];
   });
 
   const [projects, setProjects] = useState<ProjectRecord[]>(() => [getSyntheticDemoProject()]);
@@ -676,12 +670,26 @@ export default function App() {
 
   const activeRev = activeProject?.revisions.find(r => r.id === activeProject.activeRevisionId) || activeProject?.revisions[0];
 
-  if (!authenticated) return <LoginPortalModal isOpen onLoginSuccess={handleLoginSuccess}/>;
+  if (!authenticated) {
+    return (
+      <LoginPortalModal 
+        isOpen 
+        onLoginSuccess={handleLoginSuccess}
+        users={users}
+        currentSessionUser={currentUser}
+      />
+    );
+  }
 
   return (
     <div className="erp-app min-h-screen bg-[#F3F2F1] text-[#201F1E] flex flex-col font-sans selection:bg-[#0F6CBD]/20">
       <div className="suite-switcher flex flex-wrap items-center gap-2 px-4 py-2 bg-white border-b border-slate-200">
-        <img src="/images/buildstorys-logo-icon.png" alt="Build Storys" className="h-8 w-8 object-contain" />
+        <img 
+          src="/images/buildstorys-logo-icon.png" 
+          alt="Build Storys" 
+          className="h-8 w-8 object-contain"
+          style={{ width: '32px', height: '32px', maxWidth: '32px', maxHeight: '32px', objectFit: 'contain' }}
+        />
         <strong className="mr-auto text-slate-900">Build Storys Workspace</strong>
         {currentUser.role !== 'CLIENT' && <button onClick={()=>setActiveTab('architecture')} className={'px-4 py-2 rounded-lg text-sm font-semibold '+(activeTab==='architecture'?'bg-slate-900 text-white':'bg-slate-100 text-slate-700')}>Design & CRM</button>}
         <button onClick={()=>{setActiveTab('projects');loadProjects();}} className={'px-4 py-2 rounded-lg text-sm font-semibold '+(activeTab!=='architecture'?'bg-slate-900 text-white':'bg-slate-100 text-slate-700')}>ERP & Operations</button>

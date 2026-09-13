@@ -49,41 +49,9 @@ html, body, #root { min-width: 0; width: 100%; margin: 0; }
   }
 }
 
-/* Self-contained sign-in layout, independent of workspace grid and modal utilities. */
-.login-overlay { position: fixed; inset: 0; z-index: 200; display: flex; overflow-y: auto; padding: 24px 16px; background: #0b1420; }
-.login-bg-video { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
-.login-bg-scrim { position: fixed; inset: 0; z-index: 1; background: linear-gradient(180deg, #071019cc 0%, #0a1522b3 45%, #060d16e6 100%); }
-.login-close { position: fixed; top: 20px; right: 20px; z-index: 3; padding: 8px; border-radius: 999px; cursor: pointer; color: #fff; background: #ffffff26; backdrop-filter: blur(6px); }
-.login-card { position: relative; z-index: 2; flex: 0 1 460px; width: 100%; min-width: 0; margin: auto 6vw auto auto; background: #ffffffe6; backdrop-filter: blur(18px) saturate(140%); -webkit-backdrop-filter: blur(18px) saturate(140%); border: 1px solid #ffffff4d; border-radius: 20px; box-shadow: 0 30px 80px #00000059; overflow: hidden; }
-.login-brand { display: flex; align-items: center; gap: 12px; padding: 24px 28px; background: #002050e6; color: white; }
-.login-brand > div { min-width: 0; }
-.login-brand-icon { display: grid; place-items: center; flex-shrink: 0; width: 46px; height: 46px; border-radius: 12px; background: #175ba0; }
-.login-brand-logo { flex-shrink: 0; width: 46px; height: 46px; object-fit: contain; background: #ffffff; border-radius: 12px; padding: 4px; }
-.login-brand strong { font-size: 18px; }
-.login-brand p { margin: 4px 0 0; font-size: 12px; color: #c4d9ef; }
-.login-content { padding: 28px; }
-.login-content h1 { font-size: 24px; line-height: 1.3; font-weight: 700; color: #172c46; margin: 0 0 10px; }
-.login-description { font-size: 14px; line-height: 1.6; color: #617083; margin: 0 0 24px; }
-.login-error { display: flex; align-items: flex-start; gap: 10px; background: #fff0f0; border: 1px solid #f4b9b9; color: #a51d2d; border-radius: 10px; padding: 12px; margin-bottom: 20px; font-size: 13px; line-height: 1.5; }
-.login-error svg { flex-shrink: 0; margin-top: 2px; }
-.login-error span { min-width: 0; overflow-wrap: anywhere; }
-.login-form { display: flex; flex-direction: column; gap: 9px; }
-.login-form label { font-size: 13px; font-weight: 600; color: #334155; }
-.login-field { display: flex; align-items: center; gap: 10px; border: 1px solid #c6cfdb; border-radius: 9px; padding: 0 12px; min-height: 48px; margin-bottom: 12px; background: #ffffffb3; }
-.login-field:focus-within { outline: 2px solid #0f6cbd; outline-offset: 2px; }
-.login-field > svg { color: #768396; flex-shrink: 0; }
-.login-field input { width: 100%; min-width: 0; flex: 1; padding: 12px 0; font-size: 16px; border: 0; outline: 0; background: transparent; }
-.login-field button { flex-shrink: 0; padding: 8px 0 8px 4px; cursor: pointer; color: #617083; }
-.login-help { margin: 0 0 12px; font-size: 12px; line-height: 1.5; color: #617083; }
-.login-submit { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px; border-radius: 9px; background: #0f5fa4; color: white; font-size: 15px; font-weight: 600; cursor: pointer; }
-.login-submit:disabled { opacity: .65; cursor: wait; }
-.login-footer { padding: 18px 28px; background: #f8fafccc; border-top: 1px solid #e7ecf3; font-size: 12px; color: #617083; }
-@media(max-width: 900px) { .login-card { margin: auto; } }
-@media(max-width: 480px) { .login-overlay { padding: 12px; } .login-content, .login-brand { padding: 22px 20px; } .login-content h1 { font-size: 22px; } }
-@media (prefers-reduced-motion: reduce) { .login-bg-video { display: none; } .login-overlay { background: #0b1420 url('/videos/login-bg-poster.jpg') center/cover no-repeat; } }
-
 /* Consolidated workspaces */
 .suite-switcher {min-height:56px; flex-shrink:0;}
+.suite-switcher img {width:32px; height:32px; max-width:32px; max-height:32px; object-fit:contain;}
 .suite-switcher + div .h-screen {height:calc(100dvh - 88px);}
 #main-scroll-viewport {min-height:0;}
 #main-scroll-viewport main {overflow-x:auto;}

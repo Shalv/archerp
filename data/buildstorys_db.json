@@ -15,7 +15,7 @@
         "PROJ-SKYLINE-1402"
       ],
       "createdAt": "2026-01-15T09:00:00Z",
-      "lastLoginAt": "2026-09-13T09:19:50.498Z",
+      "lastLoginAt": "2026-09-13T12:49:19.914Z",
       "permissions": {
         "canViewCostAndMargin": true,
         "canApproveBOQ": true,
@@ -32,7 +32,8 @@
         "canApprovePO": true,
         "canCertifyBills": true
       },
-      "password": "scrypt$bc4883d473d6b3d9ac63e9b29edf285f$f4145d9006e1b19dbfeaa23f15c797cfdebb41b0ed2eb12bc9f6bad47452238e4d59f9b8ce1edaa05d467d8211e00eb4fe460612d5cb189f21f83c7c264e848e"
+      "password": "scrypt$bc4883d473d6b3d9ac63e9b29edf285f$f4145d9006e1b19dbfeaa23f15c797cfdebb41b0ed2eb12bc9f6bad47452238e4d59f9b8ce1edaa05d467d8211e00eb4fe460612d5cb189f21f83c7c264e848e",
+      "username": "aarav"
     },
     {
       "id": "USR-EST-01",
@@ -48,7 +49,7 @@
         "PROJ-SKYLINE-1402"
       ],
       "createdAt": "2026-01-15T09:00:00Z",
-      "lastLoginAt": "2026-09-12T04:09:11.580Z",
+      "lastLoginAt": "2026-09-13T12:50:36.025Z",
       "permissions": {
         "canViewCostAndMargin": true,
         "canApproveBOQ": true,
@@ -65,7 +66,8 @@
         "canApprovePO": false,
         "canCertifyBills": true
       },
-      "password": "scrypt$440d2d9c8387e4970f86eb29bda859e9$a9b252d91b0826858afebbf73a937bc1fa7c3fd0d66ac92c16c403ba478c21616a2139a0f27b979b7668b0b81d26abe6b5be23beda5cfd506932fb28338b6704"
+      "password": "scrypt$440d2d9c8387e4970f86eb29bda859e9$a9b252d91b0826858afebbf73a937bc1fa7c3fd0d66ac92c16c403ba478c21616a2139a0f27b979b7668b0b81d26abe6b5be23beda5cfd506932fb28338b6704",
+      "username": "rajesh.qs"
     },
     {
       "id": "USR-PM-01",
@@ -81,7 +83,7 @@
         "PROJ-SKYLINE-1402"
       ],
       "createdAt": "2026-01-15T09:00:00Z",
-      "lastLoginAt": "2026-09-11T17:37:54.105Z",
+      "lastLoginAt": "2026-09-13T12:50:42.701Z",
       "permissions": {
         "canViewCostAndMargin": true,
         "canApproveBOQ": false,
@@ -97,7 +99,9 @@
         "canManageContracts": true,
         "canApprovePO": true,
         "canCertifyBills": true
-      }
+      },
+      "username": "kavita.pm",
+      "password": "scrypt$89aeb9dc692b92054e03397829b704bf$2b8b12b0031038f4528c12af282de82007d53aed4f7802602eae4521c651d9e399e7170df8bc747d7ed291a32fe2374ade79ea0eaf0944f167ab7f47c857c13a"
     },
     {
       "id": "USR-SITE-01",
@@ -113,7 +117,7 @@
         "PROJ-SKYLINE-1402"
       ],
       "createdAt": "2026-01-15T09:00:00Z",
-      "lastLoginAt": "2026-09-11T17:37:54.105Z",
+      "lastLoginAt": "2026-09-13T12:50:47.845Z",
       "permissions": {
         "canViewCostAndMargin": false,
         "canApproveBOQ": false,
@@ -129,7 +133,9 @@
         "canManageContracts": false,
         "canApprovePO": false,
         "canCertifyBills": false
-      }
+      },
+      "username": "ramesh.site",
+      "password": "scrypt$8bdbca6c082d5ae6c48d1aa3c441dc07$03d424ebb0a69369720422700d37c6ef70ae328bc1e672797c28e1f3be7616560b93f71bfaa702e66ad170d41bca5c914d0522c0b8dac87d83a9836dc9065227"
     },
     {
       "id": "USR-CLIENT-01",
@@ -145,7 +151,7 @@
         "PROJ-SKYLINE-1402"
       ],
       "createdAt": "2026-01-15T09:00:00Z",
-      "lastLoginAt": "2026-09-11T17:37:54.105Z",
+      "lastLoginAt": "2026-09-13T12:50:39.480Z",
       "permissions": {
         "canViewCostAndMargin": false,
         "canApproveBOQ": false,
@@ -161,7 +167,9 @@
         "canManageContracts": false,
         "canApprovePO": false,
         "canCertifyBills": false
-      }
+      },
+      "username": "vikram.malhotra",
+      "password": "scrypt$cf6cdab487f71f2e06bec7e891b2e6ec$44a6f6e09c27c1dd548cf143880086fce1caddd2ab8ce8f922b099896a360061d845e31bb39800ca7e60d89939ffcb76536b2e5763c7f32e9b77c8719164c4ee"
     }
   ],
   "masterRates": [
@@ -2047,6 +2055,105 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "LOG-1789303847848-963",
+      "timestamp": "2026-09-13T12:50:47.848Z",
+      "userId": "USR-SITE-01",
+      "userName": "Ramesh Verma",
+      "userRole": "SITE_ENGINEER",
+      "action": "USER_LOGIN",
+      "entityType": "USER_SESSION",
+      "entityId": "USR-SITE-01",
+      "details": "User Ramesh Verma logged in successfully with role SITE_ENGINEER."
+    },
+    {
+      "id": "LOG-1789303842703-455",
+      "timestamp": "2026-09-13T12:50:42.703Z",
+      "userId": "USR-PM-01",
+      "userName": "Kavita Nair",
+      "userRole": "PROJECT_MANAGER",
+      "action": "USER_LOGIN",
+      "entityType": "USER_SESSION",
+      "entityId": "USR-PM-01",
+      "details": "User Kavita Nair logged in successfully with role PROJECT_MANAGER."
+    },
+    {
+      "id": "LOG-1789303839482-60",
+      "timestamp": "2026-09-13T12:50:39.482Z",
+      "userId": "USR-CLIENT-01",
+      "userName": "Vikram & Ananya Malhotra",
+      "userRole": "CLIENT",
+      "action": "USER_LOGIN",
+      "entityType": "USER_SESSION",
+      "entityId": "USR-CLIENT-01",
+      "details": "User Vikram & Ananya Malhotra logged in successfully with role CLIENT."
+    },
+    {
+      "id": "LOG-1789303836027-343",
+      "timestamp": "2026-09-13T12:50:36.027Z",
+      "userId": "USR-EST-01",
+      "userName": "Rajesh Sharma",
+      "userRole": "ESTIMATOR",
+      "action": "USER_LOGIN",
+      "entityType": "USER_SESSION",
+      "entityId": "USR-EST-01",
+      "details": "User Rajesh Sharma logged in successfully with role ESTIMATOR."
+    },
+    {
+      "id": "LOG-1789303834648-54",
+      "timestamp": "2026-09-13T12:50:34.648Z",
+      "userId": "USR-EST-01",
+      "userName": "Rajesh Sharma",
+      "userRole": "ESTIMATOR",
+      "action": "USER_LOGIN",
+      "entityType": "USER_SESSION",
+      "entityId": "USR-EST-01",
+      "details": "User Rajesh Sharma logged in successfully with role ESTIMATOR."
+    },
+    {
+      "id": "LOG-1789303759916-807",
+      "timestamp": "2026-09-13T12:49:19.916Z",
+      "userId": "USR-DIR-01",
+      "userName": "Aarav Singhania",
+      "userRole": "ADMIN",
+      "action": "USER_LOGIN",
+      "entityType": "USER_SESSION",
+      "entityId": "USR-DIR-01",
+      "details": "User Aarav Singhania logged in successfully with role ADMIN."
+    },
+    {
+      "id": "LOG-1789303755167-585",
+      "timestamp": "2026-09-13T12:49:15.167Z",
+      "userId": "USR-DIR-01",
+      "userName": "Aarav Singhania",
+      "userRole": "ADMIN",
+      "action": "USER_LOGIN",
+      "entityType": "USER_SESSION",
+      "entityId": "USR-DIR-01",
+      "details": "User Aarav Singhania logged in successfully with role ADMIN."
+    },
+    {
+      "id": "LOG-1789303502455-450",
+      "timestamp": "2026-09-13T12:45:02.455Z",
+      "userId": "USR-DIR-01",
+      "userName": "Aarav Singhania",
+      "userRole": "ADMIN",
+      "action": "USER_LOGIN",
+      "entityType": "USER_SESSION",
+      "entityId": "USR-DIR-01",
+      "details": "User Aarav Singhania logged in successfully with role ADMIN."
+    },
+    {
+      "id": "LOG-1789303378116-800",
+      "timestamp": "2026-09-13T12:42:58.116Z",
+      "userId": "USR-DIR-01",
+      "userName": "Aarav Singhania",
+      "userRole": "ADMIN",
+      "action": "USER_LOGIN",
+      "entityType": "USER_SESSION",
+      "entityId": "USR-DIR-01",
+      "details": "User Aarav Singhania logged in successfully with role ADMIN."
+    },
     {
       "id": "LOG-1789291190499-845",
       "timestamp": "2026-09-13T09:19:50.499Z",

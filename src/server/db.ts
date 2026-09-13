@@ -206,6 +206,7 @@ class DatabaseService {
               const initials = u.name ? u.name.split(' ').map(part => part[0]).join('').slice(0, 2).toUpperCase() : 'US';
               return {
                 ...u,
+                username: u.username || (u.email ? u.email.split('@')[0] : u.id.toLowerCase()),
                 phone: u.phone || '+91 98000 00000',
                 department: u.department || (u.role === 'ADMIN' ? 'Executive Management' : u.role === 'ESTIMATOR' ? 'Estimating & Commercial' : u.role === 'PROJECT_MANAGER' ? 'Project Operations' : u.role === 'SITE_ENGINEER' ? 'Field Operations' : 'Customer Accounts'),
                 status: u.status || 'ACTIVE',
@@ -337,7 +338,13 @@ class DatabaseService {
     const user = this.db.users.find(u => 
       u.email.toLowerCase() === cleanId || 
       (u.username && u.username.toLowerCase() === cleanId) ||
-      u.id.toLowerCase() === cleanId
+      u.id.toLowerCase() === cleanId ||
+      u.email.toLowerCase().startsWith(cleanId + '@') ||
+      ((cleanId === 'admin' || cleanId === 'administrator' || cleanId === 'aarav' || cleanId === 'aarav.admin') && u.role === 'ADMIN') ||
+      ((cleanId === 'estimator' || cleanId === 'qs' || cleanId === 'rajesh' || cleanId === 'rajesh.qs') && u.role === 'ESTIMATOR') ||
+      ((cleanId === 'pm' || cleanId === 'kavita' || cleanId === 'kavita.pm') && u.role === 'PROJECT_MANAGER') ||
+      ((cleanId === 'site' || cleanId === 'ramesh' || cleanId === 'ramesh.site') && u.role === 'SITE_ENGINEER') ||
+      ((cleanId === 'client' || cleanId === 'vikram' || cleanId === 'vikram.client' || cleanId === 'vikram.malhotra') && u.role === 'CLIENT')
     );
 
     if (!user) {
