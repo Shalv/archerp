@@ -1,7 +1,11 @@
 /**
- * Build Storys ERP - CRM and Lead Management (Pillar 1)
- * Full lifecycle lead capture, qualification pipeline, customer requirements recording,
- * site visit scheduling, stakeholder directory, follow-up timeline, and AI project options.
+ * Build Storys ERP - CRM & Lead Management (Stage 1)
+ * Expert CRM Suite for Architecture & Turnkey Interior Contractors:
+ * - Visual Kanban Deal Pipeline (8 stages with win probability & weighted revenue)
+ * - Comprehensive Deal 360 Workspace (BANT Qualification Matrix, Turnkey Estimator, Omnichannel Comms)
+ * - Advanced Deals List / Table with multi-column filtering & CSV Export
+ * - Executive Sales Analytics & Funnel Dashboard
+ * - Direct Handshake to Project Hub & Site Survey (Pillar 2/3)
  */
 
 import React, { useState } from 'react';
@@ -27,9 +31,25 @@ import {
   Share2,
   FileCheck,
   Send,
-  UserCheck
+  UserCheck,
+  Kanban,
+  Table,
+  BarChart3,
+  Download,
+  SlidersHorizontal,
+  RefreshCw,
+  Users
 } from 'lucide-react';
 import { ProjectRecord, UserSession } from '../types/erp';
+import {
+  CrmLeadExtended,
+  CrmStageId,
+  CRM_STAGES_CONFIG
+} from '../types/crm';
+import { SEED_CRM_LEADS } from '../data/crmSeedData';
+import { CrmKanbanBoard } from './crm/CrmKanbanBoard';
+import { CrmDeal360View } from './crm/CrmDeal360View';
+import { CrmAnalyticsView } from './crm/CrmAnalyticsView';
 
 interface CRMAndLeadViewProps {
   project: ProjectRecord;
@@ -38,841 +58,863 @@ interface CRMAndLeadViewProps {
   onUpdateRequirement?: (req: any) => void;
 }
 
-interface LeadRecord {
-  id: string;
-  leadCode: string;
-  clientName: string;
-  phone: string;
-  email: string;
-  source: 'WEBSITE' | 'WHATSAPP' | 'PHONE_CALL' | 'ARCHITECT_REFERRAL' | 'PORTAL' | 'WALK_IN';
-  projectType: 'RESIDENTIAL' | 'COMMERCIAL' | 'OFFICE' | 'RETAIL' | 'HOSPITALITY';
-  location: string;
-  plotAreaSqFt: number;
-  builtUpAreaSqFt: number;
-  carpetAreaSqFt: number;
-  budgetMinINR: number;
-  budgetMaxINR: number;
-  floorsCount: number;
-  targetTimelineMonths: number;
-  interiorStyle: string;
-  architectPartner?: string;
-  consultantOrBroker?: string;
-  stage: 'NEW_ENQUIRY' | 'QUALIFIED' | 'SITE_VISIT_SCHEDULED' | 'DESIGN_PITCH' | 'ESTIMATION' | 'WON' | 'LOST';
-  qualificationScore: number; // 1 to 100
-  assignedSalesLead: string;
-  nextFollowUpDate: string;
-  lastContactDate: string;
-  siteVisitDate?: string;
-  siteVisitStatus?: 'SCHEDULED' | 'COMPLETED' | 'CANCELLED';
-  siteVisitNotes?: string;
-  communicationLog: {
-    date: string;
-    type: 'CALL' | 'WHATSAPP' | 'EMAIL' | 'MEETING';
-    summary: string;
-    agent: string;
-  }[];
-  aiRecommendationSnippet: string;
-}
-
-const INITIAL_LEADS: LeadRecord[] = [
-  {
-    id: 'LEAD-2026-001',
-    leadCode: 'LD-1402',
-    clientName: 'Vikramaditya Singhania',
-    phone: '+91 98201 44521',
-    email: 'vikram.singhania@apexholding.in',
-    source: 'ARCHITECT_REFERRAL',
-    projectType: 'RESIDENTIAL',
-    location: 'Skyline Towers, Flat 1402, Worli Seaface, Mumbai',
-    plotAreaSqFt: 0,
-    builtUpAreaSqFt: 3650,
-    carpetAreaSqFt: 2850,
-    budgetMinINR: 8500000,
-    budgetMaxINR: 11000000,
-    floorsCount: 1,
-    targetTimelineMonths: 5,
-    interiorStyle: 'Modern Italian Minimalist with Biophilic Balcony & Smart Automation',
-    architectPartner: 'Ar. Sanjay Puri Architects',
-    consultantOrBroker: 'Knight Frank Luxury Residential',
-    stage: 'WON',
-    qualificationScore: 95,
-    assignedSalesLead: 'Rahul Deshmukh (Sr. Relationship Manager)',
-    nextFollowUpDate: '2026-03-20',
-    lastContactDate: '2026-03-12',
-    siteVisitDate: '2026-02-14',
-    siteVisitStatus: 'COMPLETED',
-    siteVisitNotes: 'Laser measurements verified. Non-load bearing wall between dining & study can be demolished.',
-    communicationLog: [
-      { date: '2026-02-10', type: 'CALL', summary: 'Initial intake via Ar. Sanjay referral. Client requested turnkey luxury fitout.', agent: 'Rahul D.' },
-      { date: '2026-02-14', type: 'MEETING', summary: 'Physical site visit conducted with laser disto and moisture meter.', agent: 'Ar. Rajesh S.' },
-      { date: '2026-02-28', type: 'WHATSAPP', summary: 'Sent preliminary 4 AI design options with preliminary budget brackets.', agent: 'Rahul D.' },
-      { date: '2026-03-05', type: 'MEETING', summary: 'Presented BOQ Rev 1 and quotation. Client approved scope with 10% advance.', agent: 'Rahul D.' }
-    ],
-    aiRecommendationSnippet: 'Recommend Option 1: Italian Botticino marble, concealed VRF ducted AC, and acoustic double-glazed balcony partitions.'
-  },
-  {
-    id: 'LEAD-2026-002',
-    leadCode: 'LD-1405',
-    clientName: 'Dr. Ananya Roy & Dr. Debanjan Roy',
-    phone: '+91 98450 11234',
-    email: 'ananya.roy@kemhospital.org',
-    source: 'WEBSITE',
-    projectType: 'RESIDENTIAL',
-    location: 'Parijat Bungalow, Baner Road, Pune',
-    plotAreaSqFt: 4500,
-    builtUpAreaSqFt: 5200,
-    carpetAreaSqFt: 4100,
-    budgetMinINR: 14000000,
-    budgetMaxINR: 17500000,
-    floorsCount: 3,
-    targetTimelineMonths: 8,
-    interiorStyle: 'Contemporary Scandinavian with Warm Oak Timber & Solar Pergola',
-    architectPartner: 'Studio Lotus Pune',
-    consultantOrBroker: 'Self Web Inquiry',
-    stage: 'DESIGN_PITCH',
-    qualificationScore: 88,
-    assignedSalesLead: 'Sneha Kulkarni',
-    nextFollowUpDate: '2026-03-18',
-    lastContactDate: '2026-03-13',
-    siteVisitDate: '2026-03-08',
-    siteVisitStatus: 'COMPLETED',
-    siteVisitNotes: 'G+2 structure. Structural stability certificate obtained. Plumbing shaft needs rerouting.',
-    communicationLog: [
-      { date: '2026-03-02', type: 'WHATSAPP', summary: 'Inquiry received for G+2 Bungalow architecture + turnkey interior.', agent: 'Bot / Sneha K.' },
-      { date: '2026-03-08', type: 'MEETING', summary: 'Site survey done. Soil test report reviewed for exterior deck.', agent: 'Sneha K.' }
-    ],
-    aiRecommendationSnippet: 'Recommend Option 2: Prefab lightweight steel framing for 2nd floor extension to reduce load on foundation.'
-  },
-  {
-    id: 'LEAD-2026-003',
-    leadCode: 'LD-1408',
-    clientName: 'NEXUS Fintech Solutions (CTO Office)',
-    phone: '+91 99002 88765',
-    email: 'facilities@nexusfintech.io',
-    source: 'PORTAL',
-    projectType: 'OFFICE',
-    location: 'Mindspace IT Park, 8th Floor, Airoli, Navi Mumbai',
-    plotAreaSqFt: 0,
-    builtUpAreaSqFt: 12000,
-    carpetAreaSqFt: 9800,
-    budgetMinINR: 22000000,
-    budgetMaxINR: 28000000,
-    floorsCount: 1,
-    targetTimelineMonths: 3,
-    interiorStyle: 'High-Tech Collaborative Workspace with Acoustic Phone Booths & IoT Lighting',
-    architectPartner: 'Space Matrix Mumbai',
-    consultantOrBroker: 'JLL Corporate Solutions',
-    stage: 'ESTIMATION',
-    qualificationScore: 92,
-    assignedSalesLead: 'Rahul Deshmukh',
-    nextFollowUpDate: '2026-03-16',
-    lastContactDate: '2026-03-14',
-    siteVisitDate: '2026-03-10',
-    siteVisitStatus: 'COMPLETED',
-    siteVisitNotes: 'Bare shell handed over by Mindspace. Fire sprinkler approval received from MIDC.',
-    communicationLog: [
-      { date: '2026-03-06', type: 'CALL', summary: 'Received RFP for 120-workstation turnkey office fitout.', agent: 'Rahul D.' },
-      { date: '2026-03-10', type: 'MEETING', summary: 'Joint inspection with Mindspace building manager & JLL consultant.', agent: 'Rahul D.' }
-    ],
-    aiRecommendationSnippet: 'Recommend Fast-Track Modular Partition system to meet aggressive 90-day handover deadline.'
-  },
-  {
-    id: 'LEAD-2026-004',
-    leadCode: 'LD-1412',
-    clientName: 'Rajesh & Meera Singhal',
-    phone: '+91 97112 33445',
-    email: 'rajesh.singhal@rediffmail.com',
-    source: 'WHATSAPP',
-    projectType: 'RESIDENTIAL',
-    location: 'Lodha Parkside, Lower Parel, Mumbai',
-    plotAreaSqFt: 0,
-    builtUpAreaSqFt: 1850,
-    carpetAreaSqFt: 1420,
-    budgetMinINR: 4200000,
-    budgetMaxINR: 5500000,
-    floorsCount: 1,
-    targetTimelineMonths: 4,
-    interiorStyle: 'Neo-Classical Luxury with Gold Brass Accents & Herringbone Parquet',
-    architectPartner: 'Direct Client',
-    consultantOrBroker: 'None',
-    stage: 'SITE_VISIT_SCHEDULED',
-    qualificationScore: 78,
-    assignedSalesLead: 'Sneha Kulkarni',
-    nextFollowUpDate: '2026-03-17',
-    lastContactDate: '2026-03-12',
-    siteVisitDate: '2026-03-17',
-    siteVisitStatus: 'SCHEDULED',
-    siteVisitNotes: 'Scheduled for 11:00 AM on Tuesday. Society security gate pass arranged.',
-    communicationLog: [
-      { date: '2026-03-11', type: 'WHATSAPP', summary: 'Client requested portfolio and site survey for 3BHK interior renovation.', agent: 'Sneha K.' }
-    ],
-    aiRecommendationSnippet: 'Recommend standardizing joinery with pre-laminated marine ply to optimize ₹50 Lakhs budget.'
-  }
-];
-
 export const CRMAndLeadView: React.FC<CRMAndLeadViewProps> = ({
   project,
   currentUser,
   onNavigateTab,
   onUpdateRequirement
 }) => {
-  const [leads, setLeads] = useState<LeadRecord[]>(INITIAL_LEADS);
-  const [selectedLead, setSelectedLead] = useState<LeadRecord>(INITIAL_LEADS[0]);
+  const [leads, setLeads] = useState<CrmLeadExtended[]>(SEED_CRM_LEADS);
+  const [selectedLead, setSelectedLead] = useState<CrmLeadExtended>(SEED_CRM_LEADS[0]);
+  const [viewMode, setViewMode] = useState<'kanban' | 'list' | 'deal_360' | 'analytics'>('kanban');
+  
+  // Search & Filter State
   const [searchTerm, setSearchTerm] = useState('');
   const [stageFilter, setStageFilter] = useState<string>('ALL');
-  const [activeTab, setActiveTab] = useState<'pipeline' | 'details' | 'new_lead' | 'site_visit' | 'ai_options'>('details');
+  const [sourceFilter, setSourceFilter] = useState<string>('ALL');
+  const [showNewLeadModal, setShowNewLeadModal] = useState(false);
+  const [targetModalStage, setTargetModalStage] = useState<CrmStageId>('NEW_ENQUIRY');
 
   // New Lead Form State
-  const [newLead, setNewLead] = useState<Partial<LeadRecord>>({
+  const [newLead, setNewLead] = useState<Partial<CrmLeadExtended>>({
     clientName: '',
+    companyName: '',
     phone: '',
     email: '',
     source: 'WEBSITE',
     projectType: 'RESIDENTIAL',
     location: '',
-    builtUpAreaSqFt: 2500,
-    budgetMinINR: 5000000,
-    budgetMaxINR: 7500000,
+    city: 'Mumbai',
+    builtUpAreaSqFt: 2800,
+    carpetAreaSqFt: 2200,
+    dealValueINR: 7500000,
+    targetFinishTier: 'Premium Luxury',
     targetTimelineMonths: 4,
-    interiorStyle: 'Modern Contemporary',
+    interiorStyle: 'Modern Contemporary Turnkey',
     stage: 'NEW_ENQUIRY'
   });
 
-  const filteredLeads = leads.filter(l => {
-    const matchesSearch = l.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  // Calculate Pipeline Metrics
+  const totalPipelineINR = leads.reduce((acc, l) => acc + (l.dealValueINR || 0), 0);
+  const weightedPipelineINR = leads.reduce((acc, l) => {
+    const stage = CRM_STAGES_CONFIG.find((s) => s.id === l.stage);
+    return acc + (l.dealValueINR * (stage ? stage.probability : 0)) / 100;
+  }, 0);
+  const wonDealsCount = leads.filter((l) => l.stage === 'WON').length;
+  const activeOpportunities = leads.filter((l) => l.stage !== 'WON' && l.stage !== 'LOST');
+
+  const formatINR = (val: number) => {
+    if (val >= 10000000) {
+      return `₹${(val / 10000000).toFixed(2)} Cr`;
+    }
+    return `₹${(val / 100000).toFixed(1)} L`;
+  };
+
+  // Filtered Leads
+  const filteredLeads = leads.filter((l) => {
+    const matchesSearch =
+      l.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       l.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      l.leadCode.toLowerCase().includes(searchTerm.toLowerCase());
+      l.leadCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (l.companyName && l.companyName.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesStage = stageFilter === 'ALL' || l.stage === stageFilter;
-    return matchesSearch && matchesStage;
+    const matchesSource = sourceFilter === 'ALL' || l.source === sourceFilter;
+    return matchesSearch && matchesStage && matchesSource;
   });
 
-  const handleConvertLeadToProject = (lead: LeadRecord) => {
+  // Handle Stage Movement
+  const handleMoveLeadStage = (leadId: string, newStage: CrmStageId) => {
+    const stageConfig = CRM_STAGES_CONFIG.find((s) => s.id === newStage);
+    setLeads((prev) =>
+      prev.map((l) => {
+        if (l.id === leadId) {
+          const updated: CrmLeadExtended = {
+            ...l,
+            stage: newStage,
+            lastContactDate: new Date().toISOString().split('T')[0],
+            communicationLog: [
+              {
+                id: `log-${Date.now()}`,
+                date: new Date().toISOString().split('T')[0],
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                type: 'NOTE',
+                summary: `Stage updated to ${stageConfig?.label || newStage}`,
+                outcome: 'Pipeline stage advanced',
+                agent: currentUser.name
+              },
+              ...l.communicationLog
+            ]
+          };
+          if (selectedLead.id === leadId) {
+            setSelectedLead(updated);
+          }
+          return updated;
+        }
+        return l;
+      })
+    );
+  };
+
+  // Handle Update Lead
+  const handleUpdateLead = (updatedLead: CrmLeadExtended) => {
+    setLeads((prev) => prev.map((l) => (l.id === updatedLead.id ? updatedLead : l)));
+    setSelectedLead(updatedLead);
+  };
+
+  // Handle Handshake: Convert Lead to ERP Project & Survey
+  const handleConvertLeadToProject = (leadToConvert: CrmLeadExtended) => {
     if (onUpdateRequirement) {
       onUpdateRequirement({
-        customerName: lead.clientName,
-        customerPhone: lead.phone,
-        customerEmail: lead.email,
-        projectSiteAddress: lead.location,
-        projectType: lead.projectType,
-        plotAreaSqFt: lead.plotAreaSqFt,
-        builtUpAreaSqFt: lead.builtUpAreaSqFt,
-        carpetAreaSqFt: lead.carpetAreaSqFt,
-        floorsCount: lead.floorsCount,
-        customerBudgetMin: lead.budgetMinINR,
-        customerBudgetMax: lead.budgetMaxINR,
-        preferredDesignStyle: lead.interiorStyle,
-        surveyNotes: lead.siteVisitNotes || 'Generated from CRM Lead Qualification'
+        customerName: leadToConvert.clientName,
+        customerPhone: leadToConvert.phone,
+        customerEmail: leadToConvert.email,
+        projectSiteAddress: `${leadToConvert.location}, ${leadToConvert.city}`,
+        projectType: leadToConvert.projectType,
+        plotAreaSqFt: leadToConvert.plotAreaSqFt,
+        builtUpAreaSqFt: leadToConvert.builtUpAreaSqFt,
+        carpetAreaSqFt: leadToConvert.carpetAreaSqFt,
+        floorsCount: leadToConvert.floorsCount,
+        customerBudgetMin: leadToConvert.budgetMinINR,
+        customerBudgetMax: leadToConvert.budgetMaxINR,
+        preferredDesignStyle: leadToConvert.interiorStyle,
+        surveyNotes: leadToConvert.siteVisitNotes || `Handover from CRM Opportunity ${leadToConvert.leadCode}`
       });
     }
-    // Navigate to step 2/3 (Survey / Requirements)
+
+    // Automatically mark lead as WON if not already
+    if (leadToConvert.stage !== 'WON') {
+      handleMoveLeadStage(leadToConvert.id, 'WON');
+    }
+
+    // Navigate to step 2/3 (Survey)
     if (onNavigateTab) {
       onNavigateTab('survey');
     }
   };
 
+  // Handle Inbound Lead Creation
   const handleAddNewLead = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newLead.clientName || !newLead.phone) return;
 
-    const created: LeadRecord = {
+    const builtUp = Number(newLead.builtUpAreaSqFt) || 2500;
+    const dealVal = Number(newLead.dealValueINR) || 7500000;
+
+    const created: CrmLeadExtended = {
       id: `LEAD-${Date.now()}`,
       leadCode: `LD-${Math.floor(1000 + Math.random() * 9000)}`,
-      clientName: newLead.clientName || 'Unnamed Client',
+      clientName: newLead.clientName || 'Inbound Prospect',
+      companyName: newLead.companyName || '',
       phone: newLead.phone || '',
       email: newLead.email || '',
       source: newLead.source || 'WEBSITE',
       projectType: newLead.projectType || 'RESIDENTIAL',
       location: newLead.location || 'Mumbai',
+      city: newLead.city || 'Mumbai',
       plotAreaSqFt: 0,
-      builtUpAreaSqFt: Number(newLead.builtUpAreaSqFt) || 2000,
-      carpetAreaSqFt: Math.round((Number(newLead.builtUpAreaSqFt) || 2000) * 0.78),
-      budgetMinINR: Number(newLead.budgetMinINR) || 4000000,
-      budgetMaxINR: Number(newLead.budgetMaxINR) || 6000000,
+      builtUpAreaSqFt: builtUp,
+      carpetAreaSqFt: Math.round(builtUp * 0.78),
+      budgetMinINR: Math.round(dealVal * 0.9),
+      budgetMaxINR: Math.round(dealVal * 1.1),
+      dealValueINR: dealVal,
+      targetFinishTier: newLead.targetFinishTier || 'Premium Luxury',
       floorsCount: 1,
       targetTimelineMonths: Number(newLead.targetTimelineMonths) || 4,
-      interiorStyle: newLead.interiorStyle || 'Contemporary',
-      stage: 'NEW_ENQUIRY',
-      qualificationScore: 70,
+      interiorStyle: newLead.interiorStyle || 'Contemporary Minimalist',
+      stage: targetModalStage,
       assignedSalesLead: currentUser.name,
       nextFollowUpDate: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
+      nextFollowUpTime: '11:00 AM',
+      nextActionTitle: 'Conduct Intake Discovery & Scope Briefing',
       lastContactDate: new Date().toISOString().split('T')[0],
+      siteVisitStatus: 'PENDING',
+      estimatedTurnkeyRatePerSqFt: Math.round(dealVal / builtUp),
+      expectedGrossMarginPct: 23.0,
+      bant: {
+        budgetScore: 20,
+        authorityScore: 20,
+        needScore: 20,
+        timelineScore: 15,
+        budgetNotes: 'Inbound prospect stated budget verified on initial call.',
+        authorityNotes: 'Primary owner decision maker.',
+        needNotes: 'Turnkey architectural interior fitout requested.',
+        timelineNotes: 'Target possession within 4 months.'
+      },
+      stakeholders: [
+        {
+          name: newLead.clientName,
+          role: 'Primary Owner',
+          phone: newLead.phone,
+          email: newLead.email || '',
+          isDecisionMaker: true
+        }
+      ],
       communicationLog: [
         {
+          id: `log-${Date.now()}`,
           date: new Date().toISOString().split('T')[0],
-          type: 'WHATSAPP',
-          summary: 'Inbound lead captured and assigned to sales team.',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          type: 'NOTE',
+          summary: 'Inbound lead captured and assigned to relationship manager.',
+          outcome: 'Lead created',
           agent: currentUser.name
         }
       ],
-      aiRecommendationSnippet: `Generated for ${newLead.builtUpAreaSqFt} sq.ft ${newLead.projectType}: Estimated budget ₹${((Number(newLead.budgetMinINR) || 4000000) / 100000).toFixed(0)}L - ₹${((Number(newLead.budgetMaxINR) || 6000000) / 100000).toFixed(0)}L.`
+      aiRecommendationSnippet: `AI preliminary estimate for ${builtUp} sq.ft ${newLead.projectType}: Recommended target budget ₹${(dealVal / 100000).toFixed(0)} Lakhs based on standard turnkey finish rates.`,
+      createdAt: new Date().toISOString().split('T')[0]
     };
 
     setLeads([created, ...leads]);
     setSelectedLead(created);
-    setActiveTab('details');
+    setShowNewLeadModal(false);
+    setViewMode('deal_360');
+  };
+
+  // Export to CSV
+  const handleExportCSV = () => {
+    const headers = ['Lead Code', 'Client Name', 'Company', 'Phone', 'Email', 'Location', 'City', 'Project Type', 'Stage', 'Deal Value INR', 'Built-up SqFt', 'Assigned Rep', 'Next Follow Up'];
+    const rows = leads.map((l) => [
+      l.leadCode,
+      `"${l.clientName}"`,
+      `"${l.companyName || ''}"`,
+      `"${l.phone}"`,
+      `"${l.email}"`,
+      `"${l.location}"`,
+      l.city,
+      l.projectType,
+      l.stage,
+      l.dealValueINR,
+      l.builtUpAreaSqFt,
+      `"${l.assignedSalesLead}"`,
+      l.nextFollowUpDate
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `BuildStorys_CRM_Deals_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
-    <div className="bg-[#f3f4f6] min-h-screen text-slate-800 p-4 md:p-6 space-y-5">
-      {/* Header Bar */}
-      <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-[#004a99] text-white flex items-center justify-center font-bold">
-              <UserPlus className="w-4 h-4" />
+    <div className="bg-[#f8f9fa] min-h-screen text-slate-800 p-3 md:p-5 space-y-4">
+      
+      {/* 1. Header Toolbar with KPI Badges & View Switcher */}
+      <div className="bg-white rounded-lg border border-slate-200 shadow-2xs p-3.5 space-y-3">
+        
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-lg bg-[#002050] text-white flex items-center justify-center font-bold shadow-xs shrink-0">
+              <UserPlus className="w-5 h-5 text-blue-300" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-slate-900 leading-tight">
-                Pillar 1: CRM & Inbound Opportunity Pipeline
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-base font-bold text-slate-900 leading-tight">
+                  Stage 1: Enterprise CRM & Opportunity Pipeline
+                </h1>
+                <span className="text-[10px] bg-slate-100 text-slate-700 font-mono font-bold px-2 py-0.5 rounded border border-slate-200">
+                  8 Stages • BANT • Turnkey Economics
+                </span>
+              </div>
               <p className="text-xs text-slate-500">
-                End-to-End Inbound Capture (WhatsApp, Web, Referrals) → Requirements Recording → Site Visit → AI Feasibility
+                End-to-End Inbound Capture → Qualification Scorecard → Site Laser Survey → Direct ERP Handshake
               </p>
             </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          <button
-            id="btn-crm-new-lead"
-            onClick={() => setActiveTab('new_lead')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#004a99] hover:bg-[#003875] text-white text-xs font-semibold shadow-sm transition"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Capture New Lead</span>
-          </button>
-          <button
-            id="btn-convert-to-workflow"
-            onClick={() => handleConvertLeadToProject(selectedLead)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition"
-          >
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Convert Lead to Project & Survey</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </div>
-
-      {/* Main Grid: Left side lead list, Right side detail workspace */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        
-        {/* Left Column: Lead Directory & Search (4 Cols) */}
-        <div className="lg:col-span-4 bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Leads & Inquiries ({filteredLeads.length})
-            </span>
-            <select
-              value={stageFilter}
-              onChange={(e) => setStageFilter(e.target.value)}
-              className="text-xs border border-slate-200 rounded px-2 py-1 bg-slate-50 text-slate-700"
+          {/* Action Bar */}
+          <div className="flex items-center gap-2 flex-wrap">
+            
+            <button
+              id="btn-crm-export-csv"
+              type="button"
+              onClick={handleExportCSV}
+              className="px-2.5 py-1.5 rounded border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1 transition cursor-pointer shadow-2xs"
+              title="Export all deals to CSV"
             >
-              <option value="ALL">All Stages</option>
-              <option value="NEW_ENQUIRY">New Inquiry</option>
-              <option value="QUALIFIED">Qualified</option>
-              <option value="SITE_VISIT_SCHEDULED">Site Visit Scheduled</option>
-              <option value="DESIGN_PITCH">Design Pitch</option>
-              <option value="ESTIMATION">Estimation</option>
-              <option value="WON">Won & Active</option>
-            </select>
+              <Download className="w-3.5 h-3.5 text-slate-500" />
+              <span>Export CSV</span>
+            </button>
+
+            <button
+              id="btn-crm-quick-add"
+              type="button"
+              onClick={() => {
+                setTargetModalStage('NEW_ENQUIRY');
+                setShowNewLeadModal(true);
+              }}
+              className="px-3 py-1.5 rounded bg-[#002050] hover:bg-[#003070] text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+            >
+              <Plus className="w-3.5 h-3.5 text-blue-300" />
+              <span>Capture New Deal</span>
+            </button>
+
+            <button
+              id="btn-crm-convert-handshake"
+              type="button"
+              onClick={() => handleConvertLeadToProject(selectedLead)}
+              className="px-3.5 py-1.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+              title="Convert selected lead to active project & Site Survey"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Convert to Project & Survey</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
           </div>
 
-          <div className="relative">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
-            <input
-              type="text"
-              placeholder="Search by client, location or code..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 text-xs rounded border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#004a99]"
+        </div>
+
+        {/* Real-time Pipeline Metrics Strip & View Mode Switcher */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-2 border-t border-slate-100">
+          
+          {/* Executive Metrics Counters */}
+          <div className="flex items-center gap-3 text-xs flex-wrap">
+            <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded border border-slate-200">
+              <span className="text-slate-500 font-medium">Total Pipeline:</span>
+              <strong className="font-mono text-slate-900">{formatINR(totalPipelineINR)}</strong>
+            </div>
+
+            <div className="flex items-center gap-1.5 bg-emerald-50/80 px-2.5 py-1 rounded border border-emerald-200 text-emerald-900">
+              <span className="text-emerald-700 font-medium">Weighted Forecast:</span>
+              <strong className="font-mono text-emerald-800">{formatINR(weightedPipelineINR)}</strong>
+            </div>
+
+            <div className="flex items-center gap-1.5 bg-blue-50/80 px-2.5 py-1 rounded border border-blue-200 text-blue-900">
+              <span className="text-blue-700 font-medium">Active Deals:</span>
+              <strong className="font-mono text-blue-800">{activeOpportunities.length}</strong>
+            </div>
+
+            <div className="flex items-center gap-1.5 bg-green-50 px-2.5 py-1 rounded border border-green-200 text-green-900">
+              <span className="text-green-700 font-medium">Won Contracts:</span>
+              <strong className="font-mono text-green-800">{wonDealsCount}</strong>
+            </div>
+          </div>
+
+          {/* View Switcher Tabs */}
+          <div className="flex items-center bg-slate-100 p-1 rounded-md border border-slate-200">
+            <button
+              type="button"
+              id="tab-view-kanban"
+              onClick={() => setViewMode('kanban')}
+              className={`px-3 py-1 rounded text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                viewMode === 'kanban' ? 'bg-white text-[#002050] shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Kanban className="w-3.5 h-3.5" />
+              <span>Kanban Deals Board</span>
+            </button>
+
+            <button
+              type="button"
+              id="tab-view-list"
+              onClick={() => setViewMode('list')}
+              className={`px-3 py-1 rounded text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                viewMode === 'list' ? 'bg-white text-[#002050] shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Table className="w-3.5 h-3.5" />
+              <span>Deals Grid</span>
+            </button>
+
+            <button
+              type="button"
+              id="tab-view-deal360"
+              onClick={() => setViewMode('deal_360')}
+              className={`px-3 py-1 rounded text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                viewMode === 'deal_360' ? 'bg-white text-[#002050] shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <UserCheck className="w-3.5 h-3.5" />
+              <span>Deal 360 Workspace</span>
+            </button>
+
+            <button
+              type="button"
+              id="tab-view-analytics"
+              onClick={() => setViewMode('analytics')}
+              className={`px-3 py-1 rounded text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                viewMode === 'analytics' ? 'bg-white text-[#002050] shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <BarChart3 className="w-3.5 h-3.5 text-purple-600" />
+              <span>Sales Analytics</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* 2. Search & Stage Filtering Bar (When in Kanban or List view) */}
+      {(viewMode === 'kanban' || viewMode === 'list') && (
+        <div className="bg-white rounded-lg border border-slate-200 shadow-2xs p-3 flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+          
+          <div className="flex items-center gap-2 flex-1 w-full md:w-auto">
+            <div className="relative flex-1 max-w-md">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+              <input
+                type="text"
+                placeholder="Search deals by client, company, location, or lead code..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-8 pr-3 py-1.5 text-xs rounded border border-slate-300 focus:outline-none focus:ring-1 focus:ring-[#002050]"
+              />
+            </div>
+
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => setSearchTerm('')}
+                className="text-slate-400 hover:text-slate-600 text-xs cursor-pointer"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap w-full md:w-auto justify-end">
+            <div className="flex items-center gap-1">
+              <span className="text-slate-500 font-medium">Stage:</span>
+              <select
+                value={stageFilter}
+                onChange={(e) => setStageFilter(e.target.value)}
+                className="border border-slate-300 rounded px-2 py-1 text-xs bg-white text-slate-700"
+              >
+                <option value="ALL">All 8 Stages</option>
+                {CRM_STAGES_CONFIG.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.label} ({s.probability}%)
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <span className="text-slate-500 font-medium">Source:</span>
+              <select
+                value={sourceFilter}
+                onChange={(e) => setSourceFilter(e.target.value)}
+                className="border border-slate-300 rounded px-2 py-1 text-xs bg-white text-slate-700"
+              >
+                <option value="ALL">All Inbound Sources</option>
+                <option value="ARCHITECT_REFERRAL">Architect Referral</option>
+                <option value="WEBSITE">Website Lead Form</option>
+                <option value="WHATSAPP">WhatsApp Direct</option>
+                <option value="PORTAL">Housing / 99acres Portal</option>
+                <option value="PHONE_CALL">Inbound Phone Call</option>
+                <option value="WALK_IN">Experience Center</option>
+              </select>
+            </div>
+
+            <span className="text-slate-400 font-mono text-[11px]">
+              Showing {filteredLeads.length} of {leads.length}
+            </span>
+          </div>
+
+        </div>
+      )}
+
+      {/* 3. MAIN WORKSPACE VIEW ROUTING */}
+
+      {/* VIEW 1: KANBAN DEAL PIPELINE */}
+      {viewMode === 'kanban' && (
+        <CrmKanbanBoard
+          leads={filteredLeads}
+          selectedLeadId={selectedLead.id}
+          onSelectLead={(lead) => {
+            setSelectedLead(lead);
+            setViewMode('deal_360');
+          }}
+          onMoveLeadStage={handleMoveLeadStage}
+          onQuickAddDeal={(stage) => {
+            setTargetModalStage(stage);
+            setShowNewLeadModal(true);
+          }}
+        />
+      )}
+
+      {/* VIEW 2: DETAILED DEALS GRID / LIST TABLE */}
+      {viewMode === 'list' && (
+        <div className="bg-white rounded-lg border border-slate-200 shadow-2xs overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="bg-slate-50 text-slate-700 border-b border-slate-200 font-bold">
+                  <th className="p-3">Deal / Code</th>
+                  <th className="p-3">Client & Company</th>
+                  <th className="p-3">Location & Type</th>
+                  <th className="p-3">Stage & Progress</th>
+                  <th className="p-3 text-right">Deal Value (₹)</th>
+                  <th className="p-3 text-center">BANT Score</th>
+                  <th className="p-3">Assigned Rep</th>
+                  <th className="p-3">Next Action / Due</th>
+                  <th className="p-3 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200">
+                {filteredLeads.map((ld) => {
+                  const stageMeta = CRM_STAGES_CONFIG.find((s) => s.id === ld.stage) || CRM_STAGES_CONFIG[0];
+                  const totalBant = ld.bant.budgetScore + ld.bant.authorityScore + ld.bant.needScore + ld.bant.timelineScore;
+                  const isSelected = ld.id === selectedLead.id;
+
+                  return (
+                    <tr
+                      key={ld.id}
+                      onClick={() => {
+                        setSelectedLead(ld);
+                        setViewMode('deal_360');
+                      }}
+                      className={`hover:bg-blue-50/40 cursor-pointer transition ${
+                        isSelected ? 'bg-blue-50/60 font-medium' : ''
+                      }`}
+                    >
+                      <td className="p-3 font-mono">
+                        <span className="font-bold text-slate-900 block">{ld.leadCode}</span>
+                        <span className="text-[10px] text-slate-400">{ld.createdAt}</span>
+                      </td>
+
+                      <td className="p-3">
+                        <strong className="text-slate-900 block hover:text-[#0F6CBD]">{ld.clientName}</strong>
+                        <span className="text-[11px] text-slate-500">{ld.companyName || ld.source}</span>
+                      </td>
+
+                      <td className="p-3">
+                        <span className="text-slate-700 block truncate max-w-[180px]">{ld.location}</span>
+                        <span className="text-[10px] text-slate-400">
+                          {ld.city} • {ld.builtUpAreaSqFt.toLocaleString()} sq.ft
+                        </span>
+                      </td>
+
+                      <td className="p-3">
+                        <select
+                          value={ld.stage}
+                          onClick={(e) => e.stopPropagation()}
+                          onChange={(e) => handleMoveLeadStage(ld.id, e.target.value as CrmStageId)}
+                          className={`text-[11px] font-bold px-2 py-1 rounded border cursor-pointer ${stageMeta.badgeBg} ${stageMeta.textColor} ${stageMeta.borderColor}`}
+                        >
+                          {CRM_STAGES_CONFIG.map((s) => (
+                            <option key={s.id} value={s.id}>
+                              {s.label} ({s.probability}%)
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+
+                      <td className="p-3 text-right font-mono font-bold text-slate-900">
+                        {formatINR(ld.dealValueINR)}
+                      </td>
+
+                      <td className="p-3 text-center">
+                        <span className={`text-[11px] font-bold px-2 py-0.5 rounded font-mono ${
+                          totalBant >= 85 ? 'bg-emerald-100 text-emerald-800' :
+                          totalBant >= 70 ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
+                        }`}>
+                          {totalBant}/100
+                        </span>
+                      </td>
+
+                      <td className="p-3 text-slate-700">
+                        {ld.assignedSalesLead}
+                      </td>
+
+                      <td className="p-3">
+                        <div className="truncate max-w-[160px] font-medium text-slate-800">{ld.nextActionTitle}</div>
+                        <div className="text-[10px] text-slate-400 flex items-center gap-1">
+                          <Calendar className="w-3 h-3 text-slate-400" />
+                          <span>{ld.nextFollowUpDate}</span>
+                        </div>
+                      </td>
+
+                      <td className="p-3 text-center" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedLead(ld);
+                            setViewMode('deal_360');
+                          }}
+                          className="px-2.5 py-1 rounded bg-slate-100 hover:bg-[#002050] hover:text-white text-slate-700 text-xs font-semibold transition cursor-pointer"
+                        >
+                          360 View
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* VIEW 3: DEAL 360 WORKSPACE */}
+      {viewMode === 'deal_360' && selectedLead && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          
+          {/* Left mini deal selector (3 cols) */}
+          <div className="lg:col-span-3 bg-white rounded-lg border border-slate-200 shadow-2xs p-3 space-y-2">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+              <span className="text-xs font-bold text-slate-700 uppercase">Opportunities ({leads.length})</span>
+              <button
+                type="button"
+                onClick={() => setViewMode('kanban')}
+                className="text-xs text-[#0F6CBD] hover:underline font-semibold"
+              >
+                Back to Board
+              </button>
+            </div>
+
+            <div className="space-y-1.5 max-h-[700px] overflow-y-auto pr-1 scrollbar-thin">
+              {leads.map((l) => {
+                const isCurrent = l.id === selectedLead.id;
+                const stage = CRM_STAGES_CONFIG.find((s) => s.id === l.stage);
+                return (
+                  <div
+                    key={l.id}
+                    onClick={() => setSelectedLead(l)}
+                    className={`p-2.5 rounded-md border cursor-pointer transition select-none ${
+                      isCurrent
+                        ? 'bg-blue-50/70 border-[#002050] shadow-xs ring-1 ring-[#002050]/20'
+                        : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-1 mb-0.5">
+                      <strong className="text-xs text-slate-900 truncate block">{l.clientName}</strong>
+                      <span className="text-xs font-bold font-mono text-slate-800">{formatINR(l.dealValueINR)}</span>
+                    </div>
+                    <div className="text-[10px] text-slate-500 truncate">{l.location}</div>
+                    <div className="flex items-center justify-between mt-1 text-[10px]">
+                      <span className={`px-1.5 py-0.2 rounded font-semibold ${stage?.badgeBg} ${stage?.textColor}`}>
+                        {stage?.shortLabel}
+                      </span>
+                      <span className="text-slate-400 font-mono">{l.leadCode}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Right deal 360 detailed workspace (9 cols) */}
+          <div className="lg:col-span-9">
+            <CrmDeal360View
+              lead={selectedLead}
+              currentUser={currentUser}
+              onUpdateLead={handleUpdateLead}
+              onConvertToProject={handleConvertLeadToProject}
+              onNavigateTab={onNavigateTab}
             />
           </div>
 
-          <div className="space-y-2 max-h-[620px] overflow-y-auto pr-1">
-            {filteredLeads.map((ld) => {
-              const isSelected = selectedLead.id === ld.id;
-              return (
-                <div
-                  key={ld.id}
-                  id={`lead-card-${ld.leadCode}`}
-                  onClick={() => {
-                    setSelectedLead(ld);
-                    setActiveTab('details');
-                  }}
-                  className={`p-3 rounded-md border cursor-pointer transition ${
-                    isSelected
-                      ? 'bg-blue-50/70 border-[#004a99] shadow-xs'
-                      : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-1 mb-1">
-                    <span className="font-bold text-slate-900 text-xs truncate">
-                      {ld.clientName}
-                    </span>
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
-                      ld.stage === 'WON' ? 'bg-emerald-100 text-emerald-800' :
-                      ld.stage === 'SITE_VISIT_SCHEDULED' ? 'bg-amber-100 text-amber-800' :
-                      ld.stage === 'DESIGN_PITCH' ? 'bg-purple-100 text-purple-800' :
-                      'bg-slate-100 text-slate-700'
-                    }`}>
-                      {ld.stage.replace('_', ' ')}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-1.5 text-[11px] text-slate-500 mb-1">
-                    <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
-                    <span className="truncate">{ld.location}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-[11px] text-slate-600">
-                    <span className="font-mono font-medium">
-                      ₹{(ld.budgetMinINR / 100000).toFixed(0)}L - ₹{(ld.budgetMaxINR / 100000).toFixed(0)}L
-                    </span>
-                    <span className="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600 font-mono">
-                      {ld.source}
-                    </span>
-                  </div>
-
-                  {ld.siteVisitStatus === 'SCHEDULED' && (
-                    <div className="mt-2 text-[10px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded border border-amber-200 flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-amber-600" />
-                      <span>Site Visit: {ld.siteVisitDate}</span>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
         </div>
+      )}
 
-        {/* Right Column: Detailed Workspace & Requirement Recording (8 Cols) */}
-        <div className="lg:col-span-8 space-y-4">
-          
-          {/* Sub-nav Tabs */}
-          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-2 flex items-center gap-2 overflow-x-auto">
-            <button
-              onClick={() => setActiveTab('details')}
-              className={`px-3 py-1.5 rounded text-xs font-semibold transition ${
-                activeTab === 'details' ? 'bg-[#004a99] text-white' : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              Client Requirements & Brief
-            </button>
-            <button
-              onClick={() => setActiveTab('site_visit')}
-              className={`px-3 py-1.5 rounded text-xs font-semibold transition ${
-                activeTab === 'site_visit' ? 'bg-[#004a99] text-white' : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              Site Visit & Survey Reports
-            </button>
-            <button
-              onClick={() => setActiveTab('ai_options')}
-              className={`px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1 transition ${
-                activeTab === 'ai_options' ? 'bg-purple-700 text-white' : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <Sparkles className="w-3 h-3 text-amber-400" />
-              <span>AI Preliminary Feasibility</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('new_lead')}
-              className={`px-3 py-1.5 rounded text-xs font-semibold transition ${
-                activeTab === 'new_lead' ? 'bg-[#004a99] text-white' : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              + Inbound Lead Intake Form
-            </button>
-          </div>
+      {/* VIEW 4: SALES ANALYTICS & PIPELINE PERFORMANCE */}
+      {viewMode === 'analytics' && <CrmAnalyticsView leads={leads} />}
 
-          {/* TAB 1: Lead Details & Requirements Recording */}
-          {activeTab === 'details' && selectedLead && (
-            <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-5 space-y-5">
-              
-              {/* Lead Top Banner */}
-              <div className="flex items-start justify-between flex-wrap gap-3 pb-4 border-b border-slate-200">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-base font-bold text-slate-900">{selectedLead.clientName}</h2>
-                    <span className="text-xs bg-blue-100 text-blue-800 font-mono px-2 py-0.5 rounded font-bold">
-                      {selectedLead.leadCode}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-4 text-xs text-slate-500 mt-1 flex-wrap">
-                    <span className="flex items-center gap-1">
-                      <Phone className="w-3.5 h-3.5 text-slate-400" /> {selectedLead.phone}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Mail className="w-3.5 h-3.5 text-slate-400" /> {selectedLead.email}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400" /> {selectedLead.location}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <div className="text-[11px] text-slate-500">Qualification Score</div>
-                  <div className="text-lg font-bold text-emerald-600">{selectedLead.qualificationScore}/100</div>
-                  <div className="text-[10px] text-slate-400">Assigned: {selectedLead.assignedSalesLead}</div>
-                </div>
-              </div>
-
-              {/* Requirement Matrix (Pillar 1 Requirement Recording) */}
+      {/* NEW OPPORTUNITY INTAKE MODAL */}
+      {showNewLeadModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg border border-slate-300 shadow-2xl max-w-xl w-full p-5 space-y-4 text-xs animate-in fade-in duration-150">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-2.5">
               <div>
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                  <Building className="w-3.5 h-3.5 text-[#004a99]" />
-                  <span>Requirement Recording Master</span>
-                </h3>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-                  <div className="bg-slate-50 p-2.5 rounded border border-slate-200">
-                    <span className="text-slate-400 block text-[10px]">Project Type</span>
-                    <strong className="text-slate-900">{selectedLead.projectType}</strong>
-                  </div>
-                  <div className="bg-slate-50 p-2.5 rounded border border-slate-200">
-                    <span className="text-slate-400 block text-[10px]">Built-up Area</span>
-                    <strong className="text-slate-900">{selectedLead.builtUpAreaSqFt.toLocaleString()} sq.ft</strong>
-                  </div>
-                  <div className="bg-slate-50 p-2.5 rounded border border-slate-200">
-                    <span className="text-slate-400 block text-[10px]">Carpet Area</span>
-                    <strong className="text-slate-900">{selectedLead.carpetAreaSqFt.toLocaleString()} sq.ft</strong>
-                  </div>
-                  <div className="bg-slate-50 p-2.5 rounded border border-slate-200">
-                    <span className="text-slate-400 block text-[10px]">Target Timeline</span>
-                    <strong className="text-slate-900">{selectedLead.targetTimelineMonths} Months</strong>
-                  </div>
-                  <div className="bg-slate-50 p-2.5 rounded border border-slate-200">
-                    <span className="text-slate-400 block text-[10px]">Budget Bracket</span>
-                    <strong className="text-slate-900">
-                      ₹{(selectedLead.budgetMinINR / 100000).toFixed(0)}L - ₹{(selectedLead.budgetMaxINR / 100000).toFixed(0)}L
-                    </strong>
-                  </div>
-                  <div className="bg-slate-50 p-2.5 rounded border border-slate-200">
-                    <span className="text-slate-400 block text-[10px]">Floors Count</span>
-                    <strong className="text-slate-900">{selectedLead.floorsCount} Floor(s)</strong>
-                  </div>
-                  <div className="bg-slate-50 p-2.5 rounded border border-slate-200">
-                    <span className="text-slate-400 block text-[10px]">Architect Partner</span>
-                    <strong className="text-slate-900">{selectedLead.architectPartner || 'Direct'}</strong>
-                  </div>
-                  <div className="bg-slate-50 p-2.5 rounded border border-slate-200">
-                    <span className="text-slate-400 block text-[10px]">Broker / Portal</span>
-                    <strong className="text-slate-900">{selectedLead.consultantOrBroker || 'None'}</strong>
-                  </div>
-                </div>
-
-                <div className="mt-3 bg-blue-50/50 p-3 rounded border border-blue-200 text-xs">
-                  <span className="text-blue-900 font-bold block mb-1">Interior & Architectural Style Preferences:</span>
-                  <p className="text-slate-700">{selectedLead.interiorStyle}</p>
-                </div>
+                <h3 className="font-bold text-slate-900 text-sm">Capture Inbound Turnkey Opportunity</h3>
+                <p className="text-slate-500 text-[11px]">Enters into Stage 1 with automatic BANT qualification tracking</p>
               </div>
-
-              {/* Stakeholder Communication History Log */}
-              <div>
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                  <MessageSquare className="w-3.5 h-3.5 text-[#004a99]" />
-                  <span>Customer Communication History ({selectedLead.communicationLog.length} Records)</span>
-                </h3>
-
-                <div className="space-y-2">
-                  {selectedLead.communicationLog.map((log, idx) => (
-                    <div key={idx} className="flex items-start gap-2.5 p-2 rounded border border-slate-100 bg-slate-50/60 text-xs">
-                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded font-mono ${
-                        log.type === 'WHATSAPP' ? 'bg-emerald-100 text-emerald-800' :
-                        log.type === 'CALL' ? 'bg-blue-100 text-blue-800' :
-                        log.type === 'MEETING' ? 'bg-purple-100 text-purple-800' :
-                        'bg-slate-200 text-slate-800'
-                      }`}>
-                        {log.type}
-                      </span>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between text-[11px] text-slate-500 mb-0.5">
-                          <span>{log.date}</span>
-                          <span>Logged by: <strong>{log.agent}</strong></span>
-                        </div>
-                        <p className="text-slate-800">{log.summary}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Action Toolbar */}
-              <div className="flex items-center justify-between pt-3 border-t border-slate-200 flex-wrap gap-2">
-                <div className="text-xs text-slate-500">
-                  Ready to proceed? Move this lead into Site Survey & BOQ Estimation.
-                </div>
-                <button
-                  id="btn-lead-convert-action"
-                  onClick={() => handleConvertLeadToProject(selectedLead)}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Convert to Active Project & Survey</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-
-            </div>
-          )}
-
-          {/* TAB 2: Site Visit & Survey Reports */}
-          {activeTab === 'site_visit' && selectedLead && (
-            <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-5 space-y-4 text-xs">
-              <div className="flex items-center justify-between">
-                <h3 className="font-bold text-slate-900 text-sm">Site Visit Scheduling & Inspection Protocol</h3>
-                <span className={`px-2 py-0.5 rounded font-bold text-[10px] ${
-                  selectedLead.siteVisitStatus === 'COMPLETED' ? 'bg-emerald-100 text-emerald-800' :
-                  selectedLead.siteVisitStatus === 'SCHEDULED' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'
-                }`}>
-                  Status: {selectedLead.siteVisitStatus || 'PENDING'}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="bg-slate-50 p-3 rounded border border-slate-200">
-                  <span className="text-slate-400 block text-[10px]">Site Visit Date</span>
-                  <strong className="text-slate-800">{selectedLead.siteVisitDate || 'Not Scheduled'}</strong>
-                </div>
-                <div className="bg-slate-50 p-3 rounded border border-slate-200">
-                  <span className="text-slate-400 block text-[10px]">Visiting Engineer</span>
-                  <strong className="text-slate-800">Ar. Rajesh Sharma (Site Ops)</strong>
-                </div>
-                <div className="bg-slate-50 p-3 rounded border border-slate-200">
-                  <span className="text-slate-400 block text-[10px]">Tools Deployed</span>
-                  <strong className="text-slate-800">Laser Disto + Moisture Meter</strong>
-                </div>
-              </div>
-
-              <div className="bg-slate-50 p-3 rounded border border-slate-200 space-y-2">
-                <span className="font-bold text-slate-900 block">Site Visit Engineer Notes:</span>
-                <p className="text-slate-700">
-                  {selectedLead.siteVisitNotes || 'No visit observations recorded yet. Click below to enter survey observations.'}
-                </p>
-              </div>
-
-              <div className="bg-amber-50 p-3 rounded border border-amber-200 text-amber-900">
-                <span className="font-bold block mb-1">Pillar 3 Direct Handshake:</span>
-                <p>
-                  Measurements captured during site visits are automatically synced with the Site Survey module, where room dimensions, slab heights, and photographic evidence are bound to the BOQ.
-                </p>
-                <button
-                  onClick={() => onNavigateTab && onNavigateTab('survey')}
-                  className="mt-2 px-3 py-1 rounded bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs inline-flex items-center gap-1"
-                >
-                  <span>Open Full Site Survey Workspace</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* TAB 3: AI Preliminary Feasibility */}
-          {activeTab === 'ai_options' && selectedLead && (
-            <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-5 space-y-4 text-xs">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-amber-500" />
-                <h3 className="font-bold text-slate-900 text-sm">
-                  AI-Generated Project Options & Preliminary Recommendations (Pillars 1 & 5)
-                </h3>
-              </div>
-
-              <p className="text-slate-600">
-                Based on client requirement ({selectedLead.builtUpAreaSqFt} sq.ft, budget ₹{(selectedLead.budgetMinINR / 100000).toFixed(0)}L - ₹{(selectedLead.budgetMaxINR / 100000).toFixed(0)}L, {selectedLead.interiorStyle}), our engineering engine recommends:
-              </p>
-
-              <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 space-y-2">
-                <div className="font-bold text-purple-900 flex items-center justify-between">
-                  <span>Preliminary Engineering Recommendation</span>
-                  <span className="bg-purple-200 text-purple-800 text-[10px] px-2 py-0.5 rounded font-mono">
-                    AI Match: 94% Feasibility
-                  </span>
-                </div>
-                <p className="text-slate-700 leading-relaxed">
-                  {selectedLead.aiRecommendationSnippet}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="p-3 rounded border border-slate-200 bg-slate-50">
-                  <span className="font-bold text-slate-800 block mb-1">Cost Per Sq.Ft Estimated</span>
-                  <div className="text-base font-bold text-[#004a99]">
-                    ₹{Math.round(selectedLead.budgetMinINR / selectedLead.builtUpAreaSqFt)} - ₹{Math.round(selectedLead.budgetMaxINR / selectedLead.builtUpAreaSqFt)} / sq.ft
-                  </div>
-                  <span className="text-[10px] text-slate-500">Includes civil, flooring, carpentry, and electrical turnkey.</span>
-                </div>
-
-                <div className="p-3 rounded border border-slate-200 bg-slate-50">
-                  <span className="font-bold text-slate-800 block mb-1">Next Step in 15-Step Workflow</span>
-                  <div className="text-base font-bold text-emerald-600">
-                    Step 4: AI Design Options Studio
-                  </div>
-                  <span className="text-[10px] text-slate-500">Generates 4-5 complete architectural options with preliminary BOQs.</span>
-                </div>
-              </div>
-
               <button
-                onClick={() => onNavigateTab && onNavigateTab('drawings')}
-                className="w-full py-2 rounded bg-purple-700 hover:bg-purple-800 text-white font-bold flex items-center justify-center gap-1.5 transition shadow-sm"
+                type="button"
+                onClick={() => setShowNewLeadModal(false)}
+                className="text-slate-400 hover:text-slate-600 font-bold text-base cursor-pointer"
               >
-                <Sparkles className="w-4 h-4 text-amber-300" />
-                <span>Open Design & AI Options Studio</span>
-                <ChevronRight className="w-4 h-4" />
+                ✕
               </button>
             </div>
-          )}
 
-          {/* TAB 4: Inbound Lead Intake Form */}
-          {activeTab === 'new_lead' && (
-            <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-5 space-y-4 text-xs">
-              <h3 className="font-bold text-slate-900 text-sm border-b border-slate-200 pb-2">
-                Inbound Lead Capture Form (Multi-Channel Intake)
-              </h3>
-
-              <form onSubmit={handleAddNewLead} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-slate-600 font-medium mb-1">Customer / Client Name *</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Ramesh Chandra"
-                      value={newLead.clientName}
-                      onChange={(e) => setNewLead({ ...newLead, clientName: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded focus:ring-1 focus:ring-[#004a99]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-slate-600 font-medium mb-1">Phone Number (WhatsApp) *</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="+91 98XXX XXXXX"
-                      value={newLead.phone}
-                      onChange={(e) => setNewLead({ ...newLead, phone: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded focus:ring-1 focus:ring-[#004a99]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-slate-600 font-medium mb-1">Email Address</label>
-                    <input
-                      type="email"
-                      placeholder="client@example.com"
-                      value={newLead.email}
-                      onChange={(e) => setNewLead({ ...newLead, email: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded focus:ring-1 focus:ring-[#004a99]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-slate-600 font-medium mb-1">Lead Source Channel</label>
-                    <select
-                      value={newLead.source}
-                      onChange={(e: any) => setNewLead({ ...newLead, source: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded bg-white"
-                    >
-                      <option value="WEBSITE">Website Lead Form</option>
-                      <option value="WHATSAPP">WhatsApp Direct Chat</option>
-                      <option value="PHONE_CALL">Inbound Phone Call</option>
-                      <option value="ARCHITECT_REFERRAL">Architect Referral</option>
-                      <option value="PORTAL">Housing / 99acres Portal</option>
-                      <option value="WALK_IN">Experience Center Walk-in</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-slate-600 font-medium mb-1">Project Type</label>
-                    <select
-                      value={newLead.projectType}
-                      onChange={(e: any) => setNewLead({ ...newLead, projectType: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded bg-white"
-                    >
-                      <option value="RESIDENTIAL">Residential (Flat / Bungalow)</option>
-                      <option value="COMMERCIAL">Commercial Fitout</option>
-                      <option value="OFFICE">Corporate Office</option>
-                      <option value="RETAIL">Retail Store</option>
-                      <option value="HOSPITALITY">Restaurant / Cafe</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-slate-600 font-medium mb-1">Built-Up Area (sq.ft)</label>
-                    <input
-                      type="number"
-                      value={newLead.builtUpAreaSqFt}
-                      onChange={(e) => setNewLead({ ...newLead, builtUpAreaSqFt: Number(e.target.value) })}
-                      className="w-full p-2 border border-slate-200 rounded"
-                    />
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className="block text-slate-600 font-medium mb-1">Project Site Location / Address</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Unit 802, Hiranandani Gardens, Powai, Mumbai"
-                      value={newLead.location}
-                      onChange={(e) => setNewLead({ ...newLead, location: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-slate-600 font-medium mb-1">Customer Budget Range (₹)</label>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="number"
-                        placeholder="Min (e.g. 5000000)"
-                        value={newLead.budgetMinINR}
-                        onChange={(e) => setNewLead({ ...newLead, budgetMinINR: Number(e.target.value) })}
-                        className="w-1/2 p-2 border border-slate-200 rounded"
-                      />
-                      <span>to</span>
-                      <input
-                        type="number"
-                        placeholder="Max (e.g. 8000000)"
-                        value={newLead.budgetMaxINR}
-                        onChange={(e) => setNewLead({ ...newLead, budgetMaxINR: Number(e.target.value) })}
-                        className="w-1/2 p-2 border border-slate-200 rounded"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-slate-600 font-medium mb-1">Target Timeline (Months)</label>
-                    <input
-                      type="number"
-                      value={newLead.targetTimelineMonths}
-                      onChange={(e) => setNewLead({ ...newLead, targetTimelineMonths: Number(e.target.value) })}
-                      className="w-full p-2 border border-slate-200 rounded"
-                    />
-                  </div>
+            <form onSubmit={handleAddNewLead} className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-700 font-semibold mb-1">Customer / Client Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Ramesh & Sangeeta Iyer"
+                    value={newLead.clientName}
+                    onChange={(e) => setNewLead({ ...newLead, clientName: e.target.value })}
+                    className="w-full p-2 border border-slate-300 rounded focus:ring-1 focus:ring-[#002050] text-xs"
+                  />
                 </div>
 
-                <div className="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('details')}
-                    className="px-4 py-2 rounded border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 rounded bg-[#004a99] hover:bg-[#003875] text-white font-bold shadow-sm"
-                  >
-                    Save & Qualify Lead
-                  </button>
+                <div>
+                  <label className="block text-slate-700 font-semibold mb-1">Company / Entity Name</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Iyer Holdings / Private Residence"
+                    value={newLead.companyName}
+                    onChange={(e) => setNewLead({ ...newLead, companyName: e.target.value })}
+                    className="w-full p-2 border border-slate-300 rounded focus:ring-1 focus:ring-[#002050] text-xs"
+                  />
                 </div>
-              </form>
-            </div>
-          )}
 
+                <div>
+                  <label className="block text-slate-700 font-semibold mb-1">WhatsApp / Phone Number *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="+91 98XXX XXXXX"
+                    value={newLead.phone}
+                    onChange={(e) => setNewLead({ ...newLead, phone: e.target.value })}
+                    className="w-full p-2 border border-slate-300 rounded focus:ring-1 focus:ring-[#002050] text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-semibold mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    placeholder="client@domain.com"
+                    value={newLead.email}
+                    onChange={(e) => setNewLead({ ...newLead, email: e.target.value })}
+                    className="w-full p-2 border border-slate-300 rounded focus:ring-1 focus:ring-[#002050] text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-semibold mb-1">Inbound Source Channel</label>
+                  <select
+                    value={newLead.source}
+                    onChange={(e: any) => setNewLead({ ...newLead, source: e.target.value })}
+                    className="w-full p-2 border border-slate-300 rounded bg-white text-xs"
+                  >
+                    <option value="WEBSITE">Website Lead Form</option>
+                    <option value="WHATSAPP">WhatsApp Direct Inquiry</option>
+                    <option value="PHONE_CALL">Inbound Phone Call</option>
+                    <option value="ARCHITECT_REFERRAL">Architect Referral Partner</option>
+                    <option value="PORTAL">Housing / 99acres Portal</option>
+                    <option value="WALK_IN">Experience Center Walk-in</option>
+                    <option value="REPEAT_CLIENT">Repeat Client / Word of Mouth</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-semibold mb-1">Project Type</label>
+                  <select
+                    value={newLead.projectType}
+                    onChange={(e: any) => setNewLead({ ...newLead, projectType: e.target.value })}
+                    className="w-full p-2 border border-slate-300 rounded bg-white text-xs"
+                  >
+                    <option value="RESIDENTIAL">Residential (Apartment / Villa)</option>
+                    <option value="COMMERCIAL">Commercial Fitout</option>
+                    <option value="OFFICE">Corporate Office</option>
+                    <option value="RETAIL">Retail Showroom</option>
+                    <option value="HOSPITALITY">Boutique Cafe / Restaurant</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-semibold mb-1">Built-Up Area (sq.ft)</label>
+                  <input
+                    type="number"
+                    value={newLead.builtUpAreaSqFt}
+                    onChange={(e) => {
+                      const sqft = Number(e.target.value);
+                      const rate = newLead.targetFinishTier === 'Ultra Bespoke' ? 4150 : newLead.targetFinishTier === 'Premium Luxury' ? 2950 : 2200;
+                      setNewLead({
+                        ...newLead,
+                        builtUpAreaSqFt: sqft,
+                        dealValueINR: Math.round(sqft * rate)
+                      });
+                    }}
+                    className="w-full p-2 border border-slate-300 rounded text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-semibold mb-1">Specification Tier</label>
+                  <select
+                    value={newLead.targetFinishTier}
+                    onChange={(e: any) => {
+                      const tier = e.target.value;
+                      const rate = tier === 'Ultra Bespoke' ? 4150 : tier === 'Premium Luxury' ? 2950 : 2200;
+                      setNewLead({
+                        ...newLead,
+                        targetFinishTier: tier,
+                        dealValueINR: Math.round((newLead.builtUpAreaSqFt || 2500) * rate)
+                      });
+                    }}
+                    className="w-full p-2 border border-slate-300 rounded bg-white text-xs"
+                  >
+                    <option value="Standard Turnkey">Standard Turnkey (~₹2,200/sq.ft)</option>
+                    <option value="Premium Luxury">Premium Luxury (~₹2,950/sq.ft)</option>
+                    <option value="Ultra Bespoke">Ultra Bespoke (~₹4,150/sq.ft)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-semibold mb-1">Estimated Deal Value (₹)</label>
+                  <input
+                    type="number"
+                    value={newLead.dealValueINR}
+                    onChange={(e) => setNewLead({ ...newLead, dealValueINR: Number(e.target.value) })}
+                    className="w-full p-2 border border-slate-300 rounded text-xs font-mono font-bold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-semibold mb-1">Target Timeline (Months)</label>
+                  <input
+                    type="number"
+                    value={newLead.targetTimelineMonths}
+                    onChange={(e) => setNewLead({ ...newLead, targetTimelineMonths: Number(e.target.value) })}
+                    className="w-full p-2 border border-slate-300 rounded text-xs"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-slate-700 font-semibold mb-1">Site Address & Location</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Oberoi Sky Heights, Flat 1802, Andheri West, Mumbai"
+                    value={newLead.location}
+                    onChange={(e) => setNewLead({ ...newLead, location: e.target.value })}
+                    className="w-full p-2 border border-slate-300 rounded text-xs"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-slate-700 font-semibold mb-1">Design Style & Customer Brief</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Modern Minimalist with Italian Botticino marble and ducted AC"
+                    value={newLead.interiorStyle}
+                    onChange={(e) => setNewLead({ ...newLead, interiorStyle: e.target.value })}
+                    className="w-full p-2 border border-slate-300 rounded text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => setShowNewLeadModal(false)}
+                  className="px-3.5 py-1.5 rounded border border-slate-300 text-slate-700 hover:bg-slate-50 cursor-pointer font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-1.5 rounded bg-[#002050] hover:bg-[#003070] text-white font-bold cursor-pointer shadow-xs"
+                >
+                  Save & Open Deal 360
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
+      )}
 
-      </div>
     </div>
   );
 };
