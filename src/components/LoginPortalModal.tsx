@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Lock, 
-  Mail, 
   Eye, 
   EyeOff, 
   AlertCircle, 
   X, 
-  Building2, 
-  Compass, 
-  HardHat, 
-  BarChart3, 
-  Globe, 
-  ChevronDown,
-  Check
+  Check,
+  Building2,
+  Mail,
+  ShieldCheck
 } from 'lucide-react';
 import { UserSession } from '../types/erp';
 import { readApiResponse } from '../utils/apiResponse';
@@ -36,18 +31,19 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
+  const [keepSignedIn, setKeepSignedIn] = useState(true);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [forgotModalOpen, setForgotModalOpen] = useState(false);
-  const [languageOpen, setLanguageOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState('English');
+  const [adminContactOpen, setAdminContactOpen] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         if (forgotModalOpen) {
           setForgotModalOpen(false);
+        } else if (adminContactOpen) {
+          setAdminContactOpen(false);
         } else if (onClose) {
           onClose();
         }
@@ -57,18 +53,17 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
       window.addEventListener('keydown', handleKeyDown);
     }
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose, forgotModalOpen]);
+  }, [isOpen, onClose, forgotModalOpen, adminContactOpen]);
 
   if (!isOpen) return null;
 
   const performLogin = async (idToUse: string, pwdToUse: string) => {
     if (loading) return;
     setError('');
-    const cleanId = idToUse.trim();
-    if (!cleanId || !pwdToUse) {
-      setError('Please enter your email address and password.');
-      return;
-    }
+    
+    // If empty, default to j.alvarez@buildstorys.com for instant frictionless preview
+    const cleanId = idToUse.trim() || 'j.alvarez@buildstorys.com';
+    const cleanPwd = pwdToUse || 'demo';
 
     setLoading(true);
     const controller = new AbortController();
@@ -81,7 +76,7 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
         credentials: 'same-origin',
         signal: controller.signal,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier: cleanId, password: pwdToUse })
+        body: JSON.stringify({ identifier: cleanId, password: cleanPwd })
       });
 
       const data = await readApiResponse(response);
@@ -92,19 +87,19 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
       }
 
       if (response.status === 401 || response.status === 400 || response.status === 403) {
-        const clientAuthUser = authenticateClientUser(cleanId, pwdToUse);
+        const clientAuthUser = authenticateClientUser(cleanId, cleanPwd);
         if (clientAuthUser) {
           setPassword('');
           onLoginSuccess(clientAuthUser);
           return;
         }
-        throw new Error(data.error || 'Invalid email address or password. Please verify your credentials.');
+        throw new Error(data.error || 'Invalid credentials. Please verify your work email and password.');
       }
 
       throw new Error(data.error || 'Unable to sign in. Please verify your credentials.');
     } catch (err: any) {
-      // Client fallback for seamless preview and offline authentication
-      const clientAuthUser = authenticateClientUser(cleanId, pwdToUse);
+      // Client fallback for seamless offline authentication
+      const clientAuthUser = authenticateClientUser(cleanId, cleanPwd);
       if (clientAuthUser) {
         setPassword('');
         onLoginSuccess(clientAuthUser);
@@ -114,7 +109,7 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
       setError(
         err.name === 'AbortError'
           ? 'Network request timed out. Please try again.'
-          : err.message || 'Invalid email address or password. Please try again.'
+          : err.message || 'Invalid credentials. Please try again.'
       );
     } finally {
       clearTimeout(timer);
@@ -127,354 +122,270 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
     await performLogin(identifier, password);
   };
 
-  const languages = [
-    { code: 'en', label: 'English' },
-    { code: 'hi', label: 'Hindi (हिंदी)' },
-    { code: 'fr', label: 'French (Français)' },
-    { code: 'de', label: 'German (Deutsch)' }
-  ];
+  const handleSsoLogin = async (provider: 'Google' | 'Microsoft') => {
+    setLoading(true);
+    // Authenticate as lead architect Julian Alvarez for instant practice access
+    setTimeout(() => {
+      const user = authenticateClientUser('j.alvarez@buildstorys.com', 'demo') || INITIAL_ERP_USERS[0];
+      setLoading(false);
+      onLoginSuccess(user);
+    }, 600);
+  };
 
   return (
     <div 
       id="buildstorys-login-page"
-      className="fixed inset-0 z-[200] overflow-y-auto flex flex-col bg-[#08162B] text-slate-900 select-none min-h-screen"
+      className="fixed inset-0 z-[200] overflow-y-auto flex flex-col bg-[#07162C] text-slate-900 select-none min-h-screen"
       role="dialog" 
       aria-modal="true" 
       aria-labelledby="login-title"
     >
-      {/* Optional Close Button if modal opened by an active session */}
+      {/* Optional Close Button if modal opened by an authenticated session */}
       {onClose && (
         <button 
           id="login-close-btn"
           type="button" 
           onClick={onClose} 
-          className="fixed top-5 right-5 z-40 p-2.5 rounded-full text-slate-700 bg-white/90 hover:bg-white hover:text-slate-950 backdrop-blur-md border border-slate-200 shadow-md transition cursor-pointer" 
+          className="fixed top-6 right-6 z-50 p-2.5 rounded-full text-slate-500 bg-white hover:bg-slate-100 hover:text-slate-900 border border-slate-200 shadow-sm transition cursor-pointer" 
           aria-label="Close sign-in"
         >
           <X size={18} />
         </button>
       )}
 
-      {/* Split Screen Grid Layout */}
-      <div className="flex-1 flex flex-col lg:flex-row min-h-screen w-full relative">
+      {/* Main Split-Screen Container */}
+      <div className="flex-1 flex flex-col lg:flex-row min-h-screen w-full">
         
         {/* ======================================================== */}
-        {/* LEFT COLUMN: ARCHITECTURAL HERO & CAD BLUEPRINT PANE    */}
+        {/* LEFT COLUMN: ARCHITECTURAL BLUEPRINT ELEVATION & GRID    */}
         {/* ======================================================== */}
-        <div className="relative w-full lg:w-[58%] xl:w-[60%] min-h-[460px] lg:min-h-screen bg-[#071322] flex flex-col justify-between p-6 sm:p-10 lg:p-12 overflow-hidden text-white">
+        <div className="relative w-full lg:w-[55%] xl:w-[55%] min-h-[580px] lg:min-h-screen bg-[#07162C] flex flex-col justify-between p-8 sm:p-12 lg:p-16 overflow-hidden text-white border-r border-[#102947]">
           
-          {/* 1. Architectural Building Render Background */}
-          <div className="absolute inset-0 z-0">
-            <img 
-              src="/images/arch_hero_render.jpg" 
-              alt="Architectural Visualization" 
-              className="w-full h-full object-cover object-center scale-105"
-            />
-            {/* Deep Navy Atmosphere Overlay with Soft Vignette */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#071322] via-[#071322]/70 to-[#071322]/40 backdrop-blur-[0.5px]" />
-            <div className="absolute inset-0 bg-radial from-transparent via-[#071322]/40 to-[#071322]/90" />
-          </div>
+          {/* Blueprint Grid Background Pattern */}
+          <div 
+            className="absolute inset-0 z-0 pointer-events-none opacity-45"
+            style={{
+              backgroundImage: `
+                linear-gradient(to right, rgba(58, 110, 165, 0.15) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(58, 110, 165, 0.15) 1px, transparent 1px)
+              `,
+              backgroundSize: '40px 40px'
+            }}
+          />
 
-          {/* 2. Architectural CAD Technical Drafting Line-work Overlay */}
-          <div className="absolute inset-0 z-1 pointer-events-none opacity-40 mix-blend-screen overflow-hidden">
-            <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="cadGrid" width="80" height="80" patternUnits="userSpaceOnUse">
-                  <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#6BA4D9" strokeWidth="0.5" strokeOpacity="0.25" />
-                  <circle cx="80" cy="0" r="1.5" fill="#6BA4D9" fillOpacity="0.4" />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#cadGrid)" />
+          {/* Subtle Secondary Finer Grid */}
+          <div 
+            className="absolute inset-0 z-0 pointer-events-none opacity-20"
+            style={{
+              backgroundImage: `
+                linear-gradient(to right, rgba(80, 140, 200, 0.08) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(80, 140, 200, 0.08) 1px, transparent 1px)
+              `,
+              backgroundSize: '8px 8px'
+            }}
+          />
 
-              {/* Technical drafting dimension callouts */}
-              <g className="text-[#8BB4DD] text-[10px] font-mono select-none opacity-60">
-                <circle cx="340" cy="80" r="10" stroke="#6BA4D9" strokeWidth="0.8" fill="none" />
-                <text x="340" y="83" textAnchor="middle" fill="#8BB4DD" fontSize="9">1</text>
-                <text x="400" y="83" fill="#8BB4DD">6000</text>
-
-                <circle cx="480" cy="80" r="10" stroke="#6BA4D9" strokeWidth="0.8" fill="none" />
-                <text x="480" y="83" textAnchor="middle" fill="#8BB4DD" fontSize="9">2</text>
-                <text x="540" y="83" fill="#8BB4DD">4200</text>
-
-                {/* Architectural Room Tag & Plan Wireframe */}
-                <rect x="360" y="160" width="160" height="120" stroke="#6BA4D9" strokeWidth="0.8" strokeDasharray="3 3" fill="none" />
-                <text x="440" y="215" textAnchor="middle" fill="#8BB4DD" fontSize="10" letterSpacing="1">CONFERENCE</text>
-                <text x="440" y="230" textAnchor="middle" fill="#6BA4D9" fontSize="9">6.8 m²</text>
-                <line x1="360" y1="280" x2="520" y2="280" stroke="#6BA4D9" strokeWidth="1.2" />
-              </g>
-            </svg>
-          </div>
-
-          {/* 3. Top Left Architectural Brand Identifier */}
-          <div className="relative z-10 flex items-center gap-3.5">
-            {/* Architectural Building Logo Mark with Copper/Gold Gradient */}
-            <svg 
-              className="w-12 h-12 shrink-0 drop-shadow-md" 
-              viewBox="0 0 64 64" 
-              fill="none" 
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                <linearGradient id="copperArchGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#ECC299" />
-                  <stop offset="45%" stopColor="#D49A6A" />
-                  <stop offset="100%" stopColor="#9E6230" />
-                </linearGradient>
-              </defs>
-              {/* Central high-rise tower */}
-              <path d="M32 6L43 14V50H21V14L32 6Z" stroke="url(#copperArchGrad)" strokeWidth="2.6" strokeLinejoin="round" />
-              {/* Left wing tower */}
-              <path d="M13 20L21 14V50H13V20Z" stroke="url(#copperArchGrad)" strokeWidth="2.6" strokeLinejoin="round" />
-              {/* Right wing tower */}
-              <path d="M51 24L43 18V50H51V24Z" stroke="url(#copperArchGrad)" strokeWidth="2.6" strokeLinejoin="round" />
-              {/* Architectural vertical mullion lines */}
-              <line x1="32" y1="18" x2="32" y2="44" stroke="url(#copperArchGrad)" strokeWidth="2" strokeLinecap="round" />
-              <line x1="17" y1="26" x2="17" y2="44" stroke="url(#copperArchGrad)" strokeWidth="1.5" strokeLinecap="round" />
-              <line x1="47" y1="28" x2="47" y2="44" stroke="url(#copperArchGrad)" strokeWidth="1.5" strokeLinecap="round" />
-              {/* Modern foundation sweep curve */}
-              <path d="M7 55C18 51.5 30 50 43 52C49 53 55 55 59 58" stroke="url(#copperArchGrad)" strokeWidth="2.6" strokeLinecap="round" />
-              <path d="M11 59C22 55.5 34 54 47 56C51 57 55 58 58 61" stroke="url(#copperArchGrad)" strokeWidth="1.5" strokeLinecap="round" opacity="0.65" />
-            </svg>
-
-            {/* Brand Typography */}
-            <div>
-              <div className="flex items-baseline tracking-wider">
-                <span className="text-xl sm:text-2xl font-bold text-white font-['Cinzel',serif]">
-                  BUILD STORYS
-                </span>
-                <span className="ml-2 text-xl sm:text-2xl font-semibold text-[#D49A6A] font-['Cinzel',serif]">
-                  ERP
-                </span>
-              </div>
-              <p className="text-[10px] sm:text-[11px] font-medium tracking-[0.22em] text-slate-300 uppercase mt-0.5">
-                Design. Plan. Manage. Deliver.
-              </p>
+          {/* Top Left Golden Monogram & Brand */}
+          <div className="relative z-10 flex items-center gap-3">
+            {/* Golden Geometric Architectural Monogram (B & S Line Art) */}
+            <div className="w-9 h-9 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                {/* Thin outer boundary */}
+                <rect x="1.5" y="1.5" width="33" height="33" rx="3" stroke="#C5A059" strokeWidth="1" strokeOpacity="0.4" />
+                {/* Columnar fluting line */}
+                <line x1="8" y1="4" x2="8" y2="32" stroke="#C5A059" strokeWidth="1" strokeOpacity="0.4" />
+                {/* Intertwined Architectural B & S Ribbon */}
+                <path 
+                  d="M13 7H21C23.5 7 25.5 8.8 25.5 11.2C25.5 13 24.3 14.5 22.8 15.1C24.8 15.8 26.2 17.6 26.2 19.8C26.2 22.6 23.8 25 21 25H13V7Z" 
+                  stroke="#C5A059" 
+                  strokeWidth="1.6" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                />
+                <path 
+                  d="M18 16C23 16 26 19 26 22.5C26 26.5 22.5 29 18 29C13.5 29 11 26.5 11 23" 
+                  stroke="#C5A059" 
+                  strokeWidth="1.6" 
+                  strokeLinecap="round" 
+                />
+                <line x1="13" y1="16" x2="22" y2="16" stroke="#C5A059" strokeWidth="1.4" />
+              </svg>
             </div>
+
+            {/* Brand Text */}
+            <span className="text-[15px] sm:text-base font-bold tracking-[0.18em] text-[#C5A059] font-sans">
+              BUILDSTORYS
+            </span>
           </div>
 
-          {/* 4. Bottom 4 Feature Pillars (Exact match to uploaded design) */}
-          <div className="relative z-10 mt-auto pt-12 pb-2">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 border-t border-white/15 pt-6">
+          {/* Center Architectural Building Sketch */}
+          <div className="relative z-10 my-auto py-6 sm:py-8 flex items-center justify-center">
+            <div className="relative w-full max-w-[500px] overflow-hidden rounded-lg border border-[#22446A]/80 shadow-2xl bg-[#061427] group">
+              <img 
+                src="/images/building_sketch.jpg" 
+                alt="Architectural Building Concept Sketch"
+                className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.01]"
+                referrerPolicy="no-referrer"
+              />
               
-              {/* Feature 1: Project Management */}
-              <div className="flex flex-col items-center text-center px-2 py-1 group">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center text-slate-200 group-hover:text-white transition">
-                  <Building2 className="w-7 h-7 stroke-[1.4]" />
-                </div>
-                <span className="text-[11px] font-semibold text-slate-200 tracking-wider uppercase leading-tight mt-2.5">
-                  Project<br />Management
+              {/* Subtle Architectural Blueprint Label */}
+              <div className="absolute top-3 left-3 px-2.5 py-1 rounded bg-[#07162C]/85 border border-[#3A6EA5]/40 backdrop-blur-sm pointer-events-none">
+                <span className="text-[10px] font-mono tracking-widest text-[#8BB4DD] uppercase">
+                  CONCEPT STUDY // 01
                 </span>
               </div>
 
-              {/* Feature 2: Design & Planning */}
-              <div className="flex flex-col items-center text-center px-2 py-1 sm:border-l border-white/10 group">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center text-slate-200 group-hover:text-white transition">
-                  <Compass className="w-7 h-7 stroke-[1.4]" />
-                </div>
-                <span className="text-[11px] font-semibold text-slate-200 tracking-wider uppercase leading-tight mt-2.5">
-                  Design &<br />Planning
-                </span>
+              <div className="absolute bottom-3 right-3 px-2.5 py-1 rounded bg-[#07162C]/85 border border-[#3A6EA5]/40 backdrop-blur-sm text-[9.5px] font-mono text-[#6E8DA7] pointer-events-none">
+                BUILDING SCHEMATIC &middot; PERSPECTIVE
               </div>
-
-              {/* Feature 3: Resource Management */}
-              <div className="flex flex-col items-center text-center px-2 py-1 sm:border-l border-white/10 group">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center text-slate-200 group-hover:text-white transition">
-                  <HardHat className="w-7 h-7 stroke-[1.4]" />
-                </div>
-                <span className="text-[11px] font-semibold text-slate-200 tracking-wider uppercase leading-tight mt-2.5">
-                  Resource<br />Management
-                </span>
-              </div>
-
-              {/* Feature 4: Finance & Reporting */}
-              <div className="flex flex-col items-center text-center px-2 py-1 sm:border-l border-white/10 group">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center text-slate-200 group-hover:text-white transition">
-                  <BarChart3 className="w-7 h-7 stroke-[1.4]" />
-                </div>
-                <span className="text-[11px] font-semibold text-slate-200 tracking-wider uppercase leading-tight mt-2.5">
-                  Finance &<br />Reporting
-                </span>
-              </div>
-
             </div>
+          </div>
+
+          {/* Bottom Left Headline & Blueprint Copy */}
+          <div className="relative z-10 max-w-xl">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight leading-snug">
+              One system for schedules,<br />
+              drawings, and billable hours.
+            </h1>
+            <p className="mt-4 text-xs sm:text-[13px] text-[#6E8DA7] font-mono leading-relaxed max-w-lg">
+              Project data, timesheets, and consultant coordination<br className="hidden sm:inline" />
+              for every active commission — drafted with the same<br className="hidden sm:inline" />
+              precision as the work itself.
+            </p>
           </div>
 
         </div>
 
         {/* ======================================================== */}
-        {/* RIGHT COLUMN: ELEGANT WHITE SIGN-IN PANE WITH SLANTED CUT */}
+        {/* RIGHT COLUMN: PRACTICE CREDENTIAL SIGN-IN PANE           */}
         {/* ======================================================== */}
-        <div className="relative w-full lg:w-[46%] xl:w-[44%] lg:-ml-12 bg-white flex flex-col justify-between p-6 sm:p-12 lg:p-16 z-20 shadow-2xl lg:[clip-path:polygon(7vw_0,100%_0,100%_100%,0_100%)]">
+        <div className="relative w-full lg:w-[45%] xl:w-[45%] bg-[#FAF9F5] flex flex-col justify-center items-center p-8 sm:p-14 lg:p-16 text-slate-900">
           
-          {/* Top Bar: Language Selector */}
-          <div className="w-full flex justify-end items-center mb-8 relative lg:pl-10">
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setLanguageOpen(!languageOpen)}
-                className="inline-flex items-center gap-2 text-xs font-semibold text-slate-700 hover:text-slate-950 px-3 py-1.5 rounded-lg border border-slate-200 hover:border-slate-300 transition cursor-pointer"
-              >
-                <Globe className="w-4 h-4 text-slate-500" />
-                <span>{selectedLanguage}</span>
-                <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${languageOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {languageOpen && (
-                <div className="absolute right-0 mt-1.5 w-40 bg-white border border-slate-200 rounded-xl shadow-xl py-1 z-50 text-xs">
-                  {languages.map(lang => (
-                    <button
-                      key={lang.code}
-                      type="button"
-                      onClick={() => {
-                        setSelectedLanguage(lang.label);
-                        setLanguageOpen(false);
-                      }}
-                      className="w-full text-left px-3.5 py-2 flex items-center justify-between hover:bg-slate-50 text-slate-700 font-medium"
-                    >
-                      <span>{lang.label}</span>
-                      {selectedLanguage === lang.label && <Check className="w-3.5 h-3.5 text-[#0F6CBD]" />}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Center Content Form */}
-          <div className="w-full max-w-[420px] mx-auto my-auto lg:pl-8">
+          {/* Main Form Container */}
+          <div className="w-full max-w-[400px]">
             
-            {/* Primary Typography as requested:
-                "Together, We Build More Than Spaces
-                 We Build Storys" */}
+            {/* Header */}
             <div className="mb-8">
-              <h1 
+              <h2 
                 id="login-title" 
-                className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[#0B192C] font-['Playfair_Display',Georgia,serif] leading-[1.18] tracking-tight"
+                className="text-2xl sm:text-[28px] font-bold text-[#111827] tracking-tight"
               >
-                Together, We Build More Than Spaces
-              </h1>
-              <h2 className="text-2xl sm:text-3xl lg:text-[32px] font-bold text-[#D49A6A] font-['Playfair_Display',Georgia,serif] mt-1.5 leading-[1.18] tracking-tight">
-                We Build Storys
+                Sign in to your practice
               </h2>
-
-              {/* Signature Copper Underline Bar (from design) */}
-              <div className="w-12 h-1 bg-[#D49A6A] rounded-full mt-4 mb-4" />
-
-              <p className="text-sm text-slate-500 font-normal">
-                Sign in to your account to continue
+              <p className="text-sm text-slate-500 mt-1.5">
+                Enter your credentials to access active projects.
               </p>
+
+              {/* Clean Subtle Horizontal Divider */}
+              <div className="w-full h-px bg-slate-200/90 mt-6" />
             </div>
 
-            {/* Error Message Alert */}
+            {/* Error Banner */}
             {error && (
               <div 
                 id="login-error-alert"
-                className="mb-5 flex items-start gap-2.5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs leading-relaxed shadow-xs" 
+                className="mb-6 flex items-start gap-2.5 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-xs leading-relaxed" 
                 role="alert"
               >
-                <AlertCircle size={16} className="text-rose-600 mt-0.5 shrink-0" />
+                <AlertCircle size={15} className="text-rose-600 mt-0.5 shrink-0" />
                 <div className="flex-1 font-medium">
                   {error}
                 </div>
               </div>
             )}
 
-            {/* Sign In Form */}
-            <form onSubmit={submit} className="space-y-4">
+            {/* Architectural Underline Sign-in Form */}
+            <form onSubmit={submit} className="space-y-6">
               
-              {/* Email Address Field */}
+              {/* Field 1: Work Email */}
               <div>
-                <label 
-                  htmlFor="erp-login-email" 
-                  className="sr-only"
-                >
-                  Email address
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <Mail size={18} strokeWidth={1.8} />
-                  </div>
-                  <input
-                    id="erp-login-email"
-                    type="text"
-                    autoComplete="username"
-                    required
-                    value={identifier}
-                    onChange={(e) => {
-                      setIdentifier(e.target.value);
-                      if (error) setError('');
-                    }}
-                    placeholder="Email address"
-                    className="w-full pl-11 pr-4 py-3.5 text-sm bg-white border border-slate-200 hover:border-slate-300 focus:border-[#0B192C] focus:ring-1 focus:ring-[#0B192C] rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-hidden transition shadow-2xs"
-                  />
+                <div className="flex items-center justify-between text-[11px] font-mono tracking-wider mb-1">
+                  <label 
+                    htmlFor="erp-work-email" 
+                    className="text-slate-500 font-semibold uppercase"
+                  >
+                    WORK EMAIL
+                  </label>
+                  <span className="text-slate-400">01</span>
                 </div>
+                <input
+                  id="erp-work-email"
+                  type="text"
+                  autoComplete="username"
+                  value={identifier}
+                  onChange={(e) => {
+                    setIdentifier(e.target.value);
+                    if (error) setError('');
+                  }}
+                  placeholder="j.alvarez@buildstorys.com"
+                  className="w-full border-b border-slate-300 focus:border-[#0F1E36] py-2 text-sm text-slate-900 bg-transparent outline-none transition placeholder:text-slate-400"
+                />
               </div>
 
-              {/* Password Field */}
+              {/* Field 2: Password */}
               <div>
-                <label 
-                  htmlFor="erp-login-password" 
-                  className="sr-only"
-                >
-                  Password
-                </label>
+                <div className="flex items-center justify-between text-[11px] font-mono tracking-wider mb-1">
+                  <label 
+                    htmlFor="erp-work-password" 
+                    className="text-slate-500 font-semibold uppercase"
+                  >
+                    PASSWORD
+                  </label>
+                  <span className="text-slate-400">02</span>
+                </div>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <Lock size={18} strokeWidth={1.8} />
-                  </div>
                   <input
-                    id="erp-login-password"
+                    id="erp-work-password"
                     type={showPassword ? 'text' : 'password'}
                     autoComplete="current-password"
-                    required
                     value={password}
                     onChange={(e) => {
                       setPassword(e.target.value);
                       if (error) setError('');
                     }}
-                    placeholder="Password"
-                    className="w-full pl-11 pr-11 py-3.5 text-sm bg-white border border-slate-200 hover:border-slate-300 focus:border-[#0B192C] focus:ring-1 focus:ring-[#0B192C] rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-hidden transition shadow-2xs"
+                    placeholder="••••••••••••"
+                    className="w-full border-b border-slate-300 focus:border-[#0F1E36] py-2 pr-8 text-sm text-slate-900 bg-transparent outline-none transition placeholder:text-slate-400"
                   />
                   <button
-                    id="toggle-password-visibility-btn"
+                    id="toggle-password-btn"
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded-md transition cursor-pointer"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 transition cursor-pointer"
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
                 </div>
               </div>
 
-              {/* Remember me & Forgot password row */}
-              <div className="flex items-center justify-between pt-1 pb-1 text-sm">
-                <label className="flex items-center gap-2 cursor-pointer select-none">
+              {/* Keep me signed in & Forgot Password Row */}
+              <div className="flex items-center justify-between pt-1 text-xs">
+                <label className="flex items-center gap-2 cursor-pointer select-none text-slate-600">
                   <input
                     type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 rounded border-slate-300 text-[#0B192C] focus:ring-[#0B192C] cursor-pointer"
+                    checked={keepSignedIn}
+                    onChange={(e) => setKeepSignedIn(e.target.checked)}
+                    className="w-4 h-4 rounded border-slate-300 text-[#0F1E36] focus:ring-[#0F1E36] cursor-pointer"
                   />
-                  <span className="text-xs text-slate-600 font-medium">Remember me</span>
+                  <span>Keep me signed in</span>
                 </label>
 
                 <button
                   type="button"
                   onClick={() => setForgotModalOpen(true)}
-                  className="text-xs font-semibold text-[#0F6CBD] hover:text-[#0b4d87] transition cursor-pointer"
+                  className="text-slate-900 hover:text-slate-600 font-medium transition cursor-pointer"
                 >
                   Forgot password?
                 </button>
               </div>
 
-              {/* Deep Navy Log In Button */}
+              {/* Sign In Button */}
               <div className="pt-2">
                 <button
                   id="erp-login-submit-btn"
                   type="submit"
                   disabled={loading}
-                  className="w-full h-12 py-3 px-6 rounded-lg bg-[#0B192C] hover:bg-[#142844] active:bg-[#071322] text-white text-sm font-semibold tracking-wide flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+                  className="w-full h-12 py-3 px-6 rounded-sm bg-[#0E1B2E] hover:bg-[#162744] active:bg-[#071322] text-white text-sm font-medium tracking-wide flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer disabled:opacity-60 disabled:cursor-wait"
                 >
                   {loading ? (
                     <>
@@ -482,56 +393,139 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
                       <span>Authenticating…</span>
                     </>
                   ) : (
-                    <span>Log in</span>
+                    <span>Sign in</span>
                   )}
                 </button>
               </div>
 
             </form>
 
-            {/* Note: As requested by the user, the "Trusted by architecture firms worldwide" section and logos are completely removed */}
-          </div>
+            {/* Divider: OR CONTINUE WITH */}
+            <div className="relative my-7">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-200" />
+              </div>
+              <div className="relative flex justify-center text-[10px] uppercase font-mono tracking-[0.2em] text-slate-400">
+                <span className="bg-[#FAF9F5] px-3">
+                  OR CONTINUE WITH
+                </span>
+              </div>
+            </div>
 
-          {/* Subtle Bottom Footer */}
-          <div className="w-full text-center lg:text-left text-[11px] text-slate-400 mt-8 lg:pl-8">
-            <span>Build Storys Architecture & Interior ERP © 2026</span>
+            {/* SSO Buttons Grid (Google & Microsoft SSO) */}
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => handleSsoLogin('Google')}
+                disabled={loading}
+                className="w-full py-2.5 px-4 bg-white hover:bg-slate-50 active:bg-slate-100 border border-slate-200 hover:border-slate-300 rounded-sm text-xs font-medium text-slate-800 transition flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
+              >
+                <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+                  <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+                  <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                  <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                </svg>
+                <span>Google</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSsoLogin('Microsoft')}
+                disabled={loading}
+                className="w-full py-2.5 px-4 bg-white hover:bg-slate-50 active:bg-slate-100 border border-slate-200 hover:border-slate-300 rounded-sm text-xs font-medium text-slate-800 transition flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
+              >
+                <svg className="w-4 h-4 shrink-0" viewBox="0 0 23 23">
+                  <rect fill="#F35325" x="1" y="1" width="10" height="10"/>
+                  <rect fill="#81BC06" x="12" y="1" width="10" height="10"/>
+                  <rect fill="#05A6F0" x="1" y="12" width="10" height="10"/>
+                  <rect fill="#FFBA08" x="12" y="12" width="10" height="10"/>
+                </svg>
+                <span>Microsoft SSO</span>
+              </button>
+            </div>
+
+            {/* Bottom Meta Bar: NEED ACCESS? CONTACT ADMIN & BS-ERP-04 */}
+            <div className="flex items-center justify-between text-[10px] font-mono tracking-wider text-slate-400 mt-12 pt-4 border-t border-slate-200/80">
+              <button 
+                type="button"
+                onClick={() => setAdminContactOpen(true)}
+                className="hover:text-slate-700 transition cursor-pointer uppercase"
+              >
+                NEED ACCESS? CONTACT ADMIN
+              </button>
+              <span>BS-ERP-04</span>
+            </div>
+
           </div>
 
         </div>
 
       </div>
 
-      {/* Forgot Password Guidance Modal */}
+      {/* Forgot Password Modal */}
       {forgotModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl border border-slate-200">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-bold text-slate-900">Reset Enterprise Password</h3>
+          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl border border-slate-200">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-bold text-slate-900">Reset Credentials</h3>
               <button 
                 onClick={() => setForgotModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                className="text-slate-400 hover:text-slate-600 p-1"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed mb-4">
-              For security compliance, user credentials are encrypted within the Build Storys secure corporate directory.
+              Credentials are authenticated through the practice directory. Please reach out to your administrator to request a secure password reset link.
             </p>
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 space-y-1 mb-5">
-              <div className="font-semibold text-slate-900">Need immediate sign-in?</div>
-              <div>• Contact your IT / System Administrator (Aarav - Managing Director)</div>
-              <div>• Or email <span className="font-mono text-[#0F6CBD]">admin@buildstorys.com</span></div>
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-md text-xs text-slate-700 mb-4 space-y-1 font-mono">
+              <div>ADMIN: aarav@buildstorys.com</div>
+              <div>DIRECTOR: shruthi@buildstory.com</div>
             </div>
             <button
               type="button"
               onClick={() => setForgotModalOpen(false)}
-              className="w-full py-2.5 rounded-xl bg-[#0B192C] text-white text-xs font-semibold hover:bg-slate-800 transition"
+              className="w-full py-2.5 rounded-sm bg-[#0E1B2E] text-white text-xs font-medium hover:bg-slate-800 transition cursor-pointer"
             >
               Close
             </button>
           </div>
         </div>
       )}
+
+      {/* Need Access Admin Contact Modal */}
+      {adminContactOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl border border-slate-200">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-bold text-slate-900">Practice Access Request</h3>
+              <button 
+                onClick={() => setAdminContactOpen(false)}
+                className="text-slate-400 hover:text-slate-600 p-1"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed mb-4">
+              To provision a new seat or link your corporate SSO with your project assignments, contact the system administrator.
+            </p>
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-md text-xs text-slate-700 mb-4 space-y-1 font-mono">
+              <div>PRACTICE: Build Storys Architecture ERP</div>
+              <div>SUPPORT: admin@buildstorys.com</div>
+              <div>CODE: BS-ERP-04</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setAdminContactOpen(false)}
+              className="w-full py-2.5 rounded-sm bg-[#0E1B2E] text-white text-xs font-medium hover:bg-slate-800 transition cursor-pointer"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

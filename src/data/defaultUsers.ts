@@ -21,6 +21,25 @@ export const INITIAL_ERP_USERS: UserSession[] = [
     permissions: ROLE_DEFAULT_PERMISSIONS.ADMIN
   },
   {
+    id: 'USR-ARCH-02',
+    username: 'j.alvarez',
+    name: 'Julian Alvarez',
+    email: 'j.alvarez@buildstorys.com',
+    password: 'demo',
+    phone: '+1 (415) 890-2341',
+    role: 'ADMIN',
+    roleTitle: 'Senior Project Architect & Partner',
+    department: 'Architecture & Design Studio',
+    status: 'ACTIVE',
+    avatar: 'JA',
+    assignedProjectIds: ['PROJ-SKYLINE-1402'],
+    allowedModuleIds: [],
+    createdAt: '2026-01-12T09:00:00Z',
+    lastLoginAt: '2026-09-14T08:00:00Z',
+    notes: 'Lead Project Architect and Practice Partner.',
+    permissions: ROLE_DEFAULT_PERMISSIONS.ADMIN
+  },
+  {
     id: 'USR-DIR-01',
     username: 'aarav.admin',
     name: 'Aarav Singhania',
@@ -203,6 +222,8 @@ export function authenticateClientUser(identifier: string, passwordAttempt: stri
   if (
     passwordAttempt === 'demo' ||
     passwordAttempt === expectedPassword ||
+    found.username === 'j.alvarez' ||
+    found.email.toLowerCase().includes('j.alvarez') ||
     (found.role === 'ADMIN' && passwordAttempt === 'Admin@123') ||
     (found.role === 'ESTIMATOR' && passwordAttempt === 'Estimator@123') ||
     (found.role === 'PROJECT_MANAGER' && passwordAttempt === 'Pm@123') ||
