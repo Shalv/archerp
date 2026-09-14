@@ -208,7 +208,7 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
               {/* Subtle Architectural Blueprint Label */}
               <div className="absolute top-3 left-3 px-2.5 py-1 rounded bg-[#07162C]/85 border border-[#3A6EA5]/40 backdrop-blur-sm pointer-events-none">
                 <span className="text-[10px] font-mono tracking-widest text-[#8BB4DD] uppercase">
-                  CONCEPT STUDY // 01
+                  CONCEPT STUDY
                 </span>
               </div>
 
@@ -276,14 +276,13 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
               
               {/* Field 1: Work Email */}
               <div>
-                <div className="flex items-center justify-between text-[11px] font-mono tracking-wider mb-1">
+                <div className="mb-1 text-[11px] font-mono tracking-wider">
                   <label 
                     htmlFor="erp-work-email" 
                     className="text-slate-500 font-semibold uppercase"
                   >
                     WORK EMAIL
                   </label>
-                  <span className="text-slate-400">01</span>
                 </div>
                 <input
                   id="erp-work-email"
@@ -301,14 +300,13 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
 
               {/* Field 2: Password */}
               <div>
-                <div className="flex items-center justify-between text-[11px] font-mono tracking-wider mb-1">
+                <div className="mb-1 text-[11px] font-mono tracking-wider">
                   <label 
                     htmlFor="erp-work-password" 
                     className="text-slate-500 font-semibold uppercase"
                   >
                     PASSWORD
                   </label>
-                  <span className="text-slate-400">02</span>
                 </div>
                 <div className="relative">
                   <input
