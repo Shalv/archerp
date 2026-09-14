@@ -185,37 +185,14 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
             }}
           />
 
-          {/* Top Left Golden Monogram & Brand */}
-          <div className="relative z-10 flex items-center gap-3">
-            {/* Golden Geometric Architectural Monogram (B & S Line Art) */}
-            <div className="w-9 h-9 flex items-center justify-center shrink-0">
-              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                {/* Thin outer boundary */}
-                <rect x="1.5" y="1.5" width="33" height="33" rx="3" stroke="#C5A059" strokeWidth="1" strokeOpacity="0.4" />
-                {/* Columnar fluting line */}
-                <line x1="8" y1="4" x2="8" y2="32" stroke="#C5A059" strokeWidth="1" strokeOpacity="0.4" />
-                {/* Intertwined Architectural B & S Ribbon */}
-                <path 
-                  d="M13 7H21C23.5 7 25.5 8.8 25.5 11.2C25.5 13 24.3 14.5 22.8 15.1C24.8 15.8 26.2 17.6 26.2 19.8C26.2 22.6 23.8 25 21 25H13V7Z" 
-                  stroke="#C5A059" 
-                  strokeWidth="1.6" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                />
-                <path 
-                  d="M18 16C23 16 26 19 26 22.5C26 26.5 22.5 29 18 29C13.5 29 11 26.5 11 23" 
-                  stroke="#C5A059" 
-                  strokeWidth="1.6" 
-                  strokeLinecap="round" 
-                />
-                <line x1="13" y1="16" x2="22" y2="16" stroke="#C5A059" strokeWidth="1.4" />
-              </svg>
-            </div>
-
-            {/* Brand Text */}
-            <span className="text-[15px] sm:text-base font-bold tracking-[0.18em] text-[#C5A059] font-sans">
-              BUILDSTORYS
-            </span>
+          {/* Top Left Official Build Storys Brand Logo */}
+          <div className="relative z-10 flex items-center">
+            <img 
+              src="/images/buildstorys-logo-full.png" 
+              alt="Build Storys - Crafting Spaces | Building Stories" 
+              className="h-10 sm:h-12 md:h-14 w-auto object-contain drop-shadow-md select-none"
+              referrerPolicy="no-referrer"
+            />
           </div>
 
           {/* Center Architectural Building Sketch */}
