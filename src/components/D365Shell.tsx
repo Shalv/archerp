@@ -5,6 +5,7 @@ import {
   Bell, 
   Settings, 
   HelpCircle, 
+  GraduationCap,
   Sparkles, 
   ChevronDown, 
   Check, 
@@ -39,7 +40,9 @@ import {
   ClipboardCheck,
   Award,
   PanelLeft,
-  Menu
+  Menu,
+  Wrench,
+  ChevronRight
 } from 'lucide-react';
 import { UserSession, ProjectRecord } from '../types/erp';
 
@@ -55,6 +58,7 @@ interface D365ShellProps {
   onOpenInspectData: () => void;
   onOpenAuditLogs: () => void;
   onOpenStatusModal: () => void;
+  onOpenTrainingManual?: () => void;
   onOpenLoginPortal?: () => void;
   onLogout?: () => void;
   onOpenProfile?: (initialTab?: 'profile' | 'security') => void;
@@ -78,6 +82,7 @@ export const D365Shell: React.FC<D365ShellProps> = ({
   onOpenInspectData,
   onOpenAuditLogs,
   onOpenStatusModal,
+  onOpenTrainingManual,
   onOpenLoginPortal,
   onLogout,
   onOpenProfile,
@@ -101,6 +106,7 @@ export const D365Shell: React.FC<D365ShellProps> = ({
   const [mySettingsOpen, setMySettingsOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false);
+  const [toolsMenuOpen, setToolsMenuOpen] = useState(false);
   const [navDropdownOpen, setNavDropdownOpen] = useState<string | null>(null);
   const navDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -133,6 +139,8 @@ export const D365Shell: React.FC<D365ShellProps> = ({
 
   // Tell Me Search Items
   const tellMeItems = [
+    { title: 'Customer Training & Operations Manual (Step-by-Step Module Guide)', category: 'Training & Help', action: () => onOpenTrainingManual?.() },
+    { title: 'User Operations Manual & Step-by-Step Customer Curriculum', category: 'Training & Help', action: () => onOpenTrainingManual?.() },
     { title: 'Role Center Dashboard (My Assigned Role & Responsibilities)', category: 'Role Center', action: () => handleNavigate('dashboard') },
     { title: 'BOQ Cost Traceability Matrix (BOQ -> Budget -> PO/WO -> Actual Cost)', category: 'Core Finance', action: () => handleNavigate('traceability') },
     { title: 'Agentic AI Copilot Action Center (Review Suggestions & Approve)', category: 'AI Copilot', action: () => handleNavigate('ai_workspace') },
@@ -512,14 +520,14 @@ export const D365Shell: React.FC<D365ShellProps> = ({
             )}
           </div>
 
-          {/* Quick Profile & Password button */}
+          {/* Customer Training Manual */}
           <button
-            id="d365-header-quick-profile-btn"
-            onClick={() => onOpenProfile?.('security')}
-            className="p-1.5 rounded hover:bg-[#001833] text-white/90 hover:text-white transition flex items-center gap-1"
-            title="Update Password & User Profile"
+            onClick={onOpenTrainingManual}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#0F6CBD] hover:bg-[#0c5999] text-white transition text-xs font-semibold shadow-xs cursor-pointer"
+            title="Customer Training & Operations Manual (Step-by-Step Curriculum)"
           >
-            <Key className="h-4 w-4" />
+            <GraduationCap className="h-3.5 w-3.5 text-sky-200" />
+            <span className="hidden sm:inline text-xs font-semibold">Training Guide</span>
           </button>
 
           {/* Help icon */}
@@ -760,23 +768,56 @@ export const D365Shell: React.FC<D365ShellProps> = ({
             </button>
           )}
 
-          {/* Telemetry / Audit shortcut */}
-          <button
-            onClick={onOpenAuditLogs}
-            className="hidden md:flex items-center gap-1 px-2 py-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded text-xs border border-transparent hover:border-slate-200 transition cursor-pointer"
-            title="Enterprise Audit Logs & Telemetry"
-          >
-            <span>Audit Trail</span>
-          </button>
+          {/* Diagnostics & Tools Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setToolsMenuOpen(!toolsMenuOpen)}
+              className="flex items-center gap-1 px-2 py-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded text-xs border border-transparent hover:border-slate-200 transition cursor-pointer font-medium"
+              title="Enterprise Diagnostics & Technical Tools"
+            >
+              <Wrench className="w-3.5 h-3.5 text-slate-500" />
+              <span className="hidden xl:inline">Tools</span>
+              <ChevronDown className="w-3 h-3 text-slate-400" />
+            </button>
 
-          {/* Inspect Data Shortcut */}
-          <button
-            onClick={onOpenInspectData}
-            className="hidden xl:flex items-center gap-1 px-2 py-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded text-[11px] font-mono cursor-pointer"
-            title="Page Inspection (Ctrl+Alt+F1)"
-          >
-            <span>Ctrl+Alt+F1</span>
-          </button>
+            {toolsMenuOpen && (
+              <ViewportMenu className="absolute right-0 mt-1.5 w-60 bg-white text-[#201F1E] rounded-lg shadow-xl border border-[#EDEBE9] py-1.5 z-50 text-xs">
+                <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100">
+                  Enterprise Diagnostics
+                </div>
+                <button
+                  onClick={() => {
+                    setToolsMenuOpen(false);
+                    onOpenAuditLogs();
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-center justify-between group cursor-pointer"
+                >
+                  <span className="font-medium text-slate-700 group-hover:text-[#0F6CBD]">Audit Trail & Telemetry</span>
+                  <span className="text-[10px] text-slate-400 font-mono">Logs</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setToolsMenuOpen(false);
+                    onOpenInspectData();
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-center justify-between group cursor-pointer"
+                >
+                  <span className="font-medium text-slate-700 group-hover:text-[#0F6CBD]">Page & Data Inspector</span>
+                  <kbd className="text-[9px] bg-slate-100 text-slate-600 px-1 py-0.5 rounded font-mono">Ctrl+Alt+F1</kbd>
+                </button>
+                <button
+                  onClick={() => {
+                    setToolsMenuOpen(false);
+                    onOpenStatusModal();
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-center justify-between group cursor-pointer border-t border-slate-100"
+                >
+                  <span className="font-medium text-slate-700 group-hover:text-[#0F6CBD]">System Capabilities</span>
+                  <span className="text-[10px] text-slate-400">Specs</span>
+                </button>
+              </ViewportMenu>
+            )}
+          </div>
         </div>
       </div>
 
@@ -792,7 +833,7 @@ export const D365Shell: React.FC<D365ShellProps> = ({
               <kbd className="font-mono text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-[#C7E0F4]">ESC to close</kbd>
             </div>
 
-            <div className="p-3 border-b border-[#EDEBE9] bg-[#FAF9F8]">
+            <div className="p-3 border-b border-[#EDEBE9] bg-[#FAF9F8] space-y-2">
               <input
                 type="text"
                 autoFocus
@@ -808,6 +849,33 @@ export const D365Shell: React.FC<D365ShellProps> = ({
                 }}
                 className="w-full rounded border border-[#8A8886] bg-white px-3 py-2 text-sm text-[#201F1E] focus:border-[#0F6CBD] focus:ring-1 focus:ring-[#0F6CBD] focus:outline-hidden"
               />
+
+              {/* Quick Jump Suggestions when query is empty */}
+              {!tellMeQuery && (
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none text-[11px]">
+                  <span className="text-slate-400 text-[10px] uppercase font-semibold shrink-0">Popular:</span>
+                  {[
+                    { label: 'Customer Training', action: () => onOpenTrainingManual?.() },
+                    { label: 'Role Center', action: () => handleNavigate('dashboard') },
+                    { label: 'BOQ Estimating', action: () => handleNavigate('boq') },
+                    { label: 'Site DPR', action: () => handleNavigate('site_execution') },
+                    { label: 'Purchase Orders', action: () => handleNavigate('procurement') },
+                    { label: 'AI Copilot', action: () => handleNavigate('ai_workspace') }
+                  ].map((quick, qIdx) => (
+                    <button
+                      key={qIdx}
+                      type="button"
+                      onClick={() => {
+                        quick.action();
+                        setTellMeOpen(false);
+                      }}
+                      className="px-2 py-0.5 bg-white border border-slate-200 rounded-full text-slate-700 hover:bg-blue-50 hover:text-[#0F6CBD] hover:border-blue-300 transition shrink-0 cursor-pointer font-medium"
+                    >
+                      {quick.label}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="max-h-72 overflow-y-auto divide-y divide-[#EDEBE9] p-1">

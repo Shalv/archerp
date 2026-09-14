@@ -437,13 +437,11 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
       </div>
 
       {/* 1. ROLE-BASED WELCOME BANNER & IDENTITY CARD */}
-      <div className="bg-gradient-to-r from-[#002050] via-[#003366] to-[#0a4b88] text-white rounded-lg shadow-md border border-[#004080] p-4 sm:p-5 relative overflow-hidden">
-        <div className="absolute right-0 top-0 bottom-0 w-96 bg-radial from-blue-400/10 to-transparent pointer-events-none" />
-
+      <div className="bg-[#0B192C] text-white rounded-xl shadow-xs border border-[#1E3E62] p-4 sm:p-5 relative overflow-hidden">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
           <div className="flex items-center gap-3.5">
-            <div className="w-13 h-13 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0 shadow-inner backdrop-blur-xs">
-              <IconComponent className="w-7 h-7 text-yellow-300" />
+            <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0 shadow-xs">
+              <IconComponent className="w-6 h-6 text-sky-300" />
             </div>
 
             <div>
@@ -466,7 +464,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
               <div className="text-xs text-[#C7E0F4] mt-0.5 flex items-center gap-2 flex-wrap">
                 <span className="font-semibold text-white">{profile.dept}</span>
                 <span>•</span>
-                <span className="text-yellow-300 font-mono">
+                <span className="text-sky-300 font-mono">
                   Active Project: {activeProject?.projectCode || 'PROJ-SKYLINE-1402'} ({activeProject?.title || 'Skyline Penthouse'})
                 </span>
               </div>
@@ -475,7 +473,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
 
           {/* User Persona Switcher */}
           <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
-            <div className="bg-white/10 backdrop-blur-xs border border-white/20 rounded-lg p-2 flex items-center gap-3">
+            <div className="bg-white/10 border border-white/20 rounded-lg p-2 flex items-center gap-3">
               <div className="text-right hidden sm:block">
                 <div className="text-[10px] text-[#89BBE9] font-medium">Logged-in Persona</div>
                 <div className="text-xs font-bold text-white truncate max-w-[140px]">{currentUser.name}</div>
@@ -487,7 +485,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
                   const targetUser = allUsers.find(u => u.id === e.target.value);
                   if (targetUser) onSwitchUser(targetUser);
                 }}
-                className="bg-[#002050] text-white text-xs border border-white/30 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-yellow-400 font-medium cursor-pointer"
+                className="bg-[#002050] text-white text-xs border border-white/30 rounded px-2.5 py-1.5 focus:outline-hidden focus:ring-1 focus:ring-sky-400 font-medium cursor-pointer"
                 title="Switch active user to view their tailored role center"
               >
                 {allUsers.map(u => (
@@ -503,7 +501,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
         {/* Responsibilities Pill Summary */}
         <div className="mt-4 pt-3 border-t border-white/15 flex flex-wrap items-center gap-1.5">
           <span className="text-[11px] font-semibold text-[#89BBE9] flex items-center gap-1 mr-1">
-            <Shield className="w-3.5 h-3.5 text-yellow-300" />
+            <Shield className="w-3.5 h-3.5 text-sky-300" />
             Core Duties:
           </span>
           {profile.responsibilities.slice(0, 3).map((resp, i) => (

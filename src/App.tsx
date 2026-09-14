@@ -41,6 +41,7 @@ import { UserProfileEditModal } from './components/UserProfileEditModal';
 import { LoginPortalModal } from './components/LoginPortalModal';
 import { SystemStatusModal } from './components/SystemStatusModal';
 import { AuditLogsModal } from './components/AuditLogsModal';
+import { CustomerTrainingModal } from './components/CustomerTrainingModal';
 import { exportJobPlanningLinesToExcel } from './utils/excelExport';
 import { CostTraceabilityMatrixView } from './components/CostTraceabilityMatrixView';
 import { AgenticAIActionCenter } from './components/AgenticAIActionCenter';
@@ -82,6 +83,7 @@ export default function App() {
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [auditLogsOpen, setAuditLogsOpen] = useState(false);
+  const [trainingModalOpen, setTrainingModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(!restoredSessionUser);
   const [authenticated, setAuthenticated] = useState(!!restoredSessionUser);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -737,6 +739,7 @@ export default function App() {
         onSelectProject={handleSelectProject}
         onOpenStatusModal={() => setStatusModalOpen(true)}
         onOpenAuditLogs={() => setAuditLogsOpen(true)}
+        onOpenTrainingManual={() => setTrainingModalOpen(true)}
         onOpenInspectData={() => setIsInspectOpen(true)}
         onLogout={handleLogout}
         onOpenProfile={handleOpenProfile}
@@ -787,6 +790,7 @@ export default function App() {
           onOpenAuditLogs={() => setAuditLogsOpen(true)}
           onOpenInspectData={() => setIsInspectOpen(true)}
           onOpenStatusModal={() => setStatusModalOpen(true)}
+          onOpenTrainingManual={() => setTrainingModalOpen(true)}
           onOpenProfile={handleOpenProfile}
         />
 
@@ -979,6 +983,17 @@ export default function App() {
       <AuditLogsModal
         isOpen={auditLogsOpen}
         onClose={() => setAuditLogsOpen(false)}
+      />
+
+      {/* Customer Training & Operations Manual Modal */}
+      <CustomerTrainingModal
+        isOpen={trainingModalOpen}
+        onClose={() => setTrainingModalOpen(false)}
+        onNavigateToTab={(tabKey) => {
+          setActiveTab(tabKey);
+          setTrainingModalOpen(false);
+        }}
+        currentUser={currentUser}
       />
 
       {/* User Profile & Password Security Modal */}
