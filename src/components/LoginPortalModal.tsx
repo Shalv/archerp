@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Lock, 
   Mail, 
@@ -8,12 +8,11 @@ import {
   LogIn, 
   X, 
   ShieldCheck, 
-  Building2, 
   Calculator, 
   HardHat, 
   CheckCircle2,
-  Sparkles,
-  ArrowRight
+  ArrowRight,
+  Layers
 } from 'lucide-react';
 import { UserSession } from '../types/erp';
 import { readApiResponse } from '../utils/apiResponse';
@@ -38,6 +37,7 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -50,6 +50,18 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
     }
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
+
+  // Ensure background video plays automatically in a continuous loop
+  useEffect(() => {
+    if (videoRef.current) {
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Autoplay fallback silently handled by loop and poster
+        });
+      }
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -121,43 +133,55 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
 
   return (
     <div 
-      className="fixed inset-0 z-[200] flex items-center justify-center overflow-y-auto p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md"
+      className="fixed inset-0 z-[200] overflow-y-auto flex flex-col justify-center select-none"
       role="dialog" 
       aria-modal="true" 
       aria-labelledby="login-title"
     >
-      {/* Background Architectural Poster Wallpaper */}
-      <div 
-        className="fixed inset-0 pointer-events-none opacity-20 bg-cover bg-center transition-opacity duration-1000"
-        style={{ backgroundImage: `url('/assets/images/minimalist_concept_render_1789216644600.jpg')` }}
-      />
-      <div className="fixed inset-0 pointer-events-none bg-gradient-to-t from-slate-950 via-slate-950/85 to-slate-900/90" />
+      {/* 1. ARCHITECTURAL 3D WIREFRAME BACKGROUND VIDEO - CONTINUOUS SEAMLESS LOOP */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster="/videos/login-bg-poster.jpg"
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/videos/login-bg.mp4" type="video/mp4" />
+        </video>
+      </div>
 
+      {/* Close Button if opened as overlay dialog */}
       {onClose && (
         <button 
           type="button" 
           onClick={onClose} 
-          className="fixed top-4 right-4 z-20 p-2.5 rounded-full text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 backdrop-blur border border-slate-700 transition-colors shadow-lg" 
+          className="fixed top-6 right-6 z-30 p-2.5 rounded-full text-slate-200 bg-slate-900/80 hover:bg-slate-900 backdrop-blur-md border border-slate-700 transition-all shadow-lg cursor-pointer" 
           aria-label="Close sign-in"
         >
           <X size={20} />
         </button>
       )}
 
-      {/* Main Responsive Portal Card */}
-      <div className="relative z-10 w-full max-w-5xl my-auto bg-white rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[540px]">
+      {/* 2. MAIN FULL-WIDTH CONTAINER WITH RIGHT-SHIFTED LOGIN CARD */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 py-8 sm:py-12 flex flex-col lg:flex-row items-center justify-between gap-10 min-h-[90vh]">
         
-        {/* Left Column: Enterprise Brand & Architectural Overview */}
-        <div className="lg:col-span-5 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 p-6 sm:p-8 text-white flex flex-col justify-between relative overflow-hidden">
-          {/* Subtle architectural grid pattern */}
-          <div 
-            className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]" 
-          />
+        {/* LEFT COLUMN: ARCHITECTURAL FIRM BRANDING WITH CRISP FROSTED GLASS */}
+        <div className="w-full lg:max-w-xl text-slate-900 flex flex-col justify-between py-4 space-y-6">
+          
+          <div className="p-6 sm:p-8 rounded-2xl bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-xs font-semibold tracking-wider uppercase text-indigo-700 mb-5 shadow-xs">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-600"></span>
+              </span>
+              <span>Architectural Studio & ERP Hub</span>
+            </div>
 
-          <div>
-            {/* Logo and Brand Title */}
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-11 w-11 rounded-xl bg-white p-1 shadow-md flex items-center justify-center shrink-0">
+            <div className="flex items-center gap-3.5 mb-4">
+              <div className="h-12 w-12 rounded-xl bg-white p-1.5 shadow-md flex items-center justify-center shrink-0 border border-slate-200">
                 <img 
                   src="/images/buildstorys-logo-icon.png" 
                   alt="Build Storys" 
@@ -165,144 +189,100 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
                 />
               </div>
               <div>
-                <span className="text-xl font-bold tracking-tight text-white block">Build Storys ERP</span>
-                <span className="text-xs text-indigo-200 font-medium block">Design-Build & Commercial Operating System</span>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 font-['Cinzel',serif]">
+                  BUILD STORYS
+                </h1>
+                <span className="text-xs sm:text-sm font-medium text-slate-600 tracking-widest uppercase block">
+                  Architecture & Integrated Design Studio
+                </span>
               </div>
             </div>
 
-            {/* Architecture Headline */}
-            <div className="mb-6">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 mb-3">
-                <Sparkles size={13} className="text-indigo-400" />
-                Integrated Turnkey Platform
-              </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight">
-                Architectural Design to Site Handover
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
-                Connect spatial concepts, AI line-item estimating, GFC drawings, and certified milestone billings in one unified workspace.
-              </p>
-            </div>
+            <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal max-w-lg mt-3">
+              Precision architectural design meets turnkey construction execution. Connect spatial concepts, AI line-item estimating, GFC drawings, and certified milestone billings in one unified workspace.
+            </p>
 
-            {/* Feature Highlights List */}
-            <div className="space-y-3 my-6">
-              <div className="flex items-start gap-3 bg-white/5 border border-white/10 rounded-xl p-3">
-                <Building2 size={18} className="text-indigo-400 mt-0.5 shrink-0" />
-                <div>
-                  <h4 className="text-xs font-semibold text-white">Bespoke Architectural Concepts</h4>
-                  <p className="text-[11px] text-slate-300 mt-0.5">High-fidelity 3D schemes, client inspiration boards, and material schedules.</p>
-                </div>
+            {/* Architectural Capabilities Badges */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs mt-6 pt-5 border-t border-slate-200">
+              <div className="flex items-center gap-2 p-2 rounded-lg bg-white/90 border border-slate-200/90 shadow-2xs">
+                <Layers size={15} className="text-indigo-600 shrink-0" />
+                <span className="text-slate-800 font-medium">BIM Level 3</span>
               </div>
-
-              <div className="flex items-start gap-3 bg-white/5 border border-white/10 rounded-xl p-3">
-                <Calculator size={18} className="text-emerald-400 mt-0.5 shrink-0" />
-                <div>
-                  <h4 className="text-xs font-semibold text-white">Parametric AI BOQ Takeoffs</h4>
-                  <p className="text-[11px] text-slate-300 mt-0.5">Real-time ledger recalculation, margin protection, and multi-tier quotations.</p>
-                </div>
+              <div className="flex items-center gap-2 p-2 rounded-lg bg-white/90 border border-slate-200/90 shadow-2xs">
+                <Calculator size={15} className="text-emerald-600 shrink-0" />
+                <span className="text-slate-800 font-medium">Parametric BOQ</span>
               </div>
-
-              <div className="flex items-start gap-3 bg-white/5 border border-white/10 rounded-xl p-3">
-                <HardHat size={18} className="text-amber-400 mt-0.5 shrink-0" />
-                <div>
-                  <h4 className="text-xs font-semibold text-white">Site Execution & Quality Control</h4>
-                  <p className="text-[11px] text-slate-300 mt-0.5">Stage milestones, contractor snag tracking, and verified RA billings.</p>
-                </div>
+              <div className="flex items-center gap-2 p-2 rounded-lg bg-white/90 border border-slate-200/90 shadow-2xs">
+                <HardHat size={15} className="text-amber-600 shrink-0" />
+                <span className="text-slate-800 font-medium">Site QA Verification</span>
               </div>
             </div>
           </div>
 
-          {/* Footer Security Badge */}
-          <div className="pt-4 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
-            <span className="flex items-center gap-1.5">
-              <ShieldCheck size={14} className="text-emerald-400" />
-              Role-Based Access Control Active
-            </span>
-            <span className="font-mono text-slate-500">v2.4 Enterprise</span>
-          </div>
         </div>
 
-        {/* Right Column: Interactive Login Portal Form */}
-        <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between bg-slate-50/50">
-          <div>
-            {/* Header */}
-            <div className="mb-6">
-              <h1 id="login-title" className="text-2xl font-bold text-slate-900 tracking-tight">
-                Sign in to your workspace
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                Enter your authorized credentials to access your ERP workspace.
+        {/* RIGHT COLUMN: ARCHITECTURAL LOGIN CARD IN SOPHISTICATED GREY SHADE WITH HIGH-CONTRAST CLEAR TEXT */}
+        <div className="w-full lg:max-w-md xl:max-w-[430px] lg:ml-auto shrink-0">
+          <div className="bg-slate-900/90 backdrop-blur-xl rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] border border-slate-700/80 p-6 sm:p-8 text-white relative overflow-hidden">
+            
+            {/* Top Architectural Accent Bar */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-sky-400 to-indigo-600" />
+
+            {/* Portal Card Header */}
+            <div className="mb-6 pt-1">
+              <div className="flex items-center justify-between mb-2.5">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-indigo-300 bg-indigo-950/80 px-2.5 py-0.5 rounded-full border border-indigo-700/60 shadow-2xs">
+                  <ShieldCheck size={12} className="text-indigo-400" />
+                  Enterprise Gateway
+                </span>
+                <span className="text-[10px] font-mono text-slate-400 font-semibold">v2.4 Core</span>
+              </div>
+              <h2 id="login-title" className="text-2xl font-bold text-white tracking-tight font-['Cinzel',serif]">
+                Studio Sign In
+              </h2>
+              <p className="text-xs text-slate-300 mt-1 font-normal">
+                Enter your credentials to access the architectural workspace.
               </p>
             </div>
 
-            {/* Error Alert Box */}
+            {/* Error Message Alert */}
             {error && (
-              <div className="mb-5 flex items-start gap-2.5 p-3.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-xs leading-relaxed shadow-xs" role="alert">
-                <AlertCircle size={16} className="text-rose-600 mt-0.5 shrink-0" />
+              <div 
+                className="mb-4 flex items-start gap-2.5 p-3 rounded-xl bg-rose-950/70 border border-rose-800/80 text-rose-200 text-xs leading-relaxed shadow-xs" 
+                role="alert"
+              >
+                <AlertCircle size={16} className="text-rose-400 mt-0.5 shrink-0" />
                 <div className="flex-1 font-medium">
                   {error}
                 </div>
               </div>
             )}
 
-            {/* Quick Demo Access Selection */}
-            <div className="mb-5 p-3 rounded-xl bg-slate-100/70 border border-slate-200/80">
-              <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">
-                Quick Select Workspace
-              </span>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-                {[
-                  { name: 'Shruthi', role: 'Design Director', id: 'shruthi@buildstory.com', pwd: 'demo' },
-                  { name: 'Aarav', role: 'MD / Admin', id: 'aarav@buildstorys.com', pwd: 'Admin@123' },
-                  { name: 'Rajesh', role: 'Lead Estimator', id: 'rajesh.qs@buildstorys.com', pwd: 'Estimator@123' },
-                  { name: 'Kavita', role: 'Project Lead', id: 'kavita.pm@buildstorys.com', pwd: 'Pm@123' },
-                  { name: 'Ramesh', role: 'Site Execution', id: 'ramesh.site@buildstorys.com', pwd: 'Site@123' },
-                  { name: 'Client', role: 'Vikram Malhotra', id: 'vikram.malhotra@skyline.org', pwd: 'Client@123' },
-                ].map((account) => (
-                  <button
-                    key={account.id}
-                    type="button"
-                    onClick={() => {
-                      setIdentifier(account.id);
-                      setPassword(account.pwd);
-                      setError('');
-                      performLogin(account.id, account.pwd);
-                    }}
-                    className={`text-left p-2 rounded-lg border transition-all cursor-pointer ${
-                      identifier === account.id 
-                        ? 'border-indigo-600 bg-indigo-50/90 text-indigo-900 shadow-xs' 
-                        : 'border-slate-200 hover:border-indigo-200 hover:bg-white text-slate-700 bg-white/80'
-                    }`}
-                  >
-                    <div className="text-xs font-semibold truncate">{account.name}</div>
-                    <div className="text-[10px] text-slate-500 truncate">{account.role}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Main Form */}
+            {/* Main Interactive Login Form */}
             <form onSubmit={submit} className="space-y-4">
               <div>
                 <label 
                   htmlFor="erp-login-identifier" 
-                  className="block text-xs font-semibold text-slate-700 mb-1.5"
+                  className="block text-xs font-semibold text-slate-200 mb-1.5 tracking-wide"
                 >
                   Work Email or Username
                 </label>
-                <div className="relative flex items-center">
-                  <Mail size={16} className="absolute left-3 text-slate-400 pointer-events-none" />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <Mail size={16} />
+                  </div>
                   <input
                     id="erp-login-identifier"
                     type="text"
                     autoComplete="username"
-                    autoCapitalize="none"
-                    spellCheck={false}
-                    value={identifier}
-                    onChange={e => setIdentifier(e.target.value)}
                     required
-                    placeholder="Enter your email or username"
-                    className="w-full pl-9 pr-3 py-2.5 text-sm bg-white border border-slate-300 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-xs transition-colors"
+                    value={identifier}
+                    onChange={(e) => {
+                      setIdentifier(e.target.value);
+                      if (error) setError('');
+                    }}
+                    placeholder="Enter work email or username"
+                    className="w-full pl-9 pr-3 py-2.5 text-sm bg-slate-950/70 border border-slate-700 rounded-lg text-white placeholder:text-slate-400 focus:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                   />
                 </div>
               </div>
@@ -311,34 +291,36 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
                 <div className="flex items-center justify-between mb-1.5">
                   <label 
                     htmlFor="erp-login-password" 
-                    className="block text-xs font-semibold text-slate-700"
+                    className="block text-xs font-semibold text-slate-200 tracking-wide"
                   >
                     Password
                   </label>
                 </div>
-                <div className="relative flex items-center">
-                  <Lock size={16} className="absolute left-3 text-slate-400 pointer-events-none" />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <Lock size={16} />
+                  </div>
                   <input
                     id="erp-login-password"
                     type={showPassword ? 'text' : 'password'}
                     autoComplete="current-password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
                     required
-                    placeholder="Enter your password"
-                    className="w-full pl-9 pr-10 py-2.5 text-sm bg-white border border-slate-300 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-xs transition-colors"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (error) setError('');
+                    }}
+                    placeholder="Enter password"
+                    className="w-full pl-9 pr-10 py-2.5 text-sm bg-slate-950/70 border border-slate-700 rounded-lg text-white placeholder:text-slate-400 focus:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    className="absolute right-2.5 text-slate-400 hover:text-slate-600 p-1 rounded-md transition-colors"
+                    className="absolute right-2.5 text-slate-400 hover:text-slate-200 p-1 rounded-md transition-colors cursor-pointer"
                   >
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
-                </div>
-                <div className="mt-1.5 flex items-center justify-between text-[11px] text-slate-500">
-                  <span>Demo password: <code className="text-indigo-600 font-mono font-medium bg-slate-100 px-1 py-0.5 rounded">demo</code> or <code className="text-indigo-600 font-mono font-medium bg-slate-100 px-1 py-0.5 rounded">Admin@123</code></span>
                 </div>
               </div>
 
@@ -348,7 +330,7 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
                   id="erp-login-submit-btn"
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-sm font-semibold flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all disabled:opacity-70 disabled:cursor-wait"
+                  className="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-sm font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-indigo-500/25 transition-all cursor-pointer disabled:opacity-70 disabled:cursor-wait"
                 >
                   {loading ? (
                     <>
@@ -358,26 +340,23 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
                   ) : (
                     <>
                       <LogIn size={18} />
-                      <span>Sign in to ERP Workspace</span>
-                      <ArrowRight size={16} className="ml-1 opacity-70" />
+                      <span>Enter Studio Workspace</span>
+                      <ArrowRight size={16} className="ml-1 opacity-80" />
                     </>
                   )}
                 </button>
               </div>
             </form>
-          </div>
 
-          {/* Card Footer */}
-          <div className="mt-8 pt-4 border-t border-slate-200/80 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
-            <span>Enterprise Security v2.4</span>
-            <div className="flex items-center gap-3 text-slate-600">
-              <span className="flex items-center gap-1 text-emerald-700 font-medium">
-                <CheckCircle2 size={13} className="text-emerald-600" />
-                Audit Trail Protected
+            {/* Footer Trust & Security Badges */}
+            <div className="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+              <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
+                <CheckCircle2 size={13} className="text-emerald-400" />
+                Role-Based Security
               </span>
-              <span>•</span>
-              <span>Confidential Financials</span>
+              <span className="text-slate-500">Build Storys © 2026</span>
             </div>
+
           </div>
         </div>
 
