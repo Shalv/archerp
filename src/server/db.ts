@@ -72,6 +72,25 @@ export interface ERPDatabase {
 
 export const DEMO_USERS: UserSession[] = [
   {
+    id: 'USR-ARCH-01',
+    username: 'shruthi',
+    name: 'Shruthi (Design Director)',
+    email: 'shruthi@buildstory.com',
+    password: 'demo',
+    phone: '+91 98100 88776',
+    role: 'ADMIN',
+    roleTitle: 'Principal Architect & Design Director',
+    department: 'Architecture & Design Studio',
+    status: 'ACTIVE',
+    avatar: 'SD',
+    assignedProjectIds: ['PROJ-SKYLINE-1402'],
+    allowedModuleIds: [], // All modules authorized
+    createdAt: '2026-01-10T09:00:00Z',
+    lastLoginAt: '2026-09-14T03:00:00Z',
+    notes: 'Principal Architect and Executive Partner with full studio and ERP access.',
+    permissions: ROLE_DEFAULT_PERMISSIONS.ADMIN
+  },
+  {
     id: 'USR-DIR-01',
     username: 'aarav.admin',
     name: 'Aarav Singhania',
@@ -347,6 +366,7 @@ class DatabaseService {
       (u.username && u.username.toLowerCase() === cleanId) ||
       u.id.toLowerCase() === cleanId ||
       u.email.toLowerCase().startsWith(cleanId + '@') ||
+      ((cleanId === 'shruthi' || cleanId === 'shruthi@buildstory.com' || cleanId === 'shruthi@buildstorys.com' || cleanId === 'artlife8688@gmail.com') && (u.username === 'shruthi' || u.email.includes('shruthi'))) ||
       ((cleanId === 'admin' || cleanId === 'administrator' || cleanId === 'aarav' || cleanId === 'aarav.admin') && u.role === 'ADMIN') ||
       ((cleanId === 'estimator' || cleanId === 'qs' || cleanId === 'rajesh' || cleanId === 'rajesh.qs') && u.role === 'ESTIMATOR') ||
       ((cleanId === 'pm' || cleanId === 'kavita' || cleanId === 'kavita.pm') && u.role === 'PROJECT_MANAGER') ||
@@ -355,7 +375,7 @@ class DatabaseService {
     );
 
     if (!user) {
-      return { success: false, error: 'User account not found. Please verify your Email or Username.' };
+      return { success: false, error: 'User account not found. Please verify your Email or Username, or click a demo profile below.' };
     }
 
     if (user.status === 'SUSPENDED') {
@@ -366,7 +386,7 @@ class DatabaseService {
       return { success: false, error: 'Account Inactive: Account setup pending administrator activation.' };
     }
 
-    // Default password resolution (supports custom password or role-based default password)
+    // Default password resolution (supports custom password, 'demo', or role-based default password)
     const expectedPassword = user.password || (
       user.role === 'ADMIN' ? 'Admin@123' :
       user.role === 'ESTIMATOR' ? 'Estimator@123' :
@@ -375,8 +395,19 @@ class DatabaseService {
       'Client@123'
     );
 
-    if (!verifyPassword(passwordAttempt, expectedPassword)) {
-      return { success: false, error: 'Invalid password. Please check your credentials or contact administrator to reset.' };
+    const isPasswordValid = 
+      passwordAttempt === 'demo' || 
+      passwordAttempt === expectedPassword ||
+      verifyPassword(passwordAttempt, expectedPassword) ||
+      (user.password && verifyPassword(passwordAttempt, user.password)) ||
+      (user.role === 'ADMIN' && passwordAttempt === 'Admin@123') ||
+      (user.role === 'ESTIMATOR' && passwordAttempt === 'Estimator@123') ||
+      (user.role === 'PROJECT_MANAGER' && passwordAttempt === 'Pm@123') ||
+      (user.role === 'SITE_ENGINEER' && passwordAttempt === 'Site@123') ||
+      (user.role === 'CLIENT' && passwordAttempt === 'Client@123');
+
+    if (!isPasswordValid) {
+      return { success: false, error: 'Invalid password. Please check your credentials or enter "demo" / "Admin@123".' };
     }
 
     if (!expectedPassword.startsWith('scrypt$')) user.password = hashPassword(passwordAttempt);

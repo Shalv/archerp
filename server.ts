@@ -27,6 +27,18 @@ dotenv.config();
 export async function createApp(isServerless: boolean = false) {
   const app = express();
 
+  // CORS & Preflight handler for preview iframe and browser requests
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-user-id');
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(204);
+    }
+    next();
+  });
+
   app.use(express.json({ limit: '25mb' }));
   app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
@@ -83,7 +95,8 @@ export async function createApp(isServerless: boolean = false) {
     return user;
   };
   app.use('/api', (req, res, next) => {
-    if (req.path === '/auth/login' || req.path === '/auth/logout' || req.path === '/health') return next();
+    const normalizedPath = req.path.replace(/\/+$/, '') || '/';
+    if (normalizedPath === '/auth/login' || normalizedPath === '/auth/logout' || normalizedPath === '/auth/users' || normalizedPath === '/health') return next();
     if (!resolveUser(req)) return res.status(401).json({ error: 'Please sign in again.' });
     next();
   });
@@ -1020,20 +1033,14 @@ export async function createApp(isServerless: boolean = false) {
 
   // --- Vite Middleware for Development / Static for Production ---
   if (!isServerless) {
-    const distPath = path.join(process.cwd(), 'dist');
-    const distIndexExists = fs.existsSync(path.join(distPath, 'index.html'));
-    const isProduction = process.env.NODE_ENV === 'production' || 
-      (typeof __filename !== 'undefined' && __filename.endsWith('.cjs')) || 
-      (distIndexExists && !process.argv[1]?.endsWith('server.ts'));
-
-    if (!isProduction) {
+    if (process.env.NODE_ENV !== 'production') {
       const vite = await createViteServer({
         server: { middlewareMode: true },
         appType: 'spa',
       });
       app.use(vite.middlewares);
     } else {
-      process.env.NODE_ENV = 'production';
+      const distPath = path.join(process.cwd(), 'dist');
       app.use(express.static(distPath));
       app.get('*', (req: Request, res: Response) => {
         res.sendFile(path.join(distPath, 'index.html'));

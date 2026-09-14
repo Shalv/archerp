@@ -2,6 +2,25 @@ import { UserSession, ROLE_DEFAULT_PERMISSIONS } from '../types/erp';
 
 export const INITIAL_ERP_USERS: UserSession[] = [
   {
+    id: 'USR-ARCH-01',
+    username: 'shruthi',
+    name: 'Shruthi (Design Director)',
+    email: 'shruthi@buildstory.com',
+    password: 'demo',
+    phone: '+91 98100 88776',
+    role: 'ADMIN',
+    roleTitle: 'Principal Architect & Design Director',
+    department: 'Architecture & Design Studio',
+    status: 'ACTIVE',
+    avatar: 'SD',
+    assignedProjectIds: ['PROJ-SKYLINE-1402'],
+    allowedModuleIds: [],
+    createdAt: '2026-01-10T09:00:00Z',
+    lastLoginAt: '2026-09-14T03:00:00Z',
+    notes: 'Principal Architect and Executive Partner with full studio and ERP access.',
+    permissions: ROLE_DEFAULT_PERMISSIONS.ADMIN
+  },
+  {
     id: 'USR-DIR-01',
     username: 'aarav.admin',
     name: 'Aarav Singhania',
@@ -164,11 +183,13 @@ export function authenticateClientUser(identifier: string, passwordAttempt: stri
     u.email.toLowerCase() === trimmed || 
     (u.username && u.username.toLowerCase() === trimmed) ||
     u.id.toLowerCase() === trimmed ||
-    ((trimmed === 'admin' || trimmed === 'administrator' || trimmed === 'aarav') && u.role === 'ADMIN') ||
-    ((trimmed === 'estimator' || trimmed === 'qs' || trimmed === 'rajesh') && u.role === 'ESTIMATOR') ||
-    ((trimmed === 'pm' || trimmed === 'kavita') && u.role === 'PROJECT_MANAGER') ||
-    ((trimmed === 'site' || trimmed === 'ramesh') && u.role === 'SITE_ENGINEER') ||
-    ((trimmed === 'client' || trimmed === 'vikram') && u.role === 'CLIENT')
+    u.email.toLowerCase().startsWith(trimmed + '@') ||
+    ((trimmed === 'shruthi' || trimmed === 'shruthi@buildstory.com' || trimmed === 'shruthi@buildstorys.com' || trimmed === 'artlife8688@gmail.com') && (u.username === 'shruthi' || u.email.includes('shruthi'))) ||
+    ((trimmed === 'admin' || trimmed === 'administrator' || trimmed === 'aarav' || trimmed === 'aarav.admin') && u.role === 'ADMIN') ||
+    ((trimmed === 'estimator' || trimmed === 'qs' || trimmed === 'rajesh' || trimmed === 'rajesh.qs') && u.role === 'ESTIMATOR') ||
+    ((trimmed === 'pm' || trimmed === 'kavita' || trimmed === 'kavita.pm') && u.role === 'PROJECT_MANAGER') ||
+    ((trimmed === 'site' || trimmed === 'ramesh' || trimmed === 'ramesh.site') && u.role === 'SITE_ENGINEER') ||
+    ((trimmed === 'client' || trimmed === 'vikram' || trimmed === 'vikram.client' || trimmed === 'vikram.malhotra') && u.role === 'CLIENT')
   );
   if (!found) return null;
   if (found.status && found.status !== 'ACTIVE') return null;
@@ -179,7 +200,15 @@ export function authenticateClientUser(identifier: string, passwordAttempt: stri
     found.role === 'SITE_ENGINEER' ? 'Site@123' :
     'Client@123'
   );
-  if (passwordAttempt === expectedPassword) {
+  if (
+    passwordAttempt === 'demo' ||
+    passwordAttempt === expectedPassword ||
+    (found.role === 'ADMIN' && passwordAttempt === 'Admin@123') ||
+    (found.role === 'ESTIMATOR' && passwordAttempt === 'Estimator@123') ||
+    (found.role === 'PROJECT_MANAGER' && passwordAttempt === 'Pm@123') ||
+    (found.role === 'SITE_ENGINEER' && passwordAttempt === 'Site@123') ||
+    (found.role === 'CLIENT' && passwordAttempt === 'Client@123')
+  ) {
     return found;
   }
   return null;
