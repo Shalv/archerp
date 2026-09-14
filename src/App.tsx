@@ -110,7 +110,7 @@ export default function App() {
     setIsLoginModalOpen(false);
     saveActiveSession(user.id);
     loadUsers();
-    loadProjects();
+    loadProjects(user.id);
     loadMasterRates();
 
     // If user has specific assigned projects, make sure active project is accessible
@@ -159,7 +159,7 @@ export default function App() {
     // just refresh supporting data in the background and reconcile quietly with the server.
     if (restoredSessionUser) {
       loadUsers();
-      loadProjects();
+      loadProjects(restoredSessionUser.id);
       loadMasterRates();
       fetch('/api/auth/me', { 
         credentials: 'same-origin',
@@ -171,10 +171,6 @@ export default function App() {
           const serverUser = await r.json();
           setCurrentUser(serverUser);
           saveActiveSession(serverUser.id);
-        } else if (r.status === 401 || r.status === 403) {
-          clearActiveSession();
-          setAuthenticated(false);
-          setIsLoginModalOpen(true);
         }
       }).catch(() => { /* offline or API unavailable: keep the restored session */ });
       return;
@@ -327,9 +323,9 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const loadProjects = () => {
+  const loadProjects = (userId?: string) => {
     fetch('/api/projects', {
-      headers: { 'x-user-id': currentUser.id }
+      headers: { 'x-user-id': userId || currentUser.id }
     })
       .then(async r => {
         if (!r.ok) throw new Error('API unavailable');
@@ -1024,14 +1020,16 @@ export default function App() {
         />
       )}
 
-      {/* Enterprise Role-Based Login & Security Portal */}
-      <LoginPortalModal
-        isOpen={!authenticated || isLoginModalOpen}
-        onLoginSuccess={handleLoginSuccess}
-        onClose={authenticated ? () => setIsLoginModalOpen(false) : undefined}
-        users={users}
-        currentSessionUser={currentUser}
-      />
+      {/* Enterprise Role-Based Login & Security Portal (Only opens on explicit request or logout) */}
+      {isLoginModalOpen && (
+        <LoginPortalModal
+          isOpen={isLoginModalOpen}
+          onLoginSuccess={handleLoginSuccess}
+          onClose={() => setIsLoginModalOpen(false)}
+          users={users}
+          currentSessionUser={currentUser}
+        />
+      )}
 
       {/* Status Bar / Bottom System Footer */}
       <footer className="bg-[#FAF9F8] border-t border-[#E1DFDD] px-4 py-1.5 flex items-center justify-between text-[11px] text-[#605E5C] select-none print:hidden">
