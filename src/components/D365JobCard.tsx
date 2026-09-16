@@ -298,7 +298,7 @@ export const D365JobCard: React.FC<D365JobCardProps> = ({
         <div className="bg-white border border-[#E1DFDD] rounded shadow-2xs p-4 space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-[#EDEBE9]">
             <div>
-              <span className="text-xs font-semibold text-[#0F6CBD] uppercase tracking-wider">BuildStorys Enact360 Job Planning Lines</span>
+              <span className="text-xs font-semibold text-[#0F6CBD] uppercase tracking-wider">BuildStorys ERP Job Planning Lines</span>
               <h2 className="text-base font-bold text-[#201F1E]">BOQ Studio &amp; AI Takeoff Workspace</h2>
               <p className="text-xs text-[#605E5C]">
                 Project: <strong className="text-[#201F1E]">{project.projectCode}</strong> • {project.title} • Active Revision: <strong className="text-[#0F6CBD]">{activeRev?.revisionLabel || 'Rev-A'}</strong> ({activeRev?.status || 'DRAFT'})
@@ -340,7 +340,7 @@ export const D365JobCard: React.FC<D365JobCardProps> = ({
         <div className="bg-white border border-[#E1DFDD] rounded shadow-2xs p-4 space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-[#EDEBE9]">
             <div>
-              <span className="text-xs font-semibold text-[#0F6CBD] uppercase tracking-wider">BuildStorys Enact360 Cost Accounting</span>
+              <span className="text-xs font-semibold text-[#0F6CBD] uppercase tracking-wider">BuildStorys ERP Cost Accounting</span>
               <h2 className="text-base font-bold text-[#201F1E]">Commercial Costing &amp; Budget Engine</h2>
               <p className="text-xs text-[#605E5C]">Direct Costs, Overheads (5%), Contingency (3%), Margin Calibration (26%) &amp; 3-Tier Value Engineering</p>
             </div>
@@ -362,7 +362,7 @@ export const D365JobCard: React.FC<D365JobCardProps> = ({
         <div className="bg-white border border-[#E1DFDD] rounded shadow-2xs p-4 space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-[#EDEBE9]">
             <div>
-              <span className="text-xs font-semibold text-[#0F6CBD] uppercase tracking-wider">BuildStorys Enact360 Sales Proposal</span>
+              <span className="text-xs font-semibold text-[#0F6CBD] uppercase tracking-wider">BuildStorys ERP Sales Proposal</span>
               <h2 className="text-base font-bold text-[#201F1E]">Customer Quotation &amp; Commercial Proposal</h2>
               <p className="text-xs text-[#605E5C]">Composite Works GST 18%, Payment Milestones, Warranty Terms &amp; Print-Ready Contract</p>
             </div>

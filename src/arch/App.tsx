@@ -120,10 +120,10 @@ function AppContent({
                   type="button"
                   onClick={() => onNavigateBackToERP('dashboard')}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#002050] text-white font-semibold hover:bg-[#0c5999] transition shadow-2xs cursor-pointer"
-                  title="Return to Enact360 Role Center Dashboard"
+                  title="Return to BuildStorys Role Center Dashboard"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Return to Enact360 ERP</span>
+                  <span>Return to BuildStorys ERP</span>
                 </button>
               )}
               <span className="font-semibold mr-auto">{activeProject?.enquiryNumber} · {activeProject?.clientName || 'Select a customer project'}</span>

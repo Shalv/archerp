@@ -16,7 +16,7 @@
         "PROJ-SKYLINE-1402"
       ],
       "createdAt": "2026-01-10T09:00:00Z",
-      "lastLoginAt": "2026-09-14T03:28:32.414Z",
+      "lastLoginAt": "2026-09-16T08:55:25.438Z",
       "permissions": {
         "canViewCostAndMargin": true,
         "canApproveBOQ": true,
@@ -2089,6 +2089,28 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "LOG-1789548925440-848",
+      "timestamp": "2026-09-16T08:55:25.440Z",
+      "userId": "USR-ARCH-01",
+      "userName": "Shruthi (Design Director)",
+      "userRole": "ADMIN",
+      "action": "USER_LOGIN",
+      "entityType": "USER_SESSION",
+      "entityId": "USR-ARCH-01",
+      "details": "User Shruthi (Design Director) logged in successfully with role ADMIN."
+    },
+    {
+      "id": "LOG-1789547595729-778",
+      "timestamp": "2026-09-16T08:33:15.729Z",
+      "userId": "USR-ARCH-01",
+      "userName": "Shruthi (Design Director)",
+      "userRole": "ADMIN",
+      "action": "USER_LOGIN",
+      "entityType": "USER_SESSION",
+      "entityId": "USR-ARCH-01",
+      "details": "User Shruthi (Design Director) logged in successfully with role ADMIN."
+    },
     {
       "id": "LOG-1789356512416-459",
       "timestamp": "2026-09-14T03:28:32.416Z",

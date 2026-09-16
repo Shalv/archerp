@@ -142,10 +142,10 @@ export const TopBar: React.FC<TopBarProps> = ({
             type="button"
             onClick={onExitToERP}
             className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#002050] hover:bg-[#001833] text-white text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
-            title="Return to Enact360 Role Center Dashboard"
+            title="Return to BuildStorys Role Center Dashboard"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Return to Enact360 ERP</span>
+            <span className="hidden sm:inline">Return to BuildStorys ERP</span>
             <span className="sm:hidden">ERP</span>
           </button>
         )}

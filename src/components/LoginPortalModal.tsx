@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Eye, 
   EyeOff, 
   AlertCircle, 
   X, 
-  Check,
   Building2,
   Mail,
-  ShieldCheck
+  Lock,
+  ShieldCheck,
+  Sparkles,
+  ArrowRight,
+  Play,
+  Pause
 } from 'lucide-react';
 import { UserSession } from '../types/erp';
 import { readApiResponse } from '../utils/apiResponse';
@@ -28,14 +32,16 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
   users = INITIAL_ERP_USERS,
   currentSessionUser 
 }) => {
-  const [identifier, setIdentifier] = useState('');
-  const [password, setPassword] = useState('');
+  const [identifier, setIdentifier] = useState('j.alvarez@buildstorys.com');
+  const [password, setPassword] = useState('demo');
   const [showPassword, setShowPassword] = useState(false);
   const [keepSignedIn, setKeepSignedIn] = useState(true);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [forgotModalOpen, setForgotModalOpen] = useState(false);
   const [adminContactOpen, setAdminContactOpen] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -55,13 +61,41 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose, forgotModalOpen, adminContactOpen]);
 
+  // Ensure background video autoplays smoothly
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.defaultMuted = true;
+      videoRef.current.muted = true;
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => setIsVideoPlaying(true))
+          .catch(() => {
+            setIsVideoPlaying(false);
+          });
+      }
+    }
+  }, [isOpen]);
+
+  const toggleVideoPlayback = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+        setIsVideoPlaying(true);
+      } else {
+        videoRef.current.pause();
+        setIsVideoPlaying(false);
+      }
+    }
+  };
+
   if (!isOpen) return null;
 
   const performLogin = async (idToUse: string, pwdToUse: string) => {
     if (loading) return;
     setError('');
     
-    // If empty, default to j.alvarez@buildstorys.com for instant frictionless preview
+    // Fallback default if completely empty
     const cleanId = idToUse.trim() || 'j.alvarez@buildstorys.com';
     const cleanPwd = pwdToUse || 'demo';
 
@@ -125,180 +159,241 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
   return (
     <div 
       id="buildstorys-login-page"
-      className="fixed inset-0 z-[200] overflow-y-auto flex flex-col bg-[#07162C] text-slate-900 select-none min-h-screen"
+      className="fixed inset-0 z-[200] overflow-y-auto flex flex-col bg-slate-950 text-slate-900 select-none min-h-screen"
       role="dialog" 
       aria-modal="true" 
       aria-labelledby="login-title"
     >
-      {/* Optional Close Button if modal opened by an authenticated session */}
+      {/* 1. BACKGROUND VIDEO LAYER (Attached Architectural Sequence) */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          poster="/videos/login-bg-poster.jpg"
+          className="w-full h-full object-cover"
+        >
+          <source src="/videos/login-bg.mp4" type="video/mp4" />
+        </video>
+
+        {/* Cinematic translucent architectural gradient allowing video clarity */}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-slate-950/30 to-slate-950/55" />
+      </div>
+
+      {/* Close button if opened from within an active session */}
       {onClose && (
         <button 
           id="login-close-btn"
           type="button" 
           onClick={onClose} 
-          className="fixed top-6 right-6 z-50 p-2.5 rounded-full text-slate-500 bg-white hover:bg-slate-100 hover:text-slate-900 border border-slate-200 shadow-sm transition cursor-pointer" 
+          className="fixed top-5 right-5 z-50 p-2 rounded-full text-slate-700 bg-white/90 hover:bg-white border border-slate-200 shadow-md transition cursor-pointer backdrop-blur-sm" 
           aria-label="Close sign-in"
         >
           <X size={18} />
         </button>
       )}
 
-      {/* Main Split-Screen Container */}
-      <div className="flex-1 flex flex-col lg:flex-row min-h-screen w-full">
+      {/* 2. FOREGROUND CONTENT: FULL-WIDTH RESPONSIVE FLEX LAYOUT */}
+      <div className="relative z-10 flex-1 flex flex-col lg:flex-row items-center justify-between min-h-screen w-full max-w-[1700px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12">
         
         {/* ======================================================== */}
-        {/* LEFT COLUMN: ARCHITECTURAL BLUEPRINT ELEVATION & GRID    */}
+        {/* LEFT COLUMN: BRAND ELEVATION & ARCHITECTURAL HIGHLIGHTS  */}
         {/* ======================================================== */}
-        <div className="relative w-full lg:w-[55%] xl:w-[55%] min-h-[580px] lg:min-h-screen bg-[#07162C] flex flex-col justify-between p-8 sm:p-12 lg:p-16 overflow-hidden text-white border-r border-[#102947]">
+        <div className="w-full lg:w-1/2 flex flex-col justify-between py-6 lg:py-10 text-white min-h-0 lg:min-h-[600px] max-w-2xl">
           
-          {/* Blueprint Grid Background Pattern */}
-          <div 
-            className="absolute inset-0 z-0 pointer-events-none opacity-45"
-            style={{
-              backgroundImage: `
-                linear-gradient(to right, rgba(58, 110, 165, 0.15) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(58, 110, 165, 0.15) 1px, transparent 1px)
-              `,
-              backgroundSize: '40px 40px'
-            }}
-          />
-
-          {/* Subtle Secondary Finer Grid */}
-          <div 
-            className="absolute inset-0 z-0 pointer-events-none opacity-20"
-            style={{
-              backgroundImage: `
-                linear-gradient(to right, rgba(80, 140, 200, 0.08) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(80, 140, 200, 0.08) 1px, transparent 1px)
-              `,
-              backgroundSize: '8px 8px'
-            }}
-          />
-
-          {/* Top Left Official Build Storys Brand Logo */}
-          <div className="relative z-10 flex items-center">
+          {/* Top Brand Logo */}
+          <div className="flex items-center gap-3">
             <img 
-              src="/images/buildstorys-logo-full.png" 
-              alt="Build Storys - Crafting Spaces | Building Stories" 
-              className="h-10 sm:h-12 md:h-14 w-auto object-contain drop-shadow-md select-none"
+              src="/images/buildstorys-logo-icon.png" 
+              alt="Build Storys" 
+              className="h-10 w-10 sm:h-12 sm:w-12 object-contain bg-white rounded-xl p-1.5 shadow-lg ring-1 ring-white/20"
               referrerPolicy="no-referrer"
             />
-          </div>
-
-          {/* Center Architectural Building Sketch */}
-          <div className="relative z-10 my-auto py-6 sm:py-8 flex items-center justify-center">
-            <div className="relative w-full max-w-[500px] overflow-hidden rounded-lg border border-[#22446A]/80 shadow-2xl bg-[#061427] group">
-              <img 
-                src="/images/building_sketch.jpg" 
-                alt="Architectural Building Concept Sketch"
-                className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.01]"
-                referrerPolicy="no-referrer"
-              />
-              
-              {/* Subtle Architectural Blueprint Label */}
-              <div className="absolute top-3 left-3 px-2.5 py-1 rounded bg-[#07162C]/85 border border-[#3A6EA5]/40 backdrop-blur-sm pointer-events-none">
-                <span className="text-[10px] font-mono tracking-widest text-[#8BB4DD] uppercase">
-                  CONCEPT STUDY
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xl sm:text-2xl font-bold tracking-tight text-white font-sans">
+                  BuildStorys
+                </span>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-white/15 text-white/90 border border-white/20 uppercase tracking-wider font-mono">
+                  ERP
                 </span>
               </div>
+              <p className="text-[11px] sm:text-xs text-slate-300 font-medium tracking-wide">
+                Architecture &middot; Quantity Surveying &middot; Turnkey Construction
+              </p>
+            </div>
+          </div>
 
-              <div className="absolute bottom-3 right-3 px-2.5 py-1 rounded bg-[#07162C]/85 border border-[#3A6EA5]/40 backdrop-blur-sm text-[9.5px] font-mono text-[#6E8DA7] pointer-events-none">
-                BUILDING SCHEMATIC &middot; PERSPECTIVE
+          {/* Middle Value Proposition */}
+          <div className="my-8 lg:my-auto space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs text-sky-200 font-medium">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Civil &amp; Architectural Project Intelligence</span>
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.15]">
+              From concrete pour<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-white to-sky-100">
+                to finished architecture.
+              </span>
+            </h1>
+
+            <p className="text-sm sm:text-base text-slate-200/90 leading-relaxed max-w-xl font-normal drop-shadow-sm">
+              Unified cost planning, autonomous BOQ takeoff, site execution logs, and subcontractor billing — synchronized across design and field operations.
+            </p>
+
+            {/* Feature Badges */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-3 max-w-lg">
+              <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-slate-900/70 backdrop-blur-md border border-white/10 text-xs text-slate-200 shadow-sm">
+                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>Role-Based Governance (RBAC)</span>
+              </div>
+              <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-slate-900/70 backdrop-blur-md border border-white/10 text-xs text-slate-200 shadow-sm">
+                <Building2 className="w-4 h-4 text-sky-400 shrink-0" />
+                <span>Dynamics 365 Architecture Runtime</span>
+              </div>
+              <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-slate-900/70 backdrop-blur-md border border-white/10 text-xs text-slate-200 shadow-sm">
+                <Sparkles className="w-4 h-4 text-amber-300 shrink-0" />
+                <span>Copilot AI Survey &amp; BOQ Takeoff</span>
+              </div>
+              <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-slate-900/70 backdrop-blur-md border border-white/10 text-xs text-slate-200 shadow-sm">
+                <ShieldCheck className="w-4 h-4 text-purple-400 shrink-0" />
+                <span>GST 18% &amp; Rate Analysis Engine</span>
               </div>
             </div>
           </div>
 
-          {/* Bottom Left Headline & Blueprint Copy */}
-          <div className="relative z-10 max-w-xl">
-            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight leading-snug">
-              One system for schedules,<br />
-              drawings, and billable hours.
-            </h1>
-            <p className="mt-4 text-xs sm:text-[13px] text-[#6E8DA7] font-mono leading-relaxed max-w-lg">
-              Project data, timesheets, and consultant coordination<br className="hidden sm:inline" />
-              for every active commission — drafted with the same<br className="hidden sm:inline" />
-              precision as the work itself.
-            </p>
+          {/* Bottom Live System Indicator & Background Video Controller */}
+          <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-slate-300/80 font-mono pt-4 border-t border-white/10">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span className="text-white font-medium">Production ERP v2.0</span>
+              </div>
+              <span>&bull;</span>
+              <span>256-Bit SSL Encrypted</span>
+            </div>
+
+            <button
+              type="button"
+              onClick={toggleVideoPlayback}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/40 hover:bg-black/60 border border-white/10 text-[11px] text-white/90 cursor-pointer backdrop-blur-xs transition"
+              title={isVideoPlaying ? 'Pause background video' : 'Play background video'}
+            >
+              {isVideoPlaying ? (
+                <>
+                  <Pause size={12} className="text-sky-400" />
+                  <span>Pause Motion</span>
+                </>
+              ) : (
+                <>
+                  <Play size={12} className="text-emerald-400" />
+                  <span>Play Motion</span>
+                </>
+              )}
+            </button>
           </div>
 
         </div>
 
         {/* ======================================================== */}
-        {/* RIGHT COLUMN: PRACTICE CREDENTIAL SIGN-IN PANE           */}
+        {/* RIGHT COLUMN: LOGIN CARD WITH CRISP WHITE BACKGROUND     */}
         {/* ======================================================== */}
-        <div className="relative w-full lg:w-[45%] xl:w-[45%] bg-[#FAF9F5] flex flex-col justify-center items-center p-8 sm:p-14 lg:p-16 text-slate-900">
-          
-          {/* Main Form Container */}
-          <div className="w-full max-w-[400px]">
+        <div className="w-full lg:w-auto flex justify-center lg:justify-end py-4 lg:py-6">
+          <div className="w-full sm:w-[440px] md:w-[460px] bg-white rounded-2xl shadow-2xl border border-slate-200/90 p-6 sm:p-8 md:p-9 text-slate-900 transition-all">
             
-            {/* Header */}
-            <div className="mb-8">
+            {/* Card Header */}
+            <div className="space-y-1.5 pb-5 border-b border-slate-100">
+              <div className="flex items-center justify-between">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-[#0F6CBD] font-semibold text-[11px]">
+                  <Building2 className="w-3.5 h-3.5" />
+                  <span>BuildStorys ERP Portal</span>
+                </div>
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+                  Secure Sign-In
+                </span>
+              </div>
+
               <h2 
                 id="login-title" 
-                className="text-2xl sm:text-[28px] font-bold text-[#111827] tracking-tight"
+                className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight pt-1"
               >
                 Sign in to your practice
               </h2>
-              <p className="text-sm text-slate-500 mt-1.5">
-                Enter your credentials to access active projects.
+              <p className="text-xs text-slate-500">
+                Access active project commissions, drawing registries, and cost cards.
               </p>
-
-              {/* Clean Subtle Horizontal Divider */}
-              <div className="w-full h-px bg-slate-200/90 mt-6" />
             </div>
 
             {/* Error Banner */}
             {error && (
               <div 
                 id="login-error-alert"
-                className="mb-6 flex items-start gap-2.5 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-xs leading-relaxed" 
+                className="mt-4 flex items-start gap-2.5 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs leading-relaxed" 
                 role="alert"
               >
-                <AlertCircle size={15} className="text-rose-600 mt-0.5 shrink-0" />
+                <AlertCircle size={16} className="text-rose-600 mt-0.5 shrink-0" />
                 <div className="flex-1 font-medium">
                   {error}
                 </div>
               </div>
             )}
 
-            {/* Architectural Underline Sign-in Form */}
-            <form onSubmit={submit} className="space-y-6">
+            {/* Main Form */}
+            <form onSubmit={submit} className="mt-5 space-y-4">
               
-              {/* Field 1: Work Email */}
+              {/* Field 1: Work Email / Username */}
               <div>
-                <div className="mb-1 text-[11px] font-mono tracking-wider">
-                  <label 
-                    htmlFor="erp-work-email" 
-                    className="text-slate-500 font-semibold uppercase"
-                  >
-                    WORK EMAIL
-                  </label>
+                <label 
+                  htmlFor="erp-work-email" 
+                  className="block text-xs font-semibold text-slate-700 mb-1.5"
+                >
+                  Work Email or Username
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <Mail size={15} />
+                  </div>
+                  <input
+                    id="erp-work-email"
+                    type="text"
+                    autoComplete="username"
+                    value={identifier}
+                    onChange={(e) => {
+                      setIdentifier(e.target.value);
+                      if (error) setError('');
+                    }}
+                    placeholder="e.g. j.alvarez@buildstorys.com"
+                    required
+                    className="w-full pl-9 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 bg-slate-50/80 hover:bg-slate-50 focus:bg-white rounded-xl border border-slate-200 focus:border-[#0F6CBD] focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400 font-medium"
+                  />
                 </div>
-                <input
-                  id="erp-work-email"
-                  type="text"
-                  autoComplete="username"
-                  value={identifier}
-                  onChange={(e) => {
-                    setIdentifier(e.target.value);
-                    if (error) setError('');
-                  }}
-                  placeholder="j.alvarez@buildstorys.com"
-                  className="w-full border-b border-slate-300 focus:border-[#0F1E36] py-2 text-sm text-slate-900 bg-transparent outline-none transition placeholder:text-slate-400"
-                />
               </div>
 
               {/* Field 2: Password */}
               <div>
-                <div className="mb-1 text-[11px] font-mono tracking-wider">
+                <div className="flex items-center justify-between mb-1.5">
                   <label 
                     htmlFor="erp-work-password" 
-                    className="text-slate-500 font-semibold uppercase"
+                    className="block text-xs font-semibold text-slate-700"
                   >
-                    PASSWORD
+                    Password
                   </label>
+                  <button
+                    type="button"
+                    onClick={() => setForgotModalOpen(true)}
+                    className="text-xs text-[#0F6CBD] hover:text-blue-800 font-medium transition cursor-pointer"
+                  >
+                    Forgot password?
+                  </button>
                 </div>
                 <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <Lock size={15} />
+                  </div>
                   <input
                     id="erp-work-password"
                     type={showPassword ? 'text' : 'password'}
@@ -308,105 +403,106 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
                       setPassword(e.target.value);
                       if (error) setError('');
                     }}
-                    placeholder="••••••••••••"
-                    className="w-full border-b border-slate-300 focus:border-[#0F1E36] py-2 pr-8 text-sm text-slate-900 bg-transparent outline-none transition placeholder:text-slate-400"
+                    placeholder="Enter your password"
+                    required
+                    className="w-full pl-9 pr-10 py-2.5 text-xs sm:text-sm text-slate-900 bg-slate-50/80 hover:bg-slate-50 focus:bg-white rounded-xl border border-slate-200 focus:border-[#0F6CBD] focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400 font-medium"
                   />
                   <button
                     id="toggle-password-btn"
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 transition cursor-pointer"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-2.5 transition cursor-pointer"
                   >
-                    {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
               </div>
 
-              {/* Keep me signed in & Forgot Password Row */}
-              <div className="flex items-center justify-between pt-1 text-xs">
-                <label className="flex items-center gap-2 cursor-pointer select-none text-slate-600">
+              {/* Keep me signed in */}
+              <div className="flex items-center justify-between pt-0.5">
+                <label className="flex items-center gap-2 cursor-pointer select-none text-xs text-slate-600 font-medium">
                   <input
                     type="checkbox"
                     checked={keepSignedIn}
                     onChange={(e) => setKeepSignedIn(e.target.checked)}
-                    className="w-4 h-4 rounded border-slate-300 text-[#0F1E36] focus:ring-[#0F1E36] cursor-pointer"
+                    className="w-4 h-4 rounded border-slate-300 text-[#0F6CBD] focus:ring-[#0F6CBD] cursor-pointer"
                   />
                   <span>Keep me signed in</span>
                 </label>
 
-                <button
-                  type="button"
-                  onClick={() => setForgotModalOpen(true)}
-                  className="text-slate-900 hover:text-slate-600 font-medium transition cursor-pointer"
-                >
-                  Forgot password?
-                </button>
+                <span className="text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 font-medium">
+                  Auto-Verify
+                </span>
               </div>
 
-              {/* Sign In Button */}
-              <div className="pt-2">
-                <button
-                  id="erp-login-submit-btn"
-                  type="submit"
-                  disabled={loading}
-                  className="w-full h-12 py-3 px-6 rounded-sm bg-[#0E1B2E] hover:bg-[#162744] active:bg-[#071322] text-white text-sm font-medium tracking-wide flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer disabled:opacity-60 disabled:cursor-wait"
-                >
-                  {loading ? (
-                    <>
-                      <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span>Authenticating…</span>
-                    </>
-                  ) : (
-                    <span>Sign in</span>
-                  )}
-                </button>
-              </div>
+              {/* Sign In Primary Button */}
+              <button
+                id="erp-login-submit-btn"
+                type="submit"
+                disabled={loading}
+                className="w-full h-11 py-2.5 px-4 rounded-xl bg-[#0F6CBD] hover:bg-[#0B5A9E] active:bg-[#09477D] text-white text-xs sm:text-sm font-semibold tracking-wide flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition cursor-pointer disabled:opacity-60 disabled:cursor-wait mt-2"
+              >
+                {loading ? (
+                  <>
+                    <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Signing in…</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Sign In</span>
+                    <ArrowRight size={16} />
+                  </>
+                )}
+              </button>
 
             </form>
 
-            {/* Bottom Meta Bar: NEED ACCESS? CONTACT ADMIN & BS-ERP-04 */}
-            <div className="flex items-center justify-between text-[10px] font-mono tracking-wider text-slate-400 mt-12 pt-4 border-t border-slate-200/80">
+            {/* Bottom Meta & Admin Help */}
+            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
               <button 
                 type="button"
                 onClick={() => setAdminContactOpen(true)}
-                className="hover:text-slate-700 transition cursor-pointer uppercase"
+                className="hover:text-[#0F6CBD] font-medium transition cursor-pointer"
               >
-                NEED ACCESS? CONTACT ADMIN
+                Need access? Contact Admin
               </button>
-              <span>BS-ERP-04</span>
+              <div className="flex items-center gap-1 text-slate-400">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                <span>TLS 1.3 Certified</span>
+              </div>
             </div>
 
           </div>
-
         </div>
 
       </div>
 
-      {/* Forgot Password Modal */}
+      {/* Reset Credentials Modal */}
       {forgotModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl border border-slate-200">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-bold text-slate-900">Reset Credentials</h3>
+              <h3 className="text-sm font-bold text-slate-900">Reset Practice Credentials</h3>
               <button 
                 onClick={() => setForgotModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 p-1"
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100"
               >
                 <X size={16} />
               </button>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed mb-4">
-              Credentials are authenticated through the practice directory. Please reach out to your administrator to request a secure password reset link.
+              Credentials are authenticated through the BuildStorys directory. Please reach out to your administrator to request a secure password reset link.
             </p>
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-md text-xs text-slate-700 mb-4 space-y-1 font-mono">
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 mb-4 space-y-1 font-mono">
+              <div className="font-semibold text-slate-900 mb-1">Practice Administrators:</div>
               <div>ADMIN: aarav@buildstorys.com</div>
-              <div>DIRECTOR: shruthi@buildstory.com</div>
+              <div>STUDIO LEAD: j.alvarez@buildstorys.com</div>
             </div>
             <button
               type="button"
               onClick={() => setForgotModalOpen(false)}
-              className="w-full py-2.5 rounded-sm bg-[#0E1B2E] text-white text-xs font-medium hover:bg-slate-800 transition cursor-pointer"
+              className="w-full py-2.5 rounded-xl bg-[#0F6CBD] text-white text-xs font-semibold hover:bg-[#0B5A9E] transition cursor-pointer"
             >
               Close
             </button>
@@ -417,12 +513,12 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
       {/* Need Access Admin Contact Modal */}
       {adminContactOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl border border-slate-200">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-bold text-slate-900">Practice Access Request</h3>
               <button 
                 onClick={() => setAdminContactOpen(false)}
-                className="text-slate-400 hover:text-slate-600 p-1"
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100"
               >
                 <X size={16} />
               </button>
@@ -430,15 +526,15 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
             <p className="text-xs text-slate-600 leading-relaxed mb-4">
               To provision a new seat or link your corporate SSO with your project assignments, contact the system administrator.
             </p>
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-md text-xs text-slate-700 mb-4 space-y-1 font-mono">
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 mb-4 space-y-1 font-mono">
               <div>PRACTICE: Build Storys Architecture ERP</div>
               <div>SUPPORT: admin@buildstorys.com</div>
-              <div>CODE: BS-ERP-04</div>
+              <div>SESSION: BS-ERP-AUTH-2026</div>
             </div>
             <button
               type="button"
               onClick={() => setAdminContactOpen(false)}
-              className="w-full py-2.5 rounded-sm bg-[#0E1B2E] text-white text-xs font-medium hover:bg-slate-800 transition cursor-pointer"
+              className="w-full py-2.5 rounded-xl bg-[#0F6CBD] text-white text-xs font-semibold hover:bg-[#0B5A9E] transition cursor-pointer"
             >
               Close
             </button>

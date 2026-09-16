@@ -40,7 +40,6 @@ body {
 
 .erp-app :where(.overflow-x-auto) {
   max-width: 100%;
-  overscroll-behavior-x: contain;
 }
 
 .erp-app :where(.grid) > * {
@@ -94,7 +93,6 @@ body {
   margin: 0 !important;
   max-width: calc(100vw - 16px);
   overflow-y: auto;
-  overscroll-behavior: contain;
 }
 
 /* Modal and dialog layout */

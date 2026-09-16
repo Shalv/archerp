@@ -88,7 +88,7 @@ export const D365InspectDataModal: React.FC<D365InspectDataModalProps> = ({
             </div>
             <div>
               <div className="text-xs font-semibold tracking-wide">Page Inspection</div>
-              <div className="text-[10px] text-[#C7E0F4]">BuildStorys Enact360</div>
+              <div className="text-[10px] text-[#C7E0F4]">BuildStorys ERP</div>
             </div>
           </div>
           <button 
@@ -176,7 +176,7 @@ export const D365InspectDataModal: React.FC<D365InspectDataModalProps> = ({
 
         {/* Footer info */}
         <div className="bg-[#FAF9F8] border-t border-[#E1DFDD] p-3 text-[11px] text-[#605E5C] flex items-center justify-between">
-          <span>BuildStorys Enact360 Core Runtime</span>
+          <span>BuildStorys ERP Core Runtime</span>
           <button 
             onClick={onClose}
             className="px-3 py-1 bg-white border border-[#8A8886] text-[#201F1E] rounded hover:bg-[#F3F2F1] transition font-medium text-xs"

@@ -316,7 +316,7 @@ export const D365Shell: React.FC<D365ShellProps> = ({
                 <div className="grid grid-cols-3 gap-2 text-center text-xs">
                   <div className="p-2 bg-[#EFF6FC] text-[#0F6CBD] rounded hover:bg-[#DEECF9] cursor-pointer font-medium" onClick={() => { setWaffleOpen(false); handleNavigate('dashboard'); }}>
                     <img src="/images/buildstorys-logo-icon.png" alt="" className="h-6 w-6 object-contain mx-auto mb-1" />
-                    <span>Enact360</span>
+                    <span>BuildStorys</span>
                   </div>
                   <div className="p-2 hover:bg-[#F3F2F1] rounded cursor-pointer">
                     <FileSpreadsheet className="h-6 w-6 mx-auto mb-1 text-[#107C41]" />
@@ -343,12 +343,12 @@ export const D365Shell: React.FC<D365ShellProps> = ({
             )}
           </div>
 
-          {/* BuildStorys Logo & Enact360 text */}
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => handleNavigate('dashboard')} title="BuildStorys Enact360 - Click to open Role Center Dashboard">
+          {/* BuildStorys Logo */}
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => handleNavigate('dashboard')} title="BuildStorys ERP - Click to open Role Center Dashboard">
             <img src="/images/buildstorys-logo-icon.png" alt="Build Storys" className="h-6 w-6 object-contain bg-white rounded-[4px] p-0.5" />
             <span className="font-semibold tracking-tight text-[13px] text-white">BuildStorys</span>
             <span className="text-[#89BBE9] font-light text-[13px]">|</span>
-            <span className="font-normal text-[13px] text-white/95">Enact360</span>
+            <span className="font-normal text-[13px] text-white/95">ERP</span>
           </div>
 
           {/* Company & Environment Badge */}
@@ -462,7 +462,7 @@ export const D365Shell: React.FC<D365ShellProps> = ({
             {mySettingsOpen && (
               <ViewportMenu className="absolute right-0 mt-2 w-72 bg-white text-[#201F1E] rounded shadow-2xl border border-[#EDEBE9] p-3 z-50 text-xs">
                 <div className="font-semibold text-xs text-[#201F1E] pb-2 border-b border-[#EDEBE9]">
-                  My Settings (Enact360)
+                  My Settings (BuildStorys ERP)
                 </div>
                 <div className="py-2 space-y-2 text-xs">
                   <div>
@@ -667,7 +667,7 @@ export const D365Shell: React.FC<D365ShellProps> = ({
               onClick={() => handleNavigate('dashboard')}
               className="text-slate-400 hover:text-slate-700 font-medium transition cursor-pointer"
             >
-              Enact360
+              BuildStorys ERP
             </button>
             <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
             <span className="text-slate-500 font-medium hidden md:inline truncate">
@@ -866,7 +866,7 @@ export const D365Shell: React.FC<D365ShellProps> = ({
             </div>
 
             <div className="p-2 bg-[#F3F2F1] text-[11px] text-[#605E5C] flex justify-between items-center border-t border-[#EDEBE9]">
-              <span>Search in BuildStorys Enact360</span>
+              <span>Search in BuildStorys ERP</span>
               <button
                 onClick={() => setTellMeOpen(false)}
                 className="px-2 py-0.5 bg-white border border-[#D2D0CE] rounded text-xs"

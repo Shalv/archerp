@@ -155,7 +155,7 @@ export const D365CommandBar: React.FC<D365CommandBarProps> = ({
                   onClick={handleRunAI}
                   disabled={isGenerating || isFrozen}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#0F6CBD] text-white hover:bg-[#0B5A9E] text-xs font-semibold shadow-2xs transition disabled:opacity-50"
-                  title="Run BuildStorys Enact360 Copilot AI Takeoff"
+                  title="Run BuildStorys Copilot AI Takeoff"
                 >
                   <Sparkles className={`h-3.5 w-3.5 ${isGenerating ? 'animate-spin' : ''}`} />
                   <span>{isGenerating ? 'Copilot Generating...' : 'Copilot Takeoff (AI)'}</span>

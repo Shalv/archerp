@@ -1,5 +1,5 @@
 /**
- * BuildStorys Enact360 - Role-Based Role Center Dashboard
+ * BuildStorys - Role-Based Role Center Dashboard
  * Dynamically tailored to the assigned role, responsibilities, permissions, and daily duties of the active user:
  * - ADMIN / EXECUTIVE (Managing Director & Principal Architect)
  * - ESTIMATOR (Lead Quantity Surveyor & Cost Planner)
@@ -80,6 +80,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
   const [completedTasks, setCompletedTasks] = useState<Record<string, boolean>>({});
   const [activeTabRole, setActiveTabRole] = useState<UserRole>(currentUser.role || 'ADMIN');
   const [approvedItems, setApprovedItems] = useState<Record<string, boolean>>({});
+  const [showAllDuties, setShowAllDuties] = useState(false);
 
   // Sync activeTabRole when currentUser changes
   React.useEffect(() => {
@@ -394,103 +395,193 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
     <div id="role-center-dashboard" className="space-y-5 max-w-[1700px] mx-auto text-xs pb-12 animate-in fade-in duration-200">
       
       {/* 1. EXECUTIVE WELCOME & UNIFIED ROLE COCKPIT */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-2xs relative">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-          {/* Left: User Identity & Active Job Context */}
-          <div className="flex items-start sm:items-center gap-4 min-w-0">
-            <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 shadow-xs ring-4 ring-slate-100">
-              <IconComponent className="w-6 h-6 text-sky-400" />
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 sm:p-5 md:p-6 space-y-4 relative">
+        
+        {/* TIER 1: USER IDENTITY & OPERATIONAL CONTEXT (PROJECT & USER SWITCHER) */}
+        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+          {/* User Identity Details */}
+          <div className="flex items-center gap-3.5 min-w-0">
+            {/* Avatar with Role Badge & Active Pulse */}
+            <div className="relative shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm tracking-wider shadow-xs ring-4 ring-slate-100">
+                {(() => {
+                  const clean = currentUser.name.replace(/\s*\(.*?\)\s*/g, '').trim();
+                  const parts = clean.split(/\s+/);
+                  return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : clean.slice(0, 2).toUpperCase();
+                })()}
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-md bg-white border border-slate-200 shadow-2xs flex items-center justify-center text-[#0F6CBD]" title={profile.roleKey}>
+                <IconComponent className="w-3 h-3" />
+              </div>
             </div>
 
+            {/* Name, Role Pill, Status & Department */}
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs font-bold text-slate-900">
-                  {currentUser.name}
-                </span>
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${profile.badgeColor}`}>
+                <h2 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight truncate">
+                  {currentUser.name.replace(/\s*\(.*?\)\s*/g, '').trim()}
+                </h2>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${profile.badgeColor} uppercase tracking-wide`}>
                   {profile.roleKey}
                 </span>
-                <span className="text-[11px] text-slate-500 flex items-center gap-1.5 font-medium">
-                  <span>•</span>
-                  <span>{profile.title}</span>
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-emerald-700 bg-emerald-50/90 border border-emerald-200/80 px-2 py-0.5 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Active Session
                 </span>
               </div>
 
-              <div className="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
-                <span className="text-slate-600 font-medium">{profile.dept}</span>
+              <div className="text-xs text-slate-600 mt-1 flex items-center gap-2 flex-wrap">
+                <span className="font-semibold text-slate-800">
+                  {currentUser.roleTitle || profile.title}
+                </span>
                 <span className="text-slate-300">•</span>
-                <span className="text-slate-700 font-semibold flex items-center gap-1">
-                  <Building2 className="w-3.5 h-3.5 text-[#0F6CBD]" />
-                  <span>Job: {activeProject?.projectCode || 'PROJ-SKYLINE-1402'}</span>
-                  <span className="text-slate-400 font-normal">({activeProject?.title || 'Skyline Penthouse'})</span>
+                <span className="text-slate-500 font-normal truncate max-w-[400px]">
+                  {profile.dept}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Right: Modern Segmented Role Switcher */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
-            <div className="bg-slate-100/90 p-1 rounded-xl flex items-center gap-1 border border-slate-200/60 overflow-x-auto max-w-full">
-              {ROLES_LIST.map((r) => {
-                const RIcon = r.icon;
-                const isSelected = activeTabRole === r.role;
-                return (
-                  <button
-                    key={r.role}
-                    type="button"
-                    onClick={() => handleRolePillClick(r.role)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-all cursor-pointer select-none shrink-0 ${
-                      isSelected
-                        ? 'bg-white text-slate-900 font-bold shadow-xs'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 font-medium'
-                    }`}
-                    title={r.desc}
+          {/* Context Tools: Dedicated Active Job Selector + User Profile Switcher */}
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0 self-stretch sm:self-auto">
+            {/* Active Project Card / Selector */}
+            <div className="flex-1 sm:flex-initial bg-slate-50/90 hover:bg-white border border-slate-200/90 rounded-xl px-3 py-2 transition-all shadow-2xs flex items-center gap-2.5 min-w-[240px]">
+              <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-[#0F6CBD] shrink-0">
+                <Building2 className="w-4 h-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-wider text-slate-400">
+                  <span>Active Project</span>
+                  <span className="font-mono bg-blue-100/70 text-[#0F6CBD] border border-blue-200/60 px-1.5 py-0.2 rounded font-bold text-[9px] shrink-0">
+                    {activeProject?.projectCode || 'PROJ-SKYLINE-1402'}
+                  </span>
+                </div>
+                {projects && projects.length > 0 ? (
+                  <select
+                    value={activeProject?.id}
+                    onChange={(e) => onSelectProject(e.target.value)}
+                    className="bg-transparent text-xs font-bold text-slate-900 focus:outline-none cursor-pointer truncate max-w-[210px] sm:max-w-[260px] block w-full"
+                    title="Switch Active Project"
                   >
-                    <RIcon className={`w-3.5 h-3.5 ${isSelected ? 'text-[#0F6CBD]' : 'text-slate-400'}`} />
-                    <span>{r.label}</span>
-                  </button>
-                );
-              })}
+                    {projects.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.title} ({p.projectCode})
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <div className="text-xs font-bold text-slate-900 truncate max-w-[210px]">
+                    {activeProject?.title || 'Skyline Penthouse 1402'}
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Direct Switch User Select */}
-            <div className="hidden xl:flex items-center gap-1.5 pl-2 border-l border-slate-200">
-              <span className="text-[10px] text-slate-400 font-medium uppercase">Switch User:</span>
-              <select
-                value={currentUser.id}
-                onChange={(e) => {
-                  const targetUser = allUsers.find(u => u.id === e.target.value);
-                  if (targetUser) onSwitchUser(targetUser);
-                }}
-                className="bg-white text-slate-700 text-xs border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-1 focus:ring-[#0F6CBD] font-medium cursor-pointer"
-                title="Switch active user"
-              >
-                {allUsers.map(u => (
-                  <option key={u.id} value={u.id}>
-                    {u.name} ({u.role})
-                  </option>
-                ))}
-              </select>
+            {/* Fast User Profile Switcher */}
+            <div className="flex-1 sm:flex-initial bg-slate-50/90 hover:bg-white border border-slate-200/90 rounded-xl px-3 py-2 transition-all shadow-2xs flex items-center gap-2.5 min-w-[190px]">
+              <div className="w-8 h-8 rounded-lg bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-700 shrink-0">
+                <Users className="w-4 h-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
+                  Switch User
+                </div>
+                <select
+                  value={currentUser.id}
+                  onChange={(e) => {
+                    const targetUser = allUsers.find(u => u.id === e.target.value);
+                    if (targetUser) onSwitchUser(targetUser);
+                  }}
+                  className="bg-transparent text-xs font-bold text-slate-900 focus:outline-none cursor-pointer truncate max-w-[170px] block w-full"
+                  title="Switch active user profile"
+                >
+                  {allUsers.map((u) => (
+                    <option key={u.id} value={u.id}>
+                      {u.name.replace(/\s*\(.*?\)\s*/g, '')} ({u.role})
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Assigned Duties Minimalist Strip */}
-        <div className="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
-          <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Assigned Responsibilities:</span>
-          </span>
-          {profile.responsibilities.slice(0, 3).map((resp, i) => (
-            <span key={i} className="text-[11px] bg-slate-50 text-slate-700 px-2.5 py-0.5 rounded-md border border-slate-200 font-medium">
-              {resp}
+        {/* TIER 2: ROLE COCKPIT SELECTOR (DEDICATED FULL-WIDTH BAR) */}
+        <div className="pt-3.5 pb-0.5 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 shrink-0">
+            <div className="w-6 h-6 rounded-md bg-blue-50 text-[#0F6CBD] flex items-center justify-center">
+              <Compass className="w-3.5 h-3.5" />
+            </div>
+            <span>Role Perspective Cockpit:</span>
+            <span className="text-[11px] text-slate-400 font-normal hidden lg:inline">(Simulate functional personas &amp; views)</span>
+          </div>
+
+          {/* Segmented Persona Buttons */}
+          <div className="bg-slate-100/90 p-1 rounded-xl flex items-center gap-1 border border-slate-200/60 overflow-x-auto scrollbar-none max-w-full">
+            {ROLES_LIST.map((r) => {
+              const RIcon = r.icon;
+              const isSelected = activeTabRole === r.role;
+              return (
+                <button
+                  key={r.role}
+                  type="button"
+                  onClick={() => handleRolePillClick(r.role)}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-all cursor-pointer select-none whitespace-nowrap shrink-0 ${
+                    isSelected
+                      ? 'bg-white text-slate-900 font-bold shadow-xs border border-slate-200/80 ring-1 ring-slate-900/5'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 font-medium'
+                  }`}
+                  title={r.desc}
+                >
+                  <RIcon className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-[#0F6CBD]' : 'text-slate-400'}`} />
+                  <span>{r.label}</span>
+                  {isSelected && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#0F6CBD]" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* TIER 3: ASSIGNED RESPONSIBILITIES & GOVERNANCE SCOPE */}
+        <div className="pt-3 border-t border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
+          <div className="flex flex-wrap items-center gap-2 min-w-0 flex-1">
+            <span className="text-[11px] font-semibold text-slate-700 flex items-center gap-1.5 shrink-0 mr-1">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <span>Assigned Scope:</span>
             </span>
-          ))}
-          {profile.responsibilities.length > 3 && (
-            <span className="text-[11px] text-[#0F6CBD] font-semibold pl-0.5">
-              +{profile.responsibilities.length - 3} more duties
+
+            {(showAllDuties ? profile.responsibilities : profile.responsibilities.slice(0, 3)).map((resp, i) => (
+              <span 
+                key={i} 
+                className="inline-flex items-center gap-1.5 text-[11px] bg-slate-50 hover:bg-slate-100/90 text-slate-700 px-2.5 py-1 rounded-md border border-slate-200/80 font-medium transition"
+                title={resp}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
+                <span className="truncate max-w-[320px] sm:max-w-[420px]">{resp}</span>
+              </span>
+            ))}
+
+            {profile.responsibilities.length > 3 && (
+              <button
+                type="button"
+                onClick={() => setShowAllDuties(!showAllDuties)}
+                className="text-[11px] text-[#0F6CBD] hover:text-blue-800 font-semibold px-2 py-0.5 rounded hover:bg-blue-50 transition cursor-pointer shrink-0"
+              >
+                {showAllDuties ? 'Show less' : `+${profile.responsibilities.length - 3} more duties`}
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0 text-[11px] text-slate-500 font-mono">
+            <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200/60 font-medium">
+              RBAC: {profile.roleKey}
             </span>
-          )}
+            <span className="hidden sm:inline-flex px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200/60 font-medium">
+              Security Clearance Verified
+            </span>
+          </div>
         </div>
       </div>
 
@@ -1205,7 +1296,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
                 </p>
               </div>
               <span className="text-xs text-slate-400 font-medium">
-                BuildStorys Enact360
+                BuildStorys ERP
               </span>
             </div>
 
@@ -1305,7 +1396,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
                   Role Authority &amp; Responsibilities
                 </h3>
                 <p className="text-slate-500 text-[11px]">
-                  Enforced by Enact360 Security Engine
+                  Enforced by BuildStorys Security Engine
                 </p>
               </div>
             </div>
@@ -1361,7 +1452,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
             <div className="bg-slate-900 text-white rounded-xl shadow-xs p-5 space-y-3 relative overflow-hidden">
               <div className="flex items-center gap-2 text-white font-bold text-xs">
                 <Sparkles className="w-4 h-4 text-amber-300" />
-                <span>Enact360 Copilot Assistant</span>
+                <span>BuildStorys Copilot Assistant</span>
               </div>
               <p className="text-slate-300 text-xs leading-relaxed">
                 Autonomous audit engine is active for {profile.roleKey}. It continuously monitors takeoff quantities, rate deviations, and variation orders in real time.

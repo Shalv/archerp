@@ -89,7 +89,7 @@ const PERMISSION_METADATA: Array<{
   },
   {
     key: 'canRunAITakeoff',
-    label: 'Execute BuildStorys Enact360 Copilot AI Takeoff',
+    label: 'Execute BuildStorys Copilot AI Takeoff',
     category: 'Estimating & Engineering',
     description: 'Run Gemini AI extraction agents to generate automatic draft BOQ lines from site survey notes and architectural briefs.'
   },
@@ -806,7 +806,7 @@ export const UserCardModal: React.FC<UserCardModalProps> = ({
                   <span>Role Experience Simulation for {formData.name || 'this User'}</span>
                 </div>
                 <p className="text-[11px] text-[#201F1E] leading-relaxed">
-                  Based on the currently assigned permissions, here is how the BuildStorys Enact360 interface will adapt when this user is active:
+                  Based on the currently assigned permissions, here is how the BuildStorys ERP interface will adapt when this user is active:
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
@@ -828,7 +828,7 @@ export const UserCardModal: React.FC<UserCardModalProps> = ({
                       )}
                       {formData.permissions?.canRunAITakeoff && (
                         <li className="flex items-center gap-1.5 text-[#107C41]">
-                          <Check className="h-3 w-3" /> BuildStorys Enact360 Copilot AI Takeoff active
+                          <Check className="h-3 w-3" /> BuildStorys Copilot AI Takeoff active
                         </li>
                       )}
                       {formData.permissions?.canApproveBOQ && (
@@ -929,7 +929,7 @@ export const UserCardModal: React.FC<UserCardModalProps> = ({
                   </div>
                   <div>
                     <span className="text-[#605E5C] block">Authentication Method:</span>
-                    <span className="font-medium text-[#201F1E]">BuildStorys Enact360 Session Token / Header ID</span>
+                    <span className="font-medium text-[#201F1E]">BuildStorys ERP Session Token / Header ID</span>
                   </div>
                 </div>
               </div>

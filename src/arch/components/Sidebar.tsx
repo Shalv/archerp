@@ -339,7 +339,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
               <div className="flex items-center space-x-1.5">
                 <ArrowRight className="w-3.5 h-3.5 rotate-180" />
-                <span>Return to Enact360 ERP</span>
+                <span>Return to BuildStorys ERP</span>
               </div>
               <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-mono">ERP</span>
             </button>

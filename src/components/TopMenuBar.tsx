@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import {
   LayoutDashboard,
   Users,
@@ -98,17 +98,24 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
   onOpenProfile
 }) => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number; width: number } | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuPanelRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const buttonRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
 
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      const isInsideNav = dropdownRef.current && dropdownRef.current.contains(target);
+      const isInsidePanel = menuPanelRef.current && menuPanelRef.current.contains(target);
+      if (!isInsideNav && !isInsidePanel) {
         setOpenDropdown(null);
+        setMenuPosition(null);
         setIsSearchOpen(false);
       }
     };
@@ -125,6 +132,7 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
         setTimeout(() => searchInputRef.current?.focus(), 50);
       } else if (e.key === 'Escape') {
         setOpenDropdown(null);
+        setMenuPosition(null);
         setIsSearchOpen(false);
         setIsMobileMenuOpen(false);
       }
@@ -650,16 +658,75 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
   const handleSelectModule = (tabKey: string) => {
     onNavigateTab(tabKey);
     setOpenDropdown(null);
+    setMenuPosition(null);
     setIsSearchOpen(false);
     setIsMobileMenuOpen(false);
   };
+
+  const updateMenuPosition = useCallback((stageId: string) => {
+    const btn = buttonRefs.current[stageId];
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    const stg = stages.find(s => s.id === stageId);
+    const isLarge = (stg?.modules.length ?? 0) > 4;
+    const maxAvailWidth = window.innerWidth - 24;
+    const targetWidth = isLarge
+      ? (window.innerWidth >= 1024 ? 820 : window.innerWidth >= 768 ? 700 : 540)
+      : (window.innerWidth >= 768 ? 620 : 500);
+    const width = Math.min(targetWidth, maxAvailWidth);
+
+    const top = rect.bottom + 6;
+    let left = rect.left;
+    if (left + width > window.innerWidth - 12) {
+      left = window.innerWidth - width - 12;
+    }
+    if (left < 12) {
+      left = 12;
+    }
+
+    setMenuPosition({ top, left, width });
+  }, [stages]);
+
+  const handleToggleDropdown = (stageId: string) => {
+    if (openDropdown === stageId) {
+      setOpenDropdown(null);
+      setMenuPosition(null);
+    } else {
+      setOpenDropdown(stageId);
+      updateMenuPosition(stageId);
+    }
+  };
+
+  const handleHoverDropdown = (stageId: string) => {
+    if (openDropdown !== null && openDropdown !== stageId) {
+      setOpenDropdown(stageId);
+      updateMenuPosition(stageId);
+    }
+  };
+
+  useEffect(() => {
+    if (!openDropdown) return;
+    const onReposition = () => {
+      updateMenuPosition(openDropdown);
+    };
+    window.addEventListener('resize', onReposition);
+    window.addEventListener('scroll', onReposition, true);
+    return () => {
+      window.removeEventListener('resize', onReposition);
+      window.removeEventListener('scroll', onReposition, true);
+    };
+  }, [openDropdown, updateMenuPosition]);
+
+  const activeOpenStage = useMemo(() => {
+    return stages.find(s => s.id === openDropdown) || null;
+  }, [stages, openDropdown]);
 
   return (
     <nav aria-label="Global ERP Menu Bar" className="bg-white border-b border-slate-200 relative z-30 select-none">
       <div className="max-w-[1920px] mx-auto px-2 sm:px-4 flex items-center justify-between gap-1 sm:gap-2 h-11" ref={dropdownRef}>
         
         {/* Left Side: Role Center Home Button + Horizontal Stage Tabs */}
-        <div className="flex items-center gap-1 overflow-x-auto scrollbar-none py-1 min-w-0">
+        <div className="flex items-center gap-1 py-1 min-w-0 overflow-x-auto lg:overflow-visible scrollbar-none">
           
           {/* 1. Dashboard / Role Center Home */}
           <button
@@ -679,20 +746,17 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
           <div className="h-4 w-px bg-slate-200 mx-0.5 shrink-0 hidden sm:block" />
 
           {/* 2. Stage Tabs with Dropdown Menus */}
-          {stages.map((stage, stageIndex) => {
+          {stages.map((stage) => {
             const isStageActive = activeStageId === stage.id;
             const isOpen = openDropdown === stage.id;
-            const isAlignRight = stageIndex >= 4;
-            const isLargeGrid = stage.modules.length > 4;
 
             return (
               <div key={stage.id} className="relative shrink-0">
                 <button
+                  ref={(el) => { buttonRefs.current[stage.id] = el; }}
                   type="button"
-                  onClick={() => setOpenDropdown(isOpen ? null : stage.id)}
-                  onMouseEnter={() => {
-                    if (openDropdown !== null) setOpenDropdown(stage.id);
-                  }}
+                  onClick={() => handleToggleDropdown(stage.id)}
+                  onMouseEnter={() => handleHoverDropdown(stage.id)}
                   className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer shrink-0 ${
                     isStageActive
                       ? 'bg-blue-50/80 text-[#0F6CBD] font-semibold border border-blue-200/60 shadow-2xs'
@@ -705,134 +769,137 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
                   <span className="truncate">{stage.shortTitle}</span>
                   <ChevronDown className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180 text-slate-800' : 'text-slate-400'}`} />
                 </button>
-
-                {/* Dropdown Floating Panel - GRID STYLE */}
-                {isOpen && (
-                  <div 
-                    className={`absolute mt-1.5 bg-white rounded-2xl shadow-2xl border border-slate-200/95 py-3 px-3.5 z-50 animate-in fade-in slide-in-from-top-1 duration-150 ${
-                      isAlignRight ? 'right-0' : 'left-0'
-                    } ${
-                      isLargeGrid 
-                        ? 'w-[90vw] sm:w-[600px] md:w-[740px] lg:w-[840px] max-w-[880px]' 
-                        : 'w-[90vw] sm:w-[520px] md:w-[620px] max-w-[660px]'
-                    }`}
-                    onMouseLeave={() => setOpenDropdown(null)}
-                  >
-                    {/* Header Banner with Stage Metadata */}
-                    <div className="px-1.5 pb-3 mb-3 border-b border-slate-100 flex items-center justify-between gap-3">
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-blue-50 text-[#0F6CBD] border border-blue-200/60">
-                            {stage.stageLabel || `Stage ${stage.stageNumber || stageIndex + 1}`}
-                          </span>
-                          <span className="text-xs font-bold text-slate-900 truncate">
-                            {stage.title.includes('•') ? stage.title.split('•')[1]?.trim() : stage.title}
-                          </span>
-                        </div>
-                        <p className="text-[11px] text-slate-500 truncate mt-0.5">
-                          {stage.description}
-                        </p>
-                      </div>
-                      <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-mono font-semibold shrink-0">
-                        {stage.modules.length} {stage.modules.length === 1 ? 'Module' : 'Modules'}
-                      </span>
-                    </div>
-
-                    {/* Grid Style Cards */}
-                    <div className={`grid gap-2.5 max-h-[460px] overflow-y-auto pr-1 ${
-                      isLargeGrid 
-                        ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3' 
-                        : 'grid-cols-1 sm:grid-cols-2'
-                    }`}>
-                      {stage.modules.map((m) => {
-                        const MIcon = m.icon;
-                        const isCurrentActive = activeTab === m.tabKey || 
-                          (m.tabKey === 'drawings' && activeTab === 'architecture') ||
-                          (m.tabKey === 'arch_studio' && (activeTab === 'arch_studio' || activeTab === 'ai-studio')) ||
-                          (m.tabKey === 'data_science' && (activeTab === 'data_science' || activeTab === 'analytics')) ||
-                          (m.tabKey === 'arch_pipeline' && (activeTab === 'arch_pipeline' || activeTab === 'pipeline')) ||
-                          (m.tabKey === 'arch_workspace' && (activeTab === 'arch_workspace' || activeTab === 'workspace'));
-
-                        return (
-                          <button
-                            key={m.id}
-                            type="button"
-                            onClick={() => handleSelectModule(m.tabKey)}
-                            className={`group relative text-left p-3 rounded-xl border transition-all duration-150 flex flex-col justify-between cursor-pointer ${
-                              isCurrentActive
-                                ? 'bg-blue-50/90 border-[#0F6CBD] ring-2 ring-[#0F6CBD]/20 shadow-xs'
-                                : 'bg-slate-50/60 hover:bg-white border-slate-200/80 hover:border-blue-300 hover:shadow-md'
-                            }`}
-                          >
-                            {/* Card Top Row: Icon + Badges */}
-                            <div className="flex items-start justify-between gap-2 mb-2 w-full">
-                              <div className={`p-2 rounded-lg transition-colors shrink-0 shadow-2xs ${
-                                isCurrentActive 
-                                  ? 'bg-[#0F6CBD] text-white' 
-                                  : 'bg-white text-slate-700 border border-slate-200/90 group-hover:bg-[#0F6CBD] group-hover:text-white group-hover:border-[#0F6CBD]'
-                              }`}>
-                                <MIcon className="w-4 h-4" />
-                              </div>
-
-                              <div className="flex items-center gap-1 shrink-0 flex-wrap justify-end">
-                                {m.code && (
-                                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/90 text-slate-600 border border-slate-200/90 font-medium">
-                                    {m.code}
-                                  </span>
-                                )}
-                                {m.badge && (
-                                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-medium ${m.badgeColor || 'bg-slate-100 text-slate-600'}`}>
-                                    {m.badge}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Card Middle: Title & Description */}
-                            <div className="min-w-0 w-full mb-2 flex-1">
-                              <h4 className={`text-xs font-bold leading-snug transition-colors line-clamp-1 ${
-                                isCurrentActive ? 'text-[#0F6CBD]' : 'text-slate-900 group-hover:text-[#0F6CBD]'
-                              }`}>
-                                {m.name}
-                              </h4>
-                              <p className="text-[11px] text-slate-500 line-clamp-2 mt-1 leading-normal">
-                                {m.shortDesc}
-                              </p>
-                            </div>
-
-                            {/* Card Bottom: Active Status or Quick Action */}
-                            <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between w-full text-[10px]">
-                              {isCurrentActive ? (
-                                <span className="font-semibold text-[#0F6CBD] flex items-center gap-1">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-[#0F6CBD] animate-pulse" />
-                                  Currently Open
-                                </span>
-                              ) : (
-                                <span className="text-slate-400 group-hover:text-[#0F6CBD] font-medium flex items-center gap-1 transition-colors">
-                                  Launch module
-                                  <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                                </span>
-                              )}
-                              <span className="text-slate-300 group-hover:text-slate-400">
-                                ↵
-                              </span>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {/* Footer Tip */}
-                    <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 px-1">
-                      <span>Click any card to open workspace</span>
-                      <span className="hidden sm:inline">Press <kbd className="font-mono text-[9px] bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 text-slate-600">Esc</kbd> to close</span>
-                    </div>
-                  </div>
-                )}
               </div>
             );
           })}
         </div>
+
+        {/* Active Stage Dropdown Floating Panel - Fixed Positioning: Never clipped by overflow containers */}
+        {openDropdown && activeOpenStage && menuPosition && (
+          <div 
+            ref={menuPanelRef}
+            style={{
+              position: 'fixed',
+              top: `${menuPosition.top}px`,
+              left: `${menuPosition.left}px`,
+              width: `${menuPosition.width}px`,
+              maxWidth: 'calc(100vw - 24px)',
+              maxHeight: 'calc(100vh - 120px)',
+              zIndex: 100,
+            }}
+            className="bg-white rounded-2xl shadow-2xl border border-slate-200/95 py-3.5 px-4 animate-in fade-in slide-in-from-top-1 duration-150 flex flex-col"
+          >
+            {/* Header Banner with Stage Metadata */}
+            <div className="px-1.5 pb-3 mb-3 border-b border-slate-100 flex items-center justify-between gap-3 shrink-0">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-blue-50 text-[#0F6CBD] border border-blue-200/60 font-semibold">
+                    {activeOpenStage.stageLabel || `Stage ${activeOpenStage.stageNumber || 1}`}
+                  </span>
+                  <span className="text-xs font-bold text-slate-900 truncate">
+                    {activeOpenStage.title.includes('•') ? activeOpenStage.title.split('•')[1]?.trim() : activeOpenStage.title}
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                  {activeOpenStage.description}
+                </p>
+              </div>
+              <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-mono font-semibold shrink-0">
+                {activeOpenStage.modules.length} {activeOpenStage.modules.length === 1 ? 'Module' : 'Modules'}
+              </span>
+            </div>
+
+            {/* Grid Style Cards */}
+            <div className={`grid gap-2.5 overflow-y-auto pr-1 flex-1 ${
+              activeOpenStage.modules.length > 4 
+                ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3' 
+                : 'grid-cols-1 sm:grid-cols-2'
+            }`}>
+              {activeOpenStage.modules.map((m) => {
+                const MIcon = m.icon;
+                const isCurrentActive = activeTab === m.tabKey || 
+                  (m.tabKey === 'drawings' && activeTab === 'architecture') ||
+                  (m.tabKey === 'arch_studio' && (activeTab === 'arch_studio' || activeTab === 'ai-studio')) ||
+                  (m.tabKey === 'data_science' && (activeTab === 'data_science' || activeTab === 'analytics')) ||
+                  (m.tabKey === 'arch_pipeline' && (activeTab === 'arch_pipeline' || activeTab === 'pipeline')) ||
+                  (m.tabKey === 'arch_workspace' && (activeTab === 'arch_workspace' || activeTab === 'workspace'));
+
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => handleSelectModule(m.tabKey)}
+                    className={`group relative text-left p-3 rounded-xl border transition-all duration-150 flex flex-col justify-between cursor-pointer ${
+                      isCurrentActive
+                        ? 'bg-blue-50/90 border-[#0F6CBD] ring-2 ring-[#0F6CBD]/20 shadow-xs'
+                        : 'bg-slate-50/60 hover:bg-white border-slate-200/80 hover:border-blue-300 hover:shadow-md'
+                    }`}
+                  >
+                    {/* Card Top Row: Icon + Badges */}
+                    <div className="flex items-start justify-between gap-2 mb-2 w-full">
+                      <div className={`p-2 rounded-lg transition-colors shrink-0 shadow-2xs ${
+                        isCurrentActive 
+                          ? 'bg-[#0F6CBD] text-white' 
+                          : 'bg-white text-slate-700 border border-slate-200/90 group-hover:bg-[#0F6CBD] group-hover:text-white group-hover:border-[#0F6CBD]'
+                      }`}>
+                        <MIcon className="w-4 h-4" />
+                      </div>
+
+                      <div className="flex items-center gap-1 shrink-0 flex-wrap justify-end">
+                        {m.code && (
+                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/90 text-slate-600 border border-slate-200/90 font-medium">
+                            {m.code}
+                          </span>
+                        )}
+                        {m.badge && (
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-medium ${m.badgeColor || 'bg-slate-100 text-slate-600'}`}>
+                            {m.badge}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Card Middle: Title & Description */}
+                    <div className="min-w-0 w-full mb-2 flex-1">
+                      <h4 className={`text-xs font-bold leading-snug transition-colors line-clamp-1 ${
+                        isCurrentActive ? 'text-[#0F6CBD]' : 'text-slate-900 group-hover:text-[#0F6CBD]'
+                      }`}>
+                        {m.name}
+                      </h4>
+                      <p className="text-[11px] text-slate-500 line-clamp-2 mt-1 leading-normal">
+                        {m.shortDesc}
+                      </p>
+                    </div>
+
+                    {/* Card Bottom: Active Status or Quick Action */}
+                    <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between w-full text-[10px]">
+                      {isCurrentActive ? (
+                        <span className="font-semibold text-[#0F6CBD] flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#0F6CBD] animate-pulse" />
+                          Currently Open
+                        </span>
+                      ) : (
+                        <span className="text-slate-400 group-hover:text-[#0F6CBD] font-medium flex items-center gap-1 transition-colors">
+                          Launch module
+                          <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                        </span>
+                      )}
+                      <span className="text-slate-300 group-hover:text-slate-400">
+                        ↵
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Footer Tip */}
+            <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 px-1 shrink-0">
+              <span>Click any card to open workspace</span>
+              <span className="hidden sm:inline">Press <kbd className="font-mono text-[9px] bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 text-slate-600">Esc</kbd> to close</span>
+            </div>
+          </div>
+        )}
 
         {/* Right Side: Quick Search & Module Finder + Mobile Drawer Trigger */}
         <div className="flex items-center gap-1.5 shrink-0">

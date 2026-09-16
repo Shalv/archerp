@@ -1034,7 +1034,7 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
                         },
                         {
                           key: 'canRunAITakeoff' as keyof UserPermissions,
-                          label: 'Execute BuildStorys Enact360 Copilot AI Takeoff',
+                          label: 'Execute BuildStorys Copilot AI Takeoff',
                           desc: 'Run Gemini AI extraction agents for automated BOQ takeoffs.'
                         },
                         {
