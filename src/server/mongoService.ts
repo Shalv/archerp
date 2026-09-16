@@ -43,7 +43,7 @@ export class MongoDBService {
     let uri = process.env.MONGODB_URI || '';
     
     // Resolve password, cleaning up any accidental key= prefixes or quotes
-    let pass = process.env.MONGODB_PASSWORD || 'sj2QFFWbaAEMgEGC';
+    let pass = process.env.MONGODB_PASSWORD || '';
     if (pass.includes('=')) {
       pass = pass.substring(pass.indexOf('=') + 1);
     }
@@ -51,11 +51,16 @@ export class MongoDBService {
 
     // If MONGODB_URI contains the literal placeholder <db_password>, replace it with real password
     if (uri && uri.includes('<db_password>')) {
-      return uri.replace('<db_password>', encodeURIComponent(pass));
+      return pass ? uri.replace('<db_password>', encodeURIComponent(pass)) : '';
     }
 
     if (uri && !uri.includes('<db_password>') && uri.startsWith('mongodb')) {
       return uri;
+    }
+
+    // Only construct Atlas URI if credentials were provided
+    if (!pass && !uri) {
+      return '';
     }
 
     const user = process.env.MONGODB_USERNAME || 'coreenactsolutions_db_user';
