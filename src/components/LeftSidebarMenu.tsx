@@ -198,12 +198,12 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
         {
           id: 'arch_pipeline',
           tabKey: 'arch_pipeline',
-          name: 'Architectural Deal Cockpit & CRM',
+          name: 'Architectural Pipeline & CRM',
           shortDesc: 'Stage-gate Kanban, win probability & radar',
           icon: Users,
           code: 'M01-A',
-          badge: 'Deal Cockpit',
-          badgeColor: 'bg-amber-50 text-amber-800 border border-amber-300 font-bold'
+          badge: 'Pipeline',
+          badgeColor: 'bg-indigo-50 text-indigo-800 border border-indigo-200 font-bold'
         }
       ]
     },

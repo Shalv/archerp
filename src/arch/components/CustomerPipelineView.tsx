@@ -45,7 +45,6 @@ import {
   WarrantyStatusBadge,
   EngagementBadge,
 } from './StatusBadges';
-import { DealCockpitDrawer } from './DealCockpitDrawer';
 
 interface CustomerPipelineViewProps {
   onSelectProjectTab: (tab: string, projectId: string) => void;
@@ -75,7 +74,6 @@ export const CustomerPipelineView: React.FC<CustomerPipelineViewProps> = ({
 
   const [viewMode, setViewMode] = useState<ViewMode>('kanban');
   const [sortOption, setSortOption] = useState<SortOption>('value-desc');
-  const [selectedDealForDrawer, setSelectedDealForDrawer] = useState<ProjectCustomer | null>(null);
   const [expandedMetric, setExpandedMetric] = useState<
     'pipeline' | 'forecast' | 'winrate' | 'avgdeal' | 'design' | null
   >(null);
@@ -202,11 +200,6 @@ export const CustomerPipelineView: React.FC<CustomerPipelineViewProps> = ({
 
     return { byEngagement, byStage, won, lost, active, byTier, activeStudios };
   }, [projects]);
-
-  const handleOpenDealDrawer = (project: ProjectCustomer) => {
-    setActiveProjectId(project.id);
-    setSelectedDealForDrawer(project);
-  };
 
   return (
     <div className="space-y-6">
@@ -708,7 +701,10 @@ export const CustomerPipelineView: React.FC<CustomerPipelineViewProps> = ({
                               <div className="flex items-start justify-between gap-1.5">
                                 <button
                                   type="button"
-                                  onClick={() => handleOpenDealDrawer(project)}
+                                  onClick={() => {
+                                    setActiveProjectId(project.id);
+                                    onSelectProjectTab('workspace', project.id);
+                                  }}
                                   className="text-xs font-bold text-slate-900 hover:text-indigo-600 text-left transition-colors cursor-pointer truncate block flex-1"
                                 >
                                   {project.clientName}
@@ -802,10 +798,14 @@ export const CustomerPipelineView: React.FC<CustomerPipelineViewProps> = ({
                             <div className="pt-1.5 border-t border-slate-100 flex items-center justify-between gap-1 text-xs">
                               <button
                                 type="button"
-                                onClick={() => handleOpenDealDrawer(project)}
-                                className="text-[11px] font-bold text-slate-700 hover:text-slate-900 hover:underline cursor-pointer"
+                                onClick={() => {
+                                  setActiveProjectId(project.id);
+                                  onSelectProjectTab('workspace', project.id);
+                                }}
+                                className="text-[11px] font-bold text-slate-700 hover:text-indigo-600 hover:underline cursor-pointer flex items-center gap-0.5"
                               >
-                                Deal Cockpit
+                                <span>Workspace</span>
+                                <ChevronRight className="w-3 h-3" />
                               </button>
 
                               <div className="flex items-center gap-1">
@@ -886,7 +886,10 @@ export const CustomerPipelineView: React.FC<CustomerPipelineViewProps> = ({
                         <td className="py-3.5 px-4">
                           <button
                             type="button"
-                            onClick={() => handleOpenDealDrawer(project)}
+                            onClick={() => {
+                              setActiveProjectId(project.id);
+                              onSelectProjectTab('workspace', project.id);
+                            }}
                             className="font-bold text-slate-900 hover:text-indigo-600 text-left block text-xs cursor-pointer"
                           >
                             {project.clientName}
@@ -984,14 +987,6 @@ export const CustomerPipelineView: React.FC<CustomerPipelineViewProps> = ({
                           <div className="flex items-center justify-end gap-1.5">
                             <button
                               type="button"
-                              onClick={() => handleOpenDealDrawer(project)}
-                              className="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
-                            >
-                              Cockpit
-                            </button>
-
-                            <button
-                              type="button"
                               onClick={() => {
                                 setActiveProjectId(project.id);
                                 onSelectProjectTab('analytics', project.id);
@@ -1024,16 +1019,6 @@ export const CustomerPipelineView: React.FC<CustomerPipelineViewProps> = ({
           </div>
         </div>
       )}
-
-      {/* CRM Deal Detail Cockpit Drawer */}
-      <DealCockpitDrawer
-        isOpen={!!selectedDealForDrawer}
-        onClose={() => setSelectedDealForDrawer(null)}
-        project={
-          projects.find((p) => p.id === selectedDealForDrawer?.id) || selectedDealForDrawer
-        }
-        onNavigateTab={onSelectProjectTab}
-      />
     </div>
   );
 };

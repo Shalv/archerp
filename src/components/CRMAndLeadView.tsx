@@ -353,19 +353,6 @@ export const CRMAndLeadView: React.FC<CRMAndLeadViewProps> = ({
               <span>Capture New Deal</span>
             </button>
 
-            {onNavigateTab && (
-              <button
-                id="btn-crm-arch-cockpit"
-                type="button"
-                onClick={() => onNavigateTab('arch_pipeline')}
-                className="px-3 py-1.5 rounded bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
-                title="Open Dedicated Architectural Deal Cockpit & Stage-Gate Radar"
-              >
-                <Users className="w-3.5 h-3.5 text-amber-700" />
-                <span>Architectural Deal Cockpit</span>
-              </button>
-            )}
-
             <button
               id="btn-crm-convert-handshake"
               type="button"
