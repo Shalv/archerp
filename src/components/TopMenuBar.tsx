@@ -679,9 +679,11 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
           <div className="h-4 w-px bg-slate-200 mx-0.5 shrink-0 hidden sm:block" />
 
           {/* 2. Stage Tabs with Dropdown Menus */}
-          {stages.map((stage) => {
+          {stages.map((stage, stageIndex) => {
             const isStageActive = activeStageId === stage.id;
             const isOpen = openDropdown === stage.id;
+            const isAlignRight = stageIndex >= 4;
+            const isLargeGrid = stage.modules.length > 4;
 
             return (
               <div key={stage.id} className="relative shrink-0">
@@ -704,23 +706,44 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
                   <ChevronDown className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180 text-slate-800' : 'text-slate-400'}`} />
                 </button>
 
-                {/* Dropdown Floating Panel */}
+                {/* Dropdown Floating Panel - GRID STYLE */}
                 {isOpen && (
                   <div 
-                    className="absolute left-0 mt-1.5 w-72 sm:w-80 bg-white rounded-xl shadow-xl border border-slate-200/90 py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                    className={`absolute mt-1.5 bg-white rounded-2xl shadow-2xl border border-slate-200/95 py-3 px-3.5 z-50 animate-in fade-in slide-in-from-top-1 duration-150 ${
+                      isAlignRight ? 'right-0' : 'left-0'
+                    } ${
+                      isLargeGrid 
+                        ? 'w-[90vw] sm:w-[600px] md:w-[740px] lg:w-[840px] max-w-[880px]' 
+                        : 'w-[90vw] sm:w-[520px] md:w-[620px] max-w-[660px]'
+                    }`}
                     onMouseLeave={() => setOpenDropdown(null)}
                   >
-                    <div className="px-3 py-1.5 border-b border-slate-100 flex items-center justify-between">
-                      <div>
-                        <div className="text-xs font-bold text-slate-900">{stage.title}</div>
-                        <div className="text-[11px] text-slate-400">{stage.description}</div>
+                    {/* Header Banner with Stage Metadata */}
+                    <div className="px-1.5 pb-3 mb-3 border-b border-slate-100 flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-blue-50 text-[#0F6CBD] border border-blue-200/60">
+                            {stage.stageLabel || `Stage ${stage.stageNumber || stageIndex + 1}`}
+                          </span>
+                          <span className="text-xs font-bold text-slate-900 truncate">
+                            {stage.title.includes('•') ? stage.title.split('•')[1]?.trim() : stage.title}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                          {stage.description}
+                        </p>
                       </div>
-                      <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono font-bold">
-                        {stage.modules.length} modules
+                      <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-mono font-semibold shrink-0">
+                        {stage.modules.length} {stage.modules.length === 1 ? 'Module' : 'Modules'}
                       </span>
                     </div>
 
-                    <div className="py-1 max-h-[380px] overflow-y-auto">
+                    {/* Grid Style Cards */}
+                    <div className={`grid gap-2.5 max-h-[460px] overflow-y-auto pr-1 ${
+                      isLargeGrid 
+                        ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3' 
+                        : 'grid-cols-1 sm:grid-cols-2'
+                    }`}>
                       {stage.modules.map((m) => {
                         const MIcon = m.icon;
                         const isCurrentActive = activeTab === m.tabKey || 
@@ -735,36 +758,74 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
                             key={m.id}
                             type="button"
                             onClick={() => handleSelectModule(m.tabKey)}
-                            className={`w-full text-left px-3 py-2 flex items-start gap-2.5 transition group cursor-pointer ${
+                            className={`group relative text-left p-3 rounded-xl border transition-all duration-150 flex flex-col justify-between cursor-pointer ${
                               isCurrentActive
-                                ? 'bg-blue-50/70 border-l-3 border-[#0F6CBD] text-[#0F6CBD]'
-                                : 'hover:bg-slate-50 text-slate-700 hover:text-slate-900'
+                                ? 'bg-blue-50/90 border-[#0F6CBD] ring-2 ring-[#0F6CBD]/20 shadow-xs'
+                                : 'bg-slate-50/60 hover:bg-white border-slate-200/80 hover:border-blue-300 hover:shadow-md'
                             }`}
                           >
-                            <div className={`p-1.5 rounded-md mt-0.5 shrink-0 ${
-                              isCurrentActive ? 'bg-[#0F6CBD] text-white' : 'bg-slate-100 text-slate-600 group-hover:bg-white group-hover:shadow-2xs group-hover:text-[#0F6CBD]'
-                            }`}>
-                              <MIcon className="w-3.5 h-3.5" />
-                            </div>
+                            {/* Card Top Row: Icon + Badges */}
+                            <div className="flex items-start justify-between gap-2 mb-2 w-full">
+                              <div className={`p-2 rounded-lg transition-colors shrink-0 shadow-2xs ${
+                                isCurrentActive 
+                                  ? 'bg-[#0F6CBD] text-white' 
+                                  : 'bg-white text-slate-700 border border-slate-200/90 group-hover:bg-[#0F6CBD] group-hover:text-white group-hover:border-[#0F6CBD]'
+                              }`}>
+                                <MIcon className="w-4 h-4" />
+                              </div>
 
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center justify-between gap-1">
-                                <span className={`text-xs font-medium truncate ${isCurrentActive ? 'font-bold text-[#0F6CBD]' : 'text-slate-900 group-hover:text-[#0F6CBD]'}`}>
-                                  {m.name}
-                                </span>
+                              <div className="flex items-center gap-1 shrink-0 flex-wrap justify-end">
+                                {m.code && (
+                                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/90 text-slate-600 border border-slate-200/90 font-medium">
+                                    {m.code}
+                                  </span>
+                                )}
                                 {m.badge && (
-                                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono shrink-0 ${m.badgeColor || 'bg-slate-100 text-slate-600'}`}>
+                                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-medium ${m.badgeColor || 'bg-slate-100 text-slate-600'}`}>
                                     {m.badge}
                                   </span>
                                 )}
                               </div>
-                              <p className="text-[11px] text-slate-400 line-clamp-1 mt-0.5">
+                            </div>
+
+                            {/* Card Middle: Title & Description */}
+                            <div className="min-w-0 w-full mb-2 flex-1">
+                              <h4 className={`text-xs font-bold leading-snug transition-colors line-clamp-1 ${
+                                isCurrentActive ? 'text-[#0F6CBD]' : 'text-slate-900 group-hover:text-[#0F6CBD]'
+                              }`}>
+                                {m.name}
+                              </h4>
+                              <p className="text-[11px] text-slate-500 line-clamp-2 mt-1 leading-normal">
                                 {m.shortDesc}
                               </p>
+                            </div>
+
+                            {/* Card Bottom: Active Status or Quick Action */}
+                            <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between w-full text-[10px]">
+                              {isCurrentActive ? (
+                                <span className="font-semibold text-[#0F6CBD] flex items-center gap-1">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-[#0F6CBD] animate-pulse" />
+                                  Currently Open
+                                </span>
+                              ) : (
+                                <span className="text-slate-400 group-hover:text-[#0F6CBD] font-medium flex items-center gap-1 transition-colors">
+                                  Launch module
+                                  <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                                </span>
+                              )}
+                              <span className="text-slate-300 group-hover:text-slate-400">
+                                ↵
+                              </span>
                             </div>
                           </button>
                         );
                       })}
+                    </div>
+
+                    {/* Footer Tip */}
+                    <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 px-1">
+                      <span>Click any card to open workspace</span>
+                      <span className="hidden sm:inline">Press <kbd className="font-mono text-[9px] bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 text-slate-600">Esc</kbd> to close</span>
                     </div>
                   </div>
                 )}
@@ -871,36 +932,63 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown Sheet */}
+      {/* Mobile Menu Dropdown Sheet - Grid Style */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden border-t border-slate-200 bg-white px-3 py-3 max-h-[70vh] overflow-y-auto shadow-xl space-y-4">
+        <div className="lg:hidden border-t border-slate-200 bg-white px-3.5 py-3 max-h-[75vh] overflow-y-auto shadow-xl space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-            <span className="font-bold text-slate-900 text-xs">All ERP Modules & Stages</span>
+            <div>
+              <span className="font-bold text-slate-900 text-xs">All ERP Modules & Stages</span>
+              <p className="text-[10px] text-slate-400">Select any stage module to open</p>
+            </div>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-slate-400 hover:text-slate-600 p-1"
+              className="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {stages.map((stage) => (
-              <div key={stage.id} className="space-y-1">
-                <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                  {stage.title}
+              <div key={stage.id} className="space-y-1.5">
+                <div className="flex items-center justify-between text-[11px] font-bold text-slate-700 uppercase tracking-wider px-1">
+                  <span>{stage.title}</span>
+                  <span className="text-[10px] font-mono text-slate-400">{stage.modules.length}</span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 pl-2">
+                <div className="grid grid-cols-2 gap-2">
                   {stage.modules.map((m) => {
                     const MIcon = m.icon;
+                    const isCurrentActive = activeTab === m.tabKey || 
+                      (m.tabKey === 'drawings' && activeTab === 'architecture') ||
+                      (m.tabKey === 'arch_studio' && (activeTab === 'arch_studio' || activeTab === 'ai-studio')) ||
+                      (m.tabKey === 'data_science' && (activeTab === 'data_science' || activeTab === 'analytics')) ||
+                      (m.tabKey === 'arch_pipeline' && (activeTab === 'arch_pipeline' || activeTab === 'pipeline')) ||
+                      (m.tabKey === 'arch_workspace' && (activeTab === 'arch_workspace' || activeTab === 'workspace'));
+
                     return (
                       <button
                         key={m.id}
                         onClick={() => handleSelectModule(m.tabKey)}
-                        className="text-left px-2.5 py-1.5 rounded-md hover:bg-slate-50 text-xs flex items-center gap-2 text-slate-700"
+                        className={`text-left p-2.5 rounded-xl border flex flex-col justify-between gap-2 transition cursor-pointer ${
+                          isCurrentActive
+                            ? 'bg-blue-50 border-[#0F6CBD] text-[#0F6CBD] shadow-2xs font-semibold'
+                            : 'bg-slate-50/70 hover:bg-white border-slate-200/80 text-slate-800 hover:border-blue-300'
+                        }`}
                       >
-                        <MIcon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span className="truncate">{m.name}</span>
+                        <div className="flex items-center justify-between w-full">
+                          <div className={`p-1.5 rounded-md ${isCurrentActive ? 'bg-[#0F6CBD] text-white' : 'bg-white border border-slate-200 text-slate-700'}`}>
+                            <MIcon className="w-3.5 h-3.5" />
+                          </div>
+                          {m.code && (
+                            <span className="text-[9px] font-mono text-slate-400 bg-white px-1 py-0.2 rounded border border-slate-200">
+                              {m.code}
+                            </span>
+                          )}
+                        </div>
+                        <div>
+                          <div className="text-xs font-semibold leading-tight line-clamp-1">{m.name}</div>
+                          <div className="text-[10px] text-slate-400 line-clamp-1 mt-0.5">{m.shortDesc}</div>
+                        </div>
                       </button>
                     );
                   })}
