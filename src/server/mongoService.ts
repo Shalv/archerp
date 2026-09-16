@@ -40,12 +40,26 @@ export class MongoDBService {
    * Resolves the MongoDB connection URI
    */
   public getUri(): string {
-    if (process.env.MONGODB_URI) {
-      return process.env.MONGODB_URI;
+    let uri = process.env.MONGODB_URI || '';
+    
+    // Resolve password, cleaning up any accidental key= prefixes or quotes
+    let pass = process.env.MONGODB_PASSWORD || 'sj2QFFWbaAEMgEGC';
+    if (pass.includes('=')) {
+      pass = pass.substring(pass.indexOf('=') + 1);
     }
+    pass = pass.replace(/^["']|["']$/g, '').trim();
+
+    // If MONGODB_URI contains the literal placeholder <db_password>, replace it with real password
+    if (uri && uri.includes('<db_password>')) {
+      return uri.replace('<db_password>', encodeURIComponent(pass));
+    }
+
+    if (uri && !uri.includes('<db_password>') && uri.startsWith('mongodb')) {
+      return uri;
+    }
+
     const user = process.env.MONGODB_USERNAME || 'coreenactsolutions_db_user';
-    const pass = process.env.MONGODB_PASSWORD || 'sj2QFFWbaAEMgEGC';
-    return `mongodb+srv://${encodeURIComponent(user)}:${encodeURIComponent(pass)}@cluster0.cabxpys.mongodb.net`;
+    return `mongodb+srv://${encodeURIComponent(user)}:${encodeURIComponent(pass)}@cluster0.cabxpys.mongodb.net/?retryWrites=true&w=majority`;
   }
 
   public getDatabaseName(): string {
