@@ -103,8 +103,6 @@ export async function createApp(isServerless: boolean = false) {
       normalizedPath === '/auth/users' || 
       normalizedPath === '/health' ||
       normalizedPath === '/system/status' ||
-      normalizedPath === '/system/database' ||
-      normalizedPath === '/system/database/test' ||
       normalizedPath === '/system/mongodb' ||
       normalizedPath === '/system/mongodb/test' ||
       normalizedPath === '/gemini/status' ||

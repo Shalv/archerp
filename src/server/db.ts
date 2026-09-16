@@ -349,7 +349,7 @@ class DatabaseService {
       fs.writeFileSync(temporaryFile, JSON.stringify(data, null, 2), 'utf-8');
       fs.renameSync(temporaryFile, DB_FILE);
 
-      // Notify persistence subscribers (e.g. Hostinger MySQL background sync)
+      // Notify persistence subscribers (e.g. MongoDB Atlas exclusive sync)
       for (const listener of this.persistListeners) {
         try {
           listener(data);

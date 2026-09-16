@@ -393,7 +393,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
   ];
 
   return (
-    <div id="role-center-dashboard" className="space-y-5 max-w-[1700px] mx-auto text-xs pb-12 animate-in fade-in duration-200">
+    <div id="role-center-dashboard" className="space-y-3.5 max-w-[1700px] mx-auto text-xs pb-3 animate-in fade-in duration-200">
       
       {/* 1. EXECUTIVE WELCOME & UNIFIED ROLE COCKPIT */}
       <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 sm:p-5 md:p-6 space-y-4 relative">

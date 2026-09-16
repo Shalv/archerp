@@ -223,7 +223,7 @@ export const D365JobCard: React.FC<D365JobCardProps> = ({
   };
 
   return (
-    <div className="space-y-4 pb-12">
+    <div className="space-y-4 pb-4">
       {/* 1. DOCUMENT HEADER (D365 Business Central Job Card Title Bar) */}
       <div className="bg-white border border-slate-200/90 p-4 sm:p-5 rounded-xl shadow-2xs">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">

@@ -721,7 +721,7 @@ export default function App() {
 
   if (['arch_studio', 'ai-studio', 'data_science', 'analytics', 'arch_workspace', 'workspace', 'arch_pipeline', 'pipeline', 'architecture', 'data_backup'].includes(activeTab)) {
     return (
-      <div className="erp-app min-h-screen bg-[#F8FAFC] text-[#0F172A] flex flex-col font-sans">
+      <div className="erp-app h-screen h-[100dvh] max-h-[100dvh] overflow-hidden bg-[#F8FAFC] text-[#0F172A] flex flex-col font-sans">
         <ArchitectureWorkspace
           currentUser={currentUser}
           onLogout={handleLogout}
@@ -761,7 +761,7 @@ export default function App() {
   }
 
   return (
-    <div className="erp-app min-h-screen bg-[#F8FAFC] text-[#0F172A] flex flex-col font-sans selection:bg-[#0F6CBD]/20">
+    <div className="erp-app h-screen h-[100dvh] max-h-[100dvh] overflow-hidden bg-[#F8FAFC] text-[#0F172A] flex flex-col font-sans selection:bg-[#0F6CBD]/20">
       {/* 1. TOP DYNAMICS 365 SHELL (Single Unified ERP Control Center) */}
       <D365Shell
         currentUser={currentUser}
@@ -804,9 +804,9 @@ export default function App() {
       )}
 
       {/* 3. MAIN WORKSPACE (FULL-WIDTH DOCUMENT CANVAS + FACTBOX PANE) */}
-      <div className="erp-workspace flex-1 flex min-w-0 w-full">
-        {/* Main Document Body - 100% full width with spacious responsive padding */}
-        <main className="erp-main flex-1 min-w-0 p-3 sm:p-5 md:p-6 w-full max-w-[1920px] mx-auto">
+      <div className="erp-workspace flex-1 min-h-0 flex min-w-0 w-full overflow-hidden">
+        {/* Main Document Body - 100% full width with responsive padding */}
+        <main className="erp-main flex-1 min-h-0 h-full overflow-y-auto overflow-x-hidden p-2.5 sm:p-3.5 w-full max-w-[1920px] mx-auto">
           {activeTab === 'dashboard' || activeTab === 'role_center' ? (
             <RoleCenterDashboardView
               currentUser={currentUser}
@@ -1047,7 +1047,7 @@ export default function App() {
       )}
 
       {/* Status Bar / Bottom System Footer */}
-      <footer className="bg-[#FAF9F8] border-t border-[#E1DFDD] px-4 py-1.5 flex items-center justify-between text-[11px] text-[#605E5C] select-none print:hidden">
+      <footer className="bg-[#FAF9F8] border-t border-[#E1DFDD] px-4 py-1.5 flex items-center justify-between text-[11px] text-[#605E5C] select-none print:hidden shrink-0">
         <div className="flex items-center gap-3">
           <span className="font-semibold text-[#201F1E]">Build Storys ERP</span>
           <span>•</span>

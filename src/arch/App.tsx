@@ -87,7 +87,7 @@ function AppContent({
   };
 
   return (
-    <div className="arch-workspace h-screen w-full bg-slate-50 flex flex-row font-sans text-slate-900 antialiased selection:bg-slate-900 selection:text-white overflow-hidden">
+    <div className="arch-workspace h-screen h-[100dvh] max-h-[100dvh] w-full bg-slate-50 flex flex-row font-sans text-slate-900 antialiased selection:bg-slate-900 selection:text-white overflow-hidden">
         {/* Left Sidebar Menu */}
         <Sidebar
           activeTab={activeTab}
@@ -101,7 +101,7 @@ function AppContent({
         />
 
         {/* Main Content Column: Frozen Header + Scrollable Content Viewport */}
-        <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        <div className="flex-1 flex flex-col min-w-0 h-full max-h-[100dvh] overflow-hidden">
           {/* Frozen Top Bar Header (Stays Fixed at Top during Page Scroll) */}
           <TopBar
             activeTab={activeTab}
@@ -113,8 +113,8 @@ function AppContent({
           />
 
           {/* Scrollable Viewport */}
-          <div id="main-scroll-viewport" className="flex-1 overflow-y-auto overflow-x-hidden w-full flex flex-col">
-            <div className="px-4 py-2 bg-white border-b flex flex-wrap items-center gap-3 text-xs">
+          <div id="main-scroll-viewport" className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden w-full flex flex-col">
+            <div className="px-4 py-2 bg-white border-b flex flex-wrap items-center gap-3 text-xs shrink-0">
               {onNavigateBackToERP && (
                 <button
                   type="button"
