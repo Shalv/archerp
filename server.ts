@@ -22,6 +22,9 @@ import { getAlternativePackages, getValueEngineeringOptions } from './src/server
 import { UserSession, MasterRateItem, BOQItem, BOQRevision, ProjectRecord, CustomerRequirement, SystemCapabilityReport, CustomerQuotation } from './src/types/erp';
 
 dotenv.config();
+if (fs.existsSync(path.join(process.cwd(), '.env.example'))) {
+  dotenv.config({ path: path.join(process.cwd(), '.env.example') });
+}
 
 
 
@@ -1104,30 +1107,32 @@ export async function createApp(isServerless: boolean = false) {
 }
 
 async function startServer() {
+  // Auto-test and sync with exclusive MongoDB Atlas backend before listening
+  try {
+    const testRes = await mongoDBService.testConnection();
+    if (testRes.connected) {
+      console.log('[MongoDB Atlas] Connected. Checking remote records to hydrate store...');
+      const remoteData = await mongoDBService.loadFromMongoDB();
+      if (remoteData && (remoteData.projects?.length || remoteData.users?.length)) {
+        dbService.hydrateFromRemote(remoteData);
+        console.log(`[MongoDB Atlas] In-memory store successfully initialized with remote cloud data (${remoteData.projects?.length || 0} projects, ${remoteData.users?.length || 0} users).`);
+      } else {
+        console.log('[MongoDB Atlas] Connected. Initializing seed sync to cloud...');
+        mongoDBService.syncToMongoDB(dbService.snapshot()).catch(err => {
+          console.warn('[MongoDB Atlas] Initial sync notice:', err?.message);
+        });
+      }
+    } else {
+      console.warn('[MongoDB Atlas] Initialization check:', testRes.message);
+    }
+  } catch (err: any) {
+    console.warn('[MongoDB Atlas] Connection check error:', err?.message);
+  }
+
   const app = await createApp(false);
   const PORT = 3000;
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`[Build Storys ERP] Server successfully running on http://0.0.0.0:${PORT}`);
-    // Auto-test and sync with exclusive MongoDB Atlas backend
-    mongoDBService.testConnection().then(async (testRes) => {
-      if (testRes.connected) {
-        console.log('[MongoDB Atlas] Connected. Checking remote records to hydrate store...');
-        const remoteData = await mongoDBService.loadFromMongoDB();
-        if (remoteData && (remoteData.projects?.length || remoteData.users?.length)) {
-          dbService.hydrateFromRemote(remoteData);
-          console.log('[MongoDB Atlas] In-memory store successfully initialized with remote cloud data.');
-        } else {
-          console.log('[MongoDB Atlas] Connected. Initializing seed sync to cloud...');
-          mongoDBService.syncToMongoDB(dbService.snapshot()).catch(err => {
-            console.warn('[MongoDB Atlas] Initial sync notice:', err?.message);
-          });
-        }
-      } else {
-        console.warn('[MongoDB Atlas] Initialization check:', testRes.message);
-      }
-    }).catch(err => {
-      console.warn('[MongoDB Atlas] Connection check error:', err?.message);
-    });
   });
 }
 

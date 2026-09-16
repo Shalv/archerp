@@ -110,13 +110,18 @@ export const D365Shell: React.FC<D365ShellProps> = ({
   const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false);
   const [toolsMenuOpen, setToolsMenuOpen] = useState(false);
   const [navDropdownOpen, setNavDropdownOpen] = useState<string | null>(null);
+  const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(false);
   const navDropdownRef = useRef<HTMLDivElement>(null);
+  const projectMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close nav dropdown on outside click
+  // Close nav dropdown and project menu on outside click
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (navDropdownRef.current && !navDropdownRef.current.contains(e.target as Node)) {
         setNavDropdownOpen(null);
+      }
+      if (projectMenuRef.current && !projectMenuRef.current.contains(e.target as Node)) {
+        setIsProjectMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handleOutsideClick);
@@ -722,19 +727,71 @@ export const D365Shell: React.FC<D365ShellProps> = ({
 
         {/* Right side: Active Project pill & contextual workspace actions */}
         <div className="flex items-center gap-2 shrink-0">
-          {/* Active Job badge */}
-          {activeProject && (
+          {/* Active Job badge with interactive Project Switcher Dropdown */}
+          <div className="relative" ref={projectMenuRef}>
             <button
-              onClick={() => handleNavigate('projects')}
-              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] transition cursor-pointer"
-              title="Click to view all projects"
+              onClick={() => setIsProjectMenuOpen(!isProjectMenuOpen)}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] transition cursor-pointer"
+              title="Click to view all projects and switch active project"
             >
               <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
-              <span className="font-mono font-bold text-slate-800">{activeProject.projectCode}</span>
+              <span className="font-mono font-bold text-slate-800">{activeProject ? activeProject.projectCode : 'Select Project'}</span>
               <span className="text-slate-300 hidden lg:inline">•</span>
-              <span className="text-slate-600 truncate max-w-[140px] hidden lg:inline">{activeProject.clientName}</span>
+              <span className="text-slate-600 truncate max-w-[140px] hidden lg:inline">{activeProject ? activeProject.title : 'All Projects'}</span>
+              <ChevronDown className="w-3 h-3 text-slate-400 ml-0.5" />
             </button>
-          )}
+
+            {isProjectMenuOpen && (
+              <div className="absolute right-0 mt-1.5 w-80 rounded-xl border border-slate-200 bg-white p-2 shadow-xl z-50">
+                <div className="flex items-center justify-between px-2 py-1.5 border-b border-slate-100 mb-1">
+                  <div className="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                    <Database className="w-3 h-3 text-emerald-600" />
+                    <span>Projects ({projects.length})</span>
+                  </div>
+                  <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-1.5 py-0.5 rounded-full font-medium flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    MongoDB Atlas
+                  </span>
+                </div>
+                <div className="max-h-60 overflow-y-auto space-y-1">
+                  {projects.map(p => (
+                    <button
+                      key={p.id}
+                      onClick={() => {
+                        onSelectProject(p.id);
+                        setIsProjectMenuOpen(false);
+                      }}
+                      className={`flex w-full items-start justify-between rounded-lg p-2 text-left text-xs transition ${
+                        activeProject?.id === p.id ? 'bg-blue-50/80 text-blue-900 border border-blue-200/60 font-medium' : 'hover:bg-slate-50 text-slate-700'
+                      }`}
+                    >
+                      <div className="min-w-0 pr-2">
+                        <div className="font-semibold text-slate-900 truncate">{p.title}</div>
+                        <div className="text-[11px] text-slate-500 flex items-center gap-1.5 mt-0.5">
+                          <span className="font-mono font-bold text-slate-700">{p.projectCode}</span>
+                          <span>•</span>
+                          <span className="truncate">{p.clientName || 'Client'}</span>
+                          {p.city && <span>({p.city})</span>}
+                        </div>
+                      </div>
+                      {activeProject?.id === p.id && <Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />}
+                    </button>
+                  ))}
+                </div>
+                <div className="pt-2 mt-1 border-t border-slate-100 flex items-center justify-between">
+                  <button
+                    onClick={() => {
+                      handleNavigate('projects');
+                      setIsProjectMenuOpen(false);
+                    }}
+                    className="w-full text-center py-1 text-xs font-semibold text-[#0F6CBD] hover:underline"
+                  >
+                    View All in Projects Register →
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Export to Excel button */}
           {onExportToExcel && ['boq', 'general', 'budget'].includes(activeTab) && (

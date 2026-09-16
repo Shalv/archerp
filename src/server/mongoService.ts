@@ -40,7 +40,7 @@ export class MongoDBService {
    * Resolves the MongoDB connection URI
    */
   public getUri(): string {
-    let uri = process.env.MONGODB_URI || '';
+    let uri = (process.env.MONGODB_URI || '').replace(/^["']|["']$/g, '').trim();
     
     // Resolve password, cleaning up any accidental key= prefixes or quotes
     let pass = process.env.MONGODB_PASSWORD || '';
@@ -63,12 +63,13 @@ export class MongoDBService {
       return '';
     }
 
-    const user = process.env.MONGODB_USERNAME || 'coreenactsolutions_db_user';
+    let user = (process.env.MONGODB_USERNAME || 'coreenactsolutions_db_user').replace(/^["']|["']$/g, '').trim();
     return `mongodb+srv://${encodeURIComponent(user)}:${encodeURIComponent(pass)}@cluster0.cabxpys.mongodb.net/?retryWrites=true&w=majority`;
   }
 
   public getDatabaseName(): string {
-    return process.env.MONGODB_DATABASE || 'buildstorys_erp';
+    let db = (process.env.MONGODB_DATABASE || 'coreenactsolutions_db_user').replace(/^["']|["']$/g, '').trim();
+    return db || 'coreenactsolutions_db_user';
   }
 
   /**

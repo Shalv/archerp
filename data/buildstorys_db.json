@@ -33,7 +33,7 @@
       "role": "ADMIN",
       "roleTitle": "Principal Architect & Design Director",
       "status": "ACTIVE",
-      "updatedAt": "2026-09-16T10:55:10.549Z",
+      "updatedAt": "2026-09-16T11:59:52.799Z",
       "username": "shruthi"
     },
     {
@@ -68,7 +68,7 @@
       "role": "ADMIN",
       "roleTitle": "Managing Director & Partner",
       "status": "ACTIVE",
-      "updatedAt": "2026-09-16T10:55:10.616Z",
+      "updatedAt": "2026-09-16T11:59:52.866Z",
       "username": "aarav"
     },
     {
@@ -103,7 +103,7 @@
       "role": "ESTIMATOR",
       "roleTitle": "Lead Quantity Surveyor & Cost Planner",
       "status": "ACTIVE",
-      "updatedAt": "2026-09-16T10:55:10.680Z",
+      "updatedAt": "2026-09-16T11:59:52.932Z",
       "username": "rajesh.qs"
     },
     {
@@ -138,7 +138,7 @@
       "role": "PROJECT_MANAGER",
       "roleTitle": "Senior Project Lead (Interiors & Turnkey)",
       "status": "ACTIVE",
-      "updatedAt": "2026-09-16T10:55:10.746Z",
+      "updatedAt": "2026-09-16T11:59:53.008Z",
       "username": "kavita.pm"
     },
     {
@@ -173,7 +173,7 @@
       "role": "SITE_ENGINEER",
       "roleTitle": "Site Execution & QC Engineer",
       "status": "ACTIVE",
-      "updatedAt": "2026-09-16T10:55:10.812Z",
+      "updatedAt": "2026-09-16T11:59:53.075Z",
       "username": "ramesh.site"
     },
     {
@@ -208,7 +208,7 @@
       "role": "CLIENT",
       "roleTitle": "Property Owner (Unit 1402)",
       "status": "ACTIVE",
-      "updatedAt": "2026-09-16T10:55:10.878Z",
+      "updatedAt": "2026-09-16T11:59:53.142Z",
       "username": "vikram.malhotra"
     }
   ],
@@ -234,7 +234,7 @@
       "totalUnitCost": 28,
       "trade": "DEMOLITION_DISPOSAL",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:10.943Z",
+      "updatedAt": "2026-09-16T11:59:53.208Z",
       "workPackage": "Civil Demolition"
     },
     {
@@ -258,7 +258,7 @@
       "totalUnitCost": 44,
       "trade": "DEMOLITION_DISPOSAL",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:11.010Z",
+      "updatedAt": "2026-09-16T11:59:53.275Z",
       "workPackage": "Civil Demolition"
     },
     {
@@ -282,7 +282,7 @@
       "totalUnitCost": 115,
       "trade": "CIVIL_MASONRY",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:11.076Z",
+      "updatedAt": "2026-09-16T11:59:53.343Z",
       "workPackage": "Internal Masonry"
     },
     {
@@ -306,7 +306,7 @@
       "totalUnitCost": 55,
       "trade": "CIVIL_MASONRY",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:11.144Z",
+      "updatedAt": "2026-09-16T11:59:53.418Z",
       "workPackage": "Plastering"
     },
     {
@@ -330,7 +330,7 @@
       "totalUnitCost": 80,
       "trade": "WATERPROOFING",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:11.209Z",
+      "updatedAt": "2026-09-16T11:59:53.486Z",
       "workPackage": "Wet Areas & Balconies"
     },
     {
@@ -354,7 +354,7 @@
       "totalUnitCost": 158,
       "trade": "FLOORING_TILING",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:11.275Z",
+      "updatedAt": "2026-09-16T11:59:53.553Z",
       "workPackage": "Main Flooring"
     },
     {
@@ -378,7 +378,7 @@
       "totalUnitCost": 635,
       "trade": "FLOORING_TILING",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:11.340Z",
+      "updatedAt": "2026-09-16T11:59:53.620Z",
       "workPackage": "Luxury Stone Flooring"
     },
     {
@@ -402,7 +402,7 @@
       "totalUnitCost": 190,
       "trade": "FLOORING_TILING",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:11.406Z",
+      "updatedAt": "2026-09-16T11:59:53.702Z",
       "workPackage": "Wooden Flooring"
     },
     {
@@ -426,7 +426,7 @@
       "totalUnitCost": 105,
       "trade": "FALSE_CEILINGS",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:11.471Z",
+      "updatedAt": "2026-09-16T11:59:53.769Z",
       "workPackage": "Gypsum Ceilings"
     },
     {
@@ -450,7 +450,7 @@
       "totalUnitCost": 120,
       "trade": "FALSE_CEILINGS",
       "unit": "r.ft",
-      "updatedAt": "2026-09-16T10:55:11.537Z",
+      "updatedAt": "2026-09-16T11:59:53.837Z",
       "workPackage": "Perimeter Cove"
     },
     {
@@ -474,7 +474,7 @@
       "totalUnitCost": 48,
       "trade": "PAINTING_POLISHING",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:11.602Z",
+      "updatedAt": "2026-09-16T11:59:53.903Z",
       "workPackage": "Internal Wall Painting"
     },
     {
@@ -498,7 +498,7 @@
       "totalUnitCost": 230,
       "trade": "PAINTING_POLISHING",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:11.668Z",
+      "updatedAt": "2026-09-16T11:59:53.970Z",
       "workPackage": "Wood Polish & PU"
     },
     {
@@ -522,7 +522,7 @@
       "totalUnitCost": 1100,
       "trade": "ELECTRICAL_AUTOMATION",
       "unit": "point",
-      "updatedAt": "2026-09-16T10:55:11.733Z",
+      "updatedAt": "2026-09-16T11:59:54.036Z",
       "workPackage": "Point Wiring"
     },
     {
@@ -546,7 +546,7 @@
       "totalUnitCost": 1950,
       "trade": "ELECTRICAL_AUTOMATION",
       "unit": "point",
-      "updatedAt": "2026-09-16T10:55:11.799Z",
+      "updatedAt": "2026-09-16T11:59:54.117Z",
       "workPackage": "Power Wiring"
     },
     {
@@ -570,7 +570,7 @@
       "totalUnitCost": 215,
       "trade": "PLUMBING_SANITARY",
       "unit": "r.ft",
-      "updatedAt": "2026-09-16T10:55:11.865Z",
+      "updatedAt": "2026-09-16T11:59:54.193Z",
       "workPackage": "Concealed Water Supply"
     },
     {
@@ -594,7 +594,7 @@
       "totalUnitCost": 1650,
       "trade": "MODULAR_KITCHEN",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:11.930Z",
+      "updatedAt": "2026-09-16T11:59:54.259Z",
       "workPackage": "Kitchen Carcass & Drawers"
     },
     {
@@ -618,7 +618,7 @@
       "totalUnitCost": 860,
       "trade": "MODULAR_KITCHEN",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:11.996Z",
+      "updatedAt": "2026-09-16T11:59:54.326Z",
       "workPackage": "Kitchen Shutters"
     },
     {
@@ -642,7 +642,7 @@
       "totalUnitCost": 550,
       "trade": "MODULAR_KITCHEN",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:12.061Z",
+      "updatedAt": "2026-09-16T11:59:54.394Z",
       "workPackage": "Countertop"
     },
     {
@@ -666,7 +666,7 @@
       "totalUnitCost": 1460,
       "trade": "WARDROBES_STORAGE",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:12.127Z",
+      "updatedAt": "2026-09-16T11:59:54.460Z",
       "workPackage": "Built-in Sliding Wardrobe"
     },
     {
@@ -690,7 +690,7 @@
       "totalUnitCost": 830,
       "trade": "WARDROBES_STORAGE",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:12.192Z",
+      "updatedAt": "2026-09-16T11:59:54.527Z",
       "workPackage": "Wardrobe Shutters"
     },
     {
@@ -714,7 +714,7 @@
       "totalUnitCost": 10000,
       "trade": "DOORS_WINDOWS_GLAZING",
       "unit": "nos",
-      "updatedAt": "2026-09-16T10:55:12.258Z",
+      "updatedAt": "2026-09-16T11:59:54.593Z",
       "workPackage": "Internal Flush Doors"
     },
     {
@@ -738,7 +738,7 @@
       "totalUnitCost": 385,
       "trade": "CARPENTRY_JOINERY",
       "unit": "sq.ft",
-      "updatedAt": "2026-09-16T10:55:12.323Z",
+      "updatedAt": "2026-09-16T11:59:54.660Z",
       "workPackage": "Custom Feature Paneling"
     }
   ],
@@ -2113,36 +2113,38 @@
       "siteAddress": "Flat 1402, Tower B, Skyline Residences, Golf Course Extension Road",
       "stage": "APPROVED_BUDGET",
       "title": "Skyline Residences - Unit 1402 (3BHK Turnkey Interior)",
-      "updatedAt": "2026-09-16T10:55:10.417Z"
+      "updatedAt": "2026-09-16T11:59:52.600Z"
     },
     {
       "id": "PROJ-1789556228724",
-      "projectCode": "BS-2026-6337",
-      "title": "New Turnkey Project",
-      "clientName": "MongoDB Verification Client",
-      "projectType": "RESIDENTIAL",
-      "projectScope": "TURNKEY_INTERIORS",
-      "siteAddress": "Indiranagar, Bengaluru",
-      "city": "Bengaluru",
-      "stage": "ENQUIRY",
       "carpetAreaSqFt": 2400,
-      "estimatedBudget": 4500000,
+      "city": "Bengaluru",
+      "clientEmail": null,
+      "clientName": "MongoDB Verification Client",
+      "clientPhone": null,
       "createdAt": "2026-09-16T10:57:08.724Z",
-      "updatedAt": "2026-09-16T10:57:08.724Z",
-      "revisions": []
+      "estimatedBudget": 4500000,
+      "projectCode": "BS-2026-6337",
+      "projectScope": "TURNKEY_INTERIORS",
+      "projectType": "RESIDENTIAL",
+      "revisions": [],
+      "siteAddress": "Indiranagar, Bengaluru",
+      "stage": "ENQUIRY",
+      "title": "New Turnkey Project",
+      "updatedAt": "2026-09-16T11:59:52.732Z"
     }
   ],
   "auditLogs": [
     {
       "id": "LOG-1789556228724-714",
+      "action": "CREATE_PROJECT",
+      "details": "Created new project: New Turnkey Project",
+      "entityId": "PROJ-1789556228724",
+      "entityType": "PROJECT",
       "timestamp": "2026-09-16T10:57:08.724Z",
       "userId": "USR-ARCH-01",
       "userName": "Shruthi (Design Director)",
-      "userRole": "ADMIN",
-      "action": "CREATE_PROJECT",
-      "entityType": "PROJECT",
-      "entityId": "PROJ-1789556228724",
-      "details": "Created new project: New Turnkey Project"
+      "userRole": "ADMIN"
     },
     {
       "id": "LOG-1789552523092-814",

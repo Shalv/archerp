@@ -330,23 +330,17 @@ export default function App() {
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
           setProjects(data);
-          if (!activeProjectId) {
-            setActiveProjectId(data[0].id);
-            setActiveProject(data[0]);
-            loadBudgetSummary(data[0].id);
-            const activeRev = data[0].revisions.find((r: any) => r.id === data[0].activeRevisionId) || data[0].revisions[0];
-            if (activeRev && activeRev.items.length > 0) {
+          const savedId = typeof window !== 'undefined' ? localStorage.getItem('last_active_project_id') : null;
+          const preferredId = activeProjectId || savedId;
+          const found = preferredId ? data.find((p: ProjectRecord) => p.id === preferredId) : null;
+          const target = found || data[0];
+          if (target) {
+            setActiveProjectId(target.id);
+            setActiveProject(target);
+            loadBudgetSummary(target.id);
+            const activeRev = target.revisions?.find((r: any) => r.id === target.activeRevisionId) || target.revisions?.[0];
+            if (activeRev && activeRev.items.length > 0 && !selectedItem) {
               setSelectedItem(activeRev.items[0]);
-            }
-          } else if (activeProjectId) {
-            const found = data.find((p: ProjectRecord) => p.id === activeProjectId);
-            if (found) {
-              setActiveProject(found);
-              loadBudgetSummary(found.id);
-              const activeRev = found.revisions.find((r: any) => r.id === found.activeRevisionId) || found.revisions[0];
-              if (activeRev && activeRev.items.length > 0 && !selectedItem) {
-                setSelectedItem(activeRev.items[0]);
-              }
             }
           }
         }
@@ -389,6 +383,9 @@ export default function App() {
   // Switch Active Project
   const handleSelectProject = (projId: string) => {
     setActiveProjectId(projId);
+    try {
+      localStorage.setItem('last_active_project_id', projId);
+    } catch {}
     const found = projects.find(p => p.id === projId);
     if (found) {
       setActiveProject(found);
