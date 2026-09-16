@@ -259,7 +259,51 @@ export class MongoDBService {
         }
       }
 
-      // 4. Company Setup
+      // 4. Foundation Masters (Customers, Vendors, Resources, Work Packages, UOMs, Tax Rules)
+      if (Array.isArray(dbData.customers) && dbData.customers.length > 0) {
+        const col = this.db.collection('customers');
+        for (const item of dbData.customers) {
+          await col.updateOne({ id: item.id }, { $set: item }, { upsert: true });
+          totalSynced++;
+        }
+      }
+      if (Array.isArray(dbData.vendors) && dbData.vendors.length > 0) {
+        const col = this.db.collection('vendors');
+        for (const item of dbData.vendors) {
+          await col.updateOne({ id: item.id }, { $set: item }, { upsert: true });
+          totalSynced++;
+        }
+      }
+      if (Array.isArray(dbData.resources) && dbData.resources.length > 0) {
+        const col = this.db.collection('resources');
+        for (const item of dbData.resources) {
+          await col.updateOne({ id: item.id }, { $set: item }, { upsert: true });
+          totalSynced++;
+        }
+      }
+      if (Array.isArray(dbData.workPackages) && dbData.workPackages.length > 0) {
+        const col = this.db.collection('work_packages');
+        for (const item of dbData.workPackages) {
+          await col.updateOne({ id: item.id }, { $set: item }, { upsert: true });
+          totalSynced++;
+        }
+      }
+      if (Array.isArray(dbData.uomList) && dbData.uomList.length > 0) {
+        const col = this.db.collection('uom_list');
+        for (const item of dbData.uomList) {
+          await col.updateOne({ code: item.code }, { $set: item }, { upsert: true });
+          totalSynced++;
+        }
+      }
+      if (Array.isArray(dbData.taxRules) && dbData.taxRules.length > 0) {
+        const col = this.db.collection('tax_rules');
+        for (const item of dbData.taxRules) {
+          await col.updateOne({ id: item.id }, { $set: item }, { upsert: true });
+          totalSynced++;
+        }
+      }
+
+      // 5. Company Setup
       if (dbData.companySetup) {
         const setupCol = this.db.collection('company_setup');
         await setupCol.updateOne(
@@ -270,7 +314,7 @@ export class MongoDBService {
         totalSynced++;
       }
 
-      // 5. Operations
+      // 6. Operations
       if (dbData.operations) {
         const opsCol = this.db.collection('operations');
         for (const [key, records] of Object.entries(dbData.operations)) {
@@ -283,7 +327,7 @@ export class MongoDBService {
         }
       }
 
-      // 6. Architecture State
+      // 7. Architecture State
       if (dbData.architecture) {
         const archCol = this.db.collection('architecture_store');
         await archCol.updateOne(
@@ -294,7 +338,7 @@ export class MongoDBService {
         totalSynced++;
       }
 
-      // 7. Audit Logs (recent 150)
+      // 8. Audit Logs (recent 150)
       if (Array.isArray(dbData.auditLogs) && dbData.auditLogs.length > 0) {
         const auditCol = this.db.collection('audit_logs');
         const recent = dbData.auditLogs.slice(0, 150);
@@ -329,21 +373,60 @@ export class MongoDBService {
    * Load initial data from MongoDB Atlas if remote has records
    */
   public async loadFromMongoDB(): Promise<Partial<ERPDatabase> | null> {
+    if (!this.client || !this.lastStatus.connected) {
+      await this.testConnection();
+    }
     if (!this.db) return null;
     try {
-      const projects = await this.db.collection('projects').find({}).toArray();
-      const users = await this.db.collection('users').find({}).toArray();
-      const masterRates = await this.db.collection('master_rates').find({}).toArray();
+      const stripId = (doc: any) => {
+        if (!doc) return doc;
+        const { _id, ...rest } = doc;
+        return rest;
+      };
+
+      const projects = (await this.db.collection('projects').find({}).toArray()).map(stripId);
+      const users = (await this.db.collection('users').find({}).toArray()).map(stripId);
+      const masterRates = (await this.db.collection('master_rates').find({}).toArray()).map(stripId);
+      const customers = (await this.db.collection('customers').find({}).toArray()).map(stripId);
+      const vendors = (await this.db.collection('vendors').find({}).toArray()).map(stripId);
+      const resources = (await this.db.collection('resources').find({}).toArray()).map(stripId);
+      const workPackages = (await this.db.collection('work_packages').find({}).toArray()).map(stripId);
+      const uomList = (await this.db.collection('uom_list').find({}).toArray()).map(stripId);
+      const taxRules = (await this.db.collection('tax_rules').find({}).toArray()).map(stripId);
+
+      const companyDoc = await this.db.collection('company_setup').findOne({ setupKey: 'PRIMARY_COMPANY' });
+      const archDoc = await this.db.collection('architecture_store').findOne({ storeKey: 'CURRENT' });
+
+      const opsDocs = await this.db.collection('operations').find({}).toArray();
+      const operations: Record<string, any[]> = {};
+      for (const op of opsDocs) {
+        if (op.projectModuleKey && Array.isArray(op.records)) {
+          operations[op.projectModuleKey] = op.records;
+        }
+      }
+
+      const auditLogs = (await this.db.collection('audit_logs').find({}).sort({ timestamp: -1 }).limit(150).toArray()).map(stripId);
 
       if (projects.length === 0 && users.length === 0) {
         return null;
       }
 
-      return {
-        projects: projects as any,
-        users: users as any,
-        masterRates: masterRates as any
-      };
+      const loaded: Partial<ERPDatabase> = {};
+      if (projects.length > 0) loaded.projects = projects as any;
+      if (users.length > 0) loaded.users = users as any;
+      if (masterRates.length > 0) loaded.masterRates = masterRates as any;
+      if (customers.length > 0) loaded.customers = customers as any;
+      if (vendors.length > 0) loaded.vendors = vendors as any;
+      if (resources.length > 0) loaded.resources = resources as any;
+      if (workPackages.length > 0) loaded.workPackages = workPackages as any;
+      if (uomList.length > 0) loaded.uomList = uomList as any;
+      if (taxRules.length > 0) loaded.taxRules = taxRules as any;
+      if (companyDoc?.data) loaded.companySetup = companyDoc.data;
+      if (archDoc?.data) loaded.architecture = archDoc.data;
+      if (Object.keys(operations).length > 0) loaded.operations = operations;
+      if (auditLogs.length > 0) loaded.auditLogs = auditLogs as any;
+
+      return loaded;
     } catch (err: any) {
       console.warn('[MongoDB Atlas] Load from database skipped:', err.message);
       return null;

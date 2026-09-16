@@ -204,6 +204,30 @@ class DatabaseService {
   public saveArchitecture(data: {projects: any[]; masterData: any; revision: number}) { this.db.architecture = structuredClone(data); this.persist(); }
   public snapshot(): ERPDatabase { return structuredClone(this.db); }
 
+  public hydrateFromRemote(remoteData: Partial<ERPDatabase>): void {
+    if (!remoteData) return;
+    const current = this.snapshot();
+    const updated: ERPDatabase = {
+      ...current,
+      ...(remoteData.projects ? { projects: remoteData.projects } : {}),
+      ...(remoteData.users ? { users: remoteData.users } : {}),
+      ...(remoteData.masterRates ? { masterRates: remoteData.masterRates } : {}),
+      ...(remoteData.customers ? { customers: remoteData.customers } : {}),
+      ...(remoteData.vendors ? { vendors: remoteData.vendors } : {}),
+      ...(remoteData.resources ? { resources: remoteData.resources } : {}),
+      ...(remoteData.workPackages ? { workPackages: remoteData.workPackages } : {}),
+      ...(remoteData.uomList ? { uomList: remoteData.uomList } : {}),
+      ...(remoteData.taxRules ? { taxRules: remoteData.taxRules } : {}),
+      ...(remoteData.companySetup ? { companySetup: remoteData.companySetup } : {}),
+      ...(remoteData.operations ? { operations: { ...current.operations, ...remoteData.operations } } : {}),
+      ...(remoteData.architecture ? { architecture: remoteData.architecture } : {}),
+      ...(remoteData.auditLogs ? { auditLogs: remoteData.auditLogs } : {})
+    };
+    this.db = updated;
+    this.persist(updated);
+    console.log('[ERP Store] Hydrated state directly from MongoDB Atlas.');
+  }
+
   constructor() {
     this.db = this.loadOrSeedDatabase();
   }

@@ -703,20 +703,6 @@ export interface SystemCapabilityReport {
     collectionsCount?: number;
     lastSyncAt?: string;
   };
-  hostingerMySQL?: {
-    configured: boolean;
-    connected: boolean;
-    database: string;
-    user: string;
-    host: string;
-    port: number;
-    message: string;
-    error?: string;
-    errorCode?: string;
-    tableCount?: number;
-    lastSyncAt?: string;
-    remoteAccessGuide?: string[];
-  };
 }
 
 // ============================================================================

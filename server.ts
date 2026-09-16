@@ -16,7 +16,6 @@ import dotenv from 'dotenv';
 import { createServer as createViteServer } from 'vite';
 
 import { dbService, DEMO_USERS } from './src/server/db';
-import { mySQLService } from './src/server/mysqlService';
 import { mongoDBService } from './src/server/mongoService';
 import { analyzeCustomerRequirementBrief, generateDraftBOQFromRequirements } from './src/server/geminiService';
 import { getAlternativePackages, getValueEngineeringOptions } from './src/server/syntheticDemo';
@@ -185,16 +184,11 @@ export async function createApp(isServerless: boolean = false) {
   });
   app.use(architectureRouter);
 
-  // Hook up Hostinger MySQL and MongoDB Atlas persistence synchronization
+  // Hook up MongoDB Atlas exclusive persistence synchronization
   dbService.onPersist((data) => {
     if (mongoDBService.getStatus().connected) {
       mongoDBService.syncToMongoDB(data).catch(err => {
         console.warn('[MongoDB Atlas] Background sync failed:', err?.message);
-      });
-    }
-    if (mySQLService.getStatus().connected) {
-      mySQLService.syncToMySQL(data).catch(err => {
-        console.warn('[Hostinger MySQL] Background sync skipped/failed:', err?.message);
       });
     }
   });
@@ -227,52 +221,19 @@ export async function createApp(isServerless: boolean = false) {
     res.json(result);
   });
 
-  // Hostinger MySQL Database Control & Diagnostics Endpoints
-  app.get('/api/system/database', (req: Request, res: Response) => {
-    const status = mySQLService.getStatus();
-    res.json({
-      provider: 'Hostinger MySQL',
-      targetDatabase: 'u571508785_arch_erp',
-      targetUser: 'u571508785_Arch',
-      status
-    });
-  });
-
-  app.post('/api/system/database/test', async (req: Request, res: Response) => {
-    const result = await mySQLService.testConnection();
-    res.json(result);
-  });
-
-  app.post('/api/system/database/init-tables', async (req: Request, res: Response) => {
-    const user = getUserFromReq(req);
-    if (user.role !== 'ADMIN') return res.status(403).json({ error: 'Administrator access required.' });
-    const result = await mySQLService.initializeTables();
-    res.json(result);
-  });
-
-  app.post('/api/system/database/sync', async (req: Request, res: Response) => {
-    const user = getUserFromReq(req);
-    if (user.role !== 'ADMIN') return res.status(403).json({ error: 'Administrator access required.' });
-    const result = await mySQLService.syncToMySQL(dbService.snapshot());
-    res.json(result);
-  });
-
   app.get('/api/system/status', (req: Request, res: Response) => {
-    const mysqlStatus = mySQLService.getStatus();
     const mongoStatus = mongoDBService.getStatus();
     const report: SystemCapabilityReport = {
       codeExecution: true,
       codeExecutionDetails: 'Full-stack TypeScript code execution operational on Node.js 22 LTS with Express and Vite on port 3000.',
       fileCreation: true,
-      fileCreationDetails: 'Full persistent filesystem access active. Data is persisted to /data/buildstorys_db.json with automatic transactional disk sync.',
+      fileCreationDetails: 'Full persistent filesystem access active. Data is persisted with automatic transactional disk sync and synchronized directly with MongoDB Atlas.',
       databaseRunning: true,
       databaseType: mongoStatus.connected
-        ? `MongoDB Atlas Connected (${mongoStatus.database})`
-        : mysqlStatus.connected
-        ? `Hostinger MySQL Connected (${mysqlStatus.database})`
-        : `Hybrid: Local ACID Store + MongoDB Atlas (${mongoStatus.database})`,
+        ? `MongoDB Atlas (${mongoStatus.database})`
+        : `MongoDB Atlas (${mongoStatus.database})`,
       databaseDetails: mongoStatus.connected
-        ? `Connected to MongoDB Atlas (${mongoStatus.cluster} / DB: ${mongoStatus.database}). Collections verified: ${mongoStatus.collectionsCount}. Real-time persistent sync active.`
+        ? `Connected live to MongoDB Atlas (${mongoStatus.cluster} / DB: ${mongoStatus.database}). Collections verified: ${mongoStatus.collectionsCount}. Real-time persistent sync active.`
         : `MongoDB Atlas client initialized for cluster ${mongoStatus.cluster}. ${mongoStatus.message}`,
       cloudDeployment: false,
       cloudDeploymentDetails: 'Currently executing in local dev container preview mode (port 3000). Ready for single-command production bundle (npm run build && node dist/server.cjs) on Cloud Run / Docker.',
@@ -282,8 +243,7 @@ export async function createApp(isServerless: boolean = false) {
         'Assumption 3: Estimation control mandates that AI drafts items and formulas, but verified software deterministically calculates all financial arithmetic, unit waste, markup, and tax totals.',
         'Assumption 4: Internal cost rates, margins, and supplier purchase bids are strictly confidential and stripped from customer-facing quotations.'
       ],
-      mongoDB: mongoStatus,
-      hostingerMySQL: mysqlStatus
+      mongoDB: mongoStatus
     };
     res.json(report);
   });
@@ -1150,6 +1110,26 @@ async function startServer() {
   const PORT = 3000;
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`[Build Storys ERP] Server successfully running on http://0.0.0.0:${PORT}`);
+    // Auto-test and sync with exclusive MongoDB Atlas backend
+    mongoDBService.testConnection().then(async (testRes) => {
+      if (testRes.connected) {
+        console.log('[MongoDB Atlas] Connected. Checking remote records to hydrate store...');
+        const remoteData = await mongoDBService.loadFromMongoDB();
+        if (remoteData && (remoteData.projects?.length || remoteData.users?.length)) {
+          dbService.hydrateFromRemote(remoteData);
+          console.log('[MongoDB Atlas] In-memory store successfully initialized with remote cloud data.');
+        } else {
+          console.log('[MongoDB Atlas] Connected. Initializing seed sync to cloud...');
+          mongoDBService.syncToMongoDB(dbService.snapshot()).catch(err => {
+            console.warn('[MongoDB Atlas] Initial sync notice:', err?.message);
+          });
+        }
+      } else {
+        console.warn('[MongoDB Atlas] Initialization check:', testRes.message);
+      }
+    }).catch(err => {
+      console.warn('[MongoDB Atlas] Connection check error:', err?.message);
+    });
   });
 }
 

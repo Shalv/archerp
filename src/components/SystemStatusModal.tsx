@@ -3,15 +3,13 @@ import {
   ShieldCheck, 
   Server, 
   Database, 
-  Cloud, 
   FileText, 
   CheckCircle2, 
   AlertCircle, 
   X, 
   HelpCircle,
   RefreshCw,
-  Layers,
-  HardDrive
+  Layers
 } from 'lucide-react';
 import { SystemCapabilityReport } from '../types/erp';
 
@@ -29,13 +27,6 @@ export const SystemStatusModal: React.FC<SystemStatusModalProps> = ({ isOpen, on
   const [isSyncingMongo, setIsSyncingMongo] = useState(false);
   const [mongoTestResult, setMongoTestResult] = useState<{ success: boolean; message: string } | null>(null);
   const [mongoSyncResult, setMongoSyncResult] = useState<{ success: boolean; message: string } | null>(null);
-
-  // MySQL states
-  const [isTestingMySQL, setIsTestingMySQL] = useState(false);
-  const [isSyncingMySQL, setIsSyncingMySQL] = useState(false);
-  const [mysqlTestResult, setMysqlTestResult] = useState<{ success: boolean; message: string } | null>(null);
-  const [mysqlSyncResult, setMysqlSyncResult] = useState<{ success: boolean; message: string } | null>(null);
-  const [showHostingerGuide, setShowHostingerGuide] = useState(false);
 
   const fetchStatus = () => {
     fetch('/api/system/status')
@@ -98,52 +89,9 @@ export const SystemStatusModal: React.FC<SystemStatusModalProps> = ({ isOpen, on
     }
   };
 
-  const handleTestMySQL = async () => {
-    setIsTestingMySQL(true);
-    setMysqlTestResult(null);
-    try {
-      const res = await fetch('/api/system/database/test', { method: 'POST' });
-      const data = await res.json();
-      setMysqlTestResult({
-        success: data.connected,
-        message: data.message || (data.connected ? 'Hostinger MySQL connection verified!' : 'Connection test failed.')
-      });
-      fetchStatus();
-    } catch (err: any) {
-      setMysqlTestResult({
-        success: false,
-        message: err.message || 'Network request failed'
-      });
-    } finally {
-      setIsTestingMySQL(false);
-    }
-  };
-
-  const handleSyncToMySQL = async () => {
-    setIsSyncingMySQL(true);
-    setMysqlSyncResult(null);
-    try {
-      const res = await fetch('/api/system/database/sync', { method: 'POST' });
-      const data = await res.json();
-      setMysqlSyncResult({
-        success: data.success,
-        message: data.message || 'Sync operation completed.'
-      });
-      fetchStatus();
-    } catch (err: any) {
-      setMysqlSyncResult({
-        success: false,
-        message: err.message || 'Sync failed.'
-      });
-    } finally {
-      setIsSyncingMySQL(false);
-    }
-  };
-
   if (!isOpen) return null;
 
   const mongo = report?.mongoDB;
-  const mysql = report?.hostingerMySQL;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
@@ -155,7 +103,7 @@ export const SystemStatusModal: React.FC<SystemStatusModalProps> = ({ isOpen, on
             </div>
             <div>
               <h3 className="font-serif text-lg font-semibold text-[#1F2421]">System Capabilities & Database Diagnostics</h3>
-              <p className="text-xs text-[#6B7280]">Build Storys ERP • MongoDB Atlas & Cloud Relational Connectivity</p>
+              <p className="text-xs text-[#6B7280]">Build Storys ERP • MongoDB Atlas Exclusive Cloud Database</p>
             </div>
           </div>
           <button
@@ -279,69 +227,6 @@ export const SystemStatusModal: React.FC<SystemStatusModalProps> = ({ isOpen, on
                   Every project save automatically syncs to MongoDB
                 </div>
               </div>
-            </div>
-
-            {/* Hostinger MySQL Secondary Card */}
-            <div className="rounded-xl border border-[#D5C7B5] bg-white p-4 shadow-xs">
-              <div className="flex items-center justify-between border-b border-[#F0ECE6] pb-3">
-                <div className="flex items-center gap-2">
-                  <div className="rounded-lg bg-[#0F172A] p-2 text-white">
-                    <Database className="h-4 w-4 text-[#F59E0B]" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-[#0F172A]">Hostinger MySQL Database (Optional Dual-Sync)</h4>
-                    <p className="text-xs text-[#64748B]">
-                      Database: <code className="font-mono font-semibold text-[#0F172A]">u571508785_arch_erp</code> • User: <code className="font-mono font-semibold text-[#0F172A]">u571508785_Arch</code>
-                    </p>
-                  </div>
-                </div>
-
-                {mysql?.connected ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-[#E7F4EE] px-2.5 py-1 text-xs font-semibold text-[#1E7348]">
-                    <CheckCircle2 className="h-3.5 w-3.5" /> Connected
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-[#F1F5F9] px-2.5 py-1 text-xs font-semibold text-[#475569]">
-                    <HardDrive className="h-3.5 w-3.5 text-[#64748B]" /> Standby
-                  </span>
-                )}
-              </div>
-
-              {/* Status Message */}
-              <div className="mt-3 text-xs leading-relaxed text-[#334155]">
-                {mysql?.message || 'Hostinger MySQL configuration initialized.'}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="mt-3 flex flex-wrap items-center gap-2 pt-1 border-t border-[#F0ECE6]">
-                <button
-                  type="button"
-                  onClick={handleTestMySQL}
-                  disabled={isTestingMySQL}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F172A] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#1E293B] disabled:opacity-50 transition cursor-pointer"
-                >
-                  <RefreshCw className={`h-3.5 w-3.5 ${isTestingMySQL ? 'animate-spin' : ''}`} />
-                  {isTestingMySQL ? 'Testing MySQL...' : 'Test Hostinger MySQL'}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setShowHostingerGuide(!showHostingerGuide)}
-                  className="ml-auto text-xs font-semibold text-[#0F172A] hover:underline flex items-center gap-1 cursor-pointer"
-                >
-                  <HelpCircle className="h-3.5 w-3.5 text-[#F59E0B]" />
-                  {showHostingerGuide ? 'Hide Guide' : 'Hostinger Remote MySQL Guide'}
-                </button>
-              </div>
-
-              {showHostingerGuide && (
-                <div className="mt-3 rounded-lg border border-[#FDE68A] bg-[#FEFDF7] p-3 text-xs text-[#78350F] space-y-1.5">
-                  <div className="font-bold">Hostinger Setup:</div>
-                  <p className="text-[11px] leading-relaxed text-[#92400E]">
-                    In Hostinger hPanel &gt; Databases &gt; Remote MySQL: add <code>%</code> in "Allow IP" for database <code>u571508785_arch_erp</code>.
-                  </p>
-                </div>
-              )}
             </div>
 
             {/* Grid of Other Capabilities */}
