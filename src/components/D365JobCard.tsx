@@ -225,40 +225,45 @@ export const D365JobCard: React.FC<D365JobCardProps> = ({
   return (
     <div className="space-y-4 pb-12">
       {/* 1. DOCUMENT HEADER (D365 Business Central Job Card Title Bar) */}
-      <div className="bg-white border border-[#E1DFDD] p-4 rounded shadow-2xs">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-[#605E5C] uppercase tracking-wider">
+      <div className="bg-white border border-slate-200/90 p-4 sm:p-5 rounded-xl shadow-2xs">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                 Job Card
               </span>
-              <span className="font-mono text-xs font-bold text-[#0F6CBD] bg-[#EFF6FC] px-2 py-0.5 rounded border border-[#C7E0F4]">
+              <span className="font-mono text-xs font-bold text-[#0F6CBD] bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
                 {project.projectCode}
               </span>
-              <span className="bg-[#DFF6DD] text-[#107C41] border border-[#B3E5C7] text-xs font-semibold px-2 py-0.5 rounded">
-                Status: In Progress
+              <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold px-2 py-0.5 rounded-md flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                In Progress
               </span>
-              <span className="bg-[#FFF4CE] text-[#797673] border border-[#FDE3A7] text-xs font-semibold px-2 py-0.5 rounded">
-                Posting: Residential Turnkey
+              <span className="bg-slate-50 text-slate-600 border border-slate-200 text-xs font-medium px-2 py-0.5 rounded-md">
+                Turnkey Interior
               </span>
             </div>
-            <h1 className="text-xl font-bold text-[#201F1E] mt-1 tracking-tight">
+
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
               {project.title}
             </h1>
-            <div className="text-xs text-[#605E5C] mt-1 flex flex-wrap items-center gap-4">
-              <span>Customer: <strong className="text-[#201F1E]">{project.clientName}</strong></span>
-              <span>Site: <strong className="text-[#201F1E]">{project.siteAddress}, {project.city}</strong></span>
-              <span>Posting Date: <strong className="text-[#201F1E]">11-Sep-2026</strong></span>
+
+            <div className="text-xs text-slate-500 flex flex-wrap items-center gap-3 pt-0.5">
+              <span>Customer: <strong className="text-slate-800 font-semibold">{project.clientName}</strong></span>
+              <span className="text-slate-300">•</span>
+              <span>Site: <strong className="text-slate-800 font-semibold">{project.siteAddress}, {project.city}</strong></span>
+              <span className="text-slate-300">•</span>
+              <span>Posting Date: <strong className="text-slate-800 font-semibold">11-Sep-2026</strong></span>
             </div>
           </div>
 
           {/* Revision Switcher in Document Header */}
-          <div className="flex items-center gap-2 bg-[#F3F2F1] p-2 rounded border border-[#E1DFDD]">
-            <span className="text-xs font-semibold text-[#605E5C]">Revision:</span>
+          <div className="flex items-center gap-2.5 bg-slate-50 p-2 rounded-lg border border-slate-200/90 self-start md:self-center shrink-0">
+            <span className="text-xs font-semibold text-slate-600">Active Revision:</span>
             <select
               value={activeRev?.id}
               onChange={e => onSelectRevision(e.target.value)}
-              className="bg-white border border-[#8A8886] rounded px-2.5 py-1 text-xs font-bold text-[#201F1E] focus:border-[#0F6CBD] focus:outline-hidden cursor-pointer"
+              className="bg-white border border-slate-300 rounded-md px-3 py-1 text-xs font-bold text-slate-800 focus:border-[#0F6CBD] focus:ring-1 focus:ring-[#0F6CBD] focus:outline-hidden cursor-pointer shadow-2xs"
             >
               {project.revisions.map(r => (
                 <option key={r.id} value={r.id}>

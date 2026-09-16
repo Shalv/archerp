@@ -325,7 +325,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
           { title: 'Job Planning Lines (BOQ)', desc: 'View 37 takeoff items, unit costs & trade packages', tab: 'boq', icon: Layers, badge: 'Core' },
           { title: 'Master Price Library', desc: 'Manage 300+ item master rates, suppliers & GST', tab: 'masters', icon: Calculator, badge: 'Masters' },
           { title: 'Cost Accounting & Budget', desc: 'Overhead allocation, contingencies & profit margin', tab: 'budget', icon: DollarSign, badge: 'Finance' },
-          { title: 'Copilot AI Takeoff Engine', desc: 'Gemini 3.8 Flash requirements takeoff & gap review', tab: 'ai_workspace', icon: Sparkles, badge: 'AI Copilot' },
+          { title: 'Copilot AI Takeoff Engine', desc: 'Autonomous requirements takeoff & gap review', tab: 'ai_workspace', icon: Sparkles, badge: 'AI Copilot' },
           { title: 'Cost Traceability Matrix', desc: 'BOQ Item → Budget → PO/WO → Actual Cost', tab: 'traceability', icon: Network, badge: 'Traceability' },
           { title: 'Customer Sales Quotation', desc: 'Generate customer proposal with payment milestones', tab: 'quotation', icon: FileText, badge: 'Commercial' },
           { title: 'Site Spatial Dimensions', desc: 'Room survey measurements, CAD bounds & briefs', tab: 'survey', icon: Compass, badge: 'Survey' },
@@ -391,102 +391,79 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
   ];
 
   return (
-    <div id="role-center-dashboard" className="space-y-4 max-w-[1700px] mx-auto text-xs pb-12 animate-in fade-in duration-200">
+    <div id="role-center-dashboard" className="space-y-5 max-w-[1700px] mx-auto text-xs pb-12 animate-in fade-in duration-200">
       
-      {/* 0. INTERACTIVE ROLE SELECTOR BAR */}
-      <div className="bg-white rounded-lg border border-slate-200 p-2.5 shadow-2xs flex items-center justify-between gap-2 flex-wrap">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-[#EFF6FC] text-[#0F6CBD] rounded-md">
-            <Users className="w-4 h-4" />
-          </div>
-          <div>
-            <span className="text-xs font-bold text-slate-800">
-              Role Center Dashboard
-            </span>
-            <span className="text-[11px] text-slate-500 hidden sm:inline ml-2">
-              Select any role to view their specialized view &amp; operational duties:
-            </span>
-          </div>
-        </div>
-
-        {/* Role Quick Switch Buttons */}
-        <div className="flex items-center gap-1.5 flex-wrap">
-          {ROLES_LIST.map((r) => {
-            const RIcon = r.icon;
-            const isSelected = activeTabRole === r.role;
-            return (
-              <button
-                key={r.role}
-                onClick={() => handleRolePillClick(r.role)}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer border ${
-                  isSelected
-                    ? 'bg-[#002050] text-white border-[#002050] shadow-xs'
-                    : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
-                }`}
-                title={r.desc}
-              >
-                <RIcon className={`w-3.5 h-3.5 ${isSelected ? 'text-yellow-300' : 'text-slate-500'}`} />
-                <span>{r.label}</span>
-                {isSelected && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* 1. ROLE-BASED WELCOME BANNER & IDENTITY CARD */}
-      <div className="bg-[#0B192C] text-white rounded-xl shadow-xs border border-[#1E3E62] p-4 sm:p-5 relative overflow-hidden">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
-          <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0 shadow-xs">
-              <IconComponent className="w-6 h-6 text-sky-300" />
+      {/* 1. EXECUTIVE WELCOME & UNIFIED ROLE COCKPIT */}
+      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-2xs relative">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          {/* Left: User Identity & Active Job Context */}
+          <div className="flex items-start sm:items-center gap-4 min-w-0">
+            <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 shadow-xs ring-4 ring-slate-100">
+              <IconComponent className="w-6 h-6 text-sky-400" />
             </div>
 
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#89BBE9] font-semibold">
-                  BuildStorys Enact360 • Role Center
+                <span className="text-xs font-bold text-slate-900">
+                  {currentUser.name}
                 </span>
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${profile.badgeColor}`}>
-                  Role: {profile.roleKey}
+                  {profile.roleKey}
                 </span>
-                <span className="text-[10px] bg-white/15 text-white/90 px-2 py-0.5 rounded font-mono">
-                  Active User: {currentUser.name}
+                <span className="text-[11px] text-slate-500 flex items-center gap-1.5 font-medium">
+                  <span>•</span>
+                  <span>{profile.title}</span>
                 </span>
               </div>
 
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white mt-1">
-                {profile.title}
-              </h1>
-
-              <div className="text-xs text-[#C7E0F4] mt-0.5 flex items-center gap-2 flex-wrap">
-                <span className="font-semibold text-white">{profile.dept}</span>
-                <span>•</span>
-                <span className="text-sky-300 font-mono">
-                  Active Project: {activeProject?.projectCode || 'PROJ-SKYLINE-1402'} ({activeProject?.title || 'Skyline Penthouse'})
+              <div className="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                <span className="text-slate-600 font-medium">{profile.dept}</span>
+                <span className="text-slate-300">•</span>
+                <span className="text-slate-700 font-semibold flex items-center gap-1">
+                  <Building2 className="w-3.5 h-3.5 text-[#0F6CBD]" />
+                  <span>Job: {activeProject?.projectCode || 'PROJ-SKYLINE-1402'}</span>
+                  <span className="text-slate-400 font-normal">({activeProject?.title || 'Skyline Penthouse'})</span>
                 </span>
               </div>
             </div>
           </div>
 
-          {/* User Persona Switcher */}
-          <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
-            <div className="bg-white/10 border border-white/20 rounded-lg p-2 flex items-center gap-3">
-              <div className="text-right hidden sm:block">
-                <div className="text-[10px] text-[#89BBE9] font-medium">Logged-in Persona</div>
-                <div className="text-xs font-bold text-white truncate max-w-[140px]">{currentUser.name}</div>
-              </div>
+          {/* Right: Modern Segmented Role Switcher */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
+            <div className="bg-slate-100/90 p-1 rounded-xl flex items-center gap-1 border border-slate-200/60 overflow-x-auto max-w-full">
+              {ROLES_LIST.map((r) => {
+                const RIcon = r.icon;
+                const isSelected = activeTabRole === r.role;
+                return (
+                  <button
+                    key={r.role}
+                    type="button"
+                    onClick={() => handleRolePillClick(r.role)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-all cursor-pointer select-none shrink-0 ${
+                      isSelected
+                        ? 'bg-white text-slate-900 font-bold shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 font-medium'
+                    }`}
+                    title={r.desc}
+                  >
+                    <RIcon className={`w-3.5 h-3.5 ${isSelected ? 'text-[#0F6CBD]' : 'text-slate-400'}`} />
+                    <span>{r.label}</span>
+                  </button>
+                );
+              })}
+            </div>
 
+            {/* Direct Switch User Select */}
+            <div className="hidden xl:flex items-center gap-1.5 pl-2 border-l border-slate-200">
+              <span className="text-[10px] text-slate-400 font-medium uppercase">Switch User:</span>
               <select
                 value={currentUser.id}
                 onChange={(e) => {
                   const targetUser = allUsers.find(u => u.id === e.target.value);
                   if (targetUser) onSwitchUser(targetUser);
                 }}
-                className="bg-[#002050] text-white text-xs border border-white/30 rounded px-2.5 py-1.5 focus:outline-hidden focus:ring-1 focus:ring-sky-400 font-medium cursor-pointer"
-                title="Switch active user to view their tailored role center"
+                className="bg-white text-slate-700 text-xs border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-1 focus:ring-[#0F6CBD] font-medium cursor-pointer"
+                title="Switch active user"
               >
                 {allUsers.map(u => (
                   <option key={u.id} value={u.id}>
@@ -498,53 +475,55 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
           </div>
         </div>
 
-        {/* Responsibilities Pill Summary */}
-        <div className="mt-4 pt-3 border-t border-white/15 flex flex-wrap items-center gap-1.5">
-          <span className="text-[11px] font-semibold text-[#89BBE9] flex items-center gap-1 mr-1">
-            <Shield className="w-3.5 h-3.5 text-sky-300" />
-            Core Duties:
+        {/* Assigned Duties Minimalist Strip */}
+        <div className="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+          <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Assigned Responsibilities:</span>
           </span>
           {profile.responsibilities.slice(0, 3).map((resp, i) => (
-            <span key={i} className="text-[10px] bg-white/10 hover:bg-white/15 text-white/95 px-2 py-0.5 rounded-full border border-white/15 font-medium transition">
+            <span key={i} className="text-[11px] bg-slate-50 text-slate-700 px-2.5 py-0.5 rounded-md border border-slate-200 font-medium">
               {resp}
             </span>
           ))}
           {profile.responsibilities.length > 3 && (
-            <span className="text-[10px] text-[#89BBE9] font-medium pl-1">
-              +{profile.responsibilities.length - 3} more assigned
+            <span className="text-[11px] text-[#0F6CBD] font-semibold pl-0.5">
+              +{profile.responsibilities.length - 3} more duties
             </span>
           )}
         </div>
       </div>
 
-      {/* 2. ROLE-SPECIFIC KPI CUE TILES */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      {/* 2. EXECUTIVE KPI CARDS */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {profile.kpis.map((kpi, idx) => (
           <div
             key={idx}
             onClick={() => onNavigateTab(kpi.targetTab)}
-            className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all p-3.5 cursor-pointer group hover:border-[#0078d4]/50 relative"
+            className="bg-white rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-all p-5 cursor-pointer group hover:border-[#0F6CBD] relative flex flex-col justify-between"
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-[#0078d4] transition">
-                {kpi.label}
-              </span>
-              <span className="text-[10px] bg-slate-100 group-hover:bg-[#EFF6FC] text-slate-600 group-hover:text-[#0F6CBD] font-mono px-1.5 py-0.2 rounded transition">
-                {kpi.trend}
-              </span>
+            <div>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 group-hover:text-[#0F6CBD] transition">
+                  {kpi.label}
+                </span>
+                <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 group-hover:bg-blue-50 group-hover:text-[#0F6CBD] transition">
+                  {kpi.trend}
+                </span>
+              </div>
+
+              <div className={`text-2xl sm:text-3xl font-bold mt-2.5 tracking-tight ${kpi.color}`}>
+                {kpi.value}
+              </div>
+
+              <p className="text-xs text-slate-500 mt-1 line-clamp-1">
+                {kpi.subtext}
+              </p>
             </div>
 
-            <div className={`text-xl font-bold mt-1.5 ${kpi.color}`}>
-              {kpi.value}
-            </div>
-
-            <div className="text-[11px] text-slate-500 mt-1 line-clamp-1">
-              {kpi.subtext}
-            </div>
-
-            <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-[#0078d4] font-semibold">
-              <span>View details</span>
-              <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-[#0F6CBD] font-semibold">
+              <span>Access Module</span>
+              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
         ))}
@@ -1139,14 +1118,14 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
                   <h2 className="font-bold text-slate-900 text-sm">
                     My Daily Action Queue &amp; Approvals
                   </h2>
-                  <p className="text-slate-500 text-[11px]">
-                    Tasks assigned to {profile.title}
+                  <p className="text-slate-500 text-xs">
+                    Assigned operational queue for {profile.title}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-mono bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-bold">
+                <span className="text-xs font-mono bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md font-bold">
                   {Object.values(completedTasks).filter(Boolean).length} / {profile.tasks.length} Completed
                 </span>
               </div>
@@ -1159,14 +1138,14 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
                 return (
                   <div 
                     key={task.id}
-                    className={`py-3 flex items-start justify-between gap-3 transition-colors ${
+                    className={`py-3.5 flex items-start justify-between gap-4 transition-colors ${
                       isDone ? 'opacity-60 bg-slate-50/50 -mx-4 px-4' : 'hover:bg-slate-50/70'
                     }`}
                   >
                     <div className="flex items-start gap-3 min-w-0">
                       <button
                         onClick={() => toggleTask(task.id)}
-                        className="mt-0.5 text-slate-400 hover:text-[#0078d4] shrink-0 transition cursor-pointer"
+                        className="mt-0.5 text-slate-400 hover:text-[#0F6CBD] shrink-0 transition cursor-pointer"
                         title={isDone ? 'Mark as incomplete' : 'Mark as complete'}
                       >
                         {isDone ? (
@@ -1181,21 +1160,21 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
                           <span className={`font-semibold text-xs ${isDone ? 'line-through text-slate-500' : 'text-slate-900'}`}>
                             {task.title}
                           </span>
-                          <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded font-mono ${
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full font-mono ${
                             task.priority === 'HIGH' 
-                              ? 'bg-red-100 text-red-700' 
+                              ? 'bg-rose-50 text-rose-700 border border-rose-200' 
                               : task.priority === 'MEDIUM' 
-                              ? 'bg-amber-100 text-amber-700' 
-                              : 'bg-slate-100 text-slate-600'
+                              ? 'bg-amber-50 text-amber-700 border border-amber-200' 
+                              : 'bg-slate-100 text-slate-600 border border-slate-200'
                           }`}>
                             {task.priority}
                           </span>
-                          <span className="text-[10px] text-slate-400 font-mono">
+                          <span className="text-[11px] text-slate-400 font-medium">
                             {task.category}
                           </span>
                         </div>
 
-                        <p className="text-slate-600 text-[11px] mt-0.5">
+                        <p className="text-slate-500 text-xs mt-1">
                           {task.description}
                         </p>
                       </div>
@@ -1203,10 +1182,10 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
 
                     <button
                       onClick={() => onNavigateTab(task.targetTab)}
-                      className="shrink-0 flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-[#EFF6FC] text-[#0F6CBD] border border-[#C7E0F4] rounded text-xs font-semibold shadow-2xs transition cursor-pointer"
+                      className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#EFF6FC] text-[#0F6CBD] border border-[#C7E0F4] rounded-lg text-xs font-semibold shadow-2xs transition cursor-pointer"
                     >
                       <span>{task.actionLabel}</span>
-                      <ArrowRight className="w-3 h-3" />
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 );
@@ -1215,43 +1194,43 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
           </div>
 
           {/* Quick Role Navigation Deck */}
-          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
-            <div className="flex items-center justify-between border-b pb-2.5">
+          <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-5 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <h3 className="font-bold text-slate-900 text-sm">
                   Role Quick Workspaces
                 </h3>
-                <p className="text-slate-500 text-[11px]">
-                  Direct access to everyday modules and functions for {profile.roleKey}
+                <p className="text-slate-500 text-xs">
+                  Direct shortcuts to everyday tools for {profile.roleKey}
                 </p>
               </div>
-              <span className="text-[10px] text-slate-400 font-mono">
+              <span className="text-xs text-slate-400 font-medium">
                 BuildStorys Enact360
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {shortcuts.map((sc, idx) => {
                 const ScIcon = sc.icon;
                 return (
                   <button
                     key={idx}
                     onClick={() => onNavigateTab(sc.tab)}
-                    className="flex items-start gap-2.5 p-3 rounded-lg border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:border-[#0078d4] hover:shadow-xs transition-all text-left group cursor-pointer"
+                    className="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200/80 bg-slate-50/40 hover:bg-white hover:border-[#0F6CBD] hover:shadow-xs transition-all text-left group cursor-pointer"
                   >
-                    <div className="p-2 bg-white rounded-md border border-slate-200 group-hover:border-[#0078d4]/40 group-hover:text-[#0078d4] text-slate-700 shadow-2xs shrink-0">
+                    <div className="p-2.5 bg-white rounded-lg border border-slate-200 group-hover:border-[#0F6CBD]/40 group-hover:text-[#0F6CBD] text-slate-700 shadow-2xs shrink-0 transition">
                       <ScIcon className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="font-semibold text-slate-900 group-hover:text-[#0078d4] text-xs transition">
+                      <div className="flex items-center justify-between gap-1.5">
+                        <span className="font-semibold text-slate-900 group-hover:text-[#0F6CBD] text-xs transition truncate">
                           {sc.title}
                         </span>
-                        <span className="text-[9px] bg-slate-200/60 text-slate-700 font-mono px-1.5 py-0.2 rounded font-bold">
+                        <span className="text-[10px] bg-slate-200/70 text-slate-700 font-mono px-2 py-0.5 rounded font-semibold shrink-0">
                           {sc.badge}
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-1">
+                      <p className="text-xs text-slate-500 mt-1 line-clamp-1">
                         {sc.desc}
                       </p>
                     </div>
@@ -1264,19 +1243,68 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
         </div>
 
         {/* RIGHT COLUMN: RESPONSIBILITY MATRIX & ACCESS BOUNDS */}
-        <div className="space-y-4">
+        <div className="space-y-5">
           
+          {/* Active Job Card Quick Summary */}
+          {activeProject && (
+            <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-5 space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div className="flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-[#0F6CBD]" />
+                  <span className="font-bold text-slate-900 text-xs">
+                    Assigned Job Card
+                  </span>
+                </div>
+                <span className="font-mono text-xs font-bold text-[#0F6CBD] bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">
+                  {activeProject.projectCode}
+                </span>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-slate-900 text-sm">{activeProject.title}</h4>
+                <p className="text-xs text-slate-500 mt-0.5">{activeProject.clientName} • {activeProject.siteAddress}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs bg-slate-50/80 p-3 rounded-lg border border-slate-200">
+                <div>
+                  <div className="text-[10px] text-slate-400 font-medium uppercase">Contract Value</div>
+                  <div className="font-bold text-slate-900 text-sm mt-0.5">₹{(activeProject.estimatedBudget || 4890000).toLocaleString('en-IN')}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-slate-400 font-medium uppercase">Active Revision</div>
+                  <div className="font-bold text-slate-900 text-sm mt-0.5 font-mono">{activeProject.activeRevisionId || 'REV-01'}</div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <button
+                  onClick={() => onNavigateTab('general')}
+                  className="flex-1 py-2 bg-[#0F6CBD] hover:bg-[#005a9e] text-white rounded-lg font-semibold text-xs transition text-center shadow-xs cursor-pointer"
+                >
+                  Open Job Card
+                </button>
+                <button
+                  onClick={() => onNavigateTab('projects')}
+                  className="px-3 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg font-semibold text-xs transition cursor-pointer shadow-2xs"
+                  title="Switch or register new job"
+                >
+                  All Jobs
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Assigned Responsibilities Card */}
-          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
-            <div className="flex items-center gap-2 border-b pb-2.5">
-              <div className="p-1.5 bg-purple-50 text-purple-700 rounded-md">
+          <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-5 space-y-4">
+            <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3">
+              <div className="p-2 bg-purple-50 text-purple-700 rounded-lg">
                 <ShieldCheck className="w-4 h-4" />
               </div>
               <div>
                 <h3 className="font-bold text-slate-900 text-xs">
                   Role Authority &amp; Responsibilities
                 </h3>
-                <p className="text-slate-500 text-[10px]">
+                <p className="text-slate-500 text-[11px]">
                   Enforced by Enact360 Security Engine
                 </p>
               </div>
@@ -1286,24 +1314,24 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
               <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 Primary Responsibilities
               </div>
-              <ul className="space-y-1.5">
+              <ul className="space-y-2">
                 {profile.responsibilities.map((resp, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-slate-700 text-[11px] leading-relaxed">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                  <li key={idx} className="flex items-start gap-2 text-slate-700 text-xs leading-relaxed">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                     <span>{resp}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="pt-2 border-t border-slate-100 space-y-2">
+            <div className="pt-3 border-t border-slate-100 space-y-2">
               <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1">
-                <Eye className="w-3 h-3" />
+                <Eye className="w-3.5 h-3.5" />
                 <span>Authorized Workspaces</span>
               </div>
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-1.5">
                 {profile.authorizedAreas.map((auth, i) => (
-                  <span key={i} className="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded font-medium">
+                  <span key={i} className="text-[11px] bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-2 py-0.5 rounded-md font-medium">
                     {auth}
                   </span>
                 ))}
@@ -1311,14 +1339,14 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
             </div>
 
             {profile.restrictedAreas && profile.restrictedAreas.length > 0 && (
-              <div className="pt-2 border-t border-slate-100 space-y-1.5">
+              <div className="pt-3 border-t border-slate-100 space-y-2">
                 <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                  <Lock className="w-3 h-3 text-slate-400" />
+                  <Lock className="w-3.5 h-3.5 text-slate-400" />
                   <span>Access Boundary Guards</span>
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   {profile.restrictedAreas.map((rest, i) => (
-                    <div key={i} className="text-[10px] text-slate-500 flex items-center gap-1.5">
+                    <div key={i} className="text-[11px] text-slate-500 flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" />
                       <span>{rest}</span>
                     </div>
@@ -1328,70 +1356,21 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
             )}
           </div>
 
-          {/* Active Job Card Quick Summary */}
-          {activeProject && (
-            <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-3">
-              <div className="flex items-center justify-between border-b pb-2.5">
-                <div className="flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-[#0F6CBD]" />
-                  <span className="font-bold text-slate-900 text-xs">
-                    Current Assigned Job
-                  </span>
-                </div>
-                <span className="font-mono text-[10px] font-bold text-[#0F6CBD] bg-[#EFF6FC] px-1.5 py-0.5 rounded">
-                  {activeProject.projectCode}
-                </span>
-              </div>
-
-              <div>
-                <h4 className="font-bold text-slate-900 text-xs">{activeProject.title}</h4>
-                <p className="text-[11px] text-slate-500 mt-0.5">{activeProject.clientName} • {activeProject.siteAddress}</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 p-2.5 rounded border border-slate-200">
-                <div>
-                  <div className="text-[10px] text-slate-400 font-medium">Contract Value</div>
-                  <div className="font-bold text-slate-800">₹{(activeProject.estimatedBudget || 4890000).toLocaleString('en-IN')}</div>
-                </div>
-                <div>
-                  <div className="text-[10px] text-slate-400 font-medium">Active Revision</div>
-                  <div className="font-bold text-slate-800 font-mono">{activeProject.activeRevisionId || 'REV-01'}</div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 pt-1">
-                <button
-                  onClick={() => onNavigateTab('general')}
-                  className="flex-1 py-1.5 bg-[#0078d4] hover:bg-[#0060aa] text-white rounded font-semibold text-xs transition text-center shadow-2xs cursor-pointer"
-                >
-                  Open Job Card
-                </button>
-                <button
-                  onClick={() => onNavigateTab('projects')}
-                  className="px-2.5 py-1.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded font-semibold text-xs transition cursor-pointer"
-                  title="Switch or register new job"
-                >
-                  All Jobs
-                </button>
-              </div>
-            </div>
-          )}
-
           {/* Copilot AI Assistant Prompt */}
           {onOpenAIWorkspace && (
-            <div className="bg-gradient-to-br from-purple-50 to-indigo-50/50 rounded-lg border border-purple-200 shadow-xs p-3.5 space-y-2">
-              <div className="flex items-center gap-2 text-purple-900 font-bold text-xs">
-                <Sparkles className="w-4 h-4 text-purple-600 animate-pulse" />
+            <div className="bg-slate-900 text-white rounded-xl shadow-xs p-5 space-y-3 relative overflow-hidden">
+              <div className="flex items-center gap-2 text-white font-bold text-xs">
+                <Sparkles className="w-4 h-4 text-amber-300" />
                 <span>Enact360 Copilot Assistant</span>
               </div>
-              <p className="text-purple-800 text-[11px] leading-relaxed">
-                Copilot is active for your role ({profile.roleKey}). It continuously audits takeoff quantities, unit rates, and variation orders in real time.
+              <p className="text-slate-300 text-xs leading-relaxed">
+                Autonomous audit engine is active for {profile.roleKey}. It continuously monitors takeoff quantities, rate deviations, and variation orders in real time.
               </p>
               <button
                 onClick={onOpenAIWorkspace}
-                className="w-full py-1.5 bg-purple-700 hover:bg-purple-800 text-white rounded font-semibold text-xs transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+                className="w-full py-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg font-semibold text-xs transition flex items-center justify-center gap-2 shadow-2xs cursor-pointer"
               >
-                <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                 <span>Open Agentic AI Workspace</span>
               </button>
             </div>

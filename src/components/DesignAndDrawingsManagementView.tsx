@@ -680,6 +680,16 @@ export const DesignAndDrawingsManagementView: React.FC<DesignAndDrawingsManageme
           >
             <span>6. Comparison Matrix</span>
           </button>
+          {onNavigateTab && (
+            <button
+              onClick={() => onNavigateTab('arch_studio')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition bg-[#002050] text-amber-300 hover:bg-[#001535] shadow-xs border border-amber-400/40 ml-1"
+              title="Launch Full AI Architectural Concept Studio with 6-Sheet CAD Viewer & Ollama synthesis"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span>Full 6-Sheet CAD Studio</span>
+            </button>
+          )}
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import { ViewportMenu } from './ViewportMenu';
 import React, { useState, useEffect, useRef } from 'react';
+import { TopMenuBar } from './TopMenuBar';
 import { 
   Search, 
   Bell, 
@@ -292,32 +293,10 @@ export const D365Shell: React.FC<D365ShellProps> = ({
 
   return (
     <header className="erp-shell sticky top-0 z-40 select-none shadow-xs">
-      {/* 1. TOPMOST MICROSOFT OFFICE 365 / DYNAMICS 365 SHELL BAR */}
-      <div className="bg-[#002050] text-white flex items-center justify-between px-3 py-1.5 text-xs">
-        {/* Left: Hamburger/Mobile Sidebar Button + 9-Dot App Launcher + Dynamics 365 Brand + Company */}
+      {/* 1. TOPMOST ENTERPRISE SHELL HEADER */}
+      <div className="bg-[#0B1528] text-white flex items-center justify-between px-3 sm:px-4 py-2 text-xs border-b border-slate-800/60">
+        {/* Left: 9-Dot App Launcher + Dynamics 365 Brand + Company */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Mobile Sidebar Trigger */}
-          {onOpenMobileSidebar && (
-            <button
-              onClick={onOpenMobileSidebar}
-              className="lg:hidden p-1.5 rounded hover:bg-[#001833] text-white/90 hover:text-white transition cursor-pointer"
-              title="Open ERP Modules Left Sidebar"
-            >
-              <Menu className="h-4 w-4" />
-            </button>
-          )}
-
-          {/* Desktop Sidebar Toggle in Top Bar */}
-          {onToggleSidebar && (
-            <button
-              onClick={onToggleSidebar}
-              className="hidden lg:flex p-1.5 rounded hover:bg-[#001833] text-white/90 hover:text-white transition cursor-pointer"
-              title={isSidebarCollapsed ? 'Expand Left Sidebar Menu' : 'Collapse Left Sidebar Menu'}
-            >
-              <PanelLeft className="h-4 w-4 text-[#89BBE9]" />
-            </button>
-          )}
-
           {/* 9-dot Waffle */}
           <div className="relative">
             <button
@@ -415,13 +394,13 @@ export const D365Shell: React.FC<D365ShellProps> = ({
         <div className="flex-1 max-w-md mx-4">
           <button
             onClick={() => setTellMeOpen(true)}
-            className="w-full flex items-center justify-between px-3 py-1 rounded bg-[#001833]/90 hover:bg-[#001833] text-white/75 hover:text-white border border-white/20 text-xs transition"
+            className="w-full flex items-center justify-between px-3.5 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-900 text-slate-300 hover:text-white border border-slate-700/70 text-xs transition cursor-pointer shadow-2xs group"
           >
             <span className="flex items-center gap-2">
-              <Search className="h-3.5 w-3.5 text-[#89BBE9]" />
-              <span className="truncate">Tell me what you want to do...</span>
+              <Search className="h-3.5 w-3.5 text-sky-400 group-hover:text-sky-300 transition" />
+              <span className="truncate text-slate-300 group-hover:text-white">Tell me what you want to do...</span>
             </span>
-            <kbd className="hidden sm:inline-block font-mono text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-[#C7E0F4]">
+            <kbd className="hidden sm:inline-block font-mono text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-slate-300 font-semibold">
               Alt+Q
             </kbd>
           </button>
@@ -654,7 +633,7 @@ export const D365Shell: React.FC<D365ShellProps> = ({
             <button
               id="d365-header-logout-btn"
               onClick={onLogout}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#B71C1C] hover:bg-[#9B1111] text-white font-semibold text-xs transition shadow-2xs border border-red-400/40 ml-1 cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-rose-600/90 hover:bg-rose-600 text-white font-semibold text-xs transition shadow-2xs border border-rose-500/40 ml-1 cursor-pointer"
               title="Sign out & Terminate Session"
             >
               <LogOut className="h-3.5 w-3.5 text-white" />
@@ -664,90 +643,72 @@ export const D365Shell: React.FC<D365ShellProps> = ({
         </div>
       </div>
 
-      {/* 2. BUILDSTORYS ENACT360 BREADCRUMB & CONTEXT SUB-HEADER (All Modules moved to Left Sidebar) */}
-      <div className="bg-white border-b border-[#E1DFDD] px-3 sm:px-4 py-1.5 flex items-center justify-between text-xs relative z-30 min-w-0 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          {/* Mobile Sidebar Trigger */}
-          {onOpenMobileSidebar && (
+      {/* 2. TOP HORIZONTAL MENU BAR (All Stages, Modules & Fast Finder) */}
+      <TopMenuBar
+        activeTab={activeTab}
+        onNavigateTab={handleNavigate}
+        activeProject={activeProject}
+        projects={projects}
+        onSelectProject={(proj) => onSelectProject(proj.id)}
+        currentUser={currentUser}
+        onOpenAuditLogs={onOpenAuditLogs}
+        onOpenInspectData={onOpenInspectData}
+        onOpenStatusModal={onOpenStatusModal}
+        onOpenTrainingManual={onOpenTrainingManual}
+        onOpenProfile={onOpenProfile}
+      />
+
+      {/* 3. BUILDSTORYS ENACT360 BREADCRUMB & CONTEXT SUB-HEADER */}
+      <div className="bg-white border-b border-slate-200 px-3 sm:px-4 py-2 flex items-center justify-between text-xs relative z-20 min-w-0 shadow-2xs">
+        <div className="flex items-center gap-2 min-w-0">
+          {/* Active Module Breadcrumb (Clean, single-tier hierarchy) */}
+          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 min-w-0 text-xs">
             <button
-              onClick={onOpenMobileSidebar}
-              className="lg:hidden p-1 text-slate-700 hover:bg-slate-100 rounded flex items-center gap-1 border border-slate-200 cursor-pointer"
-              title="Open ERP Modules Menu"
+              onClick={() => handleNavigate('dashboard')}
+              className="text-slate-400 hover:text-slate-700 font-medium transition cursor-pointer"
             >
-              <Menu className="w-4 h-4 text-[#0F6CBD]" />
-              <span className="text-[11px] font-semibold text-[#0F6CBD]">Modules</span>
+              Enact360
             </button>
-          )}
-
-          {/* Desktop Sidebar Toggle Button */}
-          {onToggleSidebar && (
-            <button
-              onClick={onToggleSidebar}
-              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 text-slate-700 hover:bg-slate-100 hover:text-[#0F6CBD] rounded border border-slate-200/90 transition cursor-pointer"
-              title={isSidebarCollapsed ? "Expand Left Sidebar (Ctrl+\\)" : "Collapse Left Sidebar"}
-            >
-              <PanelLeft className="w-3.5 h-3.5 text-[#0F6CBD]" />
-              <span className="text-[11px] font-medium text-slate-700">
-                {isSidebarCollapsed ? "Show Modules" : "Collapse Menu"}
-              </span>
-            </button>
-          )}
-
-          <div className="h-4 w-px bg-slate-200 hidden sm:block" />
-
-          {/* Active Module Breadcrumb */}
-          <div className="flex items-center gap-1.5 min-w-0 text-xs">
-            <span className="text-slate-400 font-medium hidden sm:inline">BuildStorys</span>
-            <span className="text-slate-300 hidden sm:inline">/</span>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
             <span className="text-slate-500 font-medium hidden md:inline truncate">
               {breadcrumb.category}
             </span>
-            <span className="text-slate-300 hidden md:inline">/</span>
-            <span className="font-bold text-[#0F172A] truncate flex items-center gap-1.5">
+            <ChevronRight className="w-3.5 h-3.5 text-slate-300 hidden md:inline shrink-0" />
+            <span className="font-bold text-slate-900 truncate flex items-center gap-1.5">
               <span>{breadcrumb.name}</span>
               {breadcrumb.code && (
-                <span className="bg-[#EFF6FC] text-[#0F6CBD] border border-[#C7E0F4] text-[10px] font-mono px-1.5 py-0.2 rounded font-bold">
+                <span className="bg-[#EFF6FC] text-[#0F6CBD] border border-[#C7E0F4] text-[10px] font-mono px-1.5 py-0.5 rounded-sm font-bold">
                   {breadcrumb.code}
                 </span>
               )}
             </span>
-          </div>
+          </nav>
         </div>
 
-        {/* Right side: Active Project pill & quick tools */}
+        {/* Right side: Active Project pill & contextual workspace actions */}
         <div className="flex items-center gap-2 shrink-0">
           {/* Active Job badge */}
           {activeProject && (
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FAF9F8] border border-[#EDEBE9] text-[11px]">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
-              <span className="font-mono font-bold text-[#201F1E]">{activeProject.projectCode}</span>
-              <span className="text-slate-400 hidden lg:inline">•</span>
-              <span className="text-slate-600 truncate max-w-[150px] hidden lg:inline">{activeProject.clientName}</span>
-            </div>
+            <button
+              onClick={() => handleNavigate('projects')}
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] transition cursor-pointer"
+              title="Click to view all projects"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+              <span className="font-mono font-bold text-slate-800">{activeProject.projectCode}</span>
+              <span className="text-slate-300 hidden lg:inline">•</span>
+              <span className="text-slate-600 truncate max-w-[140px] hidden lg:inline">{activeProject.clientName}</span>
+            </button>
           )}
-
-          {/* AI Copilot shortcut */}
-          <button
-            onClick={() => handleNavigate("ai_workspace")}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded text-xs font-semibold transition cursor-pointer ${
-              activeTab === "ai_workspace"
-                ? "bg-indigo-600 text-white"
-                : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200"
-            }`}
-            title="Open Agentic AI Copilot Action Center"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
-            <span className="hidden md:inline">AI Copilot</span>
-          </button>
 
           {/* Export to Excel button */}
           {onExportToExcel && ['boq', 'general', 'budget'].includes(activeTab) && (
             <button
               onClick={onExportToExcel}
-              className="hidden sm:flex items-center gap-1 px-2 py-1 text-[#107C41] hover:bg-emerald-50 rounded text-xs border border-emerald-200 transition cursor-pointer font-medium"
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 text-emerald-700 bg-emerald-50/80 hover:bg-emerald-100 rounded-md text-xs border border-emerald-200 transition cursor-pointer font-semibold"
               title="Export Job Planning Lines to Microsoft Excel (.xlsx)"
             >
-              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
               <span className="hidden xl:inline">Export Excel</span>
             </button>
           )}
@@ -756,10 +717,10 @@ export const D365Shell: React.FC<D365ShellProps> = ({
           {onToggleFactBox && ['general', 'boq', 'budget', 'quotation', 'survey'].includes(activeTab) && (
             <button
               onClick={onToggleFactBox}
-              className={`hidden sm:flex items-center gap-1 px-2 py-1 rounded text-xs border transition cursor-pointer font-medium ${
+              className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs border transition cursor-pointer font-medium ${
                 isFactBoxOpen
-                  ? 'bg-slate-100 text-slate-800 border-slate-300'
-                  : 'text-slate-600 hover:bg-slate-100 border-slate-200'
+                  ? 'bg-slate-100 text-slate-800 border-slate-300 shadow-2xs'
+                  : 'text-slate-600 hover:bg-slate-50 border-slate-200'
               }`}
               title={isFactBoxOpen ? 'Hide FactBox details pane' : 'Show FactBox details pane'}
             >
@@ -772,11 +733,11 @@ export const D365Shell: React.FC<D365ShellProps> = ({
           <div className="relative">
             <button
               onClick={() => setToolsMenuOpen(!toolsMenuOpen)}
-              className="flex items-center gap-1 px-2 py-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded text-xs border border-transparent hover:border-slate-200 transition cursor-pointer font-medium"
+              className="flex items-center gap-1 px-2.5 py-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md text-xs border border-slate-200/90 transition cursor-pointer font-medium"
               title="Enterprise Diagnostics & Technical Tools"
             >
               <Wrench className="w-3.5 h-3.5 text-slate-500" />
-              <span className="hidden xl:inline">Tools</span>
+              <span className="hidden md:inline">Tools</span>
               <ChevronDown className="w-3 h-3 text-slate-400" />
             </button>
 

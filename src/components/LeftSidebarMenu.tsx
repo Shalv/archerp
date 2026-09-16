@@ -194,6 +194,16 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
           code: 'M02',
           badge: 'Directory',
           badgeColor: 'bg-slate-100 text-slate-700'
+        },
+        {
+          id: 'arch_pipeline',
+          tabKey: 'arch_pipeline',
+          name: 'Architectural Deal Cockpit & CRM',
+          shortDesc: 'Stage-gate Kanban, win probability & radar',
+          icon: Users,
+          code: 'M01-A',
+          badge: 'Deal Cockpit',
+          badgeColor: 'bg-amber-50 text-amber-800 border border-amber-300 font-bold'
         }
       ]
     },
@@ -215,6 +225,16 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
           badgeColor: 'bg-blue-50 text-blue-700 border border-blue-200'
         },
         {
+          id: 'arch_workspace',
+          tabKey: 'arch_workspace',
+          name: 'Architectural Brief & Spatial Zoning',
+          shortDesc: 'Room zoning, spatial brief & client questionnaire',
+          icon: Compass,
+          code: 'M03-A',
+          badge: 'Brief Hub',
+          badgeColor: 'bg-indigo-50 text-indigo-700'
+        },
+        {
           id: 'drawings',
           tabKey: 'drawings',
           name: 'Architectural Drawings & 3D',
@@ -223,6 +243,16 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
           code: 'M04',
           badge: 'Rev B',
           badgeColor: 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+        },
+        {
+          id: 'arch_studio',
+          tabKey: 'arch_studio',
+          name: 'AI Concept Studio & 6-Sheet CAD',
+          shortDesc: '5 Concept options, 6 CAD/3D sheets & Ollama AI',
+          icon: Sparkles,
+          code: 'M04-A',
+          badge: 'Ollama AI',
+          badgeColor: 'bg-[#002050] text-amber-300 font-bold'
         },
         {
           id: 'materials',
@@ -518,6 +548,16 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
           code: 'M26',
           badge: '22 Reports',
           badgeColor: 'bg-[#107C41] text-white font-bold'
+        },
+        {
+          id: 'data_science',
+          tabKey: 'data_science',
+          name: 'Predictive Data Science & Risk ML',
+          shortDesc: 'Monte Carlo simulation, S-curve & risk sandbox',
+          icon: TrendingUp,
+          code: 'M26-A',
+          badge: 'ML Engine',
+          badgeColor: 'bg-emerald-600 text-white font-bold'
         }
       ]
     },
@@ -547,6 +587,16 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
           badgeColor: 'bg-slate-100 text-slate-700'
         },
         {
+          id: 'data_backup',
+          tabKey: 'data_backup',
+          name: 'Architectural Backup & JSON Archive',
+          shortDesc: 'Full project snapshot, JSON export & import',
+          icon: Database,
+          code: 'M25-A',
+          badge: 'JSON Archive',
+          badgeColor: 'bg-slate-100 text-slate-700'
+        },
+        {
           id: 'users',
           tabKey: 'users',
           name: 'User Administration & Security',
@@ -566,7 +616,11 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
         m =>
           m.tabKey === activeTab ||
           (m.tabKey === 'general' && activeTab === 'general') ||
-          (m.tabKey === 'drawings' && activeTab === 'architecture')
+          (m.tabKey === 'drawings' && activeTab === 'architecture') ||
+          (m.tabKey === 'arch_studio' && (activeTab === 'arch_studio' || activeTab === 'ai-studio')) ||
+          (m.tabKey === 'data_science' && (activeTab === 'data_science' || activeTab === 'analytics')) ||
+          (m.tabKey === 'arch_pipeline' && (activeTab === 'arch_pipeline' || activeTab === 'pipeline')) ||
+          (m.tabKey === 'arch_workspace' && (activeTab === 'arch_workspace' || activeTab === 'workspace'))
       )
     );
     if (activeCat) {
@@ -742,23 +796,23 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
 
         {/* 3. SEARCH / FILTER MODULES */}
         {(!isCollapsed || isMobileOpen) && (
-          <div className="p-2 border-b border-[#E2E8F0] bg-white shrink-0 space-y-1.5">
+          <div className="p-2.5 border-b border-[#E2E8F0] bg-white shrink-0">
             <div className="flex items-center gap-1.5">
               <div className="relative flex-1">
-                <Search className="w-3.5 h-3.5 text-[#94A3B8] absolute left-2.5 top-1/2 -translate-y-1/2" />
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Filter modules (BOQ, DPR, PO)..."
-                  className="w-full pl-8 pr-7 py-1 text-xs bg-slate-50 border border-slate-200 rounded-md placeholder:text-[#94A3B8] focus:outline-hidden focus:ring-1 focus:ring-[#0F6CBD] focus:border-[#0F6CBD]"
+                  placeholder="Search modules..."
+                  className="w-full pl-8 pr-7 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-hidden focus:ring-1 focus:ring-[#0F6CBD] focus:border-[#0F6CBD] focus:bg-white transition"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
                     className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
                   >
-                    <X className="w-3 h-3" />
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
@@ -774,47 +828,17 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
                     collapseAll();
                   }
                 }}
-                className="p-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded border border-slate-200 shrink-0 transition"
+                className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg border border-slate-200 shrink-0 transition cursor-pointer"
                 title="Expand / Collapse all categories"
               >
                 <ChevronsUpDown className="w-3.5 h-3.5" />
               </button>
             </div>
-
-            {/* Quick Stage Filter Pills */}
-            <div className="flex items-center gap-1 overflow-x-auto pb-0.5 scrollbar-none text-[10px]">
-              <button
-                type="button"
-                onClick={() => setStageFilter('ALL')}
-                className={`px-2 py-0.5 rounded-full font-semibold transition shrink-0 cursor-pointer ${
-                  stageFilter === 'ALL'
-                    ? 'bg-[#002050] text-white shadow-2xs'
-                    : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
-                }`}
-              >
-                All ({totalModulesCount})
-              </button>
-              {categories.map(cat => (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setStageFilter(stageFilter === cat.id ? 'ALL' : cat.id)}
-                  className={`px-2 py-0.5 rounded-full font-medium transition shrink-0 cursor-pointer ${
-                    stageFilter === cat.id
-                      ? 'bg-[#0F6CBD] text-white shadow-2xs font-semibold'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
-                  }`}
-                  title={cat.title}
-                >
-                  {cat.stageLabel || cat.title.split('•')[0].trim()}
-                </button>
-              ))}
-            </div>
           </div>
         )}
 
         {/* 4. SCROLLABLE MODULES LIST */}
-        <div className="flex-1 overflow-y-auto px-2 py-2 space-y-4">
+        <div className="flex-1 overflow-y-auto px-2 py-2.5 space-y-3">
           {filteredCategories.map((category) => {
             const isCatCollapsed = collapsedCategories[category.id] && !searchQuery;
             const isCatActive = category.modules.some(
@@ -825,24 +849,24 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
             );
 
             return (
-              <div key={category.id} id={`sidebar-cat-${category.id}`} className="space-y-1">
-                {/* Category Header (shown when expanded) */}
+              <div key={category.id} id={`sidebar-cat-${category.id}`} className="space-y-0.5">
+                {/* Category Header */}
                 {(!isCollapsed || isMobileOpen) && (
                   <button
                     onClick={() => toggleCategory(category.id)}
-                    className={`w-full flex items-center justify-between px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded transition cursor-pointer select-none ${
+                    className={`w-full flex items-center justify-between px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md transition cursor-pointer select-none ${
                       isCatActive
-                        ? 'bg-[#EFF6FC] text-[#0F6CBD]'
-                        : 'text-[#64748B] hover:text-[#0F172A] hover:bg-slate-100'
+                        ? 'text-[#0F6CBD] bg-blue-50/50'
+                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100/70'
                     }`}
                   >
                     <div className="flex items-center gap-1.5 min-w-0">
                       {category.stageNumber ? (
                         <span
-                          className={`w-4 h-4 rounded-full text-[9px] font-mono flex items-center justify-center font-bold shrink-0 ${
+                          className={`w-3.5 h-3.5 rounded text-[8px] font-mono flex items-center justify-center font-bold shrink-0 ${
                             isCatActive
-                              ? 'bg-[#0F6CBD] text-white shadow-xs'
-                              : 'bg-[#002050] text-white'
+                              ? 'bg-[#0F6CBD] text-white'
+                              : 'bg-slate-200 text-slate-700'
                           }`}
                         >
                           {category.stageNumber}
@@ -850,14 +874,14 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
                       ) : (
                         <span
                           className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                            isCatActive ? 'bg-[#0F6CBD]' : 'bg-slate-400'
+                            isCatActive ? 'bg-[#0F6CBD]' : 'bg-slate-300'
                           }`}
                         />
                       )}
                       <span className="truncate">{category.title}</span>
                     </div>
                     <span className="flex items-center gap-1 shrink-0 ml-1">
-                      <span className="text-[9px] bg-slate-200/70 text-slate-600 px-1 rounded font-mono">
+                      <span className="text-[9px] text-slate-400 font-mono">
                         {category.modules.length}
                       </span>
                       <ChevronDown
@@ -871,7 +895,7 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
 
                 {/* Collapsed Category Divider for Icon-Only Mode */}
                 {isCollapsed && !isMobileOpen && (
-                  <div className="my-1 border-t border-slate-200" title={category.title} />
+                  <div className="my-1.5 border-t border-slate-200" title={category.title} />
                 )}
 
                 {/* Module Items */}
@@ -890,14 +914,14 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
                           id={`sidebar-module-${mod.tabKey}`}
                           onClick={() => handleSelectModule(mod.tabKey)}
                           title={`${mod.code ? mod.code + ' • ' : ''}${mod.name} - ${mod.shortDesc}`}
-                          className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-left transition relative group cursor-pointer ${
+                          className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left transition relative group cursor-pointer ${
                             isActive
-                              ? 'bg-[#EFF6FC] text-[#0F6CBD] font-semibold shadow-2xs ring-1 ring-[#0F6CBD]/20'
-                              : 'text-[#334155] hover:bg-slate-100/90 hover:text-[#0F172A]'
+                              ? 'bg-blue-50/90 text-[#0F6CBD] font-semibold border-l-2 border-[#0F6CBD] shadow-2xs'
+                              : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                           }`}
                         >
-                          <div className={`shrink-0 ${isActive ? 'text-[#0F6CBD]' : 'text-[#64748B] group-hover:text-[#0F172A]'}`}>
-                            <Icon className="w-4 h-4" />
+                          <div className={`shrink-0 ${isActive ? 'text-[#0F6CBD]' : 'text-slate-400 group-hover:text-slate-700'}`}>
+                            <Icon className="w-3.5 h-3.5" />
                           </div>
 
                           {(!isCollapsed || isMobileOpen) && (
@@ -907,12 +931,12 @@ export const LeftSidebarMenu: React.FC<LeftSidebarMenuProps> = ({
                                   {mod.name}
                                 </span>
                                 {mod.badge && (
-                                  <span className={`text-[9px] px-1.5 py-0.2 rounded font-mono shrink-0 ${mod.badgeColor || 'bg-slate-100 text-slate-700'}`}>
+                                  <span className={`text-[9px] px-1 py-0.2 rounded font-mono shrink-0 ${mod.badgeColor || 'bg-slate-100 text-slate-600'}`}>
                                     {mod.badge}
                                   </span>
                                 )}
                               </div>
-                              <div className="text-[10px] text-[#94A3B8] group-hover:text-[#64748B] truncate">
+                              <div className="text-[10px] text-slate-400 group-hover:text-slate-500 truncate">
                                 {mod.code ? `${mod.code} • ` : ''}{mod.shortDesc}
                               </div>
                             </div>

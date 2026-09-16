@@ -84,8 +84,41 @@ interface ProjectContextType {
     conceptId: string,
     assetType: ArchitecturalVisualAsset['type'],
     prompt: string,
-    style?: string
-  ) => Promise<{ success: boolean; imageUrl?: string; source?: string; error?: string }>;
+    style?: string,
+    options?: {
+      provider?: 'ollama';
+      ollamaHost?: string;
+      ollamaModel?: string;
+    }
+  ) => Promise<{
+    success: boolean;
+    imageUrl?: string;
+    source?: string;
+    providerUsed?: string;
+    notice?: string;
+    ollamaError?: string;
+    error?: string;
+  }>;
+  generateAiImageForAsset: (
+    projectId: string,
+    conceptId: string,
+    assetType: ArchitecturalVisualAsset['type'],
+    prompt: string,
+    style?: string,
+    options?: {
+      provider?: 'ollama';
+      ollamaHost?: string;
+      ollamaModel?: string;
+    }
+  ) => Promise<{
+    success: boolean;
+    imageUrl?: string;
+    source?: string;
+    providerUsed?: string;
+    notice?: string;
+    ollamaError?: string;
+    error?: string;
+  }>;
   refineConceptWithGemini: (
     projectId: string,
     conceptId: string,
@@ -1361,8 +1394,21 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     conceptId: string,
     assetType: ArchitecturalVisualAsset['type'],
     prompt: string,
-    style?: string
-  ): Promise<{ success: boolean; imageUrl?: string; source?: string; error?: string }> => {
+    style?: string,
+    options?: {
+      provider?: 'ollama';
+      ollamaHost?: string;
+      ollamaModel?: string;
+    }
+  ): Promise<{
+    success: boolean;
+    imageUrl?: string;
+    source?: string;
+    providerUsed?: string;
+    notice?: string;
+    ollamaError?: string;
+    error?: string;
+  }> => {
     const target = projects.find((p) => p.id === projectId);
     const targetConcept = target?.conceptOptions.find((c) => c.id === conceptId);
     const optNumber = targetConcept?.optionNumber || 1;
@@ -1379,6 +1425,9 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           sheetType: assetType,
           areaSqFt: target?.builtUpAreaSqFt || 3400,
           clientName: target?.clientName || 'Client Residence',
+          provider: 'ollama',
+          ollamaHost: options?.ollamaHost,
+          ollamaModel: options?.ollamaModel,
         }),
       });
 
@@ -1388,19 +1437,29 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       const data = await response.json();
       if (data.success && data.imageUrl) {
+        const sourceLabel = data.source || 'Ollama Local AI';
         updateConceptVisualAsset(projectId, conceptId, assetType, {
           imageUrl: data.imageUrl,
           caption: prompt || data.promptUsed,
-          subtitle: `Generated via ${data.source || 'Gemini Vision AI'} • ${new Date().toLocaleTimeString()}`,
+          subtitle: `Generated via ${sourceLabel} • ${new Date().toLocaleTimeString()}`,
         });
-        return { success: true, imageUrl: data.imageUrl, source: data.source };
+        return {
+          success: true,
+          imageUrl: data.imageUrl,
+          source: data.source,
+          providerUsed: data.providerUsed,
+          notice: data.notice,
+          ollamaError: data.ollamaError,
+        };
       }
-      return { success: false, error: data.error || 'Failed to synthesize image' };
+      return { success: false, error: data.error || 'Failed to synthesize image', ollamaError: data.ollamaError };
     } catch (err: any) {
       console.error('Error in generateGeminiImageForAsset:', err);
       return { success: false, error: err?.message || 'Network error' };
     }
   }, [projects, updateConceptVisualAsset]);
+
+  const generateAiImageForAsset = generateGeminiImageForAsset;
 
   const updateConceptReview = useCallback((
     projectId: string,
@@ -2217,6 +2276,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         toggleStageChecklistItem,
         generateConceptsForProject,
         generateGeminiImageForAsset,
+        generateAiImageForAsset,
         refineConceptWithGemini,
         critiqueConceptWithGemini,
         generatePitchWithGemini,

@@ -23,16 +23,47 @@ import {
   ShieldAlert,
   SlidersHorizontal,
   ArrowRight,
+  ArrowLeft,
 } from 'lucide-react';
 import { AppModuleId } from './types';
 
-function AppContent({onOpenProfile}: {onOpenProfile: () => void}) {
-  const [activeTab, setActiveTab] = useState<string>('pipeline');
+function mapInitialTab(tab?: string): string {
+  if (!tab) return 'pipeline';
+  if (tab === 'arch_studio' || tab === 'ai-studio') return 'ai-studio';
+  if (tab === 'data_science' || tab === 'analytics') return 'analytics';
+  if (tab === 'arch_workspace' || tab === 'workspace') return 'workspace';
+  if (tab === 'arch_pipeline' || tab === 'pipeline') return 'pipeline';
+  if (['pipeline', 'workspace', 'ai-studio', 'boq', 'execution', 'billing', 'analytics', 'masters'].includes(tab)) {
+    return tab;
+  }
+  return 'pipeline';
+}
+
+function AppContent({
+  onOpenProfile,
+  initialTab,
+  onNavigateBackToERP,
+}: {
+  onOpenProfile: () => void;
+  initialTab?: string;
+  onNavigateBackToERP?: (targetTab?: string) => void;
+}) {
+  const [activeTab, setActiveTab] = useState<string>(() => mapInitialTab(initialTab));
   const [isMobileNavOpen, setIsMobileNavOpen] = useState<boolean>(false);
   const [isNewEnquiryOpen, setIsNewEnquiryOpen] = useState<boolean>(false);
-  const [isBackupModalOpen, setIsBackupModalOpen] = useState<boolean>(false);
+  const [isBackupModalOpen, setIsBackupModalOpen] = useState<boolean>(() => initialTab === 'data_backup' || initialTab === 'backup');
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
   const [profileModalTab, setProfileModalTab] = useState<'details' | 'security' | 'permissions'>('details');
+
+  React.useEffect(() => {
+    if (initialTab) {
+      if (initialTab === 'data_backup' || initialTab === 'backup') {
+        setIsBackupModalOpen(true);
+      } else {
+        setActiveTab(mapInitialTab(initialTab));
+      }
+    }
+  }, [initialTab]);
 
   const { setActiveProjectId, activeProject, isSynced } = useProject();
   const [handoffMessage, setHandoffMessage] = useState('');
@@ -57,37 +88,50 @@ function AppContent({onOpenProfile}: {onOpenProfile: () => void}) {
 
   return (
     <div className="arch-workspace h-screen w-full bg-slate-50 flex flex-row font-sans text-slate-900 antialiased selection:bg-slate-900 selection:text-white overflow-hidden">
-      {/* Left Sidebar Menu */}
-      <Sidebar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onOpenNewEnquiry={() => setIsNewEnquiryOpen(true)}
-        onOpenBackupModal={() => setIsBackupModalOpen(true)}
-        onOpenProfileModal={handleOpenProfile}
-        isMobileOpen={isMobileNavOpen}
-        setIsMobileOpen={setIsMobileNavOpen}
-      />
-
-      {/* Main Content Column: Frozen Header + Scrollable Content Viewport */}
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        {/* Frozen Top Bar Header (Stays Fixed at Top during Page Scroll) */}
-        <TopBar
+        {/* Left Sidebar Menu */}
+        <Sidebar
           activeTab={activeTab}
-          onOpenMobileMenu={() => setIsMobileNavOpen(true)}
+          setActiveTab={setActiveTab}
           onOpenNewEnquiry={() => setIsNewEnquiryOpen(true)}
           onOpenBackupModal={() => setIsBackupModalOpen(true)}
           onOpenProfileModal={handleOpenProfile}
+          isMobileOpen={isMobileNavOpen}
+          setIsMobileOpen={setIsMobileNavOpen}
+          onExitToERP={onNavigateBackToERP ? () => onNavigateBackToERP('dashboard') : undefined}
         />
 
-        {/* Scrollable Viewport */}
-        <div id="main-scroll-viewport" className="flex-1 overflow-y-auto overflow-x-hidden w-full flex flex-col">
-          <div className="px-4 py-2 bg-white border-b flex flex-wrap items-center gap-3 text-xs">
-            <span className="font-semibold mr-auto">{activeProject?.enquiryNumber} · {activeProject?.clientName || 'Select a customer project'}</span>
-            <button disabled={!activeProject || handingOff || !isSynced} className="px-3 py-2 rounded-lg bg-slate-100 font-semibold disabled:opacity-40" onClick={async()=>{
-              setHandingOff(true);setHandoffMessage('');
-              try {const r=await fetch('/api/architecture/projects/'+encodeURIComponent(activeProject!.id)+'/handoff',{method:'POST'});const d=await r.json();if(!r.ok)throw new Error(d.error);setHandoffMessage((d.existing?'Existing job: ':'Created job: ')+d.project.projectCode+'. Open ERP & Operations to continue.');}
-              catch(e:any){setHandoffMessage(e.message || 'Handoff failed. Please retry.');}finally{setHandingOff(false);}
-            }}>{handingOff?'Creating job…':'Create / locate ERP job'}</button>
+        {/* Main Content Column: Frozen Header + Scrollable Content Viewport */}
+        <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+          {/* Frozen Top Bar Header (Stays Fixed at Top during Page Scroll) */}
+          <TopBar
+            activeTab={activeTab}
+            onOpenMobileMenu={() => setIsMobileNavOpen(true)}
+            onOpenNewEnquiry={() => setIsNewEnquiryOpen(true)}
+            onOpenBackupModal={() => setIsBackupModalOpen(true)}
+            onOpenProfileModal={handleOpenProfile}
+            onExitToERP={onNavigateBackToERP ? () => onNavigateBackToERP('dashboard') : undefined}
+          />
+
+          {/* Scrollable Viewport */}
+          <div id="main-scroll-viewport" className="flex-1 overflow-y-auto overflow-x-hidden w-full flex flex-col">
+            <div className="px-4 py-2 bg-white border-b flex flex-wrap items-center gap-3 text-xs">
+              {onNavigateBackToERP && (
+                <button
+                  type="button"
+                  onClick={() => onNavigateBackToERP('dashboard')}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#002050] text-white font-semibold hover:bg-[#0c5999] transition shadow-2xs cursor-pointer"
+                  title="Return to Enact360 Role Center Dashboard"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Return to Enact360 ERP</span>
+                </button>
+              )}
+              <span className="font-semibold mr-auto">{activeProject?.enquiryNumber} · {activeProject?.clientName || 'Select a customer project'}</span>
+              <button disabled={!activeProject || handingOff || !isSynced} className="px-3 py-2 rounded-lg bg-slate-100 font-semibold disabled:opacity-40 hover:bg-slate-200 transition cursor-pointer" onClick={async()=>{
+                setHandingOff(true);setHandoffMessage('');
+                try {const r=await fetch('/api/architecture/projects/'+encodeURIComponent(activeProject!.id)+'/handoff',{method:'POST'});const d=await r.json();if(!r.ok)throw new Error(d.error);setHandoffMessage((d.existing?'Existing job: ':'Created job: ')+d.project.projectCode+'. Open ERP & Operations to continue.');}
+                catch(e:any){setHandoffMessage(e.message || 'Handoff failed. Please retry.');}finally{setHandingOff(false);}
+              }}>{handingOff?'Creating job…':'Create / locate ERP job'}</button>
             {handoffMessage && <span role="status" className="w-full text-slate-700">{handoffMessage}</span>}
           </div>
           {/* Read-Only Mode Notification Banner */}
@@ -227,6 +271,28 @@ function AppContent({onOpenProfile}: {onOpenProfile: () => void}) {
   );
 }
 
-export default function ArchitectureWorkspace({currentUser, onLogout, onOpenProfile}: {currentUser: import('../types/erp').UserSession; onLogout:()=>void; onOpenProfile:()=>void}) {
-  return <AuthProvider currentUser={currentUser} onLogout={onLogout}><ProjectProvider><AppContent onOpenProfile={onOpenProfile}/></ProjectProvider></AuthProvider>;
+export default function ArchitectureWorkspace({
+  currentUser,
+  onLogout,
+  onOpenProfile,
+  initialTab,
+  onNavigateBackToERP,
+}: {
+  currentUser: import('../types/erp').UserSession;
+  onLogout: () => void;
+  onOpenProfile: () => void;
+  initialTab?: string;
+  onNavigateBackToERP?: (targetTab?: string) => void;
+}) {
+  return (
+    <AuthProvider currentUser={currentUser} onLogout={onLogout}>
+      <ProjectProvider>
+        <AppContent
+          onOpenProfile={onOpenProfile}
+          initialTab={initialTab}
+          onNavigateBackToERP={onNavigateBackToERP}
+        />
+      </ProjectProvider>
+    </AuthProvider>
+  );
 }

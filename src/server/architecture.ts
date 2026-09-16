@@ -55,6 +55,193 @@ app.get('/api/architecture/health', (req, res) => {
   });
 });
 
+// Ollama Local AI Image Generation Helper
+interface OllamaImageOptions {
+  baseUrl: string;
+  model: string;
+  prompt: string;
+  size?: string;
+  timeoutMs?: number;
+}
+
+interface OllamaImageResult {
+  success: boolean;
+  imageUrl?: string;
+  error?: string;
+  durationMs?: number;
+  modelUsed?: string;
+}
+
+async function generateImageWithOllama(opts: OllamaImageOptions): Promise<OllamaImageResult> {
+  const { baseUrl, model, prompt, size = '1024x1024', timeoutMs = 45000 } = opts;
+  const cleanBase = baseUrl.replace(/\/+$/, '');
+  const startTime = Date.now();
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+    // Primary endpoint: /v1/images/generations (Ollama OpenAI-compatible imagegen runner)
+    const endpoint = `${cleanBase}/v1/images/generations`;
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        prompt,
+        n: 1,
+        size,
+        response_format: 'b64_json',
+      }),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeout);
+
+    if (!response.ok) {
+      const errText = await response.text();
+      let parsedErr = errText;
+      try {
+        const json = JSON.parse(errText);
+        parsedErr = json.error?.message || json.error || errText;
+      } catch (_) {}
+      return {
+        success: false,
+        error: `Ollama returned HTTP ${response.status}: ${parsedErr}`,
+        durationMs: Date.now() - startTime,
+      };
+    }
+
+    const data = (await response.json()) as any;
+    if (data?.data && Array.isArray(data.data) && data.data.length > 0) {
+      const item = data.data[0];
+      if (item.b64_json) {
+        const dataUrl = `data:image/png;base64,${item.b64_json}`;
+        return {
+          success: true,
+          imageUrl: dataUrl,
+          modelUsed: model,
+          durationMs: Date.now() - startTime,
+        };
+      }
+      if (item.url) {
+        return {
+          success: true,
+          imageUrl: item.url,
+          modelUsed: model,
+          durationMs: Date.now() - startTime,
+        };
+      }
+    }
+
+    return {
+      success: false,
+      error: 'Ollama returned an unexpected response format (missing b64_json or url in data).',
+      durationMs: Date.now() - startTime,
+    };
+  } catch (err: any) {
+    const durationMs = Date.now() - startTime;
+    if (err?.name === 'AbortError') {
+      return {
+        success: false,
+        error: `Ollama image generation timed out after ${timeoutMs / 1000}s. If loading model for the first time, additional warm-up time may be required.`,
+        durationMs,
+      };
+    }
+    return {
+      success: false,
+      error: err?.message || 'Failed to connect to Ollama daemon',
+      durationMs,
+    };
+  }
+}
+
+async function checkOllamaConnection(baseUrl: string, timeoutMs: number = 4000) {
+  const cleanBase = baseUrl.replace(/\/+$/, '');
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const [tagsRes, versionRes] = await Promise.allSettled([
+      fetch(`${cleanBase}/api/tags`, { signal: controller.signal }),
+      fetch(`${cleanBase}/api/version`, { signal: controller.signal }),
+    ]);
+
+    clearTimeout(timer);
+
+    let connected = false;
+    let version = 'unknown';
+    let models: Array<{ name: string; size?: number; modified_at?: string }> = [];
+
+    if (versionRes.status === 'fulfilled' && versionRes.value.ok) {
+      connected = true;
+      const vJson = (await versionRes.value.json()) as any;
+      version = vJson.version || 'installed';
+    }
+
+    if (tagsRes.status === 'fulfilled' && tagsRes.value.ok) {
+      connected = true;
+      const tJson = (await tagsRes.value.json()) as any;
+      if (Array.isArray(tJson?.models)) {
+        models = tJson.models.map((m: any) => ({
+          name: m.name || m.model,
+          size: m.size,
+          modified_at: m.modified_at,
+        }));
+      }
+    }
+
+    const imageModels = models.filter((m) => {
+      const name = m.name.toLowerCase();
+      return (
+        name.includes('image') ||
+        name.includes('turbo') ||
+        name.includes('flux') ||
+        name.includes('diffusion') ||
+        name.includes('sd')
+      );
+    });
+
+    return {
+      connected,
+      host: cleanBase,
+      version,
+      models,
+      imageModels,
+      hasRecommendedImageModel: models.some((m) =>
+        m.name.includes('z-image-turbo') || m.name.includes('flux')
+      ),
+      recommendedModel: process.env.OLLAMA_IMAGE_MODEL || 'x/z-image-turbo',
+    };
+  } catch (err: any) {
+    clearTimeout(timer);
+    return {
+      connected: false,
+      host: cleanBase,
+      error: err?.message || 'Connection refused or host unreachable',
+      recommendedModel: process.env.OLLAMA_IMAGE_MODEL || 'x/z-image-turbo',
+      models: [],
+      imageModels: [],
+      hasRecommendedImageModel: false,
+    };
+  }
+}
+
+// Ollama Connection Status & Models API (GET & POST for custom host test)
+app.get('/api/ollama/status', async (req, res) => {
+  const host = (req.query.host as string) || process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
+  const status = await checkOllamaConnection(host);
+  res.json(status);
+});
+
+app.post('/api/ollama/status', async (req, res) => {
+  const host = req.body.host || process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
+  const status = await checkOllamaConnection(host);
+  res.json(status);
+});
+
 app.get('/api/gemini/status', (req, res) => {
   const hasKey = Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'MY_GEMINI_API_KEY' && process.env.GEMINI_API_KEY.trim() !== '');
   res.json({
@@ -65,7 +252,7 @@ app.get('/api/gemini/status', (req, res) => {
   });
 });
 
-// Dedicated Gemini Architectural Image Generation Endpoint
+// Architectural Image Generation Endpoint (Powered exclusively by Ollama Local AI)
 app.post('/api/generate-concept-image', async (req, res) => {
   try {
     const {
@@ -76,45 +263,46 @@ app.post('/api/generate-concept-image', async (req, res) => {
       areaSqFt = 3400,
       clientName = 'Client Residence',
       lightingMood = 'Morning Natural Daylight 10:00 AM',
+      ollamaHost = process.env.OLLAMA_BASE_URL || 'http://localhost:11434',
+      ollamaModel = process.env.OLLAMA_IMAGE_MODEL || 'x/z-image-turbo',
     } = req.body;
 
-    const client = getGeminiClient();
     const synthesizedPrompt = prompt || `Photorealistic 8k architectural 3D perspective visualization for ${clientName}, ${style} style, ${lightingMood}, wide-angle interior design, high precision materials, magazine quality architectural photography, ultra sharp detail.`;
+    let ollamaAttemptError: string | null = null;
 
-    if (client) {
-      try {
-        // Attempt generation using gemini-3.1-flash-lite-image
-        const imageResult = await client.models.generateContent({
-          model: process.env.GEMINI_IMAGE_MODEL || 'gemini-2.5-flash-image',
-          contents: synthesizedPrompt,
-          config: {
-            imageConfig: {
-              aspectRatio: '16:9',
-            },
-          },
+    // Ollama Image Generation Execution
+    try {
+      console.log(`[Ollama] Generating architectural image with model ${ollamaModel} at ${ollamaHost}...`);
+      const ollamaResult = await generateImageWithOllama({
+        baseUrl: ollamaHost,
+        model: ollamaModel,
+        prompt: synthesizedPrompt,
+        size: '1024x1024',
+        timeoutMs: 45000,
+      });
+
+      if (ollamaResult.success && ollamaResult.imageUrl) {
+        console.log(`[Ollama] Image generated successfully in ${ollamaResult.durationMs}ms`);
+        return res.json({
+          success: true,
+          imageUrl: ollamaResult.imageUrl,
+          source: `Ollama (${ollamaResult.modelUsed || ollamaModel})`,
+          providerUsed: 'ollama',
+          model: ollamaResult.modelUsed || ollamaModel,
+          promptUsed: synthesizedPrompt,
+          style,
+          durationMs: ollamaResult.durationMs,
         });
-
-        const candidates = imageResult.candidates;
-        if (candidates && candidates.length > 0) {
-          for (const part of candidates[0].content?.parts || []) {
-            if (part.inlineData && part.inlineData.data) {
-              const dataUrl = `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`;
-              return res.json({
-                success: true,
-                imageUrl: dataUrl,
-                source: process.env.GEMINI_IMAGE_MODEL || 'gemini-2.5-flash-image',
-                promptUsed: synthesizedPrompt,
-                style,
-              });
-            }
-          }
-        }
-      } catch (geminiImgErr: any) {
-        console.warn('Gemini direct image generation unavailable or restricted:', geminiImgErr?.message || geminiImgErr);
+      } else {
+        ollamaAttemptError = ollamaResult.error || 'Unknown Ollama generation error';
+        console.warn('[Ollama] Image generation returned error:', ollamaAttemptError);
       }
+    } catch (ollamaErr: any) {
+      ollamaAttemptError = ollamaErr?.message || String(ollamaErr);
+      console.warn('[Ollama] Connection/Execution exception:', ollamaAttemptError);
     }
 
-    // High quality architectural domain matching fallback
+    // High quality architectural domain matching fallback when Ollama is offline or warming up
     let matchedAsset = ARCHITECTURAL_IMAGE_ASSETS.biophilic;
     const lowerStyle = (style + ' ' + (prompt || '')).toLowerCase();
     if (lowerStyle.includes('minimal') || lowerStyle.includes('monolith') || lowerStyle.includes('basalt')) {
@@ -141,13 +329,19 @@ app.post('/api/generate-concept-image', async (req, res) => {
       matchedAsset = ARCHITECTURAL_IMAGE_ASSETS.tropical_eco;
     }
 
+    const fallbackNotice = ollamaAttemptError
+      ? `Ollama server at ${ollamaHost} was not reachable (${ollamaAttemptError}). Serving high-fidelity architectural reference asset.`
+      : 'Reference image from the included library. This is not a newly generated design or a dimensionally accurate drawing.';
+
     return res.json({
       success: true,
       imageUrl: matchedAsset,
       source: 'reference-image-library',
+      providerUsed: 'fallback',
       promptUsed: synthesizedPrompt,
       style,
-      notice: 'Reference image from the included library. This is not a newly generated design or a dimensionally accurate drawing.',
+      ollamaError: ollamaAttemptError || undefined,
+      notice: fallbackNotice,
     });
   } catch (err: any) {
     console.error('Error generating concept image:', err);

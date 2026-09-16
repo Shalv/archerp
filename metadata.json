@@ -1,6 +1,6 @@
 {
   "name": "Build Storys ERP",
-  "description": "Integrated ERP for architecture, interior design, renovation, and turnkey construction with AI-driven BOQ generation, project-based employee timesheet management, and project-wise resource deployment.",
+  "description": "Integrated ERP for architecture, interior design, renovation, and turnkey construction with AI Concept Design Studio, 6-sheet interactive CAD/3D drawing viewer with Ollama synthesis, Predictive Data Science & Monte Carlo risk simulation, architectural CRM pipeline, and project execution.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

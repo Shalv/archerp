@@ -7,11 +7,16 @@ import {
   Ruler,
   Palette,
   Paperclip,
-  Compass,
   CheckCircle2,
   AlertCircle,
   RefreshCw,
   Sliders,
+  Server,
+  Cpu,
+  Zap,
+  Terminal,
+  Check,
+  Globe,
 } from 'lucide-react';
 import { useProject } from '../context/ProjectContext';
 import { ArchitecturalVisualAsset, ConceptOption, ProjectCustomer } from '../types';
@@ -68,6 +73,27 @@ const SHEET_TYPE_OPTIONS: {
   },
 ];
 
+const OLLAMA_MODEL_PRESETS = [
+  {
+    id: 'x/z-image-turbo',
+    name: 'x/z-image-turbo',
+    label: 'Alibaba Tongyi Z-Image Turbo (8K Photorealistic, Recommended)',
+    tag: 'Recommended',
+  },
+  {
+    id: 'x/flux2-klein',
+    name: 'x/flux2-klein',
+    label: 'Black Forest Labs Flux.2 Klein (Fast & Compact)',
+    tag: 'Fast',
+  },
+  {
+    id: 'flux',
+    name: 'flux',
+    label: 'Flux Standard Image Model',
+    tag: 'High Fidelity',
+  },
+];
+
 export const GeminiAssetGeneratorModal: React.FC<GeminiAssetGeneratorModalProps> = ({
   isOpen,
   onClose,
@@ -77,6 +103,19 @@ export const GeminiAssetGeneratorModal: React.FC<GeminiAssetGeneratorModalProps>
   onSuccess,
 }) => {
   const { generateGeminiImageForAsset } = useProject();
+
+  // Ollama Configuration State
+  const [ollamaHost, setOllamaHost] = useState<string>('http://localhost:11434');
+  const [ollamaModel, setOllamaModel] = useState<string>('x/z-image-turbo');
+  const [customOllamaModel, setCustomOllamaModel] = useState<string>('');
+  const [isCheckingOllama, setIsCheckingOllama] = useState<boolean>(false);
+  const [ollamaStatus, setOllamaStatus] = useState<{
+    checked: boolean;
+    connected: boolean;
+    version?: string;
+    models?: Array<{ name: string }>;
+    error?: string;
+  }>({ checked: false, connected: false });
 
   const [sheetType, setSheetType] = useState<ArchitecturalVisualAsset['type']>(initialSheetType);
   const [styleTheme, setStyleTheme] = useState<string>(concept.themeStyle);
@@ -97,6 +136,40 @@ export const GeminiAssetGeneratorModal: React.FC<GeminiAssetGeneratorModalProps>
     }
   }, [initialSheetType]);
 
+  // Check Ollama status when modal opens or host changes
+  const checkOllama = async (hostToCheck = ollamaHost) => {
+    setIsCheckingOllama(true);
+    try {
+      const res = await fetch('/api/ollama/status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ host: hostToCheck }),
+      });
+      const data = await res.json();
+      setOllamaStatus({
+        checked: true,
+        connected: Boolean(data.connected),
+        version: data.version,
+        models: data.models || [],
+        error: data.error,
+      });
+    } catch (err: any) {
+      setOllamaStatus({
+        checked: true,
+        connected: false,
+        error: err?.message || 'Failed to ping Ollama daemon',
+      });
+    } finally {
+      setIsCheckingOllama(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      checkOllama();
+    }
+  }, [isOpen]);
+
   // Compute composite synthesized prompt based on user inputs
   useEffect(() => {
     const sheetMeta = SHEET_TYPE_OPTIONS.find((s) => s.type === sheetType);
@@ -107,9 +180,14 @@ export const GeminiAssetGeneratorModal: React.FC<GeminiAssetGeneratorModalProps>
 
   if (!isOpen) return null;
 
+  const activeModel = customOllamaModel.trim() || ollamaModel;
+
   const handleGenerate = async () => {
     setIsGenerating(true);
-    setStatusMessage({ type: 'info', text: 'Calling Gemini Vision AI to generate high-fidelity architectural asset...' });
+    setStatusMessage({
+      type: 'info',
+      text: `Synthesizing architectural asset with Ollama (${activeModel})...`,
+    });
 
     try {
       const result = await generateGeminiImageForAsset(
@@ -117,24 +195,35 @@ export const GeminiAssetGeneratorModal: React.FC<GeminiAssetGeneratorModalProps>
         concept.id,
         sheetType,
         customPromptText,
-        styleTheme
+        styleTheme,
+        {
+          provider: 'ollama',
+          ollamaHost,
+          ollamaModel: activeModel,
+        }
       );
 
       if (result.success && result.imageUrl) {
+        const sourceNotice = result.source || `Ollama (${activeModel})`;
+        const fallbackText = result.ollamaError
+          ? ` (Note: Ollama daemon was offline or returned error; reference asset displayed)`
+          : '';
+
         setStatusMessage({
           type: 'success',
-          text: `Successfully generated via ${result.source || 'Gemini Vision AI'}. Sheet updated!`,
+          text: `Asset synthesized via ${sourceNotice}!${fallbackText}`,
         });
+
         if (onSuccess) {
-          onSuccess(result.imageUrl, result.source || 'Gemini');
+          onSuccess(result.imageUrl, result.source || `Ollama (${activeModel})`);
         }
         setTimeout(() => {
           onClose();
-        }, 1200);
+        }, 1500);
       } else {
         setStatusMessage({
           type: 'error',
-          text: result.error || 'Failed to synthesize asset. Please check network connection or try again.',
+          text: result.error || 'Failed to synthesize asset. Please check Ollama host connection or model name.',
         });
       }
     } catch (err: any) {
@@ -161,13 +250,13 @@ export const GeminiAssetGeneratorModal: React.FC<GeminiAssetGeneratorModalProps>
         {/* Modal Header */}
         <div className="p-5 bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 text-white flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
-            <div className="p-2 rounded-xl bg-amber-400/20 text-amber-300 border border-amber-400/30">
-              <Sparkles className="w-5 h-5" />
+            <div className="p-2 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
+              <Server className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="text-[10px] uppercase font-mono font-bold text-amber-400 tracking-wider">
-                  Google AI Studio &bull; Gemini Vision
+                <span className="text-[10px] uppercase font-mono font-bold text-indigo-400 tracking-wider">
+                  AI Visual Studio &bull; Ollama Engine
                 </span>
                 <span className="text-slate-500">&bull;</span>
                 <span className="text-xs text-slate-300">Option {concept.optionNumber}</span>
@@ -188,6 +277,110 @@ export const GeminiAssetGeneratorModal: React.FC<GeminiAssetGeneratorModalProps>
 
         {/* Modal Scrollable Body */}
         <div className="p-5 overflow-y-auto space-y-4 text-xs text-slate-700">
+          {/* Ollama Engine Configuration */}
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center space-x-1.5">
+                <Cpu className="w-3.5 h-3.5 text-indigo-600" />
+                <span>Ollama AI Configuration</span>
+              </label>
+              <span className="text-[10px] text-slate-500 font-medium">Local Open-Source Synthesis</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {/* Ollama Host Address */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-[11px] font-semibold text-slate-700 flex items-center space-x-1">
+                    <Globe className="w-3 h-3 text-slate-400" />
+                    <span>Ollama Daemon URL</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => checkOllama(ollamaHost)}
+                    disabled={isCheckingOllama}
+                    className="text-[10px] text-indigo-600 hover:text-indigo-800 font-medium flex items-center space-x-1"
+                  >
+                    <RefreshCw className={`w-2.5 h-2.5 ${isCheckingOllama ? 'animate-spin' : ''}`} />
+                    <span>{isCheckingOllama ? 'Testing...' : 'Test Connection'}</span>
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  value={ollamaHost}
+                  onChange={(e) => setOllamaHost(e.target.value)}
+                  className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                  placeholder="http://localhost:11434"
+                />
+              </div>
+
+              {/* Ollama Model Selector */}
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                  Ollama Image Generation Model
+                </label>
+                <select
+                  value={ollamaModel}
+                  onChange={(e) => {
+                    setOllamaModel(e.target.value);
+                    setCustomOllamaModel('');
+                  }}
+                  className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden bg-white"
+                >
+                  {OLLAMA_MODEL_PRESETS.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.label}
+                    </option>
+                  ))}
+                  <option value="custom">-- Custom Ollama Model --</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Custom Model Input if selected */}
+            {ollamaModel === 'custom' && (
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                  Specify Custom Ollama Model Name
+                </label>
+                <input
+                  type="text"
+                  value={customOllamaModel}
+                  onChange={(e) => setCustomOllamaModel(e.target.value)}
+                  placeholder="e.g. x/z-image-turbo or my-fine-tuned-diffusion"
+                  className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                />
+              </div>
+            )}
+
+            {/* Connection Status Banner & Terminal Helper */}
+            <div className="flex items-center justify-between px-2.5 py-2 rounded-lg bg-white border border-slate-200">
+              <div className="flex items-center space-x-2">
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    ollamaStatus.connected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'
+                  }`}
+                />
+                <span className="text-[11px] font-medium text-slate-700">
+                  {ollamaStatus.connected ? (
+                    <>
+                      Connected to Ollama {ollamaStatus.version && `(${ollamaStatus.version})`} &bull; Ready to generate
+                    </>
+                  ) : (
+                    <>Ollama daemon status: {ollamaStatus.checked ? 'Not detected locally' : 'Ready to verify'}</>
+                  )}
+                </span>
+              </div>
+
+              <div className="text-[10px] text-slate-500 flex items-center space-x-1">
+                <Terminal className="w-3 h-3 text-slate-400" />
+                <code className="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-[10px]">
+                  ollama run {activeModel}
+                </code>
+              </div>
+            </div>
+          </div>
+
           {/* Target Sheet Type Selector */}
           <div>
             <label className="block text-[11px] font-bold uppercase text-slate-500 tracking-wider mb-2">
@@ -292,7 +485,7 @@ export const GeminiAssetGeneratorModal: React.FC<GeminiAssetGeneratorModalProps>
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="block text-[11px] font-bold uppercase text-slate-500 tracking-wider">
-                Synthesized Prompt Sent to Google Gemini AI
+                Synthesized Prompt Sent to Ollama AI
               </label>
               <span className="text-[10px] text-slate-400">Editable Directive</span>
             </div>
@@ -346,13 +539,13 @@ export const GeminiAssetGeneratorModal: React.FC<GeminiAssetGeneratorModalProps>
             >
               {isGenerating ? (
                 <>
-                  <RefreshCw className="w-4 h-4 animate-spin text-amber-400" />
-                  <span>Synthesizing with Gemini AI...</span>
+                  <RefreshCw className="w-4 h-4 animate-spin text-indigo-400" />
+                  <span>Synthesizing with Ollama ({activeModel})...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span>Generate with Gemini Vision AI</span>
+                  <Server className="w-4 h-4 text-indigo-400" />
+                  <span>Generate with Ollama ({activeModel})</span>
                 </>
               )}
             </button>
@@ -362,3 +555,6 @@ export const GeminiAssetGeneratorModal: React.FC<GeminiAssetGeneratorModalProps>
     </div>
   );
 };
+
+export const OllamaAssetGeneratorModal = GeminiAssetGeneratorModal;
+

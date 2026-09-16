@@ -7,6 +7,7 @@ import {
   Info,
   CheckCircle2,
   Sparkles,
+  Server,
   Layers,
   Compass,
 } from 'lucide-react';
@@ -20,6 +21,7 @@ interface Perspective3DSheetProps {
   onUploadRender?: (fileDataUrl: string, fileName: string) => void;
   onOpenLightbox?: () => void;
   onTriggerGeminiSynthesis?: () => void;
+  onTriggerAiSynthesis?: () => void;
 }
 
 export const Perspective3DSheet: React.FC<Perspective3DSheetProps> = ({
@@ -30,9 +32,12 @@ export const Perspective3DSheet: React.FC<Perspective3DSheetProps> = ({
   onUploadRender,
   onOpenLightbox,
   onTriggerGeminiSynthesis,
+  onTriggerAiSynthesis,
 }) => {
   const [showHotspots, setShowHotspots] = useState<boolean>(true);
   const [activeHotspotId, setActiveHotspotId] = useState<string | null>(null);
+
+  const triggerSynthesis = onTriggerAiSynthesis || onTriggerGeminiSynthesis;
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -113,15 +118,15 @@ export const Perspective3DSheet: React.FC<Perspective3DSheetProps> = ({
             <span>{showHotspots ? 'Material Hotspots (On)' : 'Material Hotspots (Off)'}</span>
           </button>
 
-          {onTriggerGeminiSynthesis && (
+          {triggerSynthesis && (
             <button
               type="button"
-              onClick={onTriggerGeminiSynthesis}
-              className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-colors shadow-2xs"
-              title="Synthesize 3D perspective render with Google AI Studio Gemini Vision"
+              onClick={triggerSynthesis}
+              className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-colors shadow-2xs"
+              title="Synthesize 3D perspective render with Ollama Local AI"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              <span>Synthesize with Gemini</span>
+              <Server className="w-3.5 h-3.5 text-indigo-300" />
+              <span>Synthesize with Ollama</span>
             </button>
           )}
 

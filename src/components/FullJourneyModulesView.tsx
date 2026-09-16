@@ -158,7 +158,7 @@ export const FullJourneyModulesView: React.FC<FullJourneyModulesViewProps> = ({
                   onClick={() => {
                     setActiveModuleTab(m.tabKey);
                     // If core view like survey, boq, budget, quotation, masters, notify parent if requested
-                    if (['survey', 'boq', 'budget', 'quotation', 'masters', 'traceability', 'reports'].includes(m.tabKey) && onNavigateToCoreTab) {
+                    if (['survey', 'boq', 'budget', 'quotation', 'masters', 'traceability', 'reports', 'arch_studio', 'data_science', 'arch_pipeline', 'arch_workspace', 'data_backup', 'architecture'].includes(m.tabKey) && onNavigateToCoreTab) {
                       onNavigateToCoreTab(m.tabKey);
                     }
                   }}

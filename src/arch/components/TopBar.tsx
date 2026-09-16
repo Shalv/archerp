@@ -13,6 +13,7 @@ import {
   Layers,
   Lock,
   Eye,
+  ArrowLeft,
 } from 'lucide-react';
 import { useProject } from '../context/ProjectContext';
 import { useAuth } from '../context/AuthContext';
@@ -24,6 +25,7 @@ interface TopBarProps {
   onOpenNewEnquiry: () => void;
   onOpenBackupModal: () => void;
   onOpenProfileModal: (tab?: 'details' | 'security' | 'permissions') => void;
+  onExitToERP?: () => void;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
@@ -32,6 +34,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   onOpenNewEnquiry,
   onOpenBackupModal,
   onOpenProfileModal,
+  onExitToERP,
 }) => {
   const { activeProject } = useProject();
   const { user, logout, getModulePermission } = useAuth();
@@ -134,6 +137,19 @@ export const TopBar: React.FC<TopBarProps> = ({
 
       {/* Right side: Active context, quick actions & Profile menu */}
       <div className="flex items-center space-x-2.5">
+        {onExitToERP && (
+          <button
+            type="button"
+            onClick={onExitToERP}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#002050] hover:bg-[#001833] text-white text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
+            title="Return to Enact360 Role Center Dashboard"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Return to Enact360 ERP</span>
+            <span className="sm:hidden">ERP</span>
+          </button>
+        )}
+
         {activeProject && (
           <div className="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
             <Building2 className="w-3.5 h-3.5 text-indigo-600 shrink-0" />

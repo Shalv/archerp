@@ -14,6 +14,7 @@ import {
   X,
   Plus,
   Sparkles,
+  Server,
   Upload,
   ShieldCheck,
   CheckCircle2,
@@ -353,11 +354,11 @@ export const ArchitecturalDrawingViewer: React.FC<ArchitecturalDrawingViewerProp
             <button
               type="button"
               onClick={() => setIsGeminiGeneratorOpen(true)}
-              className="px-2.5 py-1 text-xs font-bold rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 transition-colors flex items-center space-x-1.5 shadow-2xs"
-              title="Generate or update drawing sheet assets using Gemini AI Vision"
+              className="px-2.5 py-1 text-xs font-bold rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors flex items-center space-x-1.5 shadow-2xs"
+              title="Generate or update drawing sheet assets using Ollama Local AI"
             >
-              <Sparkles className="w-3.5 h-3.5 text-slate-950" />
-              <span>Gemini AI Synthesizer</span>
+              <Server className="w-3.5 h-3.5 text-indigo-200" />
+              <span>Ollama AI Synthesizer</span>
             </button>
           )}
 

@@ -35,6 +35,7 @@ interface SidebarProps {
   onOpenProfileModal: (tab?: 'details' | 'security' | 'permissions') => void;
   isMobileOpen: boolean;
   setIsMobileOpen: (open: boolean) => void;
+  onExitToERP?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -45,6 +46,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenProfileModal,
   isMobileOpen,
   setIsMobileOpen,
+  onExitToERP,
 }) => {
   const {
     projects,
@@ -328,6 +330,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </button>
             </div>
           </div>
+
+          {onExitToERP && (
+            <button
+              type="button"
+              onClick={onExitToERP}
+              className="w-full flex items-center justify-between p-2 rounded-xl bg-[#002050] hover:bg-[#001833] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+            >
+              <div className="flex items-center space-x-1.5">
+                <ArrowRight className="w-3.5 h-3.5 rotate-180" />
+                <span>Return to Enact360 ERP</span>
+              </div>
+              <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-mono">ERP</span>
+            </button>
+          )}
 
           {/* Authenticated Profile Card */}
           <div className="bg-white p-2.5 rounded-xl border border-slate-200 flex items-center justify-between text-[11px] shadow-2xs group">

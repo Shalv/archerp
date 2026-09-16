@@ -107,7 +107,12 @@ export async function createApp(isServerless: boolean = false) {
       normalizedPath === '/system/database' ||
       normalizedPath === '/system/database/test' ||
       normalizedPath === '/system/mongodb' ||
-      normalizedPath === '/system/mongodb/test'
+      normalizedPath === '/system/mongodb/test' ||
+      normalizedPath === '/gemini/status' ||
+      normalizedPath === '/ollama/status' ||
+      normalizedPath.startsWith('/ollama') ||
+      normalizedPath === '/generate-concept-image' ||
+      normalizedPath === '/generate-concepts'
     ) return next();
     if (!resolveUser(req)) return res.status(401).json({ error: 'Please sign in again.' });
     next();

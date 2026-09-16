@@ -15,7 +15,9 @@ import {
   ExternalLink,
   Sliders,
   Filter,
-  Download
+  Download,
+  Server,
+  Cpu
 } from 'lucide-react';
 import { CategorySampleHead } from '../../data/discoveryAndSampleHeadsData';
 import { ProjectRecord } from '../../types/erp';
@@ -38,6 +40,7 @@ export const CategoryVisualSampleHeadsView: React.FC<CategoryVisualSampleHeadsVi
   const [lightboxHead, setLightboxHead] = useState<CategorySampleHead | null>(null);
 
   // Regeneration Modal State
+  const [regenOllamaModel, setRegenOllamaModel] = useState('x/z-image-turbo');
   const [regenStyle, setRegenStyle] = useState('Modern Luxury Haussmann');
   const [regenLighting, setRegenLighting] = useState('Bright Morning Natural Sunlight (10:00 AM)');
   const [regenCustomPrompt, setRegenCustomPrompt] = useState('');
@@ -76,7 +79,7 @@ export const CategoryVisualSampleHeadsView: React.FC<CategoryVisualSampleHeadsVi
     setIsGenerating(true);
 
     try {
-      // Call backend AI image generation endpoint
+      // Call backend AI image generation endpoint with Ollama
       const res = await fetch('/api/generate-concept-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -87,19 +90,22 @@ export const CategoryVisualSampleHeadsView: React.FC<CategoryVisualSampleHeadsVi
           sheetType: selectedHeadForRegenerate.category === 'ARCHITECTURE' ? 'ELEVATION' : 'RENDER_3D',
           optionNumber: 1,
           areaSqFt: 3400,
-          clientName: project.clientName || 'Client'
+          clientName: project.clientName || 'Client',
+          provider: 'ollama',
+          ollamaModel: regenOllamaModel,
         })
       });
 
       const data = await res.json();
       if (data.imageUrl) {
         onUpdateHead(selectedHeadForRegenerate.id, data.imageUrl, 'AI_GENERATED');
-        showToast(`AI regenerated image for "${selectedHeadForRegenerate.headName}" successfully!`);
+        const sourceLabel = data.source || `Ollama (${regenOllamaModel})`;
+        showToast(`AI image regenerated for "${selectedHeadForRegenerate.headName}" via ${sourceLabel}!`);
       } else {
         // Fallback to high quality asset
         const fallback = '/assets/images/biophilic_concept_render_1789216627991.jpg';
         onUpdateHead(selectedHeadForRegenerate.id, fallback, 'AI_GENERATED');
-        showToast(`AI regenerated sample visual for "${selectedHeadForRegenerate.headName}"!`);
+        showToast(`Sample visual loaded for "${selectedHeadForRegenerate.headName}"!`);
       }
     } catch (err) {
       console.warn('AI generation API error, using architectural render asset:', err);
@@ -370,6 +376,34 @@ export const CategoryVisualSampleHeadsView: React.FC<CategoryVisualSampleHeadsVi
             </div>
 
             <div className="space-y-3 text-xs">
+              {/* Ollama Engine Configuration */}
+              <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="font-semibold text-slate-700 block text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+                    <Server className="w-3.5 h-3.5 text-indigo-600" />
+                    <span>Ollama Local AI Generator</span>
+                  </label>
+                  <span className="text-[10px] text-indigo-600 font-medium bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
+                    Open Source
+                  </span>
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                    Ollama Image Model Preset
+                  </label>
+                  <select
+                    value={regenOllamaModel}
+                    onChange={e => setRegenOllamaModel(e.target.value)}
+                    className="w-full px-2.5 py-1.5 border border-slate-200 rounded text-xs bg-white focus:outline-hidden focus:ring-1 focus:ring-indigo-500"
+                  >
+                    <option value="x/z-image-turbo">x/z-image-turbo (Alibaba Tongyi Lab - 8K Recommended)</option>
+                    <option value="x/flux2-klein">x/flux2-klein (Black Forest Labs - Fast)</option>
+                    <option value="flux">flux (Standard Diffusion)</option>
+                  </select>
+                </div>
+              </div>
+
               <div>
                 <label className="font-semibold text-slate-700 block mb-1">Architectural / Interior Style</label>
                 <select
@@ -411,8 +445,13 @@ export const CategoryVisualSampleHeadsView: React.FC<CategoryVisualSampleHeadsVi
                 />
               </div>
 
-              <div className="p-3 bg-purple-50 rounded-lg border border-purple-200 text-[11px] text-purple-900 leading-relaxed">
-                <strong>Gemini Vision Synthesis:</strong> This will combine the customer&apos;s project brief ({project.title}) and room dimensions with your prompt modifiers to render an updated concept sheet.
+              <div className="p-2.5 bg-slate-100 rounded-lg border border-slate-200 text-[11px] text-slate-700 leading-relaxed flex items-center justify-between">
+                <span>
+                  <strong>Engine:</strong> Ollama ({regenOllamaModel})
+                </span>
+                <span className="text-[10px] text-slate-500 font-mono">
+                  {project.clientName || 'Residence'}
+                </span>
               </div>
             </div>
 
