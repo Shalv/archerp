@@ -162,8 +162,8 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
           <source src="/videos/login-bg.mp4" type="video/mp4" />
         </video>
 
-        {/* Cinematic translucent architectural gradient allowing video clarity */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-slate-950/30 to-slate-950/55" />
+        {/* 50% transparency overlay layer */}
+        <div className="absolute inset-0 bg-black/50 backdrop-contrast-105" />
       </div>
 
       {/* Close button if opened from within an active session */}
