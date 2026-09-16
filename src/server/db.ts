@@ -189,10 +189,14 @@ export const DEMO_USERS: UserSession[] = [
 
 class DatabaseService {
   private localDb: ERPDatabase;
+  private persistListeners: Array<(db: ERPDatabase) => void> = [];
   private get db(): ERPDatabase { return databaseContext.getStore()?.data || this.localDb; }
   private set db(value: ERPDatabase) {
     const context = databaseContext.getStore();
     if (context) context.data = value; else this.localDb = value;
+  }
+  public onPersist(callback: (db: ERPDatabase) => void): void {
+    this.persistListeners.push(callback);
   }
   public getOperations(projectId: string, moduleId: string) { return this.db.operations?.[projectId+':'+moduleId] || []; }
   public saveOperations(projectId: string, moduleId: string, records: any[]) { this.db.operations ||= {}; this.db.operations[projectId+':'+moduleId] = structuredClone(records); this.persist(); }
@@ -320,6 +324,15 @@ class DatabaseService {
       const temporaryFile = DB_FILE + '.tmp';
       fs.writeFileSync(temporaryFile, JSON.stringify(data, null, 2), 'utf-8');
       fs.renameSync(temporaryFile, DB_FILE);
+
+      // Notify persistence subscribers (e.g. Hostinger MySQL background sync)
+      for (const listener of this.persistListeners) {
+        try {
+          listener(data);
+        } catch (subErr) {
+          console.warn('[ERP Store] Error in persistence listener:', subErr);
+        }
+      }
     } catch (err) {
       throw new Error('Unable to save database. Check disk space and data directory write permissions.');
     }

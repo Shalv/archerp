@@ -693,6 +693,30 @@ export interface SystemCapabilityReport {
   cloudDeployment: boolean;
   cloudDeploymentDetails: string;
   businessAssumptions: string[];
+  mongoDB?: {
+    configured: boolean;
+    connected: boolean;
+    database: string;
+    cluster: string;
+    message: string;
+    error?: string;
+    collectionsCount?: number;
+    lastSyncAt?: string;
+  };
+  hostingerMySQL?: {
+    configured: boolean;
+    connected: boolean;
+    database: string;
+    user: string;
+    host: string;
+    port: number;
+    message: string;
+    error?: string;
+    errorCode?: string;
+    tableCount?: number;
+    lastSyncAt?: string;
+    remoteAccessGuide?: string[];
+  };
 }
 
 // ============================================================================

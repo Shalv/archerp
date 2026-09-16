@@ -16,6 +16,8 @@ import dotenv from 'dotenv';
 import { createServer as createViteServer } from 'vite';
 
 import { dbService, DEMO_USERS } from './src/server/db';
+import { mySQLService } from './src/server/mysqlService';
+import { mongoDBService } from './src/server/mongoService';
 import { analyzeCustomerRequirementBrief, generateDraftBOQFromRequirements } from './src/server/geminiService';
 import { getAlternativePackages, getValueEngineeringOptions } from './src/server/syntheticDemo';
 import { UserSession, MasterRateItem, BOQItem, BOQRevision, ProjectRecord, CustomerRequirement, SystemCapabilityReport, CustomerQuotation } from './src/types/erp';
@@ -96,7 +98,17 @@ export async function createApp(isServerless: boolean = false) {
   };
   app.use('/api', (req, res, next) => {
     const normalizedPath = req.path.replace(/\/+$/, '') || '/';
-    if (normalizedPath === '/auth/login' || normalizedPath === '/auth/logout' || normalizedPath === '/auth/users' || normalizedPath === '/health') return next();
+    if (
+      normalizedPath === '/auth/login' || 
+      normalizedPath === '/auth/logout' || 
+      normalizedPath === '/auth/users' || 
+      normalizedPath === '/health' ||
+      normalizedPath === '/system/status' ||
+      normalizedPath === '/system/database' ||
+      normalizedPath === '/system/database/test' ||
+      normalizedPath === '/system/mongodb' ||
+      normalizedPath === '/system/mongodb/test'
+    ) return next();
     if (!resolveUser(req)) return res.status(401).json({ error: 'Please sign in again.' });
     next();
   });
@@ -168,20 +180,95 @@ export async function createApp(isServerless: boolean = false) {
   });
   app.use(architectureRouter);
 
+  // Hook up Hostinger MySQL and MongoDB Atlas persistence synchronization
+  dbService.onPersist((data) => {
+    if (mongoDBService.getStatus().connected) {
+      mongoDBService.syncToMongoDB(data).catch(err => {
+        console.warn('[MongoDB Atlas] Background sync failed:', err?.message);
+      });
+    }
+    if (mySQLService.getStatus().connected) {
+      mySQLService.syncToMySQL(data).catch(err => {
+        console.warn('[Hostinger MySQL] Background sync skipped/failed:', err?.message);
+      });
+    }
+  });
+
   // --- 1. System Capability & Health ---
   app.get('/api/health', (req: Request, res: Response) => {
     res.json({ status: 'ok', service: 'Build Storys ERP Core', time: new Date().toISOString() });
   });
 
+  // MongoDB Atlas Database Control & Diagnostics Endpoints
+  app.get('/api/system/mongodb', (req: Request, res: Response) => {
+    const status = mongoDBService.getStatus();
+    res.json({
+      provider: 'MongoDB Atlas',
+      cluster: status.cluster,
+      database: status.database,
+      status
+    });
+  });
+
+  app.post('/api/system/mongodb/test', async (req: Request, res: Response) => {
+    const result = await mongoDBService.testConnection();
+    res.json(result);
+  });
+
+  app.post('/api/system/mongodb/sync', async (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (user.role !== 'ADMIN') return res.status(403).json({ error: 'Administrator access required.' });
+    const result = await mongoDBService.syncToMongoDB(dbService.snapshot());
+    res.json(result);
+  });
+
+  // Hostinger MySQL Database Control & Diagnostics Endpoints
+  app.get('/api/system/database', (req: Request, res: Response) => {
+    const status = mySQLService.getStatus();
+    res.json({
+      provider: 'Hostinger MySQL',
+      targetDatabase: 'u571508785_arch_erp',
+      targetUser: 'u571508785_Arch',
+      status
+    });
+  });
+
+  app.post('/api/system/database/test', async (req: Request, res: Response) => {
+    const result = await mySQLService.testConnection();
+    res.json(result);
+  });
+
+  app.post('/api/system/database/init-tables', async (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (user.role !== 'ADMIN') return res.status(403).json({ error: 'Administrator access required.' });
+    const result = await mySQLService.initializeTables();
+    res.json(result);
+  });
+
+  app.post('/api/system/database/sync', async (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (user.role !== 'ADMIN') return res.status(403).json({ error: 'Administrator access required.' });
+    const result = await mySQLService.syncToMySQL(dbService.snapshot());
+    res.json(result);
+  });
+
   app.get('/api/system/status', (req: Request, res: Response) => {
+    const mysqlStatus = mySQLService.getStatus();
+    const mongoStatus = mongoDBService.getStatus();
     const report: SystemCapabilityReport = {
       codeExecution: true,
       codeExecutionDetails: 'Full-stack TypeScript code execution operational on Node.js 22 LTS with Express and Vite on port 3000.',
       fileCreation: true,
       fileCreationDetails: 'Full persistent filesystem access active. Data is persisted to /data/buildstorys_db.json with automatic transactional disk sync.',
       databaseRunning: true,
-      databaseType: 'File-backed Relational JSON Store + schema.sql (PostgreSQL DDL)',
-      databaseDetails: 'Active live engine with ACID file locks and foreign-key relational models. Complete PostgreSQL schema migrations provided in /schema.sql for production cloud deployment.',
+      databaseType: mongoStatus.connected
+        ? `MongoDB Atlas Connected (${mongoStatus.database})`
+        : mysqlStatus.connected
+        ? `Hostinger MySQL Connected (${mysqlStatus.database})`
+        : `Hybrid: Local ACID Store + MongoDB Atlas (${mongoStatus.database})`,
+      databaseDetails: mongoStatus.connected
+        ? `Connected to MongoDB Atlas (${mongoStatus.cluster} / DB: ${mongoStatus.database}). Collections verified: ${mongoStatus.collectionsCount}. Real-time persistent sync active.`
+        : `MongoDB Atlas client initialized for cluster ${mongoStatus.cluster}. ${mongoStatus.message}`,
       cloudDeployment: false,
       cloudDeploymentDetails: 'Currently executing in local dev container preview mode (port 3000). Ready for single-command production bundle (npm run build && node dist/server.cjs) on Cloud Run / Docker.',
       businessAssumptions: [
@@ -189,7 +276,9 @@ export async function createApp(isServerless: boolean = false) {
         'Assumption 2: Currency is Indian Rupees (₹ INR) with standard Indian Works Contract GST rates (18% composite supply) and HSN/SAC codes.',
         'Assumption 3: Estimation control mandates that AI drafts items and formulas, but verified software deterministically calculates all financial arithmetic, unit waste, markup, and tax totals.',
         'Assumption 4: Internal cost rates, margins, and supplier purchase bids are strictly confidential and stripped from customer-facing quotations.'
-      ]
+      ],
+      mongoDB: mongoStatus,
+      hostingerMySQL: mysqlStatus
     };
     res.json(report);
   });
