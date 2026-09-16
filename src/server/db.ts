@@ -483,7 +483,7 @@ class DatabaseService {
         bio: userData.bio !== undefined ? userData.bio : existing.bio,
         assignedProjectIds: userData.assignedProjectIds !== undefined ? userData.assignedProjectIds : (existing.assignedProjectIds || ['PROJ-SKYLINE-1402']),
         allowedModuleIds: userData.allowedModuleIds !== undefined ? userData.allowedModuleIds : existing.allowedModuleIds,
-        avatar: userData.avatar || existing.avatar || initials,
+        avatar: userData.avatar !== undefined ? userData.avatar : (existing.avatar || initials),
         permissions: {
           ...defaultPerms,
           ...(existing.permissions || {}),

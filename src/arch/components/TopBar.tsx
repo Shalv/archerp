@@ -18,6 +18,7 @@ import {
 import { useProject } from '../context/ProjectContext';
 import { useAuth } from '../context/AuthContext';
 import { AppModuleId } from '../types';
+import { isImageAvatar } from '../../utils/avatarUtils';
 
 interface TopBarProps {
   activeTab: string;
@@ -194,8 +195,12 @@ export const TopBar: React.FC<TopBarProps> = ({
             aria-label="User profile menu"
             aria-expanded={isProfileDropdownOpen}
           >
-            <div className="w-7 h-7 rounded-lg bg-amber-400 text-slate-950 flex items-center justify-center font-bold text-xs font-mono shadow-2xs shrink-0">
-              {userInitials}
+            <div className="w-7 h-7 rounded-lg bg-amber-400 text-slate-950 flex items-center justify-center font-bold text-xs font-mono shadow-2xs shrink-0 overflow-hidden">
+              {isImageAvatar(user?.avatarUrl) ? (
+                <img src={user.avatarUrl} alt={user?.fullName || 'User'} className="w-full h-full object-cover rounded-lg" />
+              ) : (
+                <span>{userInitials}</span>
+              )}
             </div>
 
             <div className="hidden md:block text-left pr-1">
@@ -216,8 +221,12 @@ export const TopBar: React.FC<TopBarProps> = ({
               {/* User summary header */}
               <div className="px-4 py-3 border-b border-slate-100">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-xl bg-slate-900 text-amber-400 flex items-center justify-center font-bold text-sm font-mono shrink-0">
-                    {userInitials}
+                  <div className="w-10 h-10 rounded-xl bg-slate-900 text-amber-400 flex items-center justify-center font-bold text-sm font-mono shrink-0 overflow-hidden">
+                    {isImageAvatar(user?.avatarUrl) ? (
+                      <img src={user.avatarUrl} alt={user?.fullName || 'User'} className="w-full h-full object-cover rounded-xl" />
+                    ) : (
+                      <span>{userInitials}</span>
+                    )}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-xs font-bold text-slate-900 truncate">

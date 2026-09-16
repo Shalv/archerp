@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { UserSession, UserRole, UserPermissions } from '../types/erp';
 import { UserCardModal } from './UserCardModal';
+import { isImageAvatar, getUserInitials } from '../utils/avatarUtils';
 
 interface UsersRegisterViewProps {
   users: UserSession[];
@@ -287,14 +288,18 @@ export const UsersRegisterView: React.FC<UsersRegisterViewProps> = ({
                       {/* 1. USER IDENTITY */}
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
-                          <div className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ring-1 ring-black/10 ${
+                          <div className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ring-1 ring-black/10 overflow-hidden ${
                             userItem.role === 'ADMIN' ? 'bg-[#6B21A8] text-white' :
                             userItem.role === 'ESTIMATOR' ? 'bg-[#0F6CBD] text-white' :
                             userItem.role === 'PROJECT_MANAGER' ? 'bg-[#D97706] text-white' :
                             userItem.role === 'SITE_ENGINEER' ? 'bg-[#15803D] text-white' :
                             'bg-[#A80000] text-white'
                           }`}>
-                            {userItem.avatar || userItem.name.slice(0, 2).toUpperCase()}
+                            {isImageAvatar(userItem.avatar) ? (
+                              <img src={userItem.avatar} alt={userItem.name} className="h-full w-full object-cover rounded-full" />
+                            ) : (
+                              <span>{getUserInitials(userItem.name, userItem.avatar)}</span>
+                            )}
                           </div>
                           <div>
                             <div className="flex items-center gap-1.5">

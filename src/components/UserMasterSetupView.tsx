@@ -40,6 +40,7 @@ import {
 } from 'lucide-react';
 import { UserSession, UserRole, UserPermissions, ROLE_DEFAULT_PERMISSIONS, ProjectRecord } from '../types/erp';
 import { ERP_MODULES_REGISTRY } from '../data/modulesRegistry';
+import { isImageAvatar, getUserInitials } from '../utils/avatarUtils';
 
 interface UserMasterSetupViewProps {
   users: UserSession[];
@@ -548,15 +549,26 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
                       </td>
 
                       <td className="py-2.5 px-3">
-                        <div className="font-semibold text-[#201F1E] flex items-center gap-1.5">
-                          <span>{user.name}</span>
-                          {isCurrent && (
-                            <span className="text-[9px] bg-blue-100 text-blue-800 font-bold px-1 py-0.2 rounded">
-                              You
-                            </span>
-                          )}
+                        <div className="flex items-center gap-2.5">
+                          <div className="h-8 w-8 rounded-full bg-[#0F6CBD] text-white text-xs font-bold flex items-center justify-center overflow-hidden shrink-0 ring-1 ring-black/10">
+                            {isImageAvatar(user.avatar) ? (
+                              <img src={user.avatar} alt={user.name} className="h-full w-full object-cover rounded-full" />
+                            ) : (
+                              <span>{getUserInitials(user.name, user.avatar)}</span>
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="font-semibold text-[#201F1E] flex items-center gap-1.5">
+                              <span className="truncate">{user.name}</span>
+                              {isCurrent && (
+                                <span className="text-[9px] bg-blue-100 text-blue-800 font-bold px-1 py-0.2 rounded shrink-0">
+                                  You
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[11px] text-[#605E5C] truncate">{user.department || user.roleTitle}</div>
+                          </div>
                         </div>
-                        <div className="text-[11px] text-[#605E5C]">{user.department || user.roleTitle}</div>
                       </td>
 
                       <td className="py-2.5 px-3">
@@ -1317,8 +1329,12 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
             <div className="p-6 space-y-4">
               {/* User preview card */}
               <div className="bg-[#FAF9F8] p-3.5 rounded-lg border border-[#EDEBE9] flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#0F6CBD] text-white flex items-center justify-center font-bold text-sm">
-                  {userToDelete.avatar || userToDelete.name.slice(0, 2).toUpperCase()}
+                <div className="w-10 h-10 rounded-full bg-[#0F6CBD] text-white flex items-center justify-center font-bold text-sm overflow-hidden shrink-0 ring-1 ring-black/10">
+                  {isImageAvatar(userToDelete.avatar) ? (
+                    <img src={userToDelete.avatar} alt={userToDelete.name} className="h-full w-full object-cover rounded-full" />
+                  ) : (
+                    <span>{getUserInitials(userToDelete.name, userToDelete.avatar)}</span>
+                  )}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">

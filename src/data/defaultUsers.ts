@@ -160,7 +160,20 @@ export function saveStoredUsers(users: UserSession[]): void {
   try {
     localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(users));
   } catch (err) {
-    console.warn('Failed to save users to localStorage:', err);
+    console.warn('Failed to save users to localStorage, attempting quota recovery:', err);
+    try {
+      // If quota exceeded, sanitize overly large legacy base64 strings (> 80KB) from other users
+      const activeId = localStorage.getItem(STORAGE_ACTIVE_USER_KEY);
+      const sanitized = users.map(u => {
+        if (u.avatar && u.avatar.length > 80000 && u.id !== activeId) {
+          return { ...u, avatar: u.name.slice(0, 2).toUpperCase() };
+        }
+        return u;
+      });
+      localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(sanitized));
+    } catch (retryErr) {
+      console.error('Critical quota error saving users:', retryErr);
+    }
   }
 }
 
@@ -254,6 +267,7 @@ export function updateOrInsertStoredUser(userToSave: UserSession): UserSession {
     merged = {
       ...existing,
       ...userToSave,
+      avatar: userToSave.avatar !== undefined ? userToSave.avatar : existing.avatar,
       // Preserve password if not provided in update
       password: userToSave.password || existing.password,
       // Preserve assigned projects if not specified

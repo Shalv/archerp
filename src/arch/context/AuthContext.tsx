@@ -181,7 +181,17 @@ const AuthContext = createContext<SharedAuth | undefined>(undefined);
 export function AuthProvider({children, currentUser, onLogout}: {children: React.ReactNode; currentUser: UserSession; onLogout: () => void}) {
   const presetId = ({ADMIN: 'principal', PROJECT_MANAGER: 'project_director', ESTIMATOR: 'cost_estimator', SITE_ENGINEER: 'site_engineer', CLIENT: 'client_rep'} as Record<string,string>)[currentUser.role] || 'client_rep';
   const permissions = PERMISSION_ROLE_PRESETS.find(p => p.id === presetId)!.permissions;
-  const user: UserAccount = {id: currentUser.id, fullName: currentUser.name, email: currentUser.email, phone: currentUser.phone || '', role: currentUser.roleTitle || currentUser.role, department: currentUser.department || '', studioName: 'Build Storys', permissions};
+  const user: UserAccount = {
+    id: currentUser.id,
+    fullName: currentUser.name,
+    email: currentUser.email,
+    phone: currentUser.phone || '',
+    role: currentUser.roleTitle || currentUser.role,
+    department: currentUser.department || '',
+    studioName: 'Build Storys',
+    permissions,
+    avatarUrl: currentUser.avatar
+  };
   const getModulePermission = (id: AppModuleId): PermissionLevel => permissions[id] || 'none';
   return <AuthContext.Provider value={{user, isAuthenticated:true, logout:onLogout, getModulePermission, hasPermission:(id, level='view_only') => level==='full' ? getModulePermission(id)==='full' : getModulePermission(id)!=='none'}}>{children}</AuthContext.Provider>;
 }

@@ -46,6 +46,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { UserSession, ProjectRecord } from '../types/erp';
+import { isImageAvatar, getUserInitials } from '../utils/avatarUtils';
 
 interface D365ShellProps {
   currentUser: UserSession;
@@ -524,8 +525,16 @@ export const D365Shell: React.FC<D365ShellProps> = ({
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
               className="flex items-center gap-1.5 p-1 rounded hover:bg-[#001833] transition"
             >
-              <div className="h-7 w-7 rounded-full bg-[#0F6CBD] text-white font-semibold text-xs flex items-center justify-center ring-1 ring-white/30">
-                {currentUser.avatar}
+              <div className="h-7 w-7 rounded-full bg-[#0F6CBD] text-white font-semibold text-xs flex items-center justify-center ring-1 ring-white/30 overflow-hidden shrink-0">
+                {isImageAvatar(currentUser.avatar) ? (
+                  <img
+                    src={currentUser.avatar}
+                    alt={currentUser.name}
+                    className="h-full w-full object-cover rounded-full"
+                  />
+                ) : (
+                  <span>{getUserInitials(currentUser.name, currentUser.avatar)}</span>
+                )}
               </div>
               <div className="hidden xl:block text-left">
                 <div className="text-[11px] font-semibold text-white leading-tight">{currentUser.name}</div>
@@ -536,12 +545,25 @@ export const D365Shell: React.FC<D365ShellProps> = ({
 
             {userDropdownOpen && (
               <ViewportMenu className="absolute right-0 mt-2 w-72 bg-white text-[#201F1E] rounded shadow-2xl border border-[#EDEBE9] p-2 z-50 text-xs">
-                <div className="p-2 border-b border-[#EDEBE9]">
-                  <div className="font-bold text-[#201F1E]">{currentUser.name}</div>
-                  <div className="text-[11px] text-[#605E5C]">{currentUser.email}</div>
-                  <span className={`mt-1.5 inline-block px-2 py-0.5 rounded text-[10px] font-semibold border ${getRoleBadgeStyle(currentUser.role || '')}`}>
-                    {currentUser.role || ''}
-                  </span>
+                <div className="p-2.5 border-b border-[#EDEBE9] flex items-center gap-2.5">
+                  <div className="h-9 w-9 rounded-full bg-[#0F6CBD] text-white font-semibold text-xs flex items-center justify-center ring-1 ring-black/10 overflow-hidden shrink-0">
+                    {isImageAvatar(currentUser.avatar) ? (
+                      <img
+                        src={currentUser.avatar}
+                        alt={currentUser.name}
+                        className="h-full w-full object-cover rounded-full"
+                      />
+                    ) : (
+                      <span>{getUserInitials(currentUser.name, currentUser.avatar)}</span>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-bold text-[#201F1E] truncate">{currentUser.name}</div>
+                    <div className="text-[11px] text-[#605E5C] truncate">{currentUser.email}</div>
+                    <span className={`mt-1 inline-block px-2 py-0.5 rounded text-[10px] font-semibold border ${getRoleBadgeStyle(currentUser.role || '')}`}>
+                      {currentUser.role || ''}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Direct Personal Profile & Password Actions for every user */}
@@ -586,15 +608,28 @@ export const D365Shell: React.FC<D365ShellProps> = ({
                       onSelectUser(user);
                       setUserDropdownOpen(false);
                     }}
-                    className={`w-full flex items-center justify-between p-1.5 rounded text-left transition ${
+                    className={`w-full flex items-center justify-between p-1.5 rounded text-left transition gap-2 ${
                       currentUser.id === user.id ? 'bg-[#EFF6FC] text-[#0F6CBD] font-semibold' : 'hover:bg-[#F3F2F1]'
                     }`}
                   >
-                    <div>
-                      <div className="font-medium text-[#201F1E]">{user.name}</div>
-                      <div className="text-[10px] text-[#605E5C]">{user.role ? user.role.replace('_', ' ') : ''}</div>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="h-6 w-6 rounded-full bg-[#0F6CBD] text-white text-[10px] font-bold flex items-center justify-center overflow-hidden shrink-0">
+                        {isImageAvatar(user.avatar) ? (
+                          <img
+                            src={user.avatar}
+                            alt={user.name}
+                            className="h-full w-full object-cover rounded-full"
+                          />
+                        ) : (
+                          <span>{getUserInitials(user.name, user.avatar)}</span>
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="font-medium text-[#201F1E] truncate text-xs">{user.name}</div>
+                        <div className="text-[10px] text-[#605E5C] truncate">{user.role ? user.role.replace('_', ' ') : ''}</div>
+                      </div>
                     </div>
-                    {currentUser.id === user.id && <Check className="h-3.5 w-3.5 text-[#0F6CBD]" />}
+                    {currentUser.id === user.id && <Check className="h-3.5 w-3.5 text-[#0F6CBD] shrink-0" />}
                   </button>
                 ))}
 

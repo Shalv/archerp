@@ -52,6 +52,7 @@ import {
   TrendingDown
 } from 'lucide-react';
 import { UserSession, ProjectRecord, CostBudgetSummary, UserRole } from '../types/erp';
+import { isImageAvatar, getUserInitials } from '../utils/avatarUtils';
 
 interface RoleCenterDashboardViewProps {
   currentUser: UserSession;
@@ -403,12 +404,16 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
           <div className="flex items-center gap-3.5 min-w-0">
             {/* Avatar with Role Badge & Active Pulse */}
             <div className="relative shrink-0">
-              <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm tracking-wider shadow-xs ring-4 ring-slate-100">
-                {(() => {
-                  const clean = currentUser.name.replace(/\s*\(.*?\)\s*/g, '').trim();
-                  const parts = clean.split(/\s+/);
-                  return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : clean.slice(0, 2).toUpperCase();
-                })()}
+              <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm tracking-wider shadow-xs ring-4 ring-slate-100 overflow-hidden">
+                {isImageAvatar(currentUser.avatar) ? (
+                  <img
+                    src={currentUser.avatar}
+                    alt={currentUser.name}
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+                ) : (
+                  <span>{getUserInitials(currentUser.name, currentUser.avatar)}</span>
+                )}
               </div>
               <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-md bg-white border border-slate-200 shadow-2xs flex items-center justify-center text-[#0F6CBD]" title={profile.roleKey}>
                 <IconComponent className="w-3 h-3" />

@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { UserSession, ProjectRecord } from '../types/erp';
 import { updateStoredUserPassword, updateOrInsertStoredUser, getStoredUsers, saveActiveSession } from '../data/defaultUsers';
+import { isImageAvatar, getUserInitials, compressAvatarImage } from '../utils/avatarUtils';
 
 interface UserProfileEditModalProps {
   isOpen: boolean;
@@ -92,24 +93,25 @@ export const UserProfileEditModal: React.FC<UserProfileEditModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleAvatarFile = (file: File) => {
+  const handleAvatarFile = async (file: File) => {
     if (!file) return;
     if (!file.type.startsWith('image/')) {
-      setMessage({ text: 'Please select an image file (JPEG, PNG, WebP)', type: 'error' });
+      setMessage({ text: 'Please select a valid image file (JPEG, PNG, WebP)', type: 'error' });
       return;
     }
-    if (file.size > 4 * 1024 * 1024) {
-      setMessage({ text: 'Image size should be less than 4MB', type: 'error' });
+    if (file.size > 15 * 1024 * 1024) {
+      setMessage({ text: 'Image size should be less than 15MB', type: 'error' });
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64 = e.target?.result as string;
-      setAvatar(base64);
-      setMessage({ text: 'Photo loaded. Click "Save Profile Changes" to persist permanently.', type: 'success' });
-    };
-    reader.readAsDataURL(file);
+    try {
+      setMessage({ text: 'Optimizing and resizing photo...', type: 'success' });
+      const compressedBase64 = await compressAvatarImage(file, 256, 0.85);
+      setAvatar(compressedBase64);
+      setMessage({ text: 'Photo ready! Click "Save Profile Changes" below to apply.', type: 'success' });
+    } catch (err: any) {
+      setMessage({ text: err.message || 'Failed to process image', type: 'error' });
+    }
   };
 
   const handleProfileSave = async (e: React.FormEvent) => {
@@ -156,16 +158,17 @@ export const UserProfileEditModal: React.FC<UserProfileEditModalProps> = ({
       const mergedUser = updateOrInsertStoredUser({
         ...currentUser,
         ...(savedUser || updatedData),
+        avatar: avatar,
         password: currentUser.password
       });
 
       saveActiveSession(mergedUser.id);
       onUserUpdated(mergedUser);
       
-      setMessage({ text: 'Profile and security credentials updated & preserved for future logins!', type: 'success' });
+      setMessage({ text: 'Profile photograph & credentials updated successfully!', type: 'success' });
       setTimeout(() => {
         onClose();
-      }, 1200);
+      }, 1000);
     } catch (err: any) {
       setMessage({ text: err.message || 'Error updating profile', type: 'error' });
     } finally {
@@ -348,7 +351,7 @@ export const UserProfileEditModal: React.FC<UserProfileEditModalProps> = ({
               {/* Photo Upload Section */}
               <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/80 flex flex-col sm:flex-row items-center gap-5">
                 <div className="relative group">
-                  {avatar ? (
+                  {isImageAvatar(avatar) ? (
                     <img 
                       src={avatar} 
                       alt={name} 
@@ -356,7 +359,7 @@ export const UserProfileEditModal: React.FC<UserProfileEditModalProps> = ({
                     />
                   ) : (
                     <div className="w-20 h-20 rounded-full bg-[#002050] text-white flex items-center justify-center font-bold text-2xl shadow-sm border-2 border-[#0F6CBD]">
-                      {name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'U'}
+                      {getUserInitials(name || currentUser.name)}
                     </div>
                   )}
                   <button
@@ -389,19 +392,22 @@ export const UserProfileEditModal: React.FC<UserProfileEditModalProps> = ({
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="px-3 py-1.5 bg-white hover:bg-slate-100 border border-slate-300 rounded-md text-xs font-medium text-slate-700 flex items-center gap-1.5 shadow-2xs transition-colors"
+                      className="px-3 py-1.5 bg-white hover:bg-slate-100 border border-slate-300 rounded-md text-xs font-medium text-slate-700 flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
                     >
                       <Upload className="w-3.5 h-3.5 text-[#0F6CBD]" />
                       Browse Photo
                     </button>
-                    {avatar && (
+                    {(isImageAvatar(avatar) || (avatar && avatar.length > 4)) && (
                       <button
                         type="button"
-                        onClick={() => setAvatar('')}
-                        className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-md text-xs font-medium text-rose-600 flex items-center gap-1.5 transition-colors"
+                        onClick={() => {
+                          setAvatar('');
+                          setMessage({ text: 'Photo removed. Click "Save Profile Changes" to persist.', type: 'success' });
+                        }}
+                        className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-md text-xs font-medium text-rose-600 flex items-center gap-1.5 transition-colors cursor-pointer"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
-                        Remove
+                        Remove Photo
                       </button>
                     )}
                   </div>

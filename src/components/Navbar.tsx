@@ -12,6 +12,7 @@ import {
   KeyRound
 } from 'lucide-react';
 import { UserSession, ProjectRecord } from '../types/erp';
+import { isImageAvatar, getUserInitials } from '../utils/avatarUtils';
 
 interface NavbarProps {
   currentUser: UserSession;
@@ -176,8 +177,12 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
               className="flex items-center gap-2 rounded-lg border border-[#DDD4C7] bg-white p-1 sm:px-2.5 sm:py-1.5 text-xs shadow-2xs hover:border-[#C4BAAC] transition"
             >
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#313A3E] text-white text-[11px] font-bold">
-                {currentUser.name.charAt(0)}
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#313A3E] text-white text-[11px] font-bold overflow-hidden shrink-0">
+                {isImageAvatar(currentUser.avatar) ? (
+                  <img src={currentUser.avatar} alt={currentUser.name} className="h-full w-full object-cover rounded-full" />
+                ) : (
+                  <span>{getUserInitials(currentUser.name, currentUser.avatar)}</span>
+                )}
               </div>
               <div className="hidden text-left sm:block">
                 <div className="font-semibold text-[#1F2421] text-xs leading-none">{currentUser.name}</div>
@@ -191,18 +196,32 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {userDropdownOpen && (
               <div className="absolute right-0 mt-1.5 w-72 rounded-xl border border-[#DFD6CA] bg-white p-2 shadow-2xl z-50">
+                <div className="p-2 border-b border-[#F0EBE3] flex items-center gap-2.5 mb-1.5">
+                  <div className="h-8 w-8 rounded-full bg-[#313A3E] text-white font-bold text-xs flex items-center justify-center overflow-hidden shrink-0">
+                    {isImageAvatar(currentUser.avatar) ? (
+                      <img src={currentUser.avatar} alt={currentUser.name} className="h-full w-full object-cover rounded-full" />
+                    ) : (
+                      <span>{getUserInitials(currentUser.name, currentUser.avatar)}</span>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-bold text-[#1F2421] text-xs truncate">{currentUser.name}</div>
+                    <div className="text-[10px] text-[#827B70] truncate">{currentUser.email}</div>
+                  </div>
+                </div>
+
                 {onOpenProfile && (
                   <button
                     id="navbar-dropdown-profile-btn"
                     onClick={() => {
                       setUserDropdownOpen(false);
-                      onOpenProfile('security');
+                      onOpenProfile('profile');
                     }}
-                    className="w-full mb-2 flex items-center justify-between p-2 rounded-lg bg-[#FAF7F4] hover:bg-[#F3EBE1] text-[#1F2421] border border-[#E7DFD5] text-xs font-semibold transition"
+                    className="w-full mb-2 flex items-center justify-between p-2 rounded-lg bg-[#FAF7F4] hover:bg-[#F3EBE1] text-[#1F2421] border border-[#E7DFD5] text-xs font-semibold transition cursor-pointer"
                   >
                     <div className="flex items-center gap-2">
                       <KeyRound className="h-4 w-4 text-[#A36934]" />
-                      <span>My Profile &amp; Password</span>
+                      <span>My Profile &amp; Photo</span>
                     </div>
                     <span className="text-[10px] bg-white px-1.5 py-0.2 rounded border border-[#DFD6CA] text-[#A36934]">Security</span>
                   </button>
@@ -222,11 +241,20 @@ export const Navbar: React.FC<NavbarProps> = ({
                       currentUser.id === user.id ? 'bg-[#F5EFEB] text-[#1F2421] font-medium' : 'hover:bg-[#FAF7F4] text-[#4F565C]'
                     }`}
                   >
-                    <div>
-                      <div className="font-semibold text-[#1F2421]">{user.name}</div>
-                      <div className="text-[11px] text-[#827B70]">{user.roleTitle}</div>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="h-6 w-6 rounded-full bg-[#313A3E] text-white text-[10px] font-bold flex items-center justify-center overflow-hidden shrink-0">
+                        {isImageAvatar(user.avatar) ? (
+                          <img src={user.avatar} alt={user.name} className="h-full w-full object-cover rounded-full" />
+                        ) : (
+                          <span>{getUserInitials(user.name, user.avatar)}</span>
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="font-semibold text-[#1F2421] truncate">{user.name}</div>
+                        <div className="text-[11px] text-[#827B70] truncate">{user.roleTitle}</div>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 shrink-0">
                       <span className={`rounded border px-1.5 py-0.2 text-[9px] font-bold ${getRoleBadgeStyle(user.role)}`}>
                         {user.role}
                       </span>

@@ -24,9 +24,12 @@ import {
   LogIn,
   Layers,
   History,
-  Info
+  Info,
+  Camera,
+  Upload
 } from 'lucide-react';
 import { UserSession, UserRole, UserPermissions, ROLE_DEFAULT_PERMISSIONS } from '../types/erp';
+import { isImageAvatar, getUserInitials, compressAvatarImage } from '../utils/avatarUtils';
 
 interface UserCardModalProps {
   isOpen: boolean;
@@ -353,8 +356,12 @@ export const UserCardModal: React.FC<UserCardModalProps> = ({
         {/* 1. DYNAMICS 365 CARD HEADER */}
         <div className="bg-[#002050] text-white px-5 py-3.5 flex items-center justify-between border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-[#0F6CBD] flex items-center justify-center font-bold text-sm text-white ring-2 ring-white/30">
-              {formData.name ? formData.name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase() : 'NU'}
+            <div className="h-10 w-10 rounded-full bg-[#0F6CBD] flex items-center justify-center font-bold text-sm text-white ring-2 ring-white/30 overflow-hidden shrink-0">
+              {isImageAvatar(formData.avatar) ? (
+                <img src={formData.avatar} alt={formData.name} className="h-full w-full object-cover rounded-full" />
+              ) : (
+                <span>{getUserInitials(formData.name, formData.avatar)}</span>
+              )}
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -497,6 +504,53 @@ export const UserCardModal: React.FC<UserCardModalProps> = ({
                 <div className="text-[11px] font-bold text-[#201F1E] uppercase tracking-wider mb-3 flex items-center gap-1.5">
                   <User className="h-3.5 w-3.5 text-[#0F6CBD]" />
                   <span>Employee &amp; Account Identity</span>
+                </div>
+
+                {/* Avatar Photo Section */}
+                <div className="mb-4 pb-4 border-b border-[#EDEBE9] flex items-center gap-4">
+                  <div className="h-14 w-14 rounded-full bg-[#0F6CBD] text-white flex items-center justify-center font-bold text-base overflow-hidden shrink-0 ring-2 ring-[#EDEBE9]">
+                    {isImageAvatar(formData.avatar) ? (
+                      <img src={formData.avatar} alt={formData.name} className="h-full w-full object-cover rounded-full" />
+                    ) : (
+                      <span>{getUserInitials(formData.name, formData.avatar)}</span>
+                    )}
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-[11px] font-semibold text-[#201F1E]">User Profile Photograph</div>
+                    <div className="flex items-center gap-2">
+                      <label className="px-2.5 py-1 bg-white hover:bg-slate-100 border border-[#8A8886] rounded text-[11px] font-medium text-[#201F1E] flex items-center gap-1.5 shadow-2xs cursor-pointer">
+                        <Upload className="w-3 h-3 text-[#0F6CBD]" />
+                        <span>Upload Photo</span>
+                        <input
+                          type="file"
+                          className="hidden"
+                          accept="image/*"
+                          disabled={!isAdmin}
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              try {
+                                const compressed = await compressAvatarImage(file, 256, 0.85);
+                                setFormData(prev => ({ ...prev, avatar: compressed }));
+                              } catch (err: any) {
+                                setErrorMessage(err.message || 'Error processing photo');
+                              }
+                            }
+                          }}
+                        />
+                      </label>
+                      {isImageAvatar(formData.avatar) && (
+                        <button
+                          type="button"
+                          disabled={!isAdmin}
+                          onClick={() => setFormData(prev => ({ ...prev, avatar: '' }))}
+                          className="px-2 py-1 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 rounded text-[11px] font-medium transition cursor-pointer"
+                        >
+                          Remove Photo
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
