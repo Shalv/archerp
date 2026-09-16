@@ -9,9 +9,7 @@ import {
   Lock,
   ShieldCheck,
   Sparkles,
-  ArrowRight,
-  Play,
-  Pause
+  ArrowRight
 } from 'lucide-react';
 import { UserSession } from '../types/erp';
 import { readApiResponse } from '../utils/apiResponse';
@@ -40,7 +38,6 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [forgotModalOpen, setForgotModalOpen] = useState(false);
   const [adminContactOpen, setAdminContactOpen] = useState(false);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -68,26 +65,12 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
       videoRef.current.muted = true;
       const playPromise = videoRef.current.play();
       if (playPromise !== undefined) {
-        playPromise
-          .then(() => setIsVideoPlaying(true))
-          .catch(() => {
-            setIsVideoPlaying(false);
-          });
+        playPromise.catch(() => {
+          // Autoplay policy prevented playback
+        });
       }
     }
   }, [isOpen]);
-
-  const toggleVideoPlayback = () => {
-    if (videoRef.current) {
-      if (videoRef.current.paused) {
-        videoRef.current.play();
-        setIsVideoPlaying(true);
-      } else {
-        videoRef.current.pause();
-        setIsVideoPlaying(false);
-      }
-    }
-  };
 
   if (!isOpen) return null;
 
@@ -266,7 +249,7 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
             </div>
           </div>
 
-          {/* Bottom Live System Indicator & Background Video Controller */}
+          {/* Bottom Live System Indicator */}
           <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-slate-300/80 font-mono pt-4 border-t border-white/10">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5">
@@ -276,25 +259,6 @@ export const LoginPortalModal: React.FC<LoginPortalModalProps> = ({
               <span>&bull;</span>
               <span>256-Bit SSL Encrypted</span>
             </div>
-
-            <button
-              type="button"
-              onClick={toggleVideoPlayback}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/40 hover:bg-black/60 border border-white/10 text-[11px] text-white/90 cursor-pointer backdrop-blur-xs transition"
-              title={isVideoPlaying ? 'Pause background video' : 'Play background video'}
-            >
-              {isVideoPlaying ? (
-                <>
-                  <Pause size={12} className="text-sky-400" />
-                  <span>Pause Motion</span>
-                </>
-              ) : (
-                <>
-                  <Play size={12} className="text-emerald-400" />
-                  <span>Play Motion</span>
-                </>
-              )}
-            </button>
           </div>
 
         </div>
