@@ -1,6 +1,6 @@
 {
   "name": "Build Storys ERP",
-  "description": "Integrated ERP for architecture, interior design, renovation, and turnkey construction with AI Concept Design Studio, 6-sheet interactive CAD/3D drawing viewer with Ollama synthesis, Predictive Data Science & Monte Carlo risk simulation, architectural CRM pipeline, and project execution.",
+  "description": "Integrated ERP for architecture, interior design, renovation, and turnkey construction based on Microsoft Dynamics 365 Business Central design principles: CRM pipeline, site survey, BOQ estimation, DPRs, procurement, and financial ledgers.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

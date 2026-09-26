@@ -55,7 +55,6 @@ const DB_FILE = path.join(DATA_DIR, 'buildstorys_db.json');
 
 export interface ERPDatabase {
   operations?: Record<string, any[]>;
-  architecture?: {projects: any[]; masterData: any; revision: number};
   version: string;
   users: UserSession[];
   masterRates: MasterRateItem[];
@@ -200,8 +199,6 @@ class DatabaseService {
   }
   public getOperations(projectId: string, moduleId: string) { return this.db.operations?.[projectId+':'+moduleId] || []; }
   public saveOperations(projectId: string, moduleId: string, records: any[]) { this.db.operations ||= {}; this.db.operations[projectId+':'+moduleId] = structuredClone(records); this.persist(); }
-  public getArchitecture() { return this.db.architecture || null; }
-  public saveArchitecture(data: {projects: any[]; masterData: any; revision: number}) { this.db.architecture = structuredClone(data); this.persist(); }
   public snapshot(): ERPDatabase { return structuredClone(this.db); }
 
   public hydrateFromRemote(remoteData: Partial<ERPDatabase>): void {
@@ -220,7 +217,6 @@ class DatabaseService {
       ...(remoteData.taxRules ? { taxRules: remoteData.taxRules } : {}),
       ...(remoteData.companySetup ? { companySetup: remoteData.companySetup } : {}),
       ...(remoteData.operations ? { operations: { ...current.operations, ...remoteData.operations } } : {}),
-      ...(remoteData.architecture ? { architecture: remoteData.architecture } : {}),
       ...(remoteData.auditLogs ? { auditLogs: remoteData.auditLogs } : {})
     };
     this.db = updated;

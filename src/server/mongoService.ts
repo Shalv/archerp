@@ -328,16 +328,6 @@ export class MongoDBService {
         }
       }
 
-      // 7. Architecture State
-      if (dbData.architecture) {
-        const archCol = this.db.collection('architecture_store');
-        await archCol.updateOne(
-          { storeKey: 'CURRENT' },
-          { $set: { storeKey: 'CURRENT', data: dbData.architecture, updatedAt: new Date() } },
-          { upsert: true }
-        );
-        totalSynced++;
-      }
 
       // 8. Audit Logs (recent 150)
       if (Array.isArray(dbData.auditLogs) && dbData.auditLogs.length > 0) {
@@ -396,7 +386,6 @@ export class MongoDBService {
       const taxRules = (await this.db.collection('tax_rules').find({}).toArray()).map(stripId);
 
       const companyDoc = await this.db.collection('company_setup').findOne({ setupKey: 'PRIMARY_COMPANY' });
-      const archDoc = await this.db.collection('architecture_store').findOne({ storeKey: 'CURRENT' });
 
       const opsDocs = await this.db.collection('operations').find({}).toArray();
       const operations: Record<string, any[]> = {};
@@ -423,7 +412,6 @@ export class MongoDBService {
       if (uomList.length > 0) loaded.uomList = uomList as any;
       if (taxRules.length > 0) loaded.taxRules = taxRules as any;
       if (companyDoc?.data) loaded.companySetup = companyDoc.data;
-      if (archDoc?.data) loaded.architecture = archDoc.data;
       if (Object.keys(operations).length > 0) loaded.operations = operations;
       if (auditLogs.length > 0) loaded.auditLogs = auditLogs as any;
 

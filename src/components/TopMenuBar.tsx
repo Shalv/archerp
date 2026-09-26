@@ -171,16 +171,6 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
           badge: 'Directory',
           badgeColor: 'bg-slate-100 text-slate-700'
         },
-        {
-          id: 'arch_pipeline',
-          tabKey: 'arch_pipeline',
-          name: 'Architectural Pipeline & CRM',
-          shortDesc: 'Stage-gate Kanban, win probability & radar',
-          icon: Users,
-          code: 'M01-A',
-          badge: 'Pipeline',
-          badgeColor: 'bg-indigo-50 text-indigo-800 border border-indigo-200 font-bold'
-        }
       ]
     },
     {
@@ -202,16 +192,6 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
           badgeColor: 'bg-blue-50 text-blue-700 border border-blue-200'
         },
         {
-          id: 'arch_workspace',
-          tabKey: 'arch_workspace',
-          name: 'Brief & Spatial Zoning',
-          shortDesc: 'Room zoning, spatial brief & client questionnaire',
-          icon: Compass,
-          code: 'M03-A',
-          badge: 'Brief Hub',
-          badgeColor: 'bg-indigo-50 text-indigo-700'
-        },
-        {
           id: 'drawings',
           tabKey: 'drawings',
           name: 'Architectural Drawings & 3D',
@@ -220,16 +200,6 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
           code: 'M04',
           badge: 'Rev B',
           badgeColor: 'bg-indigo-50 text-indigo-700 border border-indigo-200'
-        },
-        {
-          id: 'arch_studio',
-          tabKey: 'arch_studio',
-          name: 'AI Concept Studio & 6-Sheet CAD',
-          shortDesc: '5 Concept options, 6 CAD/3D sheets & Ollama AI',
-          icon: Sparkles,
-          code: 'M04-A',
-          badge: 'Ollama AI',
-          badgeColor: 'bg-slate-900 text-amber-300 font-bold'
         },
         {
           id: 'materials',
@@ -531,16 +501,6 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
           badge: '22 Reports',
           badgeColor: 'bg-[#107C41] text-white font-bold'
         },
-        {
-          id: 'data_science',
-          tabKey: 'data_science',
-          name: 'Predictive Data Science & Risk ML',
-          shortDesc: 'Monte Carlo simulation, S-curve & risk sandbox',
-          icon: TrendingUp,
-          code: 'M26-A',
-          badge: 'ML Engine',
-          badgeColor: 'bg-emerald-600 text-white font-bold'
-        }
       ]
     },
     {
@@ -567,16 +527,6 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
           icon: FolderArchive,
           code: 'M25',
           badge: 'Cloud Store',
-          badgeColor: 'bg-slate-100 text-slate-700'
-        },
-        {
-          id: 'data_backup',
-          tabKey: 'data_backup',
-          name: 'Architectural Backup & JSON Archive',
-          shortDesc: 'Full project snapshot, JSON export & import',
-          icon: Database,
-          code: 'M25-A',
-          badge: 'JSON Archive',
           badgeColor: 'bg-slate-100 text-slate-700'
         },
         {
@@ -629,11 +579,7 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
         stage.modules.some(
           m =>
             m.tabKey === activeTab ||
-            (m.tabKey === 'drawings' && activeTab === 'architecture') ||
-            (m.tabKey === 'arch_studio' && (activeTab === 'arch_studio' || activeTab === 'ai-studio')) ||
-            (m.tabKey === 'data_science' && (activeTab === 'data_science' || activeTab === 'analytics')) ||
-            (m.tabKey === 'arch_pipeline' && (activeTab === 'arch_pipeline' || activeTab === 'pipeline')) ||
-            (m.tabKey === 'arch_workspace' && (activeTab === 'arch_workspace' || activeTab === 'workspace'))
+            (m.tabKey === 'drawings' && activeTab === 'architecture')
         )
       ) {
         return stage.id;

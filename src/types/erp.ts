@@ -484,10 +484,18 @@ export interface VastuLayoutOption {
   pros: string[];
   bestSuitedFor: string;
   architecturalNotes: string;
+  plotDimensions?: {
+    widthFt: number;
+    depthFt: number;
+  };
 }
 
 export interface VastuLayoutSuggestionResponse {
   requestedAreaSqFt: number;
+  plotDimensions?: {
+    widthFt: number;
+    depthFt: number;
+  };
   propertyType: string;
   facingDirection: string;
   floorsCount: number;

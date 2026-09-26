@@ -769,6 +769,8 @@ export async function generateDraftBOQFromRequirements(
 
 export interface VastuLayoutQueryParams {
   areaSqFt: number;
+  plotWidthFt?: number;
+  plotDepthFt?: number;
   propertyType?: string;
   facingDirection?: string;
   floorsCount?: number;
@@ -778,7 +780,30 @@ export interface VastuLayoutQueryParams {
 export async function generateVastuLayoutSuggestions(
   params: VastuLayoutQueryParams
 ): Promise<VastuLayoutSuggestionResponse> {
-  const areaSqFt = Math.max(500, Math.min(50000, Number(params.areaSqFt) || 2500));
+  const areaSqFt = Math.max(400, Math.min(50000, Number(params.areaSqFt) || 1200));
+  
+  // Calculate or resolve plot dimensions
+  let plotWidthFt = Number(params.plotWidthFt) || 0;
+  let plotDepthFt = Number(params.plotDepthFt) || 0;
+  if (!plotWidthFt || !plotDepthFt) {
+    if (areaSqFt === 1200) {
+      plotWidthFt = 30;
+      plotDepthFt = 40;
+    } else if (areaSqFt === 1500) {
+      plotWidthFt = 30;
+      plotDepthFt = 50;
+    } else if (areaSqFt === 1800) {
+      plotWidthFt = 30;
+      plotDepthFt = 60;
+    } else if (areaSqFt === 2400) {
+      plotWidthFt = 40;
+      plotDepthFt = 60;
+    } else {
+      plotWidthFt = Math.round(Math.sqrt(areaSqFt * 0.75));
+      plotDepthFt = Math.round(areaSqFt / (plotWidthFt || 30));
+    }
+  }
+
   const propertyType = params.propertyType || 'RESIDENTIAL_VILLA';
   const facingDirection = params.facingDirection || 'EAST';
   const floorsCount = Math.max(1, Math.min(4, Number(params.floorsCount) || (areaSqFt > 3000 ? 2 : 1)));
@@ -790,15 +815,15 @@ export async function generateVastuLayoutSuggestions(
 You are a Principal Indian Architectural Planner and Certified Vastu Shastra Consultant with 25+ years of experience in turnkey construction and spatial zoning.
 
 TASK:
-A client has provided a construction area of ${areaSqFt} sq.ft for a "${propertyType}".
+A client has provided a plot size of ${areaSqFt} sq.ft (${plotWidthFt} ft Width × ${plotDepthFt} ft Depth) for a "${propertyType}".
 Plot/Entrance Facing: ${facingDirection}
-Number of Floors: ${floorsCount}
+Number of Floors: ${floorsCount} (e.g. ${floorsCount === 1 ? 'Single Floor Ground Level' : floorsCount === 2 ? 'G+1 Duplex' : 'G+2 Multi-Gen'})
 Specific Requirements/Lifestyle Notes: "${lifestyleNotes || 'Standard modern luxury layout with maximum Vastu compliance'}"
 
 You must suggest EXACTLY 3 DISTINCT architectural layout options adhering to authentic Indian Vastu Shastra (Mayamatam / Manasara principles):
-- Option 1: "Vastu Purusha Sanatana (Traditional Full Vastu Harmony)" - Strict classical adherence with dedicated Pooja Mandir, enclosed Vastu kitchen, and sacred Brahmasthan.
+- Option 1: "Vastu Purusha Sanatana (Traditional Full Vastu Harmony)" - Strict classical adherence with dedicated Pooja Mandir, enclosed Vastu kitchen in Agni, master bedroom in Nairutya, and sacred central Brahmasthan.
 - Option 2: "Contemporary Open-Concept Vastu (Modern Living with Zero Energy Clashes)" - Modern seamless living-dining flow, central skylit lightwell/Brahmasthan, home office / study, and energy-neutral remedies.
-- Option 3: "Executive Luxury / Multi-Generational Suite (Dual Master & Entertainment)" - Grand entertainment lounge, ground-floor elderly friendly suite, upper-floor private retreat, and utility/staff wing.
+- Option 3: "Executive Luxury / Smart Duplex Suite" - Multi-generational or high-efficiency smart spatial planning with dual suites, entertainment balcony, and elder-friendly ground floor.
 
 STRICT VASTU SHASTRA DIRECTIVES:
 1. North-East (Ishanya, Water/Jal): Must place Pooja Mandir, Prayer / Meditation room, or clean water body. NO toilets, septic tanks, or heavy storage.
@@ -810,13 +835,14 @@ STRICT VASTU SHASTRA DIRECTIVES:
 7. Staircase: South, South-West, or West. Must climb clockwise (East to West or North to South).
 
 MATHEMATICAL CONSTRAINTS:
-- Total Built-Up Area: ${areaSqFt} sq.ft
+- Total Built-Up Area: ${areaSqFt} sq.ft (Plot: ${plotWidthFt}' × ${plotDepthFt}')
 - Target Net Carpet Area across rooms: approximately ${Math.round(areaSqFt * 0.76)} to ${Math.round(areaSqFt * 0.80)} sq.ft (leaving ~20-24% for walls, ducts, and circulation).
 - Room dimensions (Length × Width) must be realistic and their individual carpet areas must strictly sum up to the total carpet area.
 
 Return a valid JSON object matching this exact schema:
 {
   "requestedAreaSqFt": ${areaSqFt},
+  "plotDimensions": { "widthFt": ${plotWidthFt}, "depthFt": ${plotDepthFt} },
   "propertyType": "${propertyType}",
   "facingDirection": "${facingDirection}",
   "floorsCount": ${floorsCount},
@@ -825,12 +851,13 @@ Return a valid JSON object matching this exact schema:
       "id": "option-1",
       "optionNumber": 1,
       "title": "Descriptive title for Option 1",
-      "tagline": "Short punchy summary (e.g. 98% Vastu Pure • Traditional 4BHK with Mandir)",
+      "tagline": "Short punchy summary (e.g. 98% Vastu Pure • Traditional 3BHK with Mandir)",
       "vastuScore": 98,
       "propertyType": "${propertyType}",
       "facingDirection": "${facingDirection}",
       "floorsCount": ${floorsCount},
-      "configuration": "e.g. 4BHK + Mandir + Utility + Double-Height Foyer",
+      "plotDimensions": { "widthFt": ${plotWidthFt}, "depthFt": ${plotDepthFt} },
+      "configuration": "e.g. 2BHK/3BHK + Mandir + Utility + Parking",
       "totalBuiltUpSqFt": ${areaSqFt},
       "totalCarpetSqFt": ${Math.round(areaSqFt * 0.78)},
       "carpetRatioPercent": 78,
@@ -931,7 +958,7 @@ Return a valid JSON object matching this exact schema:
   }
 
   // High-fidelity deterministic architectural calculation fallback
-  return getDeterministicVastuLayouts(areaSqFt, propertyType, facingDirection, floorsCount);
+  return getDeterministicVastuLayouts(areaSqFt, propertyType, facingDirection, floorsCount, plotWidthFt, plotDepthFt);
 }
 
 /**
@@ -942,10 +969,34 @@ function getDeterministicVastuLayouts(
   areaSqFt: number,
   propertyType: string,
   facingDirection: string,
-  floorsCount: number
+  floorsCount: number,
+  customWidthFt?: number,
+  customDepthFt?: number
 ): VastuLayoutSuggestionResponse {
   const isCommercial = propertyType.includes('COMMERCIAL') || propertyType.includes('OFFICE') || propertyType.includes('RETAIL');
   const targetCarpet = Math.round(areaSqFt * 0.77);
+
+  // Compute plot dimensions
+  let plotWidthFt = customWidthFt || 0;
+  let plotDepthFt = customDepthFt || 0;
+  if (!plotWidthFt || !plotDepthFt) {
+    if (areaSqFt === 1200) {
+      plotWidthFt = 30;
+      plotDepthFt = 40;
+    } else if (areaSqFt === 1500) {
+      plotWidthFt = 30;
+      plotDepthFt = 50;
+    } else if (areaSqFt === 1800) {
+      plotWidthFt = 30;
+      plotDepthFt = 60;
+    } else if (areaSqFt === 2400) {
+      plotWidthFt = 40;
+      plotDepthFt = 60;
+    } else {
+      plotWidthFt = Math.round(Math.sqrt(areaSqFt * 0.75));
+      plotDepthFt = Math.round(areaSqFt / (plotWidthFt || 30));
+    }
+  }
 
   const compassGuidelines = [
     {
@@ -1034,6 +1085,7 @@ function getDeterministicVastuLayouts(
       floorsCount,
       configuration: 'Director Suite + 16-Seat Boardroom + 28 Open Workstations + Reception + Server Room',
       totalBuiltUpSqFt: areaSqFt,
+      plotDimensions: { widthFt: plotWidthFt, depthFt: plotDepthFt },
       totalCarpetSqFt: targetCarpet,
       carpetRatioPercent: 77,
       circulationPercent: 18,
@@ -1186,145 +1238,291 @@ function getDeterministicVastuLayouts(
   }
 
   // Residential Layout Generation (Villa, Apartment, Duplex, Bungalow)
-  // Scale rooms dynamically according to areaSqFt (e.g. 2500 sqft)
-  const masterBedArea = Math.round(targetCarpet * 0.17); // ~320 sqft for 2500
-  const livingDiningArea = Math.round(targetCarpet * 0.26); // ~490 sqft
-  const kitchenArea = Math.round(targetCarpet * 0.11); // ~210 sqft
-  const bed2Area = Math.round(targetCarpet * 0.13); // ~250 sqft
-  const bed3Area = Math.round(targetCarpet * 0.12); // ~230 sqft
-  const poojaArea = Math.round(targetCarpet * 0.04); // ~75 sqft
-  const bathsArea = Math.round(targetCarpet * 0.10); // ~190 sqft
-  const utilityBalconyArea = targetCarpet - (masterBedArea + livingDiningArea + kitchenArea + bed2Area + bed3Area + poojaArea + bathsArea);
+  let opt1Rooms: VastuRoomSuggestion[];
+  let config1: string;
+  let title1: string;
+  let config2: string;
+  let title2: string;
+  let config3: string;
+  let title3: string;
 
-  // OPTION 1: Classical 4BHK Vastu Purusha Sanatana
-  const opt1Rooms: VastuRoomSuggestion[] = [
-    {
-      name: 'Primary Master Bedroom Suite',
-      roomType: 'Master Bedroom',
-      zone: 'Private Zone',
-      floor: floorsCount > 1 ? 'First Floor' : 'Ground Floor',
-      lengthFt: Math.round(Math.sqrt(masterBedArea * 1.25) * 10) / 10,
-      widthFt: Math.round((masterBedArea / Math.sqrt(masterBedArea * 1.25)) * 10) / 10,
-      heightFt: 10.5,
-      carpetAreaSqFt: masterBedArea,
-      vastuDirection: 'South-West (Nairutya)',
-      vastuElement: 'Earth (Prithvi)',
-      vastuSignificance: 'The Nairutya corner commands stability, financial security, and deep restful sleep for the master of the house.',
-      recommendedFeatures: ['Headboard positioned on South wall', 'Attached walk-in wardrobe on West side', 'Heavy wooden furniture']
-    },
-    {
-      name: 'Grand Formal Living & Family Dining',
-      roomType: 'Living & Dining',
-      zone: 'Public Zone',
-      floor: 'Ground Floor',
-      lengthFt: Math.round(Math.sqrt(livingDiningArea * 1.5) * 10) / 10,
-      widthFt: Math.round((livingDiningArea / Math.sqrt(livingDiningArea * 1.5)) * 10) / 10,
-      heightFt: 11.0,
-      carpetAreaSqFt: livingDiningArea,
-      vastuDirection: 'North & East (Kuber/Surya)',
-      vastuElement: 'Air & Solar Light',
-      vastuSignificance: 'Placed in the auspicious North and East sectors to welcome constant positive prana and cheerful morning sunlight.',
-      recommendedFeatures: ['Full height French windows facing East', 'Low-height seating to keep North light', 'Italian marble flooring']
-    },
-    {
-      name: 'Modular Kitchen with Breakfast Bar',
-      roomType: 'Kitchen',
-      zone: 'Service Zone',
-      floor: 'Ground Floor',
-      lengthFt: Math.round(Math.sqrt(kitchenArea * 1.3) * 10) / 10,
-      widthFt: Math.round((kitchenArea / Math.sqrt(kitchenArea * 1.3)) * 10) / 10,
-      heightFt: 10.5,
-      carpetAreaSqFt: kitchenArea,
-      vastuDirection: 'South-East (Agni)',
-      vastuElement: 'Fire (Agni)',
-      vastuSignificance: 'The Agni quadrant regulates health, metabolism, and family wealth. Cooking platform faces East for ideal solar harmony.',
-      recommendedFeatures: ['Cooking hob facing East', 'Water sink in North-East corner of kitchen', 'Granite / Quartz countertop']
-    },
-    {
-      name: 'Pooja Sanctum (Dedicated Mandir)',
-      roomType: 'Pooja Room',
-      zone: 'Sacred Zone',
-      floor: 'Ground Floor',
-      lengthFt: Math.round(Math.sqrt(poojaArea * 1.1) * 10) / 10,
-      widthFt: Math.round((poojaArea / Math.sqrt(poojaArea * 1.1)) * 10) / 10,
-      heightFt: 10.5,
-      carpetAreaSqFt: poojaArea,
-      vastuDirection: 'North-East (Ishanya)',
-      vastuElement: 'Water (Jal) / Divine',
-      vastuSignificance: 'The Ishanya angle is the divine zone of purity. Chanting and prayers facing East/North produce maximum positive spiritual energy.',
-      recommendedFeatures: ['Carved white Makrana marble temple', 'East facing deity pedestal', 'Brass bell and brass diya setup']
-    },
-    {
-      name: 'Parent / Guest Bedroom (Bed 2)',
-      roomType: 'Guest / Parent Bedroom',
-      zone: 'Semi-Private Zone',
-      floor: 'Ground Floor',
-      lengthFt: Math.round(Math.sqrt(bed2Area * 1.2) * 10) / 10,
-      widthFt: Math.round((bed2Area / Math.sqrt(bed2Area * 1.2)) * 10) / 10,
-      heightFt: 10.5,
-      carpetAreaSqFt: bed2Area,
-      vastuDirection: 'North-West (Vayu)',
-      vastuElement: 'Air (Vayu)',
-      vastuSignificance: 'Air quadrant ensures welcoming comfort for visiting guests and peaceful rest for elderly parents without heavy stairs.',
-      recommendedFeatures: ['Step-free threshold', 'Anti-skid floor finishes', 'Wide cross-ventilation window']
-    },
-    {
-      name: 'Children / Study Bedroom (Bed 3)',
-      roomType: 'Children Bedroom',
-      zone: 'Private Zone',
-      floor: floorsCount > 1 ? 'First Floor' : 'Ground Floor',
-      lengthFt: Math.round(Math.sqrt(bed3Area * 1.2) * 10) / 10,
-      widthFt: Math.round((bed3Area / Math.sqrt(bed3Area * 1.2)) * 10) / 10,
-      heightFt: 10.5,
-      carpetAreaSqFt: bed3Area,
-      vastuDirection: 'West (Pashchim)',
-      vastuElement: 'Stability & Intellect',
-      vastuSignificance: 'The West quadrant is governed by Varuna and Saturn, bestowing academic focus, discipline, and stable character in children.',
-      recommendedFeatures: ['Study desk facing East/North', 'Book shelves on South-West wall', 'Acoustic wardrobe wall']
-    },
-    {
-      name: 'En-suite Bathrooms & Powder Room (3 Bathrooms)',
-      roomType: 'Bathrooms',
-      zone: 'Wet Zone',
-      floor: 'Ground & Upper',
-      lengthFt: Math.round(Math.sqrt(bathsArea * 1.5) * 10) / 10,
-      widthFt: Math.round((bathsArea / Math.sqrt(bathsArea * 1.5)) * 10) / 10,
-      heightFt: 9.5,
-      carpetAreaSqFt: bathsArea,
-      vastuDirection: 'West & North-West (Varuna/Vayu)',
-      vastuElement: 'Drainage / Water',
-      vastuSignificance: 'Placed in Vastu approved drainage zones away from sacred Ishanya and stable Nairutya.',
-      recommendedFeatures: ['Commode aligned North-South', 'Exhaust toward West/North', 'Dry and wet partition with glass']
-    },
-    {
-      name: 'Utility Yard, Washing Deck & Balconies',
-      roomType: 'Utility & Balcony',
-      zone: 'Service & Outdoor',
-      floor: 'Ground Floor & Balconies',
-      lengthFt: Math.round(Math.sqrt(utilityBalconyArea * 1.8) * 10) / 10,
-      widthFt: Math.round((utilityBalconyArea / Math.sqrt(utilityBalconyArea * 1.8)) * 10) / 10,
-      heightFt: 10.5,
-      carpetAreaSqFt: utilityBalconyArea,
-      vastuDirection: 'South-East & East (Agni/Surya)',
-      vastuElement: 'Air & Sun Drying',
-      vastuSignificance: 'Utility attached to kitchen in South-East provides seamless workflow; morning balcony in East catches morning prana.',
-      recommendedFeatures: ['Washing machine drainage trap', 'Weatherproof porcelain tiles', 'Planter box railing']
-    }
-  ];
+  if (areaSqFt <= 1400) {
+    // Specially calibrated for 1200 sq.ft (30' × 40') plot
+    title1 = `Vastu Purusha Classical ${floorsCount > 1 ? 'Duplex Home' : '2BHK/3BHK Home'} (${plotWidthFt}' × ${plotDepthFt}')`;
+    config1 = floorsCount > 1
+      ? '3BHK/4BHK Duplex + Pooja Mandir + Covered Car Park + Terrace Garden'
+      : '2BHK/3BHK + Dedicated Pooja Mandir + Modular Kitchen + Car Parking Porch';
+    
+    title2 = `Contemporary Open-Plan Vastu (${plotWidthFt}' × ${plotDepthFt}' Footprint)`;
+    config2 = '3BHK + Central Skylit Lightwell + Island Kitchen + Integrated Study Nook';
+
+    title3 = `Smart Executive Duplex (${plotWidthFt}' × ${plotDepthFt}' Plot / Multi-Gen)`;
+    config3 = 'Dual Master Suites (Ground & First) + Pooja Room + Upper Terrace Deck';
+
+    opt1Rooms = [
+      {
+        name: 'Primary Master Bedroom Suite',
+        roomType: 'Master Bedroom',
+        zone: 'Private Zone',
+        floor: floorsCount > 1 ? 'First Floor' : 'Ground Floor',
+        lengthFt: 14.0,
+        widthFt: 12.0,
+        heightFt: 10.5,
+        carpetAreaSqFt: 168,
+        vastuDirection: 'South-West (Nairutya)',
+        vastuElement: 'Earth (Prithvi)',
+        vastuSignificance: 'Anchored in South-West Nairutya for stability, financial peace, and leadership of the head of family.',
+        recommendedFeatures: ['Headboard positioned on South wall', 'Heavy wooden wardrobe on South-West', 'Attached master bath on West']
+      },
+      {
+        name: 'Formal Living & Family Lounge',
+        roomType: 'Living & Dining',
+        zone: 'Public Zone',
+        floor: 'Ground Floor',
+        lengthFt: 15.0,
+        widthFt: 12.5,
+        heightFt: 10.5,
+        carpetAreaSqFt: 187.5,
+        vastuDirection: 'North & East (Kuber/Surya)',
+        vastuElement: 'Air & Solar Light',
+        vastuSignificance: 'Positioned in North-East / East to draw continuous positive cosmic solar prana and auspicious social energy.',
+        recommendedFeatures: ['East-facing wide windows', 'Low-profile seating keeping North unobstructed', 'Welcoming entrance foyer']
+      },
+      {
+        name: 'Modular Kitchen with East Cooking Hob',
+        roomType: 'Kitchen',
+        zone: 'Service Zone',
+        floor: 'Ground Floor',
+        lengthFt: 10.0,
+        widthFt: 9.0,
+        heightFt: 10.5,
+        carpetAreaSqFt: 90,
+        vastuDirection: 'South-East (Agni)',
+        vastuElement: 'Fire (Agni)',
+        vastuSignificance: 'Placed in sacred Agni corner. Cooking facing East activates health, digestive vitality, and abundance.',
+        recommendedFeatures: ['Cooking hob facing East', 'Water sink in North-East corner of counter', 'Adjacent service utility balcony']
+      },
+      {
+        name: 'Dedicated Pooja Sanctum (Mandir)',
+        roomType: 'Pooja Room',
+        zone: 'Sacred Zone',
+        floor: 'Ground Floor',
+        lengthFt: 6.0,
+        widthFt: 5.5,
+        heightFt: 10.5,
+        carpetAreaSqFt: 33,
+        vastuDirection: 'North-East (Ishanya)',
+        vastuElement: 'Water (Jal) / Divine',
+        vastuSignificance: 'Located in pristine Ishanya angle. Free of shared toilet walls, creating a sanctuary of spiritual harmony.',
+        recommendedFeatures: ['White marble pedestal', 'East-facing altar', 'Zero plumbing conduits above or below']
+      },
+      {
+        name: 'Central Dining & Brahmasthan Open Core',
+        roomType: 'Dining & Brahmasthan',
+        zone: 'Core Zone',
+        floor: 'Ground Floor',
+        lengthFt: 11.0,
+        widthFt: 10.5,
+        heightFt: 10.5,
+        carpetAreaSqFt: 115.5,
+        vastuDirection: 'Center (Brahmasthan)',
+        vastuElement: 'Space (Akash)',
+        vastuSignificance: 'Sacred central zone left open and light to allow universal cosmic energy (Prana) to circulate unhindered.',
+        recommendedFeatures: ['Zero load-bearing pillars in center', 'Warm ambient cove lighting', '6-seater family dining']
+      },
+      {
+        name: 'Guest / Children Bedroom (Bed 2)',
+        roomType: 'Guest / Children Bedroom',
+        zone: 'Private Zone',
+        floor: floorsCount > 1 ? 'First Floor' : 'Ground Floor',
+        lengthFt: 12.0,
+        widthFt: 11.0,
+        heightFt: 10.5,
+        carpetAreaSqFt: 132,
+        vastuDirection: 'North-West (Vayu)',
+        vastuElement: 'Air (Vayu)',
+        vastuSignificance: 'Governed by Vayu (wind), providing light, pleasant mental agility and comfort for guests and kids.',
+        recommendedFeatures: ['Study table facing North', 'Wardrobe on West wall', 'Cross-ventilation casement window']
+      },
+      {
+        name: 'Attached & Common Bathrooms (2 Baths)',
+        roomType: 'Bathrooms',
+        zone: 'Wet Zone',
+        floor: 'Ground Floor',
+        lengthFt: 11.0,
+        widthFt: 6.5,
+        heightFt: 9.5,
+        carpetAreaSqFt: 71.5,
+        vastuDirection: 'West & North-West (Varuna/Vayu)',
+        vastuElement: 'Drainage / Water',
+        vastuSignificance: 'Safely placed along West/North-West discharge corridor, strictly away from Ishanya (NE) and Nairutya (SW).',
+        recommendedFeatures: ['WC aligned North-South', 'Wall-hung vanity', 'Mechanical ventilation toward exterior duct']
+      },
+      {
+        name: 'Covered Entrance Porch, Car Park & Utility',
+        roomType: 'Porch & Utility',
+        zone: 'Exterior Zone',
+        floor: 'Ground Floor',
+        lengthFt: 12.0,
+        widthFt: 8.5,
+        heightFt: 10.0,
+        carpetAreaSqFt: 102,
+        vastuDirection: 'North / North-East (Kuber/Ishanya)',
+        vastuElement: 'Prana Air',
+        vastuSignificance: 'Auspicious vehicle entry kept light in North-East, and utility washing along South-East perimeter.',
+        recommendedFeatures: ['Covered vehicle carport', 'Washing machine point in utility', 'Water meter connection']
+      }
+    ];
+  } else {
+    // Scale rooms dynamically according to areaSqFt (e.g. 2500 sqft)
+    const masterBedArea = Math.round(targetCarpet * 0.17);
+    const livingDiningArea = Math.round(targetCarpet * 0.26);
+    const kitchenArea = Math.round(targetCarpet * 0.11);
+    const bed2Area = Math.round(targetCarpet * 0.13);
+    const bed3Area = Math.round(targetCarpet * 0.12);
+    const poojaArea = Math.round(targetCarpet * 0.04);
+    const bathsArea = Math.round(targetCarpet * 0.10);
+    const utilityBalconyArea = targetCarpet - (masterBedArea + livingDiningArea + kitchenArea + bed2Area + bed3Area + poojaArea + bathsArea);
+
+    title1 = `Vastu Purusha Classical ${areaSqFt >= 2400 ? '4BHK' : '3BHK'} Sanatana Masterpiece`;
+    config1 = `${areaSqFt >= 2400 ? '4BHK' : '3BHK'} + Dedicated Pooja Mandir + Wet/Dry Kitchen + Utility Yard + Open Brahmasthan`;
+
+    title2 = `Contemporary Biophilic ${areaSqFt >= 2400 ? '4BHK' : '3BHK'} with Skylit Brahmasthan`;
+    config2 = `${areaSqFt >= 2400 ? '3BHK + Home Office' : '3BHK'} + Open Central Lightwell + Island Kitchen + Private Balcony Decks`;
+
+    title3 = `Multi-Generational Executive ${areaSqFt >= 2400 ? '4BHK' : '3BHK'} with Dual Master Suites`;
+    config3 = `Dual Master Suites (SW & West) + Kids Suite + Dedicated Mandir + Butler's Pantry + Staff Room`;
+
+    opt1Rooms = [
+      {
+        name: 'Primary Master Bedroom Suite',
+        roomType: 'Master Bedroom',
+        zone: 'Private Zone',
+        floor: floorsCount > 1 ? 'First Floor' : 'Ground Floor',
+        lengthFt: Math.round(Math.sqrt(masterBedArea * 1.25) * 10) / 10,
+        widthFt: Math.round((masterBedArea / Math.sqrt(masterBedArea * 1.25)) * 10) / 10,
+        heightFt: 10.5,
+        carpetAreaSqFt: masterBedArea,
+        vastuDirection: 'South-West (Nairutya)',
+        vastuElement: 'Earth (Prithvi)',
+        vastuSignificance: 'The Nairutya corner commands stability, financial security, and deep restful sleep for the master of the house.',
+        recommendedFeatures: ['Headboard positioned on South wall', 'Attached walk-in wardrobe on West side', 'Heavy wooden furniture']
+      },
+      {
+        name: 'Grand Formal Living & Family Dining',
+        roomType: 'Living & Dining',
+        zone: 'Public Zone',
+        floor: 'Ground Floor',
+        lengthFt: Math.round(Math.sqrt(livingDiningArea * 1.5) * 10) / 10,
+        widthFt: Math.round((livingDiningArea / Math.sqrt(livingDiningArea * 1.5)) * 10) / 10,
+        heightFt: 11.0,
+        carpetAreaSqFt: livingDiningArea,
+        vastuDirection: 'North & East (Kuber/Surya)',
+        vastuElement: 'Air & Solar Light',
+        vastuSignificance: 'Placed in the auspicious North and East sectors to welcome constant positive prana and cheerful morning sunlight.',
+        recommendedFeatures: ['Full height French windows facing East', 'Low-height seating to keep North light', 'Italian marble flooring']
+      },
+      {
+        name: 'Modular Kitchen with Breakfast Bar',
+        roomType: 'Kitchen',
+        zone: 'Service Zone',
+        floor: 'Ground Floor',
+        lengthFt: Math.round(Math.sqrt(kitchenArea * 1.3) * 10) / 10,
+        widthFt: Math.round((kitchenArea / Math.sqrt(kitchenArea * 1.3)) * 10) / 10,
+        heightFt: 10.5,
+        carpetAreaSqFt: kitchenArea,
+        vastuDirection: 'South-East (Agni)',
+        vastuElement: 'Fire (Agni)',
+        vastuSignificance: 'The Agni quadrant regulates health, metabolism, and family wealth. Cooking platform faces East for ideal solar harmony.',
+        recommendedFeatures: ['Cooking hob facing East', 'Water sink in North-East corner of kitchen', 'Granite / Quartz countertop']
+      },
+      {
+        name: 'Pooja Sanctum (Dedicated Mandir)',
+        roomType: 'Pooja Room',
+        zone: 'Sacred Zone',
+        floor: 'Ground Floor',
+        lengthFt: Math.round(Math.sqrt(poojaArea * 1.1) * 10) / 10,
+        widthFt: Math.round((poojaArea / Math.sqrt(poojaArea * 1.1)) * 10) / 10,
+        heightFt: 10.5,
+        carpetAreaSqFt: poojaArea,
+        vastuDirection: 'North-East (Ishanya)',
+        vastuElement: 'Water (Jal) / Divine',
+        vastuSignificance: 'The Ishanya angle is the divine zone of purity. Chanting and prayers facing East/North produce maximum positive spiritual energy.',
+        recommendedFeatures: ['Carved white Makrana marble temple', 'East facing deity pedestal', 'Brass bell and brass diya setup']
+      },
+      {
+        name: 'Parent / Guest Bedroom (Bed 2)',
+        roomType: 'Guest / Parent Bedroom',
+        zone: 'Semi-Private Zone',
+        floor: 'Ground Floor',
+        lengthFt: Math.round(Math.sqrt(bed2Area * 1.2) * 10) / 10,
+        widthFt: Math.round((bed2Area / Math.sqrt(bed2Area * 1.2)) * 10) / 10,
+        heightFt: 10.5,
+        carpetAreaSqFt: bed2Area,
+        vastuDirection: 'North-West (Vayu)',
+        vastuElement: 'Air (Vayu)',
+        vastuSignificance: 'Air quadrant ensures welcoming comfort for visiting guests and peaceful rest for elderly parents without heavy stairs.',
+        recommendedFeatures: ['Step-free threshold', 'Anti-skid floor finishes', 'Wide cross-ventilation window']
+      },
+      {
+        name: 'Children / Study Bedroom (Bed 3)',
+        roomType: 'Children Bedroom',
+        zone: 'Private Zone',
+        floor: floorsCount > 1 ? 'First Floor' : 'Ground Floor',
+        lengthFt: Math.round(Math.sqrt(bed3Area * 1.2) * 10) / 10,
+        widthFt: Math.round((bed3Area / Math.sqrt(bed3Area * 1.2)) * 10) / 10,
+        heightFt: 10.5,
+        carpetAreaSqFt: bed3Area,
+        vastuDirection: 'West (Pashchim)',
+        vastuElement: 'Stability & Intellect',
+        vastuSignificance: 'The West quadrant is governed by Varuna and Saturn, bestowing academic focus, discipline, and stable character in children.',
+        recommendedFeatures: ['Study desk facing East/North', 'Book shelves on South-West wall', 'Acoustic wardrobe wall']
+      },
+      {
+        name: 'En-suite Bathrooms & Powder Room (3 Bathrooms)',
+        roomType: 'Bathrooms',
+        zone: 'Wet Zone',
+        floor: 'Ground & Upper',
+        lengthFt: Math.round(Math.sqrt(bathsArea * 1.5) * 10) / 10,
+        widthFt: Math.round((bathsArea / Math.sqrt(bathsArea * 1.5)) * 10) / 10,
+        heightFt: 9.5,
+        carpetAreaSqFt: bathsArea,
+        vastuDirection: 'West & North-West (Varuna/Vayu)',
+        vastuElement: 'Drainage / Water',
+        vastuSignificance: 'Placed in Vastu approved drainage zones away from sacred Ishanya and stable Nairutya.',
+        recommendedFeatures: ['Commode aligned North-South', 'Exhaust toward West/North', 'Dry and wet partition with glass']
+      },
+      {
+        name: 'Utility Yard, Washing Deck & Balconies',
+        roomType: 'Utility & Balcony',
+        zone: 'Service & Outdoor',
+        floor: 'Ground Floor & Balconies',
+        lengthFt: Math.round(Math.sqrt(utilityBalconyArea * 1.8) * 10) / 10,
+        widthFt: Math.round((utilityBalconyArea / Math.sqrt(utilityBalconyArea * 1.8)) * 10) / 10,
+        heightFt: 10.5,
+        carpetAreaSqFt: utilityBalconyArea,
+        vastuDirection: 'South-East & East (Agni/Surya)',
+        vastuElement: 'Air & Sun Drying',
+        vastuSignificance: 'Utility attached to kitchen in South-East provides seamless workflow; morning balcony in East catches morning prana.',
+        recommendedFeatures: ['Washing machine drainage trap', 'Weatherproof porcelain tiles', 'Planter box railing']
+      }
+    ];
+  }
 
   const option1: VastuLayoutOption = {
     id: 'option-1',
     optionNumber: 1,
-    title: `Vastu Purusha Classical ${areaSqFt >= 2400 ? '4BHK' : '3BHK'} Sanatana Masterpiece`,
+    title: title1,
     tagline: '98% Vastu Compliance • Dedicated Pooja Sanctum • Zero Structural Dosha',
     vastuScore: 98,
     propertyType,
     facingDirection,
     floorsCount,
-    configuration: `${areaSqFt >= 2400 ? '4BHK' : '3BHK'} + Dedicated Pooja Mandir + Wet/Dry Kitchen + Utility Yard + Open Brahmasthan`,
+    plotDimensions: { widthFt: plotWidthFt, depthFt: plotDepthFt },
+    configuration: config1,
     totalBuiltUpSqFt: areaSqFt,
-    totalCarpetSqFt: targetCarpet,
-    carpetRatioPercent: 77,
+    totalCarpetSqFt: opt1Rooms.reduce((sum, r) => sum + r.carpetAreaSqFt, 0),
+    carpetRatioPercent: Math.round((opt1Rooms.reduce((sum, r) => sum + r.carpetAreaSqFt, 0) / areaSqFt) * 100),
     circulationPercent: 15,
     vastuHighlights: {
       mainEntrance: `Grand entrance in ${facingDirection} (auspicious Pada 3/4) welcoming divine solar blessings`,
@@ -1349,14 +1547,14 @@ function getDeterministicVastuLayouts(
 
   // OPTION 2: Contemporary Open-Plan Vastu (3BHK + Home Office + Skylit Brahmasthan)
   const opt2Rooms = opt1Rooms.map((r, i) => {
-    if (r.name.includes('Grand Formal Living')) {
+    if (r.name.includes('Grand Formal Living') || r.name.includes('Formal Living')) {
       return {
         ...r,
         name: 'Contemporary Open-Plan Living & Dining with Courtyard View',
         vastuSignificance: 'Open flow allows continuous cosmic circulation throughout the dwelling without physical blockages.'
       };
     }
-    if (r.name.includes('Parent / Guest')) {
+    if (r.name.includes('Parent / Guest') || r.name.includes('Guest / Children')) {
       return {
         ...r,
         name: 'Executive Work-From-Home Office / Guest Suite',
@@ -1370,16 +1568,17 @@ function getDeterministicVastuLayouts(
   const option2: VastuLayoutOption = {
     id: 'option-2',
     optionNumber: 2,
-    title: `Contemporary Biophilic ${areaSqFt >= 2400 ? '4BHK' : '3BHK'} with Skylit Brahmasthan`,
-    tagline: '95% Vastu Compliance • Central Courtyard Lightwell • Integrated Home Office',
-    vastuScore: 95,
+    title: title2,
+    tagline: '96% Vastu Compliance • Central Courtyard Lightwell • Integrated Home Office',
+    vastuScore: 96,
     propertyType,
     facingDirection,
     floorsCount,
-    configuration: `${areaSqFt >= 2400 ? '3BHK + Home Office' : '3BHK'} + Open Central Lightwell + Island Kitchen + Private Balcony Decks`,
+    plotDimensions: { widthFt: plotWidthFt, depthFt: plotDepthFt },
+    configuration: config2,
     totalBuiltUpSqFt: areaSqFt,
-    totalCarpetSqFt: targetCarpet,
-    carpetRatioPercent: 78,
+    totalCarpetSqFt: opt2Rooms.reduce((sum, r) => sum + r.carpetAreaSqFt, 0),
+    carpetRatioPercent: Math.round((opt2Rooms.reduce((sum, r) => sum + r.carpetAreaSqFt, 0) / areaSqFt) * 100),
     circulationPercent: 14,
     vastuHighlights: {
       mainEntrance: `Modern pivot door entry facing ${facingDirection} with landscaped foyer`,
@@ -1404,7 +1603,7 @@ function getDeterministicVastuLayouts(
 
   // OPTION 3: Multi-Generational Executive Grandeur (Dual Master Suites & Butler's Pantry)
   const opt3Rooms = opt1Rooms.map((r, i) => {
-    if (r.name.includes('Parent / Guest')) {
+    if (r.name.includes('Parent / Guest') || r.name.includes('Guest / Children')) {
       return {
         ...r,
         name: 'Elderly-Friendly Ground Floor Master Suite (Suite 2)',
@@ -1427,16 +1626,17 @@ function getDeterministicVastuLayouts(
   const option3: VastuLayoutOption = {
     id: 'option-3',
     optionNumber: 3,
-    title: `Multi-Generational Executive ${areaSqFt >= 2400 ? '4BHK' : '3BHK'} with Dual Master Suites`,
-    tagline: '96% Vastu Score • Ground-Floor Senior Suite • Upper Penthouse Terrace',
-    vastuScore: 96,
+    title: title3,
+    tagline: '95% Vastu Score • Ground-Floor Senior Suite • Upper Penthouse Terrace',
+    vastuScore: 95,
     propertyType,
     facingDirection,
     floorsCount: Math.max(floorsCount, 2),
-    configuration: `Dual Master Suites (SW & West) + Kids Suite + Dedicated Mandir + Butler's Pantry + Staff Room`,
+    plotDimensions: { widthFt: plotWidthFt, depthFt: plotDepthFt },
+    configuration: config3,
     totalBuiltUpSqFt: areaSqFt,
-    totalCarpetSqFt: targetCarpet,
-    carpetRatioPercent: 76,
+    totalCarpetSqFt: opt3Rooms.reduce((sum, r) => sum + r.carpetAreaSqFt, 0),
+    carpetRatioPercent: Math.round((opt3Rooms.reduce((sum, r) => sum + r.carpetAreaSqFt, 0) / areaSqFt) * 100),
     circulationPercent: 17,
     vastuHighlights: {
       mainEntrance: `Portico covered entrance in ${facingDirection} with separate service entry`,
@@ -1461,6 +1661,7 @@ function getDeterministicVastuLayouts(
 
   return {
     requestedAreaSqFt: areaSqFt,
+    plotDimensions: { widthFt: plotWidthFt, depthFt: plotDepthFt },
     propertyType,
     facingDirection,
     floorsCount,

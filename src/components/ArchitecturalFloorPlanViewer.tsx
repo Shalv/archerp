@@ -74,6 +74,9 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
     return `${feet}'-${inches}"`;
   };
 
+  const plotWidth = layoutOption.plotDimensions?.widthFt || (layoutOption.totalBuiltUpSqFt === 1200 ? 30 : Math.round(Math.sqrt(layoutOption.totalBuiltUpSqFt * 0.75)));
+  const plotDepth = layoutOption.plotDimensions?.depthFt || (layoutOption.totalBuiltUpSqFt === 1200 ? 40 : Math.round(layoutOption.totalBuiltUpSqFt / plotWidth));
+
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg flex flex-col">
       {/* Top Architectural Toolbar */}
@@ -88,7 +91,7 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
                 Architectural Floor Plan Drawing
               </span>
               <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-900/60 text-blue-300 border border-blue-700/50">
-                SCALE: 1/4" = 1'-0"
+                PLOT: {plotWidth}' × {plotDepth}' ({layoutOption.totalBuiltUpSqFt.toLocaleString()} SQ.FT)
               </span>
               <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-900/60 text-emerald-300 border border-emerald-700/50">
                 {layoutOption.vastuScore}% VASTU COMPLIANT
@@ -251,36 +254,36 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
                   <div className="absolute inset-0 pointer-events-none p-4">
                     {/* Top dimension string bar */}
                     <div className="absolute top-2 left-6 right-6 border-b border-blue-400/80 flex justify-between items-center px-2 py-0.5 text-[10px] font-mono text-blue-900 bg-white/80 backdrop-blur-xs rounded shadow-xs">
-                      <span>◄ TOTAL BUILDING WIDTH: ~50'-0" ►</span>
-                      <span className="font-bold">SCHEMATIC CAD PLAN</span>
-                      <span>◄ TOTAL BUILDING DEPTH: ~50'-0" ►</span>
+                      <span>◄ TOTAL PLOT WIDTH: {plotWidth}'-0" ►</span>
+                      <span className="font-bold">SCHEMATIC CAD PLAN • {layoutOption.totalBuiltUpSqFt.toLocaleString()} SQ.FT</span>
+                      <span>◄ TOTAL PLOT DEPTH: {plotDepth}'-0" ►</span>
                     </div>
 
                     {/* Room Dimension Badges floating over plan */}
                     <div className="absolute top-10 left-8 z-10 pointer-events-auto">
                       <div className="bg-slate-900/90 text-white px-2 py-1 rounded-md text-[10px] font-mono border border-slate-700 shadow-md">
-                        <span className="text-amber-300 font-bold block">{layoutOption.rooms[0]?.name}</span>
+                        <span className="text-amber-300 font-bold block">{layoutOption.rooms[0]?.name || 'Master Bedroom'}</span>
                         <span>{layoutOption.rooms[0]?.lengthFt} ft × {layoutOption.rooms[0]?.widthFt} ft ({layoutOption.rooms[0]?.carpetAreaSqFt} sqft)</span>
                       </div>
                     </div>
 
                     <div className="absolute top-10 right-8 z-10 pointer-events-auto">
                       <div className="bg-slate-900/90 text-white px-2 py-1 rounded-md text-[10px] font-mono border border-slate-700 shadow-md">
-                        <span className="text-cyan-300 font-bold block">{layoutOption.rooms[3]?.name}</span>
+                        <span className="text-cyan-300 font-bold block">{layoutOption.rooms[3]?.name || 'Pooja Mandir'}</span>
                         <span>{layoutOption.rooms[3]?.lengthFt} ft × {layoutOption.rooms[3]?.widthFt} ft ({layoutOption.rooms[3]?.carpetAreaSqFt} sqft)</span>
                       </div>
                     </div>
 
                     <div className="absolute bottom-14 right-8 z-10 pointer-events-auto">
                       <div className="bg-slate-900/90 text-white px-2 py-1 rounded-md text-[10px] font-mono border border-slate-700 shadow-md">
-                        <span className="text-orange-300 font-bold block">{layoutOption.rooms[2]?.name}</span>
+                        <span className="text-orange-300 font-bold block">{layoutOption.rooms[2]?.name || 'Modular Kitchen'}</span>
                         <span>{layoutOption.rooms[2]?.lengthFt} ft × {layoutOption.rooms[2]?.widthFt} ft ({layoutOption.rooms[2]?.carpetAreaSqFt} sqft)</span>
                       </div>
                     </div>
 
                     <div className="absolute bottom-14 left-8 z-10 pointer-events-auto">
                       <div className="bg-slate-900/90 text-white px-2 py-1 rounded-md text-[10px] font-mono border border-slate-700 shadow-md">
-                        <span className="text-emerald-300 font-bold block">{layoutOption.rooms[1]?.name}</span>
+                        <span className="text-emerald-300 font-bold block">{layoutOption.rooms[1]?.name || 'Living Lounge'}</span>
                         <span>{layoutOption.rooms[1]?.lengthFt} ft × {layoutOption.rooms[1]?.widthFt} ft ({layoutOption.rooms[1]?.carpetAreaSqFt} sqft)</span>
                       </div>
                     </div>
@@ -289,7 +292,7 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-auto text-center">
                       <div className="bg-purple-950/85 text-purple-200 border border-purple-500/70 px-2.5 py-1 rounded-full text-[10px] font-mono shadow-lg flex items-center gap-1.5">
                         <Sparkles className="w-3 h-3 text-amber-300" />
-                        <span>BRAHMASTHAN (CENTRAL OPEN SPACE)</span>
+                        <span>BRAHMASTHAN (OPEN {layoutOption.optionNumber === 2 ? 'SKYLIT COURTYARD' : 'CORE'})</span>
                       </div>
                     </div>
                   </div>
@@ -312,80 +315,170 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
                   <rect x="40" y="40" width="660" height="440" fill="none" stroke="#60a5fa" strokeWidth="4" />
                   <rect x="44" y="44" width="652" height="432" fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="3 3" />
 
-                  {/* Room 1: Master Bedroom Suite (South-West / Nairutya) */}
-                  <g 
-                    className="cursor-pointer transition-all hover:opacity-90"
-                    onMouseEnter={() => setHoveredRoom(layoutOption.rooms[0])}
-                    onClick={() => setSelectedRoom(layoutOption.rooms[0])}
-                  >
-                    <rect x="48" y="270" width="240" height="200" fill="#1e293b" stroke="#38bdf8" strokeWidth="2" />
-                    <text x="60" y="300" fill="#f8fafc" fontSize="12" fontWeight="bold">PRIMARY MASTER SUITE</text>
-                    <text x="60" y="320" fill="#38bdf8" fontSize="11">{layoutOption.rooms[0]?.lengthFt}' × {layoutOption.rooms[0]?.widthFt}'</text>
-                    <text x="60" y="338" fill="#94a3b8" fontSize="10">{layoutOption.rooms[0]?.carpetAreaSqFt} SQ.FT • SW (Nairutya)</text>
-                    {/* Door swing arc */}
-                    <path d="M 288 350 A 40 40 0 0 1 248 390" fill="none" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="2 2" />
-                    <line x1="288" y1="350" x2="248" y2="350" stroke="#60a5fa" strokeWidth="2" />
-                  </g>
+                  {/* OPTION 1: Classical Vastu Purusha Sanatana */}
+                  {layoutOption.optionNumber === 1 && (
+                    <>
+                      {/* Master Suite (South-West / Nairutya) */}
+                      <g 
+                        className="cursor-pointer transition-all hover:opacity-90"
+                        onMouseEnter={() => setHoveredRoom(layoutOption.rooms[0])}
+                        onClick={() => setSelectedRoom(layoutOption.rooms[0])}
+                      >
+                        <rect x="48" y="270" width="250" height="200" fill="#1e293b" stroke="#38bdf8" strokeWidth="2" />
+                        <text x="60" y="296" fill="#f8fafc" fontSize="11" fontWeight="bold">PRIMARY MASTER SUITE</text>
+                        <text x="60" y="314" fill="#38bdf8" fontSize="10">{layoutOption.rooms[0]?.lengthFt}' × {layoutOption.rooms[0]?.widthFt}' ({layoutOption.rooms[0]?.carpetAreaSqFt} sq.ft)</text>
+                        <text x="60" y="330" fill="#94a3b8" fontSize="9">SW (Nairutya • Earth Element)</text>
+                        {/* Bed graphic */}
+                        <rect x="70" y="345" width="70" height="85" fill="#334155" stroke="#475569" />
+                        <rect x="75" y="350" width="28" height="20" fill="#64748b" />
+                        <rect x="107" y="350" width="28" height="20" fill="#64748b" />
+                        {/* Attached Bath on West */}
+                        <rect x="180" y="360" width="110" height="100" fill="#0f172a" stroke="#64748b" strokeDasharray="2 2" />
+                        <text x="188" y="380" fill="#94a3b8" fontSize="9">EN-SUITE BATH</text>
+                        {/* Door swing arc */}
+                        <path d="M 298 350 A 35 35 0 0 1 263 385" fill="none" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="2 2" />
+                      </g>
 
-                  {/* Room 2: Living & Dining (North & East / Purva) */}
-                  <g 
-                    className="cursor-pointer transition-all hover:opacity-90"
-                    onMouseEnter={() => setHoveredRoom(layoutOption.rooms[1])}
-                    onClick={() => setSelectedRoom(layoutOption.rooms[1])}
-                  >
-                    <rect x="48" y="48" width="360" height="210" fill="#0f172a" stroke="#38bdf8" strokeWidth="2" />
-                    <text x="60" y="78" fill="#f8fafc" fontSize="12" fontWeight="bold">FORMAL LIVING &amp; DINING</text>
-                    <text x="60" y="98" fill="#38bdf8" fontSize="11">{layoutOption.rooms[1]?.lengthFt}' × {layoutOption.rooms[1]?.widthFt}'</text>
-                    <text x="60" y="116" fill="#94a3b8" fontSize="10">{layoutOption.rooms[1]?.carpetAreaSqFt} SQ.FT • North / East</text>
-                    {/* Main entrance double door */}
-                    <line x1="180" y1="48" x2="240" y2="48" stroke="#f59e0b" strokeWidth="4" />
-                    <text x="185" y="40" fill="#f59e0b" fontSize="9" fontWeight="bold">MAIN ENTRANCE</text>
-                  </g>
+                      {/* Living & Dining (North & East) */}
+                      <g 
+                        className="cursor-pointer transition-all hover:opacity-90"
+                        onMouseEnter={() => setHoveredRoom(layoutOption.rooms[1])}
+                        onClick={() => setSelectedRoom(layoutOption.rooms[1])}
+                      >
+                        <rect x="48" y="48" width="350" height="210" fill="#0f172a" stroke="#38bdf8" strokeWidth="2" />
+                        <text x="60" y="74" fill="#f8fafc" fontSize="12" fontWeight="bold">FORMAL LIVING &amp; LOUNGE</text>
+                        <text x="60" y="92" fill="#38bdf8" fontSize="10">{layoutOption.rooms[1]?.lengthFt}' × {layoutOption.rooms[1]?.widthFt}' ({layoutOption.rooms[1]?.carpetAreaSqFt} sq.ft)</text>
+                        <text x="60" y="108" fill="#94a3b8" fontSize="9">North &amp; East (Surya Solar Prana)</text>
+                        {/* Main entrance door */}
+                        <line x1="170" y1="48" x2="230" y2="48" stroke="#f59e0b" strokeWidth="4" />
+                        <text x="175" y="40" fill="#f59e0b" fontSize="9" fontWeight="bold">MAIN ENTRANCE</text>
+                        {/* L-Sofa */}
+                        <path d="M 65 130 L 65 210 L 150 210 L 150 185 L 90 185 L 90 130 Z" fill="#334155" stroke="#475569" />
+                      </g>
 
-                  {/* Room 3: Modular Kitchen (South-East / Agni) */}
-                  <g 
-                    className="cursor-pointer transition-all hover:opacity-90"
-                    onMouseEnter={() => setHoveredRoom(layoutOption.rooms[2])}
-                    onClick={() => setSelectedRoom(layoutOption.rooms[2])}
-                  >
-                    <rect x="440" y="270" width="254" height="200" fill="#1e1e24" stroke="#f97316" strokeWidth="2" />
-                    <text x="455" y="300" fill="#f8fafc" fontSize="12" fontWeight="bold">MODULAR KITCHEN &amp; PANTRY</text>
-                    <text x="455" y="320" fill="#f97316" fontSize="11">{layoutOption.rooms[2]?.lengthFt}' × {layoutOption.rooms[2]?.widthFt}'</text>
-                    <text x="455" y="338" fill="#fdba74" fontSize="10">{layoutOption.rooms[2]?.carpetAreaSqFt} SQ.FT • SE (Agni Element)</text>
-                    {/* Countertop L-shape representation */}
-                    <rect x="455" y="380" width="120" height="20" fill="#334155" />
-                    <rect x="555" y="350" width="20" height="50" fill="#334155" />
-                  </g>
+                      {/* Modular Kitchen (South-East / Agni) */}
+                      <g 
+                        className="cursor-pointer transition-all hover:opacity-90"
+                        onMouseEnter={() => setHoveredRoom(layoutOption.rooms[2])}
+                        onClick={() => setSelectedRoom(layoutOption.rooms[2])}
+                      >
+                        <rect x="440" y="270" width="254" height="200" fill="#1e1e24" stroke="#f97316" strokeWidth="2" />
+                        <text x="455" y="296" fill="#f8fafc" fontSize="11" fontWeight="bold">MODULAR KITCHEN &amp; UTILITY</text>
+                        <text x="455" y="314" fill="#f97316" fontSize="10">{layoutOption.rooms[2]?.lengthFt}' × {layoutOption.rooms[2]?.widthFt}' ({layoutOption.rooms[2]?.carpetAreaSqFt} sq.ft)</text>
+                        <text x="455" y="330" fill="#fdba74" fontSize="9">SE (Agni • Fire Element • Cook Faces East)</text>
+                        {/* Countertop */}
+                        <rect x="455" y="380" width="130" height="20" fill="#334155" />
+                        <rect x="565" y="340" width="20" height="60" fill="#334155" />
+                        {/* Cooktop symbol facing East */}
+                        <circle cx="485" cy="390" r="6" fill="#ea580c" />
+                        <circle cx="515" cy="390" r="6" fill="#ea580c" />
+                      </g>
 
-                  {/* Room 4: Pooja Sanctum (North-East / Ishanya) */}
-                  <g 
-                    className="cursor-pointer transition-all hover:opacity-90"
-                    onMouseEnter={() => setHoveredRoom(layoutOption.rooms[3])}
-                    onClick={() => setSelectedRoom(layoutOption.rooms[3])}
-                  >
-                    <rect x="550" y="48" width="144" height="130" fill="#172554" stroke="#06b6d4" strokeWidth="2" />
-                    <text x="560" y="78" fill="#e0f2fe" fontSize="11" fontWeight="bold">POOJA MANDIR</text>
-                    <text x="560" y="96" fill="#38bdf8" fontSize="10">{layoutOption.rooms[3]?.lengthFt}' × {layoutOption.rooms[3]?.widthFt}'</text>
-                    <text x="560" y="112" fill="#bae6fd" fontSize="9">NE (Ishanya Pure)</text>
-                    <circle cx="620" cy="140" r="14" fill="#0284c7" fillOpacity="0.4" stroke="#38bdf8" />
-                  </g>
+                      {/* Pooja Mandir (North-East / Ishanya) */}
+                      <g 
+                        className="cursor-pointer transition-all hover:opacity-90"
+                        onMouseEnter={() => setHoveredRoom(layoutOption.rooms[3])}
+                        onClick={() => setSelectedRoom(layoutOption.rooms[3])}
+                      >
+                        <rect x="550" y="48" width="144" height="130" fill="#172554" stroke="#06b6d4" strokeWidth="2" />
+                        <text x="560" y="74" fill="#e0f2fe" fontSize="11" fontWeight="bold">POOJA SANCTUM</text>
+                        <text x="560" y="92" fill="#38bdf8" fontSize="10">{layoutOption.rooms[3]?.lengthFt}' × {layoutOption.rooms[3]?.widthFt}'</text>
+                        <text x="560" y="108" fill="#bae6fd" fontSize="9">NE (Ishanya Supreme)</text>
+                        <circle cx="620" cy="135" r="16" fill="#0284c7" fillOpacity="0.4" stroke="#38bdf8" />
+                        <text x="614" y="140" fill="#38bdf8" fontSize="12">🕉️</text>
+                      </g>
 
-                  {/* Room 5: Guest / Study (North-West / Vayu) */}
-                  <g 
-                    className="cursor-pointer transition-all hover:opacity-90"
-                    onMouseEnter={() => setHoveredRoom(layoutOption.rooms[4])}
-                    onClick={() => setSelectedRoom(layoutOption.rooms[4])}
-                  >
-                    <rect x="418" y="48" width="124" height="130" fill="#1e293b" stroke="#38bdf8" strokeWidth="1.5" />
-                    <text x="426" y="76" fill="#f8fafc" fontSize="10" fontWeight="bold">GUEST / STUDY</text>
-                    <text x="426" y="94" fill="#94a3b8" fontSize="9">{layoutOption.rooms[4]?.lengthFt}' × {layoutOption.rooms[4]?.widthFt}'</text>
-                    <text x="426" y="110" fill="#64748b" fontSize="8">{layoutOption.rooms[4]?.carpetAreaSqFt} SQ.FT</text>
-                  </g>
+                      {/* Guest Bedroom (North-West / Vayu) */}
+                      <g 
+                        className="cursor-pointer transition-all hover:opacity-90"
+                        onMouseEnter={() => setHoveredRoom(layoutOption.rooms[4])}
+                        onClick={() => setSelectedRoom(layoutOption.rooms[4])}
+                      >
+                        <rect x="408" y="48" width="134" height="130" fill="#1e293b" stroke="#38bdf8" strokeWidth="1.5" />
+                        <text x="418" y="74" fill="#f8fafc" fontSize="10" fontWeight="bold">GUEST / CHILDREN</text>
+                        <text x="418" y="92" fill="#94a3b8" fontSize="9">{layoutOption.rooms[4]?.lengthFt}' × {layoutOption.rooms[4]?.widthFt}'</text>
+                        <text x="418" y="108" fill="#64748b" fontSize="8">{layoutOption.rooms[4]?.carpetAreaSqFt} SQ.FT • NW (Vayu)</text>
+                      </g>
 
-                  {/* Central Brahmasthan Square */}
-                  <rect x="296" y="220" width="136" height="140" fill="#3b0764" fillOpacity="0.3" stroke="#a855f7" strokeWidth="1.5" strokeDasharray="4 4" />
-                  <text x="312" y="280" fill="#d8b4fe" fontSize="10" fontWeight="bold">BRAHMASTHAN</text>
-                  <text x="320" y="298" fill="#c084fc" fontSize="9">OPEN COURTYARD</text>
+                      {/* Central Brahmasthan Dining */}
+                      <rect x="306" y="210" width="126" height="145" fill="#3b0764" fillOpacity="0.25" stroke="#a855f7" strokeWidth="1.5" strokeDasharray="4 4" />
+                      <text x="318" y="260" fill="#d8b4fe" fontSize="10" fontWeight="bold">BRAHMASTHAN</text>
+                      <text x="322" y="278" fill="#c084fc" fontSize="9">DINING CORE</text>
+                      {/* Dining Table representation */}
+                      <rect x="328" y="290" width="60" height="35" rx="3" fill="#4c1d95" stroke="#a855f7" />
+                    </>
+                  )}
+
+                  {/* OPTION 2: Contemporary Biophilic Open-Plan */}
+                  {layoutOption.optionNumber === 2 && (
+                    <>
+                      {/* Central Skylit Green Courtyard Atrium */}
+                      <rect x="270" y="170" width="190" height="170" fill="#064e3b" fillOpacity="0.35" stroke="#10b981" strokeWidth="2" strokeDasharray="3 3" />
+                      <text x="290" y="235" fill="#6ee7b7" fontSize="11" fontWeight="bold">🌿 SKYLIT LIGHTWELL</text>
+                      <text x="305" y="255" fill="#a7f3d0" fontSize="9">CENTRAL BRAHMASTHAN</text>
+                      <text x="312" y="272" fill="#34d399" fontSize="8">Open to Sky Daylight Atrium</text>
+
+                      {/* Open-Plan Great Living Room */}
+                      <rect x="48" y="48" width="412" height="115" fill="#0f172a" stroke="#38bdf8" strokeWidth="2" />
+                      <text x="60" y="74" fill="#f8fafc" fontSize="12" fontWeight="bold">OPEN-PLAN GREAT LIVING &amp; DINING</text>
+                      <text x="60" y="92" fill="#38bdf8" fontSize="10">Wraps around central green courtyard with floor-to-ceiling glass</text>
+                      <line x1="160" y1="48" x2="230" y2="48" stroke="#10b981" strokeWidth="4" />
+                      <text x="170" y="40" fill="#10b981" fontSize="9" fontWeight="bold">PIVOT ENTRANCE</text>
+
+                      {/* Island Kitchen (SE) */}
+                      <rect x="470" y="270" width="224" height="200" fill="#1e1e24" stroke="#f97316" strokeWidth="2" />
+                      <text x="485" y="296" fill="#f8fafc" fontSize="11" fontWeight="bold">CONTEMPORARY ISLAND KITCHEN</text>
+                      <text x="485" y="314" fill="#f97316" fontSize="10">SE Agni • Breakfast Bar Island</text>
+                      <rect x="520" y="340" width="90" height="40" rx="3" fill="#334155" stroke="#f97316" />
+                      <text x="532" y="364" fill="#fdba74" fontSize="9">ISLAND HOB</text>
+
+                      {/* Executive Home Office / Study (NW) */}
+                      <rect x="470" y="48" width="224" height="210" fill="#1e293b" stroke="#818cf8" strokeWidth="2" />
+                      <text x="485" y="74" fill="#e0e7ff" fontSize="11" fontWeight="bold">EXECUTIVE WORK-FROM-HOME</text>
+                      <text x="485" y="92" fill="#a5b4fc" fontSize="10">NW Vayu • Acoustic Study Suite</text>
+                      {/* Desk */}
+                      <rect x="500" y="110" width="80" height="35" fill="#312e81" stroke="#818cf8" />
+                      <text x="515" y="132" fill="#e0e7ff" fontSize="8">WORK DESK</text>
+
+                      {/* Master Suite (SW) */}
+                      <rect x="48" y="270" width="214" height="200" fill="#1e293b" stroke="#38bdf8" strokeWidth="2" />
+                      <text x="60" y="296" fill="#f8fafc" fontSize="11" fontWeight="bold">MASTER BEDROOM SUITE</text>
+                      <text x="60" y="314" fill="#38bdf8" fontSize="10">SW Nairutya • Acoustic Vestibule</text>
+                    </>
+                  )}
+
+                  {/* OPTION 3: Smart Duplex / Multi-Generational */}
+                  {layoutOption.optionNumber === 3 && (
+                    <>
+                      {/* Ground Floor Senior Suite (SW) */}
+                      <rect x="48" y="270" width="250" height="200" fill="#1e293b" stroke="#38bdf8" strokeWidth="2" />
+                      <text x="60" y="296" fill="#f8fafc" fontSize="11" fontWeight="bold">GROUND-FLOOR SENIOR SUITE</text>
+                      <text x="60" y="314" fill="#38bdf8" fontSize="10">Step-free threshold • Senior Friendly Bath</text>
+                      <text x="60" y="330" fill="#94a3b8" fontSize="9">SW Stability • Bed Headboard to South</text>
+
+                      {/* Grand Living Salon (East & North) */}
+                      <rect x="48" y="48" width="340" height="210" fill="#0f172a" stroke="#38bdf8" strokeWidth="2" />
+                      <text x="60" y="74" fill="#f8fafc" fontSize="12" fontWeight="bold">DOUBLE-HEIGHT GRAND SALON</text>
+                      <text x="60" y="92" fill="#38bdf8" fontSize="10">East Morning Sun • Garden Overlook</text>
+                      <line x1="170" y1="48" x2="240" y2="48" stroke="#f59e0b" strokeWidth="4" />
+                      <text x="180" y="40" fill="#f59e0b" fontSize="9" fontWeight="bold">PORTICO ENTRY</text>
+
+                      {/* Chef Kitchen + Butler Pantry (SE) */}
+                      <rect x="440" y="270" width="254" height="200" fill="#1e1e24" stroke="#f97316" strokeWidth="2" />
+                      <text x="455" y="296" fill="#f8fafc" fontSize="11" fontWeight="bold">CHEF KITCHEN + BUTLER PANTRY</text>
+                      <text x="455" y="314" fill="#f97316" fontSize="10">SE Agni • Dual Wet/Dry Workflow</text>
+
+                      {/* Staircase Core (South) */}
+                      <rect x="306" y="270" width="126" height="200" fill="#1e1b4b" stroke="#6366f1" strokeWidth="1.5" />
+                      <text x="320" y="350" fill="#a5b4fc" fontSize="10" fontWeight="bold">STAIRCORE</text>
+                      <text x="318" y="368" fill="#818cf8" fontSize="8">Clockwise Ascent</text>
+
+                      {/* Pooja Meditation (NE) */}
+                      <rect x="540" y="48" width="154" height="130" fill="#172554" stroke="#06b6d4" strokeWidth="2" />
+                      <text x="550" y="74" fill="#e0f2fe" fontSize="11" fontWeight="bold">MEDITATION MANDIR</text>
+                      <text x="550" y="92" fill="#38bdf8" fontSize="10">NE Ishanya Sanctuary</text>
+                    </>
+                  )}
 
                   {/* Dimension Strings (Outer Ticks) */}
                   <g stroke="#64748b" strokeWidth="1">
@@ -393,13 +486,13 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
                     <line x1="40" y1="20" x2="700" y2="20" />
                     <line x1="40" y1="15" x2="40" y2="25" />
                     <line x1="700" y1="15" x2="700" y2="25" />
-                    <text x="340" y="15" fill="#94a3b8" fontSize="10" textAnchor="middle">◄ 50'-0" TOTAL WIDTH ►</text>
+                    <text x="370" y="15" fill="#94a3b8" fontSize="10" textAnchor="middle">◄ {plotWidth}'-0" TOTAL PLOT WIDTH ►</text>
 
                     {/* Left dimension line */}
                     <line x1="20" y1="40" x2="20" y2="480" />
                     <line x1="15" y1="40" x2="25" y2="40" />
                     <line x1="15" y1="480" x2="25" y2="480" />
-                    <text x="15" y="260" fill="#94a3b8" fontSize="10" textAnchor="middle" transform="rotate(-90 15,260)">◄ 50'-0" TOTAL DEPTH ►</text>
+                    <text x="15" y="260" fill="#94a3b8" fontSize="10" textAnchor="middle" transform="rotate(-90 15,260)">◄ {plotDepth}'-0" TOTAL PLOT DEPTH ►</text>
                   </g>
                 </svg>
 
@@ -428,9 +521,9 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
               </div>
               <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-[10px]">
                 <div>
-                  <span className="text-slate-500 block">PROJECT:</span>
+                  <span className="text-slate-500 block">PLOT SIZE:</span>
                   <span className="text-slate-200 font-sans font-semibold truncate block">
-                    {(project as any)?.projectName || (project as any)?.name || '2500 Sq.Ft Villa'}
+                    {plotWidth}' × {plotDepth}' ({layoutOption.totalBuiltUpSqFt.toLocaleString()} sq.ft)
                   </span>
                 </div>
                 <div>
@@ -448,7 +541,7 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
               </div>
               <div className="border-t border-slate-800 mt-1.5 pt-1 text-[9px] text-slate-400 flex items-center justify-between">
                 <span>CAD TECHNICAL DRAFTING</span>
-                <span className="text-blue-400">APPROVED</span>
+                <span className="text-blue-400">SCALE: 1/4" = 1'-0"</span>
               </div>
             </div>
           )}

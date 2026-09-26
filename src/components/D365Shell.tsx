@@ -62,6 +62,7 @@ interface D365ShellProps {
   onOpenStatusModal: () => void;
   onOpenTrainingManual?: () => void;
   onOpenLoginPortal?: () => void;
+  onOpenVastuModal?: () => void;
   onLogout?: () => void;
   onOpenProfile?: (initialTab?: 'profile' | 'security') => void;
   isSidebarCollapsed?: boolean;
@@ -86,6 +87,7 @@ export const D365Shell: React.FC<D365ShellProps> = ({
   onOpenStatusModal,
   onOpenTrainingManual,
   onOpenLoginPortal,
+  onOpenVastuModal,
   onLogout,
   onOpenProfile,
   isSidebarCollapsed = false,
@@ -146,6 +148,7 @@ export const D365Shell: React.FC<D365ShellProps> = ({
 
   // Tell Me Search Items
   const tellMeItems = [
+    { title: 'AI Vastu Floor Planner (Submit Plot Size e.g. 1200 sq.ft & Generate 3 Options)', category: 'Design & Vastu', action: () => onOpenVastuModal ? onOpenVastuModal() : handleNavigate('survey') },
     { title: 'Customer Training & Operations Manual (Step-by-Step Module Guide)', category: 'Training & Help', action: () => onOpenTrainingManual?.() },
     { title: 'User Operations Manual & Step-by-Step Customer Curriculum', category: 'Training & Help', action: () => onOpenTrainingManual?.() },
     { title: 'Role Center Dashboard (My Assigned Role & Responsibilities)', category: 'Role Center', action: () => handleNavigate('dashboard') },
@@ -504,6 +507,16 @@ export const D365Shell: React.FC<D365ShellProps> = ({
               </ViewportMenu>
             )}
           </div>
+
+          {/* AI Vastu Floor Planner Quick Action */}
+          <button
+            onClick={() => onOpenVastuModal ? onOpenVastuModal() : handleNavigate('survey')}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-white transition text-xs font-bold shadow-xs cursor-pointer border border-amber-400/40"
+            title="AI Vastu Floor Planner - Submit Plot Size (e.g. 1200 sq.ft) & Generate 3 Options"
+          >
+            <Compass className="h-3.5 w-3.5 text-amber-200 animate-spin-slow" />
+            <span className="hidden md:inline text-xs font-bold">Vastu Planner</span>
+          </button>
 
           {/* Customer Training Manual */}
           <button

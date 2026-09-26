@@ -53,10 +53,28 @@ export const AIVastuLayoutSuggesterModal: React.FC<AIVastuLayoutSuggesterModalPr
   initialPropertyType,
   initialFacing
 }) => {
-  // Input parameters
+  // Input parameters: Defaults to 1200 sq.ft (standard 30' × 40' plot) if not otherwise set
   const [areaSqFt, setAreaSqFt] = useState<number>(() => {
-    return initialArea || project?.requirement?.carpetAreaSqFt || project?.carpetAreaSqFt || 2500;
+    return initialArea || project?.requirement?.plotAreaSqFt || (project?.carpetAreaSqFt && project.carpetAreaSqFt > 0 ? project.carpetAreaSqFt : 1200);
   });
+  const [plotWidthFt, setPlotWidthFt] = useState<number>(() => {
+    const area = initialArea || 1200;
+    if (area === 1200) return 30;
+    if (area === 1500) return 30;
+    if (area === 1800) return 30;
+    if (area === 2400) return 40;
+    return Math.round(Math.sqrt(area * 0.75));
+  });
+  const [plotDepthFt, setPlotDepthFt] = useState<number>(() => {
+    const area = initialArea || 1200;
+    if (area === 1200) return 40;
+    if (area === 1500) return 50;
+    if (area === 1800) return 60;
+    if (area === 2400) return 60;
+    const w = Math.round(Math.sqrt(area * 0.75)) || 30;
+    return Math.round(area / w);
+  });
+
   const [propertyType, setPropertyType] = useState<string>(() => {
     return initialPropertyType || project?.projectType || 'RESIDENTIAL_VILLA';
   });
@@ -74,24 +92,65 @@ export const AIVastuLayoutSuggesterModal: React.FC<AIVastuLayoutSuggesterModalPr
   const [appliedOptionId, setAppliedOptionId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'floorplan' | 'options' | 'mandala' | 'guidelines'>('floorplan');
 
-  // Quick area pills
-  const QUICK_AREAS = [1200, 1800, 2500, 3200, 4500];
+  // Standard Plot Presets with Dimensions
+  const QUICK_PRESETS = [
+    { area: 1200, width: 30, depth: 40, label: "1,200 sq.ft (30' × 40')", popular: true },
+    { area: 1500, width: 30, depth: 50, label: "1,500 sq.ft (30' × 50')", popular: false },
+    { area: 1800, width: 30, depth: 60, label: "1,800 sq.ft (30' × 60')", popular: false },
+    { area: 2400, width: 40, depth: 60, label: "2,400 sq.ft (40' × 60')", popular: false },
+    { area: 3000, width: 50, depth: 60, label: "3,000 sq.ft (50' × 60')", popular: false }
+  ];
+
+  const handleSelectPreset = (pArea: number, pWidth: number, pDepth: number) => {
+    setAreaSqFt(pArea);
+    setPlotWidthFt(pWidth);
+    setPlotDepthFt(pDepth);
+  };
+
+  const handleAreaChange = (newArea: number) => {
+    setAreaSqFt(newArea);
+    if (newArea === 1200) {
+      setPlotWidthFt(30);
+      setPlotDepthFt(40);
+    } else if (newArea === 1500) {
+      setPlotWidthFt(30);
+      setPlotDepthFt(50);
+    } else if (newArea === 1800) {
+      setPlotWidthFt(30);
+      setPlotDepthFt(60);
+    } else if (newArea === 2400) {
+      setPlotWidthFt(40);
+      setPlotDepthFt(60);
+    } else if (newArea > 0) {
+      const calcWidth = Math.round(Math.sqrt(newArea * 0.75));
+      setPlotWidthFt(calcWidth);
+      setPlotDepthFt(Math.round(newArea / (calcWidth || 30)));
+    }
+  };
+
+  const handleDimensionsChange = (newW: number, newD: number) => {
+    setPlotWidthFt(newW);
+    setPlotDepthFt(newD);
+    if (newW > 0 && newD > 0) {
+      setAreaSqFt(newW * newD);
+    }
+  };
 
   const PROPERTY_TYPES = [
-    { id: 'RESIDENTIAL_VILLA', label: 'Villa / Bungalow', icon: '🏡' },
+    { id: 'RESIDENTIAL_VILLA', label: 'Villa / Independent Bungalow', icon: '🏡' },
+    { id: 'DUPLEX', label: 'Duplex Home (G+1)', icon: '🏘️' },
     { id: 'APARTMENT', label: 'Apartment / Flat', icon: '🏢' },
-    { id: 'DUPLEX', label: 'Duplex House', icon: '🏘️' },
     { id: 'PENTHOUSE', label: 'Luxury Penthouse', icon: '🏙️' },
-    { id: 'COMMERCIAL_OFFICE', label: 'Commercial Office', icon: '💼' },
+    { id: 'COMMERCIAL_OFFICE', label: 'Commercial Office / Tech Hub', icon: '💼' },
     { id: 'FARMHOUSE', label: 'Farmhouse / Estate', icon: '🌳' }
   ];
 
   const FACING_OPTIONS = [
-    { id: 'EAST', label: 'East (Purva) — Surya Prana', score: 'Highest' },
-    { id: 'NORTH', label: 'North (Uttar) — Kuber Wealth', score: 'Highest' },
-    { id: 'NORTH_EAST', label: 'North-East (Ishanya) — Divine', score: 'Supreme' },
-    { id: 'WEST', label: 'West (Pashchim) — Varuna Stability', score: 'Good' },
-    { id: 'SOUTH', label: 'South (Dakshin) — Yama Grounding', score: 'Neutral' }
+    { id: 'EAST', label: 'East (Purva) — Surya Prana & Vitality', score: 'Supreme' },
+    { id: 'NORTH', label: 'North (Uttar) — Kuber Wealth & Opportunity', score: 'Supreme' },
+    { id: 'NORTH_EAST', label: 'North-East (Ishanya) — Divine Purity', score: 'Supreme' },
+    { id: 'WEST', label: 'West (Pashchim) — Varuna Stability & Gains', score: 'Good' },
+    { id: 'SOUTH', label: 'South (Dakshin) — Yama / Mars Grounding', score: 'Neutral' }
   ];
 
   // Fetch Vastu layout suggestions
@@ -104,7 +163,9 @@ export const AIVastuLayoutSuggesterModal: React.FC<AIVastuLayoutSuggesterModalPr
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          areaSqFt: Number(areaSqFt) || 2500,
+          areaSqFt: Number(areaSqFt) || 1200,
+          plotWidthFt: Number(plotWidthFt) || 30,
+          plotDepthFt: Number(plotDepthFt) || 40,
           propertyType,
           facingDirection,
           floorsCount: Number(floorsCount) || 1,
@@ -234,136 +295,197 @@ export const AIVastuLayoutSuggesterModal: React.FC<AIVastuLayoutSuggesterModalPr
 
         {/* Input Parameters Control Strip */}
         <div className="p-4 bg-slate-50 border-b border-slate-200 shrink-0">
-          <form onSubmit={handleGenerate} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end text-xs">
-            {/* 1. Construction Area */}
-            <div>
-              <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                Construction Area (sq.ft) *
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  min="500"
-                  max="50000"
-                  step="50"
-                  value={areaSqFt}
-                  onChange={e => setAreaSqFt(Number(e.target.value) || 0)}
-                  className="w-full pl-3 pr-12 py-2 rounded-lg border border-slate-300 font-mono font-bold text-sm text-slate-900 bg-white focus:ring-2 focus:ring-[#0f6cbd] focus:border-[#0f6cbd]"
-                  placeholder="e.g. 2500"
-                  required
-                />
-                <span className="absolute right-2.5 top-2.5 text-xs text-slate-400 font-semibold">sq.ft</span>
+          <form onSubmit={handleGenerate} className="space-y-3 text-xs">
+            {/* Row 1: Plot Presets */}
+            <div className="flex flex-wrap items-center justify-between gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200/80 shadow-2xs">
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
+                  <Ruler className="w-3.5 h-3.5 text-[#0f6cbd]" />
+                  <span>Standard Plot Presets:</span>
+                </span>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {QUICK_PRESETS.map(p => (
+                    <button
+                      key={p.area}
+                      type="button"
+                      onClick={() => handleSelectPreset(p.area, p.width, p.depth)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition cursor-pointer flex items-center gap-1 border ${
+                        areaSqFt === p.area && plotWidthFt === p.width && plotDepthFt === p.depth
+                          ? 'bg-[#002050] text-white border-[#002050] shadow-xs'
+                          : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
+                      }`}
+                    >
+                      <span>{p.label}</span>
+                      {p.popular && (
+                        <span className="px-1 py-0.2 rounded text-[9px] bg-amber-400 text-slate-950 font-bold uppercase">
+                          Popular
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
-              {/* Quick Pills */}
-              <div className="flex items-center gap-1 mt-1.5 overflow-x-auto">
-                {QUICK_AREAS.map(a => (
-                  <button
-                    key={a}
-                    type="button"
-                    onClick={() => setAreaSqFt(a)}
-                    className={`px-1.5 py-0.5 rounded text-[10px] font-semibold transition cursor-pointer ${
-                      areaSqFt === a 
-                        ? 'bg-[#0f6cbd] text-white' 
-                        : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
-                    }`}
-                  >
-                    {a.toLocaleString()}
-                  </button>
-                ))}
+
+              <div className="text-[11px] text-slate-500 font-mono flex items-center gap-2">
+                <span>Selected Plot:</span>
+                <span className="font-bold text-[#0f6cbd] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                  {plotWidthFt}' × {plotDepthFt}' = {areaSqFt.toLocaleString()} sq.ft
+                </span>
               </div>
             </div>
 
-            {/* 2. Property Type */}
-            <div>
-              <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                Property Typology
-              </label>
-              <select
-                value={propertyType}
-                onChange={e => setPropertyType(e.target.value)}
-                className="w-full px-2.5 py-2 rounded-lg border border-slate-300 bg-white text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#0f6cbd]"
-              >
-                {PROPERTY_TYPES.map(p => (
-                  <option key={p.id} value={p.id}>
-                    {p.icon} {p.label}
-                  </option>
-                ))}
-              </select>
-              <div className="text-[10px] text-slate-500 mt-1">
-                {floorsCount > 1 ? `${floorsCount} Levels (G+${floorsCount - 1})` : 'Single Level Layout'}
+            {/* Row 2: Grid of Controls */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
+              {/* 1. Plot Size (sq.ft) */}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                  Plot Size / Area *
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    min="400"
+                    max="50000"
+                    step="25"
+                    value={areaSqFt}
+                    onChange={e => handleAreaChange(Number(e.target.value) || 0)}
+                    className="w-full pl-3 pr-12 py-2 rounded-lg border border-slate-300 font-mono font-bold text-sm text-slate-900 bg-white focus:ring-2 focus:ring-[#0f6cbd] focus:border-[#0f6cbd]"
+                    placeholder="e.g. 1200"
+                    required
+                  />
+                  <span className="absolute right-2.5 top-2.5 text-xs text-slate-400 font-semibold">sq.ft</span>
+                </div>
+              </div>
+
+              {/* 2. Plot Dimensions (Width x Depth) */}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                  Plot Width × Depth (ft)
+                </label>
+                <div className="flex items-center gap-1.5">
+                  <div className="relative flex-1">
+                    <input
+                      type="number"
+                      min="15"
+                      max="300"
+                      value={plotWidthFt}
+                      onChange={e => handleDimensionsChange(Number(e.target.value) || 1, plotDepthFt)}
+                      className="w-full px-2 py-2 rounded-lg border border-slate-300 font-mono font-bold text-xs text-slate-900 bg-white focus:ring-2 focus:ring-[#0f6cbd]"
+                      placeholder="W"
+                      title="Plot Width in Feet"
+                    />
+                    <span className="absolute right-1.5 top-2.5 text-[10px] text-slate-400 font-mono">W</span>
+                  </div>
+                  <span className="text-slate-400 font-bold">×</span>
+                  <div className="relative flex-1">
+                    <input
+                      type="number"
+                      min="15"
+                      max="300"
+                      value={plotDepthFt}
+                      onChange={e => handleDimensionsChange(plotWidthFt, Number(e.target.value) || 1)}
+                      className="w-full px-2 py-2 rounded-lg border border-slate-300 font-mono font-bold text-xs text-slate-900 bg-white focus:ring-2 focus:ring-[#0f6cbd]"
+                      placeholder="D"
+                      title="Plot Depth in Feet"
+                    />
+                    <span className="absolute right-1.5 top-2.5 text-[10px] text-slate-400 font-mono">D</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Property Type */}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                  Property Typology
+                </label>
+                <select
+                  value={propertyType}
+                  onChange={e => setPropertyType(e.target.value)}
+                  className="w-full px-2.5 py-2 rounded-lg border border-slate-300 bg-white text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#0f6cbd]"
+                >
+                  {PROPERTY_TYPES.map(p => (
+                    <option key={p.id} value={p.id}>
+                      {p.icon} {p.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 4. Facing Direction */}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                  Plot / Entrance Facing
+                </label>
+                <select
+                  value={facingDirection}
+                  onChange={e => setFacingDirection(e.target.value)}
+                  className="w-full px-2.5 py-2 rounded-lg border border-slate-300 bg-white text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#0f6cbd]"
+                >
+                  {FACING_OPTIONS.map(f => (
+                    <option key={f.id} value={f.id}>
+                      {f.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 5. Number of Floors */}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                  Number of Floors
+                </label>
+                <div className="grid grid-cols-3 gap-1">
+                  {[1, 2, 3].map(fl => (
+                    <button
+                      key={fl}
+                      type="button"
+                      onClick={() => setFloorsCount(fl)}
+                      className={`py-2 rounded-lg text-xs font-bold border transition cursor-pointer text-center ${
+                        floorsCount === fl
+                          ? 'bg-[#002050] text-white border-[#002050]'
+                          : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+                      }`}
+                    >
+                      {fl === 1 ? '1 Flr' : fl === 2 ? 'G+1' : 'G+2'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 6. Generate Button */}
+              <div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-[#002050] via-[#0c366e] to-[#0f6cbd] hover:from-[#0c366e] hover:to-[#0b5a9e] text-white text-xs font-bold shadow-sm flex items-center justify-center gap-1.5 transition disabled:opacity-50 cursor-pointer"
+                >
+                  {loading ? (
+                    <>
+                      <Compass className="w-4 h-4 animate-spin text-amber-300" />
+                      <span>Generating Plans...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 text-amber-300" />
+                      <span>Generate 3 Layouts</span>
+                    </>
+                  )}
+                </button>
               </div>
             </div>
 
-            {/* 3. Main Entrance / Facing Direction */}
-            <div>
-              <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                Plot / Main Door Facing
-              </label>
-              <select
-                value={facingDirection}
-                onChange={e => setFacingDirection(e.target.value)}
-                className="w-full px-2.5 py-2 rounded-lg border border-slate-300 bg-white text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#0f6cbd]"
-              >
-                {FACING_OPTIONS.map(f => (
-                  <option key={f.id} value={f.id}>
-                    {f.label}
-                  </option>
-                ))}
-              </select>
-              <div className="text-[10px] text-emerald-600 font-semibold mt-1 flex items-center gap-1">
-                <CheckCircle2 className="w-3 h-3" />
-                <span>Verified Auspicious Pada</span>
-              </div>
-            </div>
-
-            {/* 4. Number of Floors */}
-            <div>
-              <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                Floors &amp; Configuration
-              </label>
-              <div className="grid grid-cols-3 gap-1">
-                {[1, 2, 3].map(fl => (
-                  <button
-                    key={fl}
-                    type="button"
-                    onClick={() => setFloorsCount(fl)}
-                    className={`py-2 rounded-lg text-xs font-bold border transition cursor-pointer text-center ${
-                      floorsCount === fl
-                        ? 'bg-[#0f6cbd] text-white border-[#0f6cbd]'
-                        : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
-                    }`}
-                  >
-                    {fl === 1 ? '1 Floor' : fl === 2 ? 'G+1' : 'G+2'}
-                  </button>
-                ))}
-              </div>
-              <div className="text-[10px] text-slate-500 mt-1">
-                Vertical zoning split
-              </div>
-            </div>
-
-            {/* 5. Generate Button */}
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-2 px-4 rounded-lg bg-gradient-to-r from-[#002050] to-[#0f6cbd] hover:from-[#0c366e] hover:to-[#0b5a9e] text-white text-xs font-bold shadow-sm flex items-center justify-center gap-1.5 transition disabled:opacity-50 cursor-pointer"
-              >
-                {loading ? (
-                  <>
-                    <Compass className="w-4 h-4 animate-spin" />
-                    <span>Calculating Vastu...</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4 text-amber-300" />
-                    <span>Generate 3 Layouts</span>
-                  </>
-                )}
-              </button>
-              <div className="text-[10px] text-center text-slate-400 mt-1">
-                Gemini 3.8 + Vastu Vidya
-              </div>
+            {/* Row 3: Custom Lifestyle / Vastu Notes */}
+            <div className="flex items-center gap-2 pt-0.5">
+              <span className="text-[11px] font-semibold text-slate-500 shrink-0">
+                Special Vastu / Lifestyle Requirements:
+              </span>
+              <input
+                type="text"
+                value={lifestyleNotes}
+                onChange={e => setLifestyleNotes(e.target.value)}
+                placeholder="e.g. Dedicated Mandir in Ishanya, East cooking in Agni, heavy master suite in Nairutya, 2 covered car parks, open central Brahmasthan"
+                className="flex-1 px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs text-slate-800 placeholder-slate-400 focus:ring-1 focus:ring-[#0f6cbd]"
+              />
             </div>
           </form>
         </div>

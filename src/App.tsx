@@ -42,6 +42,7 @@ import { LoginPortalModal } from './components/LoginPortalModal';
 import { SystemStatusModal } from './components/SystemStatusModal';
 import { AuditLogsModal } from './components/AuditLogsModal';
 import { CustomerTrainingModal } from './components/CustomerTrainingModal';
+import { AIVastuLayoutSuggesterModal } from './components/AIVastuLayoutSuggesterModal';
 import { exportJobPlanningLinesToExcel } from './utils/excelExport';
 import { CostTraceabilityMatrixView } from './components/CostTraceabilityMatrixView';
 import { AgenticAIActionCenter } from './components/AgenticAIActionCenter';
@@ -52,7 +53,6 @@ import { ResourceDeploymentView } from './components/ResourceDeploymentView';
 import { ProjectManagementHubView } from './components/ProjectManagementHubView';
 import { RoleCenterDashboardView } from './components/RoleCenterDashboardView';
 import { CompanySetupMasterView } from './components/CompanySetupMasterView';
-import ArchitectureWorkspace from './arch/App';
 import { getStoredUsers, saveStoredUsers, INITIAL_ERP_USERS, getActiveSessionUser, saveActiveSession, clearActiveSession } from './data/defaultUsers';
 import { getSyntheticDemoProject } from './server/syntheticDemo';
 import { DEFAULT_MASTER_RATES } from './server/mockMasters';
@@ -87,6 +87,7 @@ export default function App() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(!restoredSessionUser);
   const [authenticated, setAuthenticated] = useState(!!restoredSessionUser);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isVastuModalOpen, setIsVastuModalOpen] = useState(false);
   const [profileModalTab, setProfileModalTab] = useState<'profile' | 'security' | 'work'>('security');
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
 
@@ -716,46 +717,6 @@ export default function App() {
     );
   }
 
-  if (['arch_studio', 'ai-studio', 'data_science', 'analytics', 'arch_workspace', 'workspace', 'arch_pipeline', 'pipeline', 'architecture', 'data_backup'].includes(activeTab)) {
-    return (
-      <div className="erp-app h-screen h-[100dvh] max-h-[100dvh] overflow-hidden bg-[#F8FAFC] text-[#0F172A] flex flex-col font-sans">
-        <ArchitectureWorkspace
-          currentUser={currentUser}
-          onLogout={handleLogout}
-          onOpenProfile={() => handleOpenProfile('profile')}
-          initialTab={activeTab}
-          onNavigateBackToERP={(tab) => setActiveTab(tab || 'dashboard')}
-        />
-        {/* User Profile & Password Security Modal */}
-        {isProfileModalOpen && (
-          <UserProfileEditModal
-            isOpen={isProfileModalOpen}
-            onClose={() => setIsProfileModalOpen(false)}
-            currentUser={currentUser}
-            initialTab={profileModalTab}
-            projects={projects}
-            onSelectProject={(pid) => handleSelectProject(pid)}
-            onUserUpdated={(updated) => {
-              const preservedPassword = updated.password || currentUser.password || users.find(u => u.id === updated.id)?.password;
-              const fullUser: UserSession = {
-                ...currentUser,
-                ...updated,
-                ...(preservedPassword ? { password: preservedPassword } : {})
-              };
-              setCurrentUser(fullUser);
-              setUsers(prev => {
-                const next = prev.map(u => u.id === fullUser.id ? { ...u, ...fullUser } : u);
-                saveStoredUsers(next);
-                return next;
-              });
-              saveActiveSession(fullUser.id);
-              showToast('User profile & allocated work saved for future login', 'success');
-            }}
-          />
-        )}
-      </div>
-    );
-  }
 
   return (
     <div className="erp-app h-screen h-[100dvh] max-h-[100dvh] overflow-hidden bg-[#F8FAFC] text-[#0F172A] flex flex-col font-sans selection:bg-[#0F6CBD]/20">
@@ -770,6 +731,7 @@ export default function App() {
         onOpenStatusModal={() => setStatusModalOpen(true)}
         onOpenAuditLogs={() => setAuditLogsOpen(true)}
         onOpenTrainingManual={() => setTrainingModalOpen(true)}
+        onOpenVastuModal={() => setIsVastuModalOpen(true)}
         onOpenInspectData={() => setIsInspectOpen(true)}
         onLogout={handleLogout}
         onOpenProfile={handleOpenProfile}
@@ -1040,6 +1002,66 @@ export default function App() {
           onClose={() => setIsLoginModalOpen(false)}
           users={users}
           currentSessionUser={currentUser}
+        />
+      )}
+
+      {/* AI Vastu Layout Suggester Modal */}
+      {isVastuModalOpen && (
+        <AIVastuLayoutSuggesterModal
+          isOpen={isVastuModalOpen}
+          onClose={() => setIsVastuModalOpen(false)}
+          project={activeProject}
+          initialArea={activeProject?.requirement?.plotAreaSqFt || activeProject?.carpetAreaSqFt || 1200}
+          initialPropertyType={activeProject?.projectType || 'Independent Villa / House'}
+          onApplyLayoutToProject={(option, newRooms, totalCarpet, totalBuiltUp) => {
+            if (activeProject) {
+              const baseReq = activeProject.requirement || {
+                id: `REQ-${activeProject.id}`,
+                projectId: activeProject.id,
+                customerName: activeProject.clientName || 'Customer',
+                customerPhone: activeProject.clientPhone || '',
+                customerEmail: activeProject.clientEmail || '',
+                billingAddress: activeProject.siteAddress || '',
+                projectSiteAddress: activeProject.siteAddress || '',
+                city: activeProject.city || 'Gurugram',
+                projectType: 'RESIDENTIAL' as const,
+                projectScope: 'ARCHITECTURE_BUILD' as const,
+                plotAreaSqFt: option.plotDimensions ? (option.plotDimensions.widthFt * option.plotDimensions.depthFt) : totalBuiltUp,
+                builtUpAreaSqFt: totalBuiltUp,
+                carpetAreaSqFt: totalCarpet,
+                floorsCount: option.floorsCount || 2,
+                rooms: [],
+                preferredDesignStyle: 'Vastu Shastra Classical',
+                materialsBrandsPreferences: '',
+                civilRequirements: '',
+                electricalRequirements: '',
+                plumbingSanitaryRequirements: '',
+                hvacRequirements: '',
+                joineryKitchenPreferences: '',
+                customerBudgetMin: 0,
+                customerBudgetMax: 0,
+                targetCompletionDate: '',
+                exclusionsCustomerSupplied: '',
+                siteAccessConstraints: '',
+                surveyNotes: '',
+                rawBriefHindiEnglish: '',
+                documents: [],
+                updatedAt: new Date().toISOString()
+              };
+              const updatedReq: CustomerRequirement = {
+                ...baseReq,
+                rooms: newRooms,
+                carpetAreaSqFt: totalCarpet,
+                builtUpAreaSqFt: totalBuiltUp,
+                preferredDesignStyle: `${option.title} (${option.vastuScore}% Vastu Pure)`,
+                surveyNotes: `Synthesized via AI Vastu Layout Optimizer (${option.configuration}). Highlights: ${option.vastuHighlights?.masterBedroom || ''}; ${option.vastuHighlights?.kitchen || ''}; ${option.vastuHighlights?.poojaRoom || ''}.`,
+                updatedAt: new Date().toISOString()
+              };
+              handleSaveRequirement(updatedReq);
+              showToast(`Applied ${option.title} (${totalBuiltUp} sq.ft) to project requirements!`, 'success');
+            }
+            setIsVastuModalOpen(false);
+          }}
         />
       )}
 

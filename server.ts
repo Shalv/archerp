@@ -6,9 +6,6 @@
 
 import express, { Request, Response } from 'express';
 import { randomBytes, createHmac, timingSafeEqual, createHash } from 'crypto';
-import { architectureRouter } from './src/server/architecture';
-import { INITIAL_SEED_PROJECTS } from './src/arch/data/mockSeed';
-import { INITIAL_MASTER_DATA } from './src/arch/data/masterSeed';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -123,46 +120,7 @@ export async function createApp(isServerless: boolean = false) {
     next();
   });
 
-  app.get('/api/architecture/state', (req, res) => {
-    if (getUserFromReq(req).role === 'CLIENT') return res.status(403).json({error:'Client accounts do not have access to the internal design workspace.'});
-    res.json(dbService.getArchitecture() || {projects:INITIAL_SEED_PROJECTS, masterData:INITIAL_MASTER_DATA, revision:0});
-  });
-  app.put('/api/architecture/state', (req, res) => {
-    const user = getUserFromReq(req);
-    if (user.role === 'CLIENT') return res.status(403).json({error:'Internal staff access required.'});
-    const {projects, masterData, revision} = req.body;
-    if(!Array.isArray(projects) || !masterData || !['trades','materials','zones','vendors','milestones','team'].every(k=>Array.isArray(masterData[k])) || projects.some(p=>!p.id || !Array.isArray(p.conceptOptions) || !Array.isArray(p.boqRevisions))) return res.status(400).json({error:'Invalid architecture data. Restore a valid exported backup.'});
-    const current = dbService.getArchitecture()?.revision || 0;
-    if(revision!==current) return res.status(409).json({error:'Another user saved changes. Export your work, then reload before editing again.'});
-    const next = {projects,masterData,revision:current+1}; dbService.saveArchitecture(next); res.json({revision:next.revision});
-  });
-  app.post('/api/architecture/projects/:id/handoff', (req, res) => {
-    const user = getUserFromReq(req);
-    if(!['ADMIN','PROJECT_MANAGER','ESTIMATOR'].includes(user.role)) return res.status(403).json({error:'Project or commercial manager access required.'});
-    const source = (dbService.getArchitecture()?.projects || INITIAL_SEED_PROJECTS).find(p=>p.id===req.params.id);
-    if(!source) return res.status(404).json({error:'Save the design project before handing it to ERP.'});
-    const id = 'ARCH-'+source.id;
-    const existing = dbService.getProjectById(id);
-    if(existing) return res.json({project:existing,existing:true});
-    const now = new Date().toISOString();
-    const project: ProjectRecord = {
-      id,projectCode:'BS-'+source.enquiryNumber,title:source.organizationOrFamily || source.clientName+' Project',
-      clientName:source.clientName,clientPhone:source.contactPhone,clientEmail:source.contactEmail,
-      projectType:'RESIDENTIAL',projectScope:'TURNKEY_INTERIORS',siteAddress:source.siteAddress,city:source.siteCity,
-      stage:'REQUIREMENTS_SURVEY',carpetAreaSqFt:source.builtUpAreaSqFt,estimatedBudget:source.targetBudget,
-      createdAt:now,updatedAt:now,revisions:[],
-      requirement:{id:'REQ-'+id,projectId:id,customerName:source.clientName,customerPhone:source.contactPhone,customerEmail:source.contactEmail,
-        billingAddress:source.siteAddress,projectSiteAddress:source.siteAddress,city:source.siteCity,projectType:'RESIDENTIAL',projectScope:'TURNKEY_INTERIORS',plotAreaSqFt:source.siteAreaSqFt,builtUpAreaSqFt:source.builtUpAreaSqFt,carpetAreaSqFt:source.builtUpAreaSqFt,floorsCount:1,rooms:[],preferredDesignStyle:source.confirmedRequirements.stylePreferences.join(', '),materialsBrandsPreferences:'',civilRequirements:'',electricalRequirements:'',plumbingSanitaryRequirements:'',hvacRequirements:'',joineryKitchenPreferences:'',customerBudgetMin:0,customerBudgetMax:source.targetBudget,targetCompletionDate:'',exclusionsCustomerSupplied:'',siteAccessConstraints:source.confirmedRequirements.specialConstraints,surveyNotes:'Imported from '+source.enquiryNumber+'. Verify project type, scope and measured carpet area before estimating.',rawBriefHindiEnglish:source.confirmedRequirements.projectVision+'\nZones: '+source.confirmedRequirements.roomZones.join(', '),documents:[],updatedAt:now}
-    };
-    const revision = source.boqRevisions.find(r=>r.revisionNumber===source.activeBOQRevisionNumber);
-    if(revision) {
-      const revId = 'REV-'+id+'-DESIGN';
-      project.revisions = [{id:revId,projectId:id,revisionNumber:0,revisionLabel:'Design handoff — estimator review required',status:'ESTIMATOR_REVIEW',createdAt:now,createdBy:user.name,missingDimensionAlerts:['Validate design quantities against the site survey.'],missingRateAlerts:['Design unit rates are provisional combined costs; split material/labour before approval.'],items:revision.items.map((item:any,index:number)=>({
-        id:revId+'-'+index,boqRevisionId:revId,itemCode:item.itemCode,trade:'CIVIL_MASONRY' as any,workPackage:item.category,floor:'Ground',roomZone:'Design scope',description:item.description,specification:item.notes || '',brandGrade:'To be confirmed',inclusions:'Design BOQ scope',exclusions:'',unit:item.unit as any,quantityFormula:String(item.quantity),baseQuantity:item.quantity,wastagePercent:0,finalQuantity:item.quantity,quantityType:'USER_ENTERED',materialRate:item.unitRate,labourRate:0,equipmentRate:0,subcontractRate:0,unitCost:item.unitRate,totalCost:item.quantity*item.unitRate,markupPercent:revision.contractorMarginPercent,sellingRate:item.unitRate*(1+revision.contractorMarginPercent/100),sellingAmount:item.quantity*item.unitRate*(1+revision.contractorMarginPercent/100),rateSource:'Design BOQ '+source.enquiryNumber,rateStatus:'PROVISIONAL',sourceDocumentRef:source.enquiryNumber,assumptions:'Combined design cost; requires estimator verification.',isApprovedByEstimator:false
-      }))}];project.activeRevisionId=revId;
-    }
-    dbService.saveProject(user,project);res.status(201).json({project,existing:false});
-  });
+
   const operationalModules = new Set(['ai_actions','crm','contacts','drawings','materials','contracts','variations','schedule','site_execution','procurement','inventory','contractors','snags','handover','portal','finance','billing','documents','resources','assets','compliance']);
   app.use('/api/operations/:projectId/:moduleId', (req,res,next)=>{
     const user = getUserFromReq(req);
@@ -188,7 +146,6 @@ export async function createApp(isServerless: boolean = false) {
     dbService.saveOperations(req.params.projectId,req.params.moduleId,records.filter(r=>r.id!==req.params.id));
     dbService.logAudit(user,'DELETE_RECORD',req.params.moduleId,req.params.id,'Operational record deleted');res.json({success:true});
   });
-  app.use(architectureRouter);
 
   // Hook up MongoDB Atlas exclusive persistence synchronization
   dbService.onPersist((data) => {
@@ -741,14 +698,16 @@ export async function createApp(isServerless: boolean = false) {
 
   app.post('/api/ai/suggest-vastu-layouts', async (req: Request, res: Response) => {
     try {
-      const { areaSqFt, propertyType, facingDirection, floorsCount, lifestyleNotes } = req.body;
+      const { areaSqFt, plotWidthFt, plotDepthFt, propertyType, facingDirection, floorsCount, lifestyleNotes } = req.body;
       const numArea = Number(areaSqFt);
       if (!numArea || isNaN(numArea) || numArea <= 0) {
-        return res.status(400).json({ error: 'Valid construction area in sq.ft is required (e.g. 2500 sq.ft).' });
+        return res.status(400).json({ error: 'Valid construction area in sq.ft is required (e.g. 1200 sq.ft).' });
       }
 
       const suggestions = await generateVastuLayoutSuggestions({
         areaSqFt: numArea,
+        plotWidthFt: Number(plotWidthFt) || undefined,
+        plotDepthFt: Number(plotDepthFt) || undefined,
         propertyType: propertyType || 'RESIDENTIAL_VILLA',
         facingDirection: facingDirection || 'EAST',
         floorsCount: Number(floorsCount) || (numArea > 3000 ? 2 : 1),
@@ -1122,6 +1081,13 @@ export async function createApp(isServerless: boolean = false) {
 
   app.use('/api', (req, res) => { res.status(404).json({ error: 'API endpoint not found.' }); });
   app.use((err: any, req: Request, res: Response, next: express.NextFunction) => {
+    if (err?.name === 'MongoNetworkError' || err?.name === 'MongoServerSelectionError' || err?.message?.includes?.('buffering timed out')) {
+      console.warn('[AI Studio] Database offline or timed out — continuing with local store');
+      if (req.method === 'GET') {
+        return res.json(req.path.endsWith('s') || req.path.endsWith('s/') ? [] : {});
+      }
+      return res.status(503).json({ error: 'Database temporarily unavailable' });
+    }
     console.error(err);
     res.status(err.status || 500).json({ error: err.status === 400 ? 'Invalid request JSON.' : 'Request failed. Please check server logs and retry.' });
   });
