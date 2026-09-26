@@ -21,10 +21,12 @@ import {
   Receipt, 
   BookOpen,
   Filter,
-  CheckCircle2
+  CheckCircle2,
+  Compass
 } from 'lucide-react';
 import { AgenticAISuggestion, AIAssistantType, ProjectRecord } from '../types/erp';
 import { AI_ASSISTANTS_CATALOG, INITIAL_AGENTIC_SUGGESTIONS } from '../data/agenticAISuggestions';
+import { AIVastuLayoutSuggesterModal } from './AIVastuLayoutSuggesterModal';
 
 interface AgenticAIActionCenterProps {
   project: ProjectRecord;
@@ -41,6 +43,8 @@ export const AgenticAIActionCenter: React.FC<AgenticAIActionCenterProps> = ({
   const [selectedAssistant, setSelectedAssistant] = useState<string>('ALL');
   const [selectedRisk, setSelectedRisk] = useState<string>('ALL');
   const [actionNotice, setActionNotice] = useState<string | null>(null);
+  const [isVastuModalOpen, setIsVastuModalOpen] = useState(false);
+  const [targetAreaInput, setTargetAreaInput] = useState<number>(project.requirement?.carpetAreaSqFt || project.carpetAreaSqFt || 2500);
 
   const getAssistantIcon = (type: AIAssistantType) => {
     switch (type) {
@@ -150,6 +154,50 @@ export const AgenticAIActionCenter: React.FC<AgenticAIActionCenterProps> = ({
           </button>
         </div>
       )}
+
+      {/* AI Vastu Layout Optimizer Showcase Card */}
+      <div className="bg-gradient-to-r from-[#002050] via-[#0c366e] to-[#0f6cbd] text-white p-4 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 text-amber-300 flex items-center justify-center shrink-0">
+            <Compass className="w-6 h-6 animate-spin-slow" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-bold text-white tracking-tight">
+                AI Vastu Shastra Spatial Layout Optimizer
+              </h3>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 uppercase tracking-wider">
+                3 Possibilities Engine
+              </span>
+            </div>
+            <p className="text-xs text-blue-100 mt-1 max-w-xl">
+              Specify your construction area (e.g. 2,500 sq.ft) to receive 3 distinct, Vastu-compliant layout options with room breakdown, directional zoning (Ishanya, Agni, Nairutya, Vayu), exact dimensions, and Vastu compliance scores.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="relative w-28">
+            <input
+              type="number"
+              value={targetAreaInput}
+              onChange={e => setTargetAreaInput(Number(e.target.value) || 0)}
+              className="w-full pl-2.5 pr-8 py-1.5 rounded-lg bg-white/10 border border-white/20 text-white font-mono font-bold text-xs focus:ring-1 focus:ring-amber-300"
+              placeholder="Area sq.ft"
+            />
+            <span className="absolute right-2 top-2 text-[10px] text-blue-200 font-semibold">sq.ft</span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsVastuModalOpen(true)}
+            className="px-4 py-2 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4 text-slate-950" />
+            <span>Generate 3 Layouts</span>
+          </button>
+        </div>
+      </div>
 
       {/* 3. Filters Bar */}
       <div className="bg-white p-3 rounded border border-slate-200 shadow-xs flex items-center justify-between text-xs">
@@ -281,6 +329,17 @@ export const AgenticAIActionCenter: React.FC<AgenticAIActionCenterProps> = ({
           );
         })}
       </div>
+
+      {/* AI Vastu Layout Suggester Modal */}
+      {isVastuModalOpen && (
+        <AIVastuLayoutSuggesterModal
+          isOpen={isVastuModalOpen}
+          onClose={() => setIsVastuModalOpen(false)}
+          project={project}
+          initialArea={targetAreaInput || 2500}
+          initialPropertyType={project.projectType || 'RESIDENTIAL_VILLA'}
+        />
+      )}
     </div>
   );
 };

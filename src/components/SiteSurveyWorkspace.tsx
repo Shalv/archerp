@@ -17,9 +17,11 @@ import {
   HelpCircle,
   RefreshCw,
   Eye,
-  Info
+  Info,
+  Compass
 } from 'lucide-react';
-import { CustomerRequirement, RoomSpace, ProjectRecord, UserSession } from '../types/erp';
+import { CustomerRequirement, RoomSpace, ProjectRecord, UserSession, VastuLayoutOption } from '../types/erp';
+import { AIVastuLayoutSuggesterModal } from './AIVastuLayoutSuggesterModal';
 
 interface SiteSurveyWorkspaceProps {
   project: ProjectRecord;
@@ -137,6 +139,31 @@ export const SiteSurveyWorkspace: React.FC<SiteSurveyWorkspaceProps> = ({
   const [formData, setFormData] = useState<any>({ ...initialReq });
   const [showAddRoom, setShowAddRoom] = useState(false);
   const [saveToast, setSaveToast] = useState(false);
+  const [isVastuModalOpen, setIsVastuModalOpen] = useState(false);
+
+  const handleApplyVastuLayout = (
+    option: VastuLayoutOption,
+    newRooms: RoomSpace[],
+    totalCarpet: number,
+    totalBuiltUp: number
+  ) => {
+    const updated = {
+      ...formData,
+      rooms: newRooms,
+      carpetAreaSqFt: totalCarpet,
+      builtUpAreaSqFt: totalBuiltUp,
+      floorsCount: option.floorsCount,
+      preferredDesignStyle: `${option.title} (${option.vastuScore}% Vastu Pure)`,
+      surveyNotes: `Synthesized via AI Vastu Layout Optimizer (${option.configuration}). ${option.vastuHighlights.mainEntrance}. Master: ${option.vastuHighlights.masterBedroom}. Kitchen: ${option.vastuHighlights.kitchen}. Pooja: ${option.vastuHighlights.poojaRoom}.`,
+      updatedAt: new Date().toISOString()
+    };
+    setFormData(updated);
+    if (onSaveRequirement) {
+      onSaveRequirement(updated);
+    }
+    setSaveToast(true);
+    setTimeout(() => setSaveToast(false), 3500);
+  };
 
   const [newRoom, setNewRoom] = useState<Partial<RoomSpace>>({
     name: '',
@@ -278,7 +305,17 @@ export const SiteSurveyWorkspace: React.FC<SiteSurveyWorkspaceProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsVastuModalOpen(true)}
+            className="px-3.5 py-1.5 rounded bg-gradient-to-r from-[#002050] to-[#0f6cbd] text-white hover:from-[#0c366e] hover:to-[#0b5a9e] text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer"
+            title="Suggest 3 Vastu-compliant layout options for this area"
+          >
+            <Compass className="h-3.5 w-3.5 text-amber-300" />
+            <span>AI Vastu Layouts (3 Options)</span>
+          </button>
+
           {saveToast && (
             <span className="text-xs text-[#107C41] font-bold flex items-center gap-1">
               <CheckCircle2 className="h-4 w-4" /> Saved!
@@ -341,6 +378,34 @@ export const SiteSurveyWorkspace: React.FC<SiteSurveyWorkspaceProps> = ({
           </div>
           <div className="text-[10px] text-[#B87A38] mt-0.5 font-medium">No noise on Sundays</div>
         </div>
+      </div>
+
+      {/* AI Vastu Layout Optimizer Banner */}
+      <div className="bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-amber-50/60 p-4 rounded-xl border border-blue-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#002050] text-amber-300 flex items-center justify-center shrink-0 shadow-xs">
+            <Compass className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-900">AI Vastu Shastra Layout Optimizer</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200">
+                3 Possibilities
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-600 mt-0.5">
+              Need the ideal room, kitchen &amp; mandir configuration? Input your construction area (e.g. {formData.carpetAreaSqFt || 2500} sq.ft) to generate 3 Vastu-compliant layout options with room breakdown, dimensions &amp; cardinal zoning.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => setIsVastuModalOpen(true)}
+          className="px-3.5 py-2 rounded-lg bg-[#002050] hover:bg-[#0c366e] text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-2xs shrink-0 cursor-pointer"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+          <span>Suggest 3 Vastu Layouts</span>
+        </button>
       </div>
 
       {/* 3. ROOM DIMENSIONS MATRIX TABLE */}
@@ -714,6 +779,18 @@ export const SiteSurveyWorkspace: React.FC<SiteSurveyWorkspaceProps> = ({
           </div>
         )}
       </div>
+
+      {/* AI Vastu Layout Suggester Modal */}
+      {isVastuModalOpen && (
+        <AIVastuLayoutSuggesterModal
+          isOpen={isVastuModalOpen}
+          onClose={() => setIsVastuModalOpen(false)}
+          project={project}
+          initialArea={formData.carpetAreaSqFt || 2500}
+          initialPropertyType={project.projectType || 'RESIDENTIAL_VILLA'}
+          onApplyLayoutToProject={handleApplyVastuLayout}
+        />
+      )}
     </div>
   );
 };

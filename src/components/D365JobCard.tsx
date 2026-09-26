@@ -30,7 +30,8 @@ import {
   Clock,
   Briefcase,
   TrendingUp,
-  Tag
+  Tag,
+  Compass
 } from 'lucide-react';
 import { 
   ProjectRecord, 
@@ -40,13 +41,16 @@ import {
   MasterRateItem, 
   UserSession, 
   TradeCategory,
-  CustomerRequirement
+  CustomerRequirement,
+  RoomSpace,
+  VastuLayoutOption
 } from '../types/erp';
 import { BudgetEngineView } from './BudgetEngineView';
 import { CustomerQuotationView } from './CustomerQuotationView';
 import { D365CueTilesBar } from './D365CueTilesBar';
 import { SiteSurveyWorkspace } from './SiteSurveyWorkspace';
 import { BOQGrid } from './BOQGrid';
+import { AIVastuLayoutSuggesterModal } from './AIVastuLayoutSuggesterModal';
 
 interface D365JobCardProps {
   project: ProjectRecord;
@@ -118,6 +122,59 @@ export const D365JobCard: React.FC<D365JobCardProps> = ({
 
   const isEstimatorOrAdmin = currentUser?.role === 'ESTIMATOR' || currentUser?.role === 'ADMIN';
   const isClient = currentUser?.role === 'CLIENT';
+  const [isVastuModalOpen, setIsVastuModalOpen] = useState(false);
+
+  const handleApplyVastuLayout = (
+    option: VastuLayoutOption,
+    newRooms: RoomSpace[],
+    totalCarpet: number,
+    totalBuiltUp: number
+  ) => {
+    if (onSaveRequirement) {
+      const updatedReq: CustomerRequirement = {
+        ...(project.requirement || {
+          id: `REQ-${project.id}`,
+          projectId: project.id,
+          customerName: project.clientName,
+          customerPhone: project.clientPhone,
+          customerEmail: project.clientEmail,
+          billingAddress: project.siteAddress,
+          projectSiteAddress: project.siteAddress,
+          city: project.city,
+          projectType: project.projectType,
+          projectScope: project.projectScope,
+          plotAreaSqFt: totalBuiltUp,
+          builtUpAreaSqFt: totalBuiltUp,
+          carpetAreaSqFt: totalCarpet,
+          floorsCount: option.floorsCount,
+          rooms: [],
+          preferredDesignStyle: 'Vastu Shastra Classical',
+          materialsBrandsPreferences: '',
+          civilRequirements: '',
+          electricalRequirements: '',
+          plumbingSanitaryRequirements: '',
+          hvacRequirements: '',
+          joineryKitchenPreferences: '',
+          customerBudgetMin: 0,
+          customerBudgetMax: 0,
+          targetCompletionDate: '',
+          exclusionsCustomerSupplied: '',
+          siteAccessConstraints: '',
+          surveyNotes: '',
+          rawBriefHindiEnglish: '',
+          documents: [],
+          updatedAt: new Date().toISOString()
+        }),
+        rooms: newRooms,
+        carpetAreaSqFt: totalCarpet,
+        builtUpAreaSqFt: totalBuiltUp,
+        preferredDesignStyle: `${option.title} (${option.vastuScore}% Vastu Pure)`,
+        surveyNotes: `Synthesized via AI Vastu Layout Optimizer (${option.configuration}). Highlights: ${option.vastuHighlights.masterBedroom}; ${option.vastuHighlights.kitchen}; ${option.vastuHighlights.poojaRoom}.`,
+        updatedAt: new Date().toISOString()
+      };
+      onSaveRequirement(updatedReq);
+    }
+  };
 
   const activeRev = project.revisions.find(r => r.id === project.activeRevisionId) || project.revisions[0];
   const items = activeRev ? activeRev.items : [];
@@ -257,20 +314,32 @@ export const D365JobCard: React.FC<D365JobCardProps> = ({
             </div>
           </div>
 
-          {/* Revision Switcher in Document Header */}
-          <div className="flex items-center gap-2.5 bg-slate-50 p-2 rounded-lg border border-slate-200/90 self-start md:self-center shrink-0">
-            <span className="text-xs font-semibold text-slate-600">Active Revision:</span>
-            <select
-              value={activeRev?.id}
-              onChange={e => onSelectRevision(e.target.value)}
-              className="bg-white border border-slate-300 rounded-md px-3 py-1 text-xs font-bold text-slate-800 focus:border-[#0F6CBD] focus:ring-1 focus:ring-[#0F6CBD] focus:outline-hidden cursor-pointer shadow-2xs"
+          {/* Document Header Action Bar: Vastu Optimizer & Revision Switcher */}
+          <div className="flex flex-wrap items-center gap-2 self-start md:self-center shrink-0">
+            <button
+              type="button"
+              onClick={() => setIsVastuModalOpen(true)}
+              className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#002050] to-[#0f6cbd] hover:from-[#0c366e] hover:to-[#0b5a9e] text-white text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
+              title="AI Vastu Layout Optimizer - Suggest 3 Vastu-compliant layout options with room breakdown"
             >
-              {project.revisions.map(r => (
-                <option key={r.id} value={r.id}>
-                  {r.revisionLabel} [{r.status}]
-                </option>
-              ))}
-            </select>
+              <Compass className="w-3.5 h-3.5 text-amber-300" />
+              <span>AI Vastu Layout (3 Options)</span>
+            </button>
+
+            <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-lg border border-slate-200/90">
+              <span className="text-xs font-semibold text-slate-600">Revision:</span>
+              <select
+                value={activeRev?.id}
+                onChange={e => onSelectRevision(e.target.value)}
+                className="bg-white border border-slate-300 rounded-md px-2.5 py-1 text-xs font-bold text-slate-800 focus:border-[#0F6CBD] focus:ring-1 focus:ring-[#0F6CBD] focus:outline-hidden cursor-pointer shadow-2xs"
+              >
+                {project.revisions.map(r => (
+                  <option key={r.id} value={r.id}>
+                    {r.revisionLabel} [{r.status}]
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -542,6 +611,34 @@ export const D365JobCard: React.FC<D365JobCardProps> = ({
                   <span>Verified by Site QS</span>
                 </div>
               </div>
+            </div>
+
+            {/* AI Vastu Layout Optimizer Banner */}
+            <div className="p-3.5 bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-amber-50/60 rounded-xl border border-blue-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#002050] text-amber-300 flex items-center justify-center shrink-0 shadow-xs">
+                  <Compass className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-slate-900">AI Vastu Shastra Layout Optimizer</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200">
+                      3 Options Available
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-600 mt-0.5">
+                    Input construction area (e.g. 2,500 sq.ft) to generate 3 Vastu-compliant layout options with room breakdown, dimensions &amp; cardinal zoning.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsVastuModalOpen(true)}
+                className="px-3.5 py-2 rounded-lg bg-[#002050] hover:bg-[#0c366e] text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-2xs shrink-0 cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <span>Suggest 3 Vastu Layouts</span>
+              </button>
             </div>
 
             {/* Room-by-room dimensions table */}
@@ -1172,6 +1269,18 @@ export const D365JobCard: React.FC<D365JobCardProps> = ({
             </div>
           </div>
         </div>
+      )}
+
+      {/* AI Vastu Layout Suggester Modal */}
+      {isVastuModalOpen && (
+        <AIVastuLayoutSuggesterModal
+          isOpen={isVastuModalOpen}
+          onClose={() => setIsVastuModalOpen(false)}
+          project={project}
+          initialArea={project.requirement?.carpetAreaSqFt || project.carpetAreaSqFt || 2500}
+          initialPropertyType={project.projectType || 'RESIDENTIAL_VILLA'}
+          onApplyLayoutToProject={handleApplyVastuLayout}
+        />
       )}
     </div>
   );

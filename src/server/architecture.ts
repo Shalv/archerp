@@ -15,8 +15,11 @@ app.use(express.json({ limit: '10mb' }));
 // Serve static architectural assets
 app.use('/assets/images', express.static(path.join(process.cwd(), 'public', 'assets', 'images')));
 
+let isGeminiArchitectureAccessDenied = false;
+
 // Lazy initialize Gemini client if key is set
 function getGeminiClient(): GoogleGenAI | null {
+  if (isGeminiArchitectureAccessDenied) return null;
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey === 'MY_GEMINI_API_KEY' || apiKey.trim() === '') {
     return null;
@@ -29,6 +32,18 @@ function getGeminiClient(): GoogleGenAI | null {
       },
     },
   });
+}
+
+function handleArchitectureGeminiError(err: any): void {
+  const errMsg = typeof err?.message === 'string' ? err.message : JSON.stringify(err || '');
+  if (
+    errMsg.includes('PERMISSION_DENIED') ||
+    errMsg.includes('denied access') ||
+    errMsg.includes('403') ||
+    errMsg.includes('API_KEY_INVALID')
+  ) {
+    isGeminiArchitectureAccessDenied = true;
+  }
 }
 
 // Map architectural styles to curated visual renders
@@ -50,8 +65,8 @@ app.get('/api/architecture/health', (req, res) => {
     status: 'ok',
     timestamp: new Date().toISOString(),
     hasGeminiKey: hasKey,
-    activeModel: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
-    imageModel: process.env.GEMINI_IMAGE_MODEL || 'gemini-2.5-flash-image',
+    activeModel: process.env.GEMINI_MODEL || 'gemini-3.8-flash',
+    imageModel: process.env.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-lite-image',
   });
 });
 
@@ -246,8 +261,8 @@ app.get('/api/gemini/status', (req, res) => {
   const hasKey = Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'MY_GEMINI_API_KEY' && process.env.GEMINI_API_KEY.trim() !== '');
   res.json({
     connected: hasKey,
-    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
-    imageModel: process.env.GEMINI_IMAGE_MODEL || 'gemini-2.5-flash-image',
+    model: process.env.GEMINI_MODEL || 'gemini-3.8-flash',
+    imageModel: process.env.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-lite-image',
     timestamp: new Date().toISOString(),
   });
 });
@@ -541,7 +556,7 @@ Each concept MUST have:
       let usedModel = 'gemini-3.8-flash';
       try {
         response = await client.models.generateContent({
-          model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+          model: process.env.GEMINI_MODEL || 'gemini-3.8-flash',
           contents: prompt,
           config: {
             responseMimeType: 'application/json',
@@ -606,7 +621,7 @@ Each concept MUST have:
           },
         });
       } catch (mErr: any) {
-        console.warn(`Model gemini-3.8-flash failed:`, mErr?.message);
+        handleArchitectureGeminiError(mErr);
       }
 
       if (response && response.text) {
@@ -627,7 +642,7 @@ Each concept MUST have:
               ),
             };
           });
-          return res.json({ success: true, source: process.env.GEMINI_MODEL || 'gemini-2.5-flash', concepts: conceptsWithAssets });
+          return res.json({ success: true, source: process.env.GEMINI_MODEL || 'gemini-3.8-flash', concepts: conceptsWithAssets });
         }
       }
     }

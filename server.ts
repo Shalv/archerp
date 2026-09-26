@@ -17,7 +17,11 @@ import { createServer as createViteServer } from 'vite';
 
 import { dbService, DEMO_USERS } from './src/server/db';
 import { mongoDBService } from './src/server/mongoService';
-import { analyzeCustomerRequirementBrief, generateDraftBOQFromRequirements } from './src/server/geminiService';
+import { 
+  analyzeCustomerRequirementBrief, 
+  generateDraftBOQFromRequirements,
+  generateVastuLayoutSuggestions 
+} from './src/server/geminiService';
 import { getAlternativePackages, getValueEngineeringOptions } from './src/server/syntheticDemo';
 import { UserSession, MasterRateItem, BOQItem, BOQRevision, ProjectRecord, CustomerRequirement, SystemCapabilityReport, CustomerQuotation } from './src/types/erp';
 
@@ -112,7 +116,8 @@ export async function createApp(isServerless: boolean = false) {
       normalizedPath === '/ollama/status' ||
       normalizedPath.startsWith('/ollama') ||
       normalizedPath === '/generate-concept-image' ||
-      normalizedPath === '/generate-concepts'
+      normalizedPath === '/generate-concepts' ||
+      normalizedPath === '/ai/suggest-vastu-layouts'
     ) return next();
     if (!resolveUser(req)) return res.status(401).json({ error: 'Please sign in again.' });
     next();
@@ -732,6 +737,41 @@ export async function createApp(isServerless: boolean = false) {
     );
 
     res.json(analysis);
+  });
+
+  app.post('/api/ai/suggest-vastu-layouts', async (req: Request, res: Response) => {
+    try {
+      const { areaSqFt, propertyType, facingDirection, floorsCount, lifestyleNotes } = req.body;
+      const numArea = Number(areaSqFt);
+      if (!numArea || isNaN(numArea) || numArea <= 0) {
+        return res.status(400).json({ error: 'Valid construction area in sq.ft is required (e.g. 2500 sq.ft).' });
+      }
+
+      const suggestions = await generateVastuLayoutSuggestions({
+        areaSqFt: numArea,
+        propertyType: propertyType || 'RESIDENTIAL_VILLA',
+        facingDirection: facingDirection || 'EAST',
+        floorsCount: Number(floorsCount) || (numArea > 3000 ? 2 : 1),
+        lifestyleNotes: lifestyleNotes || ''
+      });
+
+      // Log audit trail if logged-in user
+      const user = resolveUser(req);
+      if (user) {
+        dbService.logAudit(
+          user,
+          'AI_VASTU_LAYOUT_GENERATION',
+          'SPATIAL_PLANNING',
+          `AREA-${numArea}`,
+          `Generated 3 Vastu-compliant layout options for ${numArea} sq.ft (${propertyType || 'RESIDENTIAL_VILLA'}, Facing: ${facingDirection || 'EAST'}).`
+        );
+      }
+
+      res.json(suggestions);
+    } catch (err: any) {
+      console.error('[Vastu Suggestion API Error]:', err);
+      res.status(500).json({ error: err.message || 'Failed to generate Vastu layout suggestions.' });
+    }
   });
 
   app.post('/api/ai/generate-boq', async (req: Request, res: Response) => {

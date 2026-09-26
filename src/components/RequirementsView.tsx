@@ -14,9 +14,11 @@ import {
   ArrowRight,
   Languages,
   ShieldCheck,
-  RefreshCw
+  RefreshCw,
+  Compass
 } from 'lucide-react';
-import { CustomerRequirement, RoomSpace, UploadedBriefDocument, UserSession } from '../types/erp';
+import { CustomerRequirement, RoomSpace, UploadedBriefDocument, UserSession, VastuLayoutOption } from '../types/erp';
+import { AIVastuLayoutSuggesterModal } from './AIVastuLayoutSuggesterModal';
 
 interface RequirementsViewProps {
   requirement: CustomerRequirement;
@@ -41,6 +43,29 @@ export const RequirementsView: React.FC<RequirementsViewProps> = ({
     detectedLanguages: string[];
   } | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isVastuModalOpen, setIsVastuModalOpen] = useState(false);
+
+  const handleApplyVastuLayout = (
+    option: VastuLayoutOption,
+    newRooms: RoomSpace[],
+    totalCarpet: number,
+    totalBuiltUp: number
+  ) => {
+    const updated: CustomerRequirement = {
+      ...formData,
+      rooms: newRooms,
+      carpetAreaSqFt: totalCarpet,
+      builtUpAreaSqFt: totalBuiltUp,
+      floorsCount: option.floorsCount,
+      preferredDesignStyle: `${option.title} (${option.vastuScore}% Vastu Pure)`,
+      surveyNotes: `Synthesized via AI Vastu Layout Optimizer (${option.configuration}). ${option.vastuHighlights.mainEntrance}. Master: ${option.vastuHighlights.masterBedroom}. Kitchen: ${option.vastuHighlights.kitchen}. Pooja: ${option.vastuHighlights.poojaRoom}.`,
+      updatedAt: new Date().toISOString()
+    };
+    setFormData(updated);
+    onSaveRequirement(updated);
+    setSaveSuccess(true);
+    setTimeout(() => setSaveSuccess(false), 3500);
+  };
 
   // New room modal / row state
   const [newRoom, setNewRoom] = useState<Partial<RoomSpace>>({
@@ -284,23 +309,62 @@ export const RequirementsView: React.FC<RequirementsViewProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Room Spaces & Dimensional Schedule */}
         <div className="lg:col-span-2 space-y-6">
+          {/* AI Vastu Layout Optimizer Banner */}
+          <div className="rounded-xl border border-blue-200/90 bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-amber-50/60 p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#002050] text-amber-300 flex items-center justify-center shrink-0 shadow-xs">
+                <Compass className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-900">AI Vastu Shastra Layout Optimizer</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200">
+                    3 Layout Options
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-600 mt-0.5">
+                  Have construction area (e.g. {formData.carpetAreaSqFt || 2500} sq.ft)? AI will suggest 3 Vastu-compliant layout options with room breakdown, kitchen, pooja &amp; dimensions.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsVastuModalOpen(true)}
+              className="px-3.5 py-2 rounded-lg bg-[#002050] hover:bg-[#0c366e] text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-2xs shrink-0 cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span>Suggest 3 Vastu Layouts</span>
+            </button>
+          </div>
+
           <div className="rounded-xl border border-[#E5DFD7] bg-white p-6 shadow-xs">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-serif text-base font-bold text-[#1F2421]">
-                  Room Spaces & Measurement Schedule
+                  Room Spaces &amp; Measurement Schedule
                 </h3>
                 <p className="text-xs text-[#6B7280]">
                   Exact dimensions used by deterministic formulas for false ceilings, tile flooring, and wall painting.
                 </p>
               </div>
-              <button
-                onClick={() => setShowAddRoom(!showAddRoom)}
-                className="flex items-center gap-1 rounded-lg border border-[#D5CCC0] bg-[#FAF7F2] px-3 py-1.5 text-xs font-semibold text-[#3C362F] hover:bg-[#F0EBE2] transition"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                <span>Add Room</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsVastuModalOpen(true)}
+                  className="flex items-center gap-1 rounded-lg border border-blue-300 bg-blue-50 px-2.5 py-1.5 text-xs font-semibold text-[#0F6CBD] hover:bg-blue-100 transition"
+                  title="Suggest 3 Vastu layout options"
+                >
+                  <Compass className="h-3.5 w-3.5 text-[#0F6CBD]" />
+                  <span>Vastu Optimizer</span>
+                </button>
+                <button
+                  onClick={() => setShowAddRoom(!showAddRoom)}
+                  className="flex items-center gap-1 rounded-lg border border-[#D5CCC0] bg-[#FAF7F2] px-3 py-1.5 text-xs font-semibold text-[#3C362F] hover:bg-[#F0EBE2] transition"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  <span>Add Room</span>
+                </button>
+              </div>
             </div>
 
             {/* Add Room Inline Form */}
@@ -622,6 +686,17 @@ export const RequirementsView: React.FC<RequirementsViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* AI Vastu Layout Suggester Modal */}
+      {isVastuModalOpen && (
+        <AIVastuLayoutSuggesterModal
+          isOpen={isVastuModalOpen}
+          onClose={() => setIsVastuModalOpen(false)}
+          initialArea={formData.carpetAreaSqFt || 2500}
+          initialPropertyType={formData.projectType || 'RESIDENTIAL_VILLA'}
+          onApplyLayoutToProject={handleApplyVastuLayout}
+        />
+      )}
     </div>
   );
 };

@@ -437,6 +437,68 @@ export interface RoomSpace {
   existingCondition: string;
   demolitionRequired: boolean;
   notes?: string;
+  vastuDirection?: string;
+  vastuElement?: string;
+}
+
+export interface VastuRoomSuggestion {
+  name: string;
+  roomType: string;
+  zone: string;
+  floor: string;
+  lengthFt: number;
+  widthFt: number;
+  heightFt: number;
+  carpetAreaSqFt: number;
+  vastuDirection: string;
+  vastuElement: string;
+  vastuSignificance: string;
+  recommendedFeatures: string[];
+}
+
+export interface VastuLayoutOption {
+  id: string;
+  optionNumber: 1 | 2 | 3;
+  title: string;
+  tagline: string;
+  vastuScore: number; // e.g. 94 - 99
+  propertyType: string;
+  facingDirection: string;
+  floorsCount: number;
+  configuration: string;
+  totalBuiltUpSqFt: number;
+  totalCarpetSqFt: number;
+  carpetRatioPercent: number;
+  circulationPercent: number;
+  vastuHighlights: {
+    mainEntrance: string;
+    masterBedroom: string;
+    kitchen: string;
+    poojaRoom: string;
+    livingDining: string;
+    staircase: string;
+    brahmasthan: string;
+    waterElements: string;
+  };
+  rooms: VastuRoomSuggestion[];
+  pros: string[];
+  bestSuitedFor: string;
+  architecturalNotes: string;
+}
+
+export interface VastuLayoutSuggestionResponse {
+  requestedAreaSqFt: number;
+  propertyType: string;
+  facingDirection: string;
+  floorsCount: number;
+  options: [VastuLayoutOption, VastuLayoutOption, VastuLayoutOption];
+  vastuCompassGuidelines: {
+    direction: string;
+    deity: string;
+    element: string;
+    recommendedRooms: string[];
+    strictlyAvoid: string[];
+  }[];
 }
 
 export interface UploadedBriefDocument {
