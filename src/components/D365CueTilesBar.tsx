@@ -172,125 +172,120 @@ export const D365CueTilesBar: React.FC<D365CueTilesBarProps> = ({
         {/* 4. ACTIVE PLANNING LINES TILE */}
         <div
           onClick={() => toggleTile('lines')}
-          className={`group cursor-pointer rounded border p-2.5 transition relative select-none ${
+          className={`group cursor-pointer rounded-xl border p-3 transition select-none ${
             activeDropdown === 'lines'
-              ? 'bg-[#EFF6FC] border-[#0F6CBD] shadow-md ring-2 ring-[#0F6CBD]/20'
-              : 'bg-white border-[#E1DFDD] hover:border-[#0F6CBD] hover:bg-[#FAF9F8] hover:shadow-xs'
+              ? 'bg-slate-50 border-slate-900 shadow-xs ring-1 ring-slate-900'
+              : 'bg-white border-slate-200 hover:border-slate-400 hover:shadow-2xs'
           }`}
         >
-          <div className="flex items-center justify-between text-[#605E5C]">
-            <span className="text-[10px] font-semibold uppercase tracking-wider">Planning Lines</span>
+          <div className="flex items-center justify-between text-slate-500">
+            <span className="text-[11px] font-medium">Planning Lines</span>
             <div className="flex items-center gap-0.5">
-              <FileSpreadsheet className="h-3.5 w-3.5 text-[#0F6CBD]" />
-              <ChevronDown className={`h-3 w-3 transition text-[#8A8886] ${activeDropdown === 'lines' ? 'rotate-180 text-[#0F6CBD]' : 'group-hover:text-[#0F6CBD]'}`} />
+              <FileSpreadsheet className="h-3.5 w-3.5 text-slate-400" />
+              <ChevronDown className={`h-3 w-3 transition text-slate-400 ${activeDropdown === 'lines' ? 'rotate-180 text-slate-900' : 'group-hover:text-slate-700'}`} />
             </div>
           </div>
-          <div className="mt-1 font-mono text-base font-bold text-[#201F1E] truncate">
+          <div className="mt-1 font-mono tabular-nums text-base font-bold text-slate-900 truncate">
             {items.length} Lines
           </div>
-          <div className="text-[10px] text-[#605E5C] truncate flex items-center justify-between mt-0.5">
-            <span>BOQ Studio Takeoff</span>
-            <span className="text-[#0F6CBD] font-semibold text-[9px]">Drilldown ▾</span>
+          <div className="text-[10px] text-slate-400 truncate mt-0.5">
+            BOQ Takeoff
           </div>
         </div>
 
         {/* 5. SITE SPATIAL SURVEY TILE */}
         <div
           onClick={() => toggleTile('survey')}
-          className={`group cursor-pointer rounded border p-2.5 transition relative select-none ${
+          className={`group cursor-pointer rounded-xl border p-3 transition select-none ${
             activeDropdown === 'survey'
-              ? 'bg-[#EFF6FC] border-[#0F6CBD] shadow-md ring-2 ring-[#0F6CBD]/20'
-              : 'bg-white border-[#E1DFDD] hover:border-[#0F6CBD] hover:bg-[#FAF9F8] hover:shadow-xs'
+              ? 'bg-slate-50 border-slate-900 shadow-xs ring-1 ring-slate-900'
+              : 'bg-white border-slate-200 hover:border-slate-400 hover:shadow-2xs'
           }`}
         >
-          <div className="flex items-center justify-between text-[#605E5C]">
-            <span className="text-[10px] font-semibold uppercase tracking-wider">Carpet Area</span>
+          <div className="flex items-center justify-between text-slate-500">
+            <span className="text-[11px] font-medium">Carpet Area</span>
             <div className="flex items-center gap-0.5">
-              <Ruler className="h-3.5 w-3.5 text-[#038387]" />
-              <ChevronDown className={`h-3 w-3 transition text-[#8A8886] ${activeDropdown === 'survey' ? 'rotate-180 text-[#038387]' : 'group-hover:text-[#038387]'}`} />
+              <Ruler className="h-3.5 w-3.5 text-slate-400" />
+              <ChevronDown className={`h-3 w-3 transition text-slate-400 ${activeDropdown === 'survey' ? 'rotate-180 text-slate-900' : 'group-hover:text-slate-700'}`} />
             </div>
           </div>
-          <div className="mt-1 font-mono text-base font-bold text-[#201F1E] truncate">
+          <div className="mt-1 font-mono tabular-nums text-base font-bold text-slate-900 truncate">
             {(project.requirement?.carpetAreaSqFt || 1650).toLocaleString()} sq.ft
           </div>
-          <div className="text-[10px] text-[#605E5C] truncate flex items-center justify-between mt-0.5">
-            <span>6 Rooms Surveyed</span>
-            <span className="text-[#0F6CBD] font-semibold text-[9px]">Drilldown ▾</span>
+          <div className="text-[10px] text-slate-400 truncate mt-0.5">
+            6 Rooms Surveyed
           </div>
         </div>
 
         {/* 6. PAYMENT MILESTONES TILE */}
         <div
           onClick={() => toggleTile('milestones')}
-          className={`group cursor-pointer rounded border p-2.5 transition relative select-none ${
+          className={`group cursor-pointer rounded-xl border p-3 transition select-none ${
             activeDropdown === 'milestones'
-              ? 'bg-[#EFF6FC] border-[#0F6CBD] shadow-md ring-2 ring-[#0F6CBD]/20'
-              : 'bg-white border-[#E1DFDD] hover:border-[#0F6CBD] hover:bg-[#FAF9F8] hover:shadow-xs'
+              ? 'bg-slate-50 border-slate-900 shadow-xs ring-1 ring-slate-900'
+              : 'bg-white border-slate-200 hover:border-slate-400 hover:shadow-2xs'
           }`}
         >
-          <div className="flex items-center justify-between text-[#605E5C]">
-            <span className="text-[10px] font-semibold uppercase tracking-wider">Milestones</span>
+          <div className="flex items-center justify-between text-slate-500">
+            <span className="text-[11px] font-medium">Milestones</span>
             <div className="flex items-center gap-0.5">
-              <Clock className="h-3.5 w-3.5 text-[#7C4A1E]" />
-              <ChevronDown className={`h-3 w-3 transition text-[#8A8886] ${activeDropdown === 'milestones' ? 'rotate-180 text-[#7C4A1E]' : 'group-hover:text-[#7C4A1E]'}`} />
+              <Clock className="h-3.5 w-3.5 text-slate-400" />
+              <ChevronDown className={`h-3 w-3 transition text-slate-400 ${activeDropdown === 'milestones' ? 'rotate-180 text-slate-900' : 'group-hover:text-slate-700'}`} />
             </div>
           </div>
-          <div className="mt-1 font-mono text-base font-bold text-[#201F1E] truncate">
+          <div className="mt-1 font-mono tabular-nums text-base font-bold text-slate-900 truncate">
             6 Tranches
           </div>
-          <div className="text-[10px] text-[#605E5C] truncate flex items-center justify-between mt-0.5">
-            <span>Advance to Handover</span>
-            <span className="text-[#0F6CBD] font-semibold text-[9px]">Drilldown ▾</span>
+          <div className="text-[10px] text-slate-400 truncate mt-0.5">
+            Advance to Handover
           </div>
         </div>
 
         {/* 7. REVISION BASELINE TILE */}
         <div
           onClick={() => toggleTile('revision')}
-          className={`group cursor-pointer rounded border p-2.5 transition relative select-none ${
+          className={`group cursor-pointer rounded-xl border p-3 transition select-none ${
             activeDropdown === 'revision'
-              ? 'bg-[#EFF6FC] border-[#0F6CBD] shadow-md ring-2 ring-[#0F6CBD]/20'
-              : 'bg-white border-[#E1DFDD] hover:border-[#0F6CBD] hover:bg-[#FAF9F8] hover:shadow-xs'
+              ? 'bg-slate-50 border-slate-900 shadow-xs ring-1 ring-slate-900'
+              : 'bg-white border-slate-200 hover:border-slate-400 hover:shadow-2xs'
           }`}
         >
-          <div className="flex items-center justify-between text-[#605E5C]">
-            <span className="text-[10px] font-semibold uppercase tracking-wider">Revision</span>
+          <div className="flex items-center justify-between text-slate-500">
+            <span className="text-[11px] font-medium">Revision</span>
             <div className="flex items-center gap-0.5">
-              <ShieldCheck className="h-3.5 w-3.5 text-[#107C41]" />
-              <ChevronDown className={`h-3 w-3 transition text-[#8A8886] ${activeDropdown === 'revision' ? 'rotate-180 text-[#107C41]' : 'group-hover:text-[#107C41]'}`} />
+              <ShieldCheck className="h-3.5 w-3.5 text-slate-400" />
+              <ChevronDown className={`h-3 w-3 transition text-slate-400 ${activeDropdown === 'revision' ? 'rotate-180 text-slate-900' : 'group-hover:text-slate-700'}`} />
             </div>
           </div>
-          <div className="mt-1 font-mono text-base font-bold text-[#201F1E] truncate">
+          <div className="mt-1 font-mono tabular-nums text-base font-bold text-slate-900 truncate">
             {activeRev?.revisionLabel || 'Rev 1.0'}
           </div>
-          <div className="text-[10px] text-[#605E5C] truncate flex items-center justify-between mt-0.5">
-            <span className="text-[#107C41] font-semibold">[{activeRev?.status || 'DRAFT'}]</span>
-            <span className="text-[#0F6CBD] font-semibold text-[9px]">Drilldown ▾</span>
+          <div className="text-[10px] text-slate-400 truncate mt-0.5">
+            {activeRev?.status === 'APPROVED' ? 'Frozen Baseline' : 'Draft Takeoff'}
           </div>
         </div>
 
         {/* 8. MASTER CATALOG TILE */}
         <div
           onClick={() => toggleTile('masters')}
-          className={`group cursor-pointer rounded border p-2.5 transition relative select-none ${
+          className={`group cursor-pointer rounded-xl border p-3 transition select-none ${
             activeDropdown === 'masters'
-              ? 'bg-[#EFF6FC] border-[#0F6CBD] shadow-md ring-2 ring-[#0F6CBD]/20'
-              : 'bg-white border-[#E1DFDD] hover:border-[#0F6CBD] hover:bg-[#FAF9F8] hover:shadow-xs'
+              ? 'bg-slate-50 border-slate-900 shadow-xs ring-1 ring-slate-900'
+              : 'bg-white border-slate-200 hover:border-slate-400 hover:shadow-2xs'
           }`}
         >
-          <div className="flex items-center justify-between text-[#605E5C]">
-            <span className="text-[10px] font-semibold uppercase tracking-wider">Masters Hub</span>
+          <div className="flex items-center justify-between text-slate-500">
+            <span className="text-[11px] font-medium">Masters Hub</span>
             <div className="flex items-center gap-0.5">
-              <Briefcase className="h-3.5 w-3.5 text-[#6264A7]" />
-              <ChevronDown className={`h-3 w-3 transition text-[#8A8886] ${activeDropdown === 'masters' ? 'rotate-180 text-[#6264A7]' : 'group-hover:text-[#6264A7]'}`} />
+              <Briefcase className="h-3.5 w-3.5 text-slate-400" />
+              <ChevronDown className={`h-3 w-3 transition text-slate-400 ${activeDropdown === 'masters' ? 'rotate-180 text-slate-900' : 'group-hover:text-slate-700'}`} />
             </div>
           </div>
-          <div className="mt-1 font-mono text-base font-bold text-[#201F1E] truncate">
+          <div className="mt-1 font-mono tabular-nums text-base font-bold text-slate-900 truncate">
             {masterRates?.length || 28} Items
           </div>
-          <div className="text-[10px] text-[#605E5C] truncate flex items-center justify-between mt-0.5">
-            <span>Cust • Vend • Crew</span>
-            <span className="text-[#0F6CBD] font-semibold text-[9px]">Drilldown ▾</span>
+          <div className="text-[10px] text-slate-400 truncate mt-0.5">
+            Rates &amp; Resources
           </div>
         </div>
       </div>

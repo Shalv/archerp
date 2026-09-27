@@ -18,7 +18,12 @@ import {
   RefreshCw,
   Eye,
   Info,
-  Compass
+  Compass,
+  Maximize2,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
+  X
 } from 'lucide-react';
 import { CustomerRequirement, RoomSpace, ProjectRecord, UserSession, VastuLayoutOption } from '../types/erp';
 import { AIVastuLayoutSuggesterModal } from './AIVastuLayoutSuggesterModal';
@@ -140,6 +145,9 @@ export const SiteSurveyWorkspace: React.FC<SiteSurveyWorkspaceProps> = ({
   const [showAddRoom, setShowAddRoom] = useState(false);
   const [saveToast, setSaveToast] = useState(false);
   const [isVastuModalOpen, setIsVastuModalOpen] = useState(false);
+  const [surveyDrawingZoom, setSurveyDrawingZoom] = useState<number>(1);
+  const [surveyLightboxOpen, setSurveyLightboxOpen] = useState<boolean>(false);
+  const [selectedDrawingIndex, setSelectedDrawingIndex] = useState<number>(0);
 
   const handleApplyVastuLayout = (
     option: VastuLayoutOption,
@@ -673,43 +681,134 @@ export const SiteSurveyWorkspace: React.FC<SiteSurveyWorkspaceProps> = ({
         </div>
 
         {/* 6. DRAWINGS & CAD ATTACHMENTS */}
-        <div className="bg-white rounded-lg border border-[#E1DFDD] p-4 shadow-xs space-y-3">
-          <div className="flex items-center justify-between border-b border-[#EDEBE9] pb-2">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-3">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-2 flex-wrap gap-2">
             <div className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-[#0F6CBD]" />
-              <span className="font-bold text-xs text-[#201F1E] uppercase tracking-wider">
+              <FileText className="h-4 w-4 text-blue-600" />
+              <span className="font-bold text-xs text-slate-800 uppercase tracking-wider">
                 Drawing Attachments &amp; CAD Layouts
               </span>
             </div>
-            <span className="text-[10px] text-[#605E5C]">{(formData.attachments || []).length} files attached</span>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] text-slate-500 font-mono">{(formData.attachments || []).length} drawing sheets attached</span>
+              <button
+                type="button"
+                onClick={() => setSurveyLightboxOpen(true)}
+                className="px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-semibold flex items-center gap-1 transition cursor-pointer"
+                title="Inspect in High-Res Lightbox"
+              >
+                <Maximize2 className="w-3 h-3 text-sky-400" />
+                <span>Inspect Drawing</span>
+              </button>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            {(formData.attachments || []).map((att: any) => (
-              <div key={att.id} className="p-2.5 rounded border border-[#EDEBE9] bg-[#FAF9F8] flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2 truncate">
-                  <span className="bg-[#EFF6FC] text-[#0F6CBD] font-bold text-[10px] px-1.5 py-0.5 rounded border border-[#C7E0F4]">
-                    {(att.fileType || 'FILE').toUpperCase()}
-                  </span>
-                  <div className="truncate">
-                    <div className="font-semibold text-[#201F1E] truncate">{att.fileName}</div>
-                    <div className="text-[10px] text-[#605E5C] truncate">{att.parsedSummary}</div>
-                  </div>
-                </div>
-                <span className="text-[10px] text-[#8A8886] whitespace-nowrap ml-2">
-                  {Math.round((att.sizeKb || 1024) / 1024 * 10) / 10} MB
+          {/* Attached Files Selector Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            {(formData.attachments || []).map((att: any, idx: number) => (
+              <button
+                key={att.id}
+                type="button"
+                onClick={() => setSelectedDrawingIndex(idx)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-2 transition cursor-pointer border shrink-0 ${
+                  selectedDrawingIndex === idx
+                    ? 'bg-blue-50 text-blue-800 border-blue-300 shadow-2xs font-semibold'
+                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                }`}
+              >
+                <span className="bg-blue-600 text-white text-[9px] font-mono px-1.5 py-0.5 rounded font-bold">
+                  {(att.fileType || 'DWG').toUpperCase()}
                 </span>
-              </div>
+                <span className="truncate max-w-[200px]">{att.fileName}</span>
+              </button>
             ))}
           </div>
 
-          <button
-            onClick={() => alert('CAD Floorplan viewer opened in high-resolution drawing mode.')}
-            className="w-full py-1.5 rounded bg-white text-[#323130] border border-[#8A8886] hover:bg-[#F3F2F1] text-xs font-semibold flex items-center justify-center gap-1.5 transition"
-          >
-            <Eye className="h-3.5 w-3.5 text-[#0F6CBD]" />
-            <span>Open Architectural Drawing Viewer</span>
-          </button>
+          {/* Sized Drawing Viewer in Card */}
+          <div className="relative rounded-xl overflow-hidden border border-slate-800 bg-slate-950 flex flex-col group">
+            {/* Drawing Viewport Toolbar */}
+            <div className="px-3 py-1.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-xs text-slate-300">
+              <span className="font-mono text-[11px] text-slate-400">
+                {formData.attachments?.[selectedDrawingIndex]?.fileName || 'Architectural Floorplan CAD Sheet'}
+              </span>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setSurveyDrawingZoom(prev => Math.max(prev - 0.2, 0.6))}
+                  className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition"
+                  title="Zoom Out"
+                >
+                  <ZoomOut className="w-3.5 h-3.5" />
+                </button>
+                <span className="px-1 text-[10px] font-mono text-slate-400">
+                  {Math.round(surveyDrawingZoom * 100)}%
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSurveyDrawingZoom(prev => Math.min(prev + 0.2, 2.5))}
+                  className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition"
+                  title="Zoom In"
+                >
+                  <ZoomIn className="w-3.5 h-3.5" />
+                </button>
+                {surveyDrawingZoom !== 1 && (
+                  <button
+                    type="button"
+                    onClick={() => setSurveyDrawingZoom(1)}
+                    className="p-1 rounded text-slate-500 hover:text-white hover:bg-slate-800 transition text-[10px]"
+                    title="Reset Zoom"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                  </button>
+                )}
+                <div className="h-3 w-px bg-slate-800 mx-1" />
+                <button
+                  type="button"
+                  onClick={() => setSurveyLightboxOpen(true)}
+                  className="p-1 rounded text-slate-300 hover:text-sky-400 transition flex items-center gap-1"
+                  title="Fullscreen"
+                >
+                  <Maximize2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Drawing Canvas Area Sized to Card */}
+            <div 
+              onClick={() => setSurveyLightboxOpen(true)}
+              className="relative h-72 sm:h-80 md:h-[360px] bg-slate-950 overflow-hidden cursor-pointer flex items-center justify-center p-3 select-none"
+            >
+              {/* Subtle Blueprint Grid Background */}
+              <div 
+                className="absolute inset-0 opacity-15 pointer-events-none"
+                style={{
+                  backgroundImage: 'linear-gradient(to right, #38bdf8 1px, transparent 1px), linear-gradient(to bottom, #38bdf8 1px, transparent 1px)',
+                  backgroundSize: '24px 24px'
+                }}
+              />
+
+              <div 
+                className="w-full h-full flex items-center justify-center transition-transform duration-150 ease-out"
+                style={{ transform: `scale(${surveyDrawingZoom})` }}
+              >
+                <img
+                  src={selectedDrawingIndex === 0 ? '/assets/images/cad_floor_plan_1789216705163.jpg' : '/assets/images/cad_section_drawing_1789218091254.jpg'}
+                  alt="Architectural Survey CAD Drawing"
+                  className="w-full h-full object-contain rounded shadow-lg relative z-10"
+                />
+              </div>
+
+              <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between pointer-events-none z-20">
+                <span className="bg-black/80 backdrop-blur-xs text-white text-[10px] font-mono px-2 py-0.5 rounded border border-slate-800">
+                  Laser Verified • 1:50 Scale
+                </span>
+                <span className="bg-blue-600/90 text-white text-[10px] font-semibold px-2 py-0.5 rounded flex items-center gap-1">
+                  <Maximize2 className="w-3 h-3" />
+                  <span>Click to Expand</span>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -790,6 +889,81 @@ export const SiteSurveyWorkspace: React.FC<SiteSurveyWorkspaceProps> = ({
           initialPropertyType={project.projectType || 'RESIDENTIAL_VILLA'}
           onApplyLayoutToProject={handleApplyVastuLayout}
         />
+      )}
+
+      {/* Survey Drawing Fullscreen Lightbox Modal */}
+      {surveyLightboxOpen && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col overflow-hidden text-white animate-in fade-in">
+          <div className="px-6 py-3.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded font-mono">
+                  SITE SURVEY CAD
+                </span>
+                <h2 className="text-base font-bold text-white">
+                  {formData.attachments?.[selectedDrawingIndex]?.fileName || 'Architectural Floorplan CAD Sheet'}
+                </h2>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Laser Distance Survey Verification • Unit Carpet: {formData.carpetAreaSqFt} sq.ft • Built-Up: {formData.builtUpAreaSqFt} sq.ft
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <div className="flex items-center bg-slate-800 rounded-lg p-0.5 border border-slate-700">
+                <button
+                  type="button"
+                  onClick={() => setSurveyDrawingZoom(prev => Math.max(prev - 0.25, 0.5))}
+                  className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition cursor-pointer"
+                  title="Zoom Out"
+                >
+                  <ZoomOut className="w-4 h-4" />
+                </button>
+                <span className="px-2 text-xs font-mono text-slate-300 select-none">
+                  {Math.round(surveyDrawingZoom * 100)}%
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSurveyDrawingZoom(prev => Math.min(prev + 0.25, 3.5))}
+                  className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition cursor-pointer"
+                  title="Zoom In"
+                >
+                  <ZoomIn className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSurveyDrawingZoom(1)}
+                  className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700 rounded transition border-l border-slate-700 cursor-pointer text-xs"
+                  title="Reset Zoom to 100%"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSurveyLightboxOpen(false)}
+                className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition cursor-pointer"
+                title="Close Lightbox"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          <div className="flex-1 relative bg-slate-950 overflow-auto flex items-center justify-center p-6">
+            <div 
+              className="relative max-w-full max-h-full flex items-center justify-center transition-transform duration-150 ease-out z-10"
+              style={{ transform: `scale(${surveyDrawingZoom})` }}
+            >
+              <img
+                src={selectedDrawingIndex === 0 ? '/assets/images/cad_floor_plan_1789216705163.jpg' : '/assets/images/cad_section_drawing_1789218091254.jpg'}
+                alt="Architectural Survey CAD Drawing High-Res"
+                className="max-w-[92vw] max-h-[82vh] object-contain rounded-lg shadow-2xl border border-slate-800"
+              />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

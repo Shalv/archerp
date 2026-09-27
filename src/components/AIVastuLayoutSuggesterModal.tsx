@@ -27,7 +27,9 @@ import {
   FileImage,
   FileCode,
   RefreshCw,
-  Zap
+  Zap,
+  ZoomIn,
+  ZoomOut
 } from 'lucide-react';
 import { ArchitecturalFloorPlanViewer } from './ArchitecturalFloorPlanViewer';
 import { 
@@ -784,10 +786,14 @@ export const AIVastuLayoutSuggesterModal: React.FC<AIVastuLayoutSuggesterModalPr
                   {/* Quick Dimensional Callouts Summary Strip */}
                   <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5">
                     <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <Ruler className="w-4 h-4 text-[#0f6cbd]" />
                         <span className="text-xs font-bold text-slate-900">
                           Key Architectural Room Dimensions ({currentOption.configuration})
+                        </span>
+                        <span className="hidden sm:inline-flex items-center gap-1 text-[10px] text-cyan-800 bg-cyan-50 border border-cyan-200 px-2 py-0.5 rounded font-mono font-medium">
+                          <ZoomIn className="w-3 h-3 text-cyan-600" />
+                          <span>Zoom (50% - 350%) &amp; Drag-Pan Enabled</span>
                         </span>
                       </div>
 

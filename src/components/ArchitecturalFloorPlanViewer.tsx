@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { 
   Maximize2, 
   Minimize2, 
@@ -13,18 +13,19 @@ import {
   Eye, 
   CheckCircle2, 
   Building2, 
-  Sparkles,
-  Info,
-  FileCode,
-  FileImage,
-  FileSpreadsheet,
-  Palette,
-  Check,
-  Flame,
-  Droplets,
-  Mountain,
-  Wind,
-  Sun
+  Sparkles, 
+  Info, 
+  FileCode, 
+  FileImage, 
+  FileSpreadsheet, 
+  Palette, 
+  Check, 
+  Flame, 
+  Droplets, 
+  Mountain, 
+  Wind, 
+  Sun,
+  Move
 } from 'lucide-react';
 import { VastuLayoutOption, VastuRoomSuggestion, ProjectRecord } from '../types/erp';
 import { 
@@ -63,7 +64,21 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
   onApplyLayout,
   isApplied
 }) => {
+  // Live Interactive Zoom & Pan Engine for Generated Floor Plan
   const [zoomLevel, setZoomLevel] = useState<number>(1);
+  const [panOffset, setPanOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [dragStart, setDragStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  // Lightbox Zoom & Pan State
+  const [lightboxZoom, setLightboxZoom] = useState<number>(1);
+  const [lightboxPan, setLightboxPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [lightboxIsDragging, setLightboxIsDragging] = useState<boolean>(false);
+  const [lightboxDragStart, setLightboxDragStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const lightboxTouchStartRef = useRef<{ x: number; y: number } | null>(null);
+
   const [showDimensions, setShowDimensions] = useState<boolean>(true);
   const [showVastuOverlay, setShowVastuOverlay] = useState<boolean>(true);
   const [showFurniture, setShowFurniture] = useState<boolean>(true);
@@ -115,9 +130,117 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
     }
   };
 
-  const handleZoomIn = () => setZoomLevel(prev => Math.min(prev + 0.25, 2.5));
-  const handleZoomOut = () => setZoomLevel(prev => Math.max(prev - 0.25, 0.75));
-  const handleResetZoom = () => setZoomLevel(1);
+  const handleZoomIn = () => {
+    setZoomLevel(prev => Math.min(Number((prev + 0.25).toFixed(2)), 3.5));
+  };
+  const handleZoomOut = () => {
+    setZoomLevel(prev => {
+      const next = Math.max(Number((prev - 0.25).toFixed(2)), 0.5);
+      if (next <= 1) setPanOffset({ x: 0, y: 0 });
+      return next;
+    });
+  };
+  const handleResetZoom = () => {
+    setZoomLevel(1);
+    setPanOffset({ x: 0, y: 0 });
+  };
+  const handleSetZoomPreset = (val: number) => {
+    setZoomLevel(val);
+    if (val <= 1) setPanOffset({ x: 0, y: 0 });
+  };
+
+  // Lightbox Zoom Handlers
+  const handleLightboxZoomIn = () => {
+    setLightboxZoom(prev => Math.min(Number((prev + 0.25).toFixed(2)), 4.0));
+  };
+  const handleLightboxZoomOut = () => {
+    setLightboxZoom(prev => {
+      const next = Math.max(Number((prev - 0.25).toFixed(2)), 0.5);
+      if (next <= 1) setLightboxPan({ x: 0, y: 0 });
+      return next;
+    });
+  };
+  const handleLightboxResetZoom = () => {
+    setLightboxZoom(1);
+    setLightboxPan({ x: 0, y: 0 });
+  };
+
+  // Canvas Drag/Pan Handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (zoomLevel > 1) {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
+    }
+  };
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && zoomLevel > 1) {
+      setPanOffset({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
+    }
+  };
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+  const handleWheel = (e: React.WheelEvent) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) {
+      e.preventDefault();
+      if (e.deltaY < 0) {
+        handleZoomIn();
+      } else {
+        handleZoomOut();
+      }
+    }
+  };
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1 && zoomLevel > 1) {
+      touchStartRef.current = {
+        x: e.touches[0].clientX - panOffset.x,
+        y: e.touches[0].clientY - panOffset.y
+      };
+    }
+  };
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartRef.current && e.touches.length === 1 && zoomLevel > 1) {
+      setPanOffset({
+        x: e.touches[0].clientX - touchStartRef.current.x,
+        y: e.touches[0].clientY - touchStartRef.current.y
+      });
+    }
+  };
+  const handleTouchEnd = () => {
+    touchStartRef.current = null;
+  };
+
+  // Lightbox Canvas Interaction Handlers
+  const handleLightboxMouseDown = (e: React.MouseEvent) => {
+    if (lightboxZoom > 1) {
+      setLightboxIsDragging(true);
+      setLightboxDragStart({ x: e.clientX - lightboxPan.x, y: e.clientY - lightboxPan.y });
+    }
+  };
+  const handleLightboxMouseMove = (e: React.MouseEvent) => {
+    if (lightboxIsDragging && lightboxZoom > 1) {
+      setLightboxPan({
+        x: e.clientX - lightboxDragStart.x,
+        y: e.clientY - lightboxDragStart.y
+      });
+    }
+  };
+  const handleLightboxMouseUp = () => {
+    setLightboxIsDragging(false);
+  };
+  const handleLightboxWheel = (e: React.WheelEvent) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) {
+      e.preventDefault();
+      if (e.deltaY < 0) {
+        handleLightboxZoomIn();
+      } else {
+        handleLightboxZoomOut();
+      }
+    }
+  };
 
   const showNotification = (msg: string) => {
     setDownloadSuccessMessage(msg);
@@ -330,32 +453,59 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
             <span>Zones</span>
           </button>
 
-          {/* Zoom Controls */}
+          {/* Live Zoom In / Zoom Out Controls */}
           <div className="flex items-center bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
             <button
               onClick={handleZoomOut}
-              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 transition cursor-pointer"
-              title="Zoom Out"
+              disabled={zoomLevel <= 0.5}
+              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 transition cursor-pointer disabled:opacity-40"
+              title="Zoom Out (Min 50%)"
             >
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
-            <span className="px-2 text-[10px] font-mono text-slate-300 select-none">
+            <button
+              onClick={handleResetZoom}
+              className="px-2 text-[10px] font-mono text-cyan-400 font-bold hover:bg-slate-700 py-1 transition cursor-pointer select-none"
+              title="Click to Reset Zoom (100% Fit)"
+            >
               {Math.round(zoomLevel * 100)}%
-            </span>
+            </button>
             <button
               onClick={handleZoomIn}
-              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 transition cursor-pointer"
-              title="Zoom In"
+              disabled={zoomLevel >= 3.5}
+              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 transition cursor-pointer disabled:opacity-40"
+              title="Zoom In (Max 350%)"
             >
               <ZoomIn className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={handleResetZoom}
               className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700 transition border-l border-slate-700 cursor-pointer"
-              title="Reset Zoom"
+              title="Reset Zoom to 100% Fit"
             >
               <RotateCcw className="w-3 h-3" />
             </button>
+            {/* Quick Zoom Presets */}
+            <div className="hidden xl:flex items-center border-l border-slate-700 pl-1">
+              {[
+                { label: 'Fit', val: 1 },
+                { label: '150%', val: 1.5 },
+                { label: '200%', val: 2.0 }
+              ].map(preset => (
+                <button
+                  key={preset.val}
+                  type="button"
+                  onClick={() => handleSetZoomPreset(preset.val)}
+                  className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-medium transition cursor-pointer ${
+                    Math.abs(zoomLevel - preset.val) < 0.05
+                      ? 'bg-cyan-700 text-white font-bold'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Lightbox / Fullscreen */}
@@ -475,9 +625,19 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
       </div>
 
       {/* Main Floor Plan Canvas Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[540px]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[660px] sm:min-h-[740px] lg:min-h-[820px]">
         {/* Architectural Drawing Workspace (Left/Center) */}
-        <div className={`${activeViewMode === 'split' ? 'lg:col-span-8' : 'lg:col-span-12'} relative bg-slate-950 flex items-center justify-center p-3 sm:p-5 overflow-hidden border-b lg:border-b-0 lg:border-r border-slate-800`}>
+        <div 
+          className={`${activeViewMode === 'split' ? 'lg:col-span-8' : 'lg:col-span-12'} relative bg-slate-950 flex items-center justify-center p-3 sm:p-6 md:p-8 overflow-hidden border-b lg:border-b-0 lg:border-r border-slate-800 w-full select-none ${zoomLevel > 1 ? (isDragging ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'}`}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onWheel={handleWheel}
+        >
           {/* Subtle CAD Grid background */}
           <div 
             className="absolute inset-0 opacity-15 pointer-events-none"
@@ -488,7 +648,7 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
           />
 
           {/* North Direction Compass Badge */}
-          <div className="absolute top-4 left-4 z-20 bg-slate-900/90 backdrop-blur-xs border border-slate-700 rounded-xl p-2.5 shadow-lg flex items-center gap-3">
+          <div className="absolute top-4 left-4 z-20 bg-slate-900/90 backdrop-blur-xs border border-slate-700 rounded-xl p-2.5 shadow-lg flex items-center gap-3 pointer-events-auto">
             <div className="w-8 h-8 rounded-full border border-amber-400/50 flex items-center justify-center relative bg-slate-950">
               <span className="text-[10px] font-bold text-amber-400 absolute -top-1 font-mono">N</span>
               <Compass className="w-5 h-5 text-amber-400 animate-pulse" />
@@ -503,17 +663,21 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
             </div>
           </div>
 
-          {/* Drawing Content */}
+          {/* Drawing Content with Pan and Zoom Transform */}
           <div 
-            className="relative transition-transform duration-200 ease-out origin-center max-w-full flex items-center justify-center"
-            style={{ transform: `scale(${zoomLevel})` }}
+            className="relative transition-transform duration-100 ease-out origin-center w-full flex items-center justify-center pointer-events-none"
+            style={{ 
+              transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
+              transformOrigin: 'center center'
+            }}
+            onDoubleClick={handleResetZoom}
           >
             {activeViewMode === 'reference_render' ? (
-              <div className="relative group rounded-lg overflow-hidden border border-slate-700/80 shadow-2xl bg-white max-w-[820px]">
+              <div className="relative group rounded-xl overflow-hidden border border-slate-700/80 shadow-2xl bg-white w-full max-w-5xl pointer-events-auto">
                 <img
                   src={getFloorPlanImage(layoutOption.optionNumber)}
                   alt={`Architectural Floor Plan Reference - ${layoutOption.title}`}
-                  className="w-full max-h-[560px] object-contain select-none"
+                  className="w-full max-h-[720px] sm:max-h-[780px] object-contain select-none p-2 pointer-events-none"
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute bottom-2 left-2 right-2 bg-slate-950/80 backdrop-blur-xs p-2 rounded text-[11px] text-slate-300 text-center">
@@ -523,9 +687,81 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
             ) : (
               /* Live Dynamic Scaled Architectural SVG Blueprint */
               <div 
-                className="w-full max-w-[940px] rounded-xl overflow-hidden shadow-2xl flex items-center justify-center border border-slate-800 [&>svg]:w-full [&>svg]:h-auto [&>svg]:block"
+                className="w-full max-w-full lg:max-w-6xl rounded-xl overflow-hidden shadow-2xl flex items-center justify-center border border-slate-800 [&>svg]:w-full [&>svg]:h-auto [&>svg]:max-h-[760px] [&>svg]:block pointer-events-auto"
                 dangerouslySetInnerHTML={{ __html: dynamicSvgMarkup }}
               />
+            )}
+          </div>
+
+          {/* Floating On-Canvas Zoom & Pan HUD Controls Widget */}
+          <div className="absolute bottom-4 right-4 z-20 flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md border border-slate-700 p-1.5 rounded-xl shadow-2xl text-xs text-white pointer-events-auto">
+            <button
+              type="button"
+              onClick={handleZoomOut}
+              disabled={zoomLevel <= 0.5}
+              className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition disabled:opacity-40 cursor-pointer"
+              title="Zoom Out (Min 50%)"
+            >
+              <ZoomOut className="w-4 h-4" />
+            </button>
+
+            {/* Clickable Zoom Percentage Badge */}
+            <button
+              type="button"
+              onClick={handleResetZoom}
+              className="px-2 py-1 bg-slate-950 hover:bg-slate-800 rounded-lg border border-slate-800 font-mono text-[11px] text-cyan-400 font-bold min-w-[52px] text-center transition cursor-pointer"
+              title="Click to Reset Zoom (100% Fit)"
+            >
+              {Math.round(zoomLevel * 100)}%
+            </button>
+
+            <button
+              type="button"
+              onClick={handleZoomIn}
+              disabled={zoomLevel >= 3.5}
+              className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition disabled:opacity-40 cursor-pointer"
+              title="Zoom In (Max 350%)"
+            >
+              <ZoomIn className="w-4 h-4" />
+            </button>
+
+            <button
+              type="button"
+              onClick={handleResetZoom}
+              className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition border-l border-slate-800 cursor-pointer"
+              title="Reset Zoom to 100% Fit"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Quick Preset Buttons */}
+            <div className="hidden sm:flex items-center gap-1 border-l border-slate-800 pl-1">
+              {[
+                { label: 'Fit', val: 1 },
+                { label: '150%', val: 1.5 },
+                { label: '200%', val: 2.0 }
+              ].map(preset => (
+                <button
+                  key={preset.val}
+                  type="button"
+                  onClick={() => handleSetZoomPreset(preset.val)}
+                  className={`px-2 py-0.5 rounded text-[10px] font-mono font-medium transition cursor-pointer ${
+                    Math.abs(zoomLevel - preset.val) < 0.05
+                      ? 'bg-cyan-600 text-white font-bold'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Drag to Pan Hint Indicator */}
+            {zoomLevel > 1 && (
+              <span className="hidden md:inline-flex items-center gap-1 text-[10px] text-cyan-300 bg-cyan-950/70 border border-cyan-800/80 px-2 py-0.5 rounded-md font-sans ml-1">
+                <Move className="w-3 h-3 text-cyan-400" />
+                <span>Drag to Pan</span>
+              </span>
             )}
           </div>
         </div>
@@ -650,9 +886,9 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
         </div>
       </div>
 
-      {/* High-Resolution Fullscreen Lightbox Modal */}
+      {/* High-Resolution Fullscreen Lightbox Modal with Live Zoom & Pan */}
       {isLightboxOpen && (
-        <div className="fixed inset-0 z-50 bg-black/95 flex flex-col p-4 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 bg-black/95 flex flex-col p-4 backdrop-blur-md select-none">
           <div className="flex items-center justify-between text-white pb-3 border-b border-slate-800 flex-wrap gap-2">
             <div>
               <h4 className="font-bold text-sm tracking-wide flex items-center gap-2">
@@ -665,7 +901,73 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
                 {layoutOption.configuration} • Facing {layoutOption.facingDirection} • {layoutOption.vastuScore}% Vastu Purusha Compliance
               </p>
             </div>
-            <div className="flex items-center gap-2">
+
+            <div className="flex items-center gap-2 flex-wrap">
+              {/* Fullscreen Lightbox Live Zoom Controls */}
+              <div className="flex items-center bg-slate-900 rounded-lg border border-slate-700 p-0.5">
+                <button
+                  type="button"
+                  onClick={handleLightboxZoomOut}
+                  disabled={lightboxZoom <= 0.5}
+                  className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded transition cursor-pointer disabled:opacity-40"
+                  title="Zoom Out (Min 50%)"
+                >
+                  <ZoomOut className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleLightboxResetZoom}
+                  className="px-2 text-xs font-mono text-cyan-400 font-bold min-w-[50px] text-center hover:bg-slate-800 rounded py-0.5 transition cursor-pointer"
+                  title="Click to Reset Zoom (100% Fit)"
+                >
+                  {Math.round(lightboxZoom * 100)}%
+                </button>
+                <button
+                  type="button"
+                  onClick={handleLightboxZoomIn}
+                  disabled={lightboxZoom >= 4.0}
+                  className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded transition cursor-pointer disabled:opacity-40"
+                  title="Zoom In (Max 400%)"
+                >
+                  <ZoomIn className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleLightboxResetZoom}
+                  className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded transition border-l border-slate-700 cursor-pointer"
+                  title="Reset Zoom to Fit"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                </button>
+
+                {/* Quick Presets in Lightbox */}
+                <div className="hidden sm:flex items-center border-l border-slate-700 pl-1">
+                  {[
+                    { label: 'Fit', val: 1 },
+                    { label: '150%', val: 1.5 },
+                    { label: '200%', val: 2.0 },
+                    { label: '300%', val: 3.0 }
+                  ].map(p => (
+                    <button
+                      key={p.val}
+                      type="button"
+                      onClick={() => {
+                        setLightboxZoom(p.val);
+                        if (p.val <= 1) setLightboxPan({ x: 0, y: 0 });
+                      }}
+                      className={`px-1.5 py-0.5 rounded text-[10px] font-mono transition cursor-pointer ${
+                        Math.abs(lightboxZoom - p.val) < 0.05
+                          ? 'bg-cyan-700 text-white font-bold'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Download Buttons */}
               <button
                 onClick={handleDownloadSvg}
                 className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
@@ -682,7 +984,10 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
                 <span>Export PNG</span>
               </button>
               <button
-                onClick={() => setIsLightboxOpen(false)}
+                onClick={() => {
+                  setIsLightboxOpen(false);
+                  handleLightboxResetZoom();
+                }}
                 className="p-2 text-slate-400 hover:text-white rounded-lg bg-slate-800 hover:bg-slate-700 transition cursor-pointer"
                 title="Exit Lightbox"
               >
@@ -691,15 +996,79 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
             </div>
           </div>
 
-          <div className="flex-1 flex items-center justify-center p-4 overflow-auto">
+          {/* Interactive Lightbox Canvas with Pan & Zoom */}
+          <div 
+            className={`flex-1 relative flex items-center justify-center p-4 overflow-hidden ${lightboxZoom > 1 ? (lightboxIsDragging ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'}`}
+            onMouseDown={handleLightboxMouseDown}
+            onMouseMove={handleLightboxMouseMove}
+            onMouseUp={handleLightboxMouseUp}
+            onMouseLeave={handleLightboxMouseUp}
+            onWheel={handleLightboxWheel}
+          >
             <div 
-              className="max-h-[85vh] w-full max-w-[1200px] rounded-xl overflow-hidden shadow-2xl border border-slate-800 flex items-center justify-center [&>svg]:w-full [&>svg]:h-auto [&>svg]:max-h-[82vh] [&>svg]:block"
-              dangerouslySetInnerHTML={{ __html: dynamicSvgMarkup }}
-            />
+              className="relative transition-transform duration-100 ease-out origin-center flex items-center justify-center w-full pointer-events-none"
+              style={{
+                transform: `translate(${lightboxPan.x}px, ${lightboxPan.y}px) scale(${lightboxZoom})`,
+                transformOrigin: 'center center'
+              }}
+              onDoubleClick={handleLightboxResetZoom}
+            >
+              <div 
+                className="max-h-[85vh] w-full max-w-[1200px] rounded-xl overflow-hidden shadow-2xl border border-slate-800 flex items-center justify-center [&>svg]:w-full [&>svg]:h-auto [&>svg]:max-h-[82vh] [&>svg]:block pointer-events-auto"
+                dangerouslySetInnerHTML={{ __html: dynamicSvgMarkup }}
+              />
+            </div>
+
+            {/* Floating Lightbox Zoom Controls Widget */}
+            <div className="absolute bottom-6 right-6 z-20 flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md border border-slate-700 p-1.5 rounded-xl shadow-2xl text-xs text-white pointer-events-auto">
+              <button
+                type="button"
+                onClick={handleLightboxZoomOut}
+                disabled={lightboxZoom <= 0.5}
+                className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition disabled:opacity-40 cursor-pointer"
+                title="Zoom Out"
+              >
+                <ZoomOut className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={handleLightboxResetZoom}
+                className="px-2 py-1 bg-slate-950 hover:bg-slate-800 rounded-lg border border-slate-800 font-mono text-[11px] text-cyan-400 font-bold min-w-[50px] text-center cursor-pointer"
+                title="Reset Zoom to 100% Fit"
+              >
+                {Math.round(lightboxZoom * 100)}%
+              </button>
+              <button
+                type="button"
+                onClick={handleLightboxZoomIn}
+                disabled={lightboxZoom >= 4.0}
+                className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition disabled:opacity-40 cursor-pointer"
+                title="Zoom In"
+              >
+                <ZoomIn className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={handleLightboxResetZoom}
+                className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition border-l border-slate-800 cursor-pointer"
+                title="Reset Zoom to Fit"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
+              {lightboxZoom > 1 && (
+                <span className="inline-flex items-center gap-1 text-[10px] text-cyan-300 bg-cyan-950/70 border border-cyan-800/80 px-2 py-0.5 rounded-md font-sans ml-1">
+                  <Move className="w-3 h-3 text-cyan-400" />
+                  <span>Drag to Pan</span>
+                </span>
+              )}
+            </div>
           </div>
 
-          <div className="pt-2 text-center text-xs text-slate-400 font-mono">
-            Full dynamic CAD vector graphics calibrated to 1/4" = 1'-0" architectural scale. Double-line walls, room schedule, and directional orientation reflect exact requested specifications.
+          <div className="pt-2 text-center text-xs text-slate-400 font-mono flex items-center justify-center gap-2">
+            <span>Dynamic CAD vector graphics calibrated to 1/4" = 1'-0" scale. Use Zoom buttons, wheel or double-click to navigate.</span>
+            {lightboxZoom > 1 && (
+              <span className="text-cyan-400 font-bold font-sans">• Click &amp; drag anywhere to pan around the floor plan.</span>
+            )}
           </div>
         </div>
       )}
