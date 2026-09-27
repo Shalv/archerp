@@ -80,17 +80,14 @@ export const D365CueTilesBar: React.FC<D365CueTilesBarProps> = ({
   return (
     <div className="relative" ref={dropdownRef}>
       {/* Visual Header Label */}
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-[#605E5C]">
-            Activities &amp; Cue Tiles (Dashboard Matrix)
-          </span>
-          <span className="text-[10px] bg-[#EFF6FC] text-[#0F6CBD] px-1.5 py-0.5 rounded font-medium border border-[#C7E0F4]">
-            Click any tile for drilldown &amp; dropdown options
-          </span>
+      <div className="flex items-center justify-between mb-2 text-xs">
+        <div className="flex items-center gap-2 text-slate-500">
+          <span className="font-semibold text-slate-700">Project Commercial Indicators</span>
+          <span aria-hidden="true" className="text-slate-300">·</span>
+          <span>Click any metric for breakdown</span>
         </div>
-        <span className="text-[11px] text-[#8A8886]">
-          Posting Group: <strong className="text-[#201F1E]">Residential Turnkey</strong>
+        <span className="text-slate-500 hidden sm:inline">
+          Posting Group: <strong className="text-slate-800 font-medium">Residential Turnkey</strong>
         </span>
       </div>
 
@@ -100,25 +97,24 @@ export const D365CueTilesBar: React.FC<D365CueTilesBarProps> = ({
         {!isClient && (
           <div
             onClick={() => toggleTile('cost')}
-            className={`group cursor-pointer rounded border p-2.5 transition relative select-none ${
+            className={`group cursor-pointer rounded-xl border p-3 transition select-none ${
               activeDropdown === 'cost'
-                ? 'bg-[#EFF6FC] border-[#0F6CBD] shadow-md ring-2 ring-[#0F6CBD]/20'
-                : 'bg-white border-[#E1DFDD] hover:border-[#0F6CBD] hover:bg-[#FAF9F8] hover:shadow-xs'
+                ? 'bg-slate-50 border-slate-900 shadow-xs ring-1 ring-slate-900'
+                : 'bg-white border-slate-200 hover:border-slate-400 hover:shadow-2xs'
             }`}
           >
-            <div className="flex items-center justify-between text-[#605E5C]">
-              <span className="text-[10px] font-semibold uppercase tracking-wider">Est. Cost</span>
+            <div className="flex items-center justify-between text-slate-500">
+              <span className="text-[11px] font-medium">Est. Cost</span>
               <div className="flex items-center gap-0.5">
-                <Calculator className="h-3.5 w-3.5 text-[#0F6CBD]" />
-                <ChevronDown className={`h-3 w-3 transition text-[#8A8886] ${activeDropdown === 'cost' ? 'rotate-180 text-[#0F6CBD]' : 'group-hover:text-[#0F6CBD]'}`} />
+                <Calculator className="h-3.5 w-3.5 text-slate-400" />
+                <ChevronDown className={`h-3 w-3 transition text-slate-400 ${activeDropdown === 'cost' ? 'rotate-180 text-slate-900' : 'group-hover:text-slate-700'}`} />
               </div>
             </div>
-            <div className="mt-1 font-mono text-base font-bold text-[#201F1E] truncate">
+            <div className="mt-1 font-mono tabular-nums text-base font-bold text-slate-900 truncate">
               ₹{(totalCost / 100000).toFixed(2)}L
             </div>
-            <div className="text-[10px] text-[#605E5C] truncate flex items-center justify-between mt-0.5">
-              <span>Direct + Overheads</span>
-              <span className="text-[#0F6CBD] font-semibold text-[9px]">Drilldown ▾</span>
+            <div className="text-[10px] text-slate-400 truncate mt-0.5">
+              Direct + Overheads
             </div>
           </div>
         )}
@@ -126,25 +122,24 @@ export const D365CueTilesBar: React.FC<D365CueTilesBarProps> = ({
         {/* 2. CUSTOMER CONTRACT VALUE TILE */}
         <div
           onClick={() => toggleTile('selling')}
-          className={`group cursor-pointer rounded border p-2.5 transition relative select-none ${
+          className={`group cursor-pointer rounded-xl border p-3 transition select-none ${
             activeDropdown === 'selling'
-              ? 'bg-[#EFF6FC] border-[#0F6CBD] shadow-md ring-2 ring-[#0F6CBD]/20'
-              : 'bg-white border-[#E1DFDD] hover:border-[#0F6CBD] hover:bg-[#FAF9F8] hover:shadow-xs'
+              ? 'bg-slate-50 border-slate-900 shadow-xs ring-1 ring-slate-900'
+              : 'bg-white border-slate-200 hover:border-slate-400 hover:shadow-2xs'
           }`}
         >
-          <div className="flex items-center justify-between text-[#605E5C]">
-            <span className="text-[10px] font-semibold uppercase tracking-wider">Quotation</span>
+          <div className="flex items-center justify-between text-slate-500">
+            <span className="text-[11px] font-medium">Quotation</span>
             <div className="flex items-center gap-0.5">
-              <TrendingUp className="h-3.5 w-3.5 text-[#107C41]" />
-              <ChevronDown className={`h-3 w-3 transition text-[#8A8886] ${activeDropdown === 'selling' ? 'rotate-180 text-[#107C41]' : 'group-hover:text-[#107C41]'}`} />
+              <TrendingUp className="h-3.5 w-3.5 text-slate-400" />
+              <ChevronDown className={`h-3 w-3 transition text-slate-400 ${activeDropdown === 'selling' ? 'rotate-180 text-slate-900' : 'group-hover:text-slate-700'}`} />
             </div>
           </div>
-          <div className="mt-1 font-mono text-base font-bold text-[#0F6CBD] truncate">
+          <div className="mt-1 font-mono tabular-nums text-base font-bold text-slate-900 truncate">
             ₹{(totalSelling / 100000).toFixed(2)}L
           </div>
-          <div className="text-[10px] text-[#605E5C] truncate flex items-center justify-between mt-0.5">
-            <span>Excl. 18% GST</span>
-            <span className="text-[#0F6CBD] font-semibold text-[9px]">Drilldown ▾</span>
+          <div className="text-[10px] text-slate-400 truncate mt-0.5">
+            Excl. 18% GST
           </div>
         </div>
 
@@ -152,25 +147,24 @@ export const D365CueTilesBar: React.FC<D365CueTilesBarProps> = ({
         {!isClient && (
           <div
             onClick={() => toggleTile('margin')}
-            className={`group cursor-pointer rounded border p-2.5 transition relative select-none ${
+            className={`group cursor-pointer rounded-xl border p-3 transition select-none ${
               activeDropdown === 'margin'
-                ? 'bg-[#EFF6FC] border-[#0F6CBD] shadow-md ring-2 ring-[#0F6CBD]/20'
-                : 'bg-white border-[#E1DFDD] hover:border-[#0F6CBD] hover:bg-[#FAF9F8] hover:shadow-xs'
+                ? 'bg-slate-50 border-slate-900 shadow-xs ring-1 ring-slate-900'
+                : 'bg-white border-slate-200 hover:border-slate-400 hover:shadow-2xs'
             }`}
           >
-            <div className="flex items-center justify-between text-[#605E5C]">
-              <span className="text-[10px] font-semibold uppercase tracking-wider">Gross Margin</span>
+            <div className="flex items-center justify-between text-slate-500">
+              <span className="text-[11px] font-medium">Margin</span>
               <div className="flex items-center gap-0.5">
-                <Percent className="h-3.5 w-3.5 text-[#B87A38]" />
-                <ChevronDown className={`h-3 w-3 transition text-[#8A8886] ${activeDropdown === 'margin' ? 'rotate-180 text-[#B87A38]' : 'group-hover:text-[#B87A38]'}`} />
+                <Percent className="h-3.5 w-3.5 text-slate-400" />
+                <ChevronDown className={`h-3 w-3 transition text-slate-400 ${activeDropdown === 'margin' ? 'rotate-180 text-slate-900' : 'group-hover:text-slate-700'}`} />
               </div>
             </div>
-            <div className="mt-1 font-mono text-base font-bold text-[#107C41] truncate">
+            <div className="mt-1 font-mono tabular-nums text-base font-bold text-emerald-700 truncate">
               {grossMargin}%
             </div>
-            <div className="text-[10px] text-[#605E5C] truncate flex items-center justify-between mt-0.5">
-              <span>₹{(marginAmount / 100000).toFixed(2)}L Spread</span>
-              <span className="text-[#0F6CBD] font-semibold text-[9px]">Drilldown ▾</span>
+            <div className="text-[10px] text-slate-400 truncate mt-0.5">
+              ₹{(marginAmount / 100000).toFixed(2)}L spread
             </div>
           </div>
         )}

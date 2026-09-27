@@ -420,27 +420,18 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
               </div>
             </div>
 
-            {/* Name, Role Pill, Status & Department */}
+            {/* Name, Role & Department */}
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight truncate">
+                <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight truncate">
                   {currentUser.name.replace(/\s*\(.*?\)\s*/g, '').trim()}
                 </h2>
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${profile.badgeColor} uppercase tracking-wide`}>
-                  {profile.roleKey}
-                </span>
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-emerald-700 bg-emerald-50/90 border border-emerald-200/80 px-2 py-0.5 rounded-full">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  Active Session
-                </span>
-              </div>
-
-              <div className="text-xs text-slate-600 mt-1 flex items-center gap-2 flex-wrap">
-                <span className="font-semibold text-slate-800">
+                <span aria-hidden="true" className="text-slate-300">·</span>
+                <span className="text-xs font-semibold text-slate-700">
                   {currentUser.roleTitle || profile.title}
                 </span>
-                <span className="text-slate-300">•</span>
-                <span className="text-slate-500 font-normal truncate max-w-[400px]">
+                <span aria-hidden="true" className="text-slate-300">·</span>
+                <span className="text-xs text-slate-500">
                   {profile.dept}
                 </span>
               </div>

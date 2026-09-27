@@ -163,33 +163,29 @@ export const BOQGrid: React.FC<BOQGridProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Banner & Revision Control */}
-      <div className="rounded-xl border border-[#E5DFD7] bg-white p-6 shadow-xs">
+      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="rounded bg-[#EFEAE2] px-2 py-0.5 text-xs font-bold text-[#554B3E]">
-                PRIMARY FEATURE
-              </span>
-              <span className="rounded bg-[#E8F3ED] px-2 py-0.5 text-xs font-semibold text-[#1C7346]">
-                Traceable AI Takeoff & Deterministic Costing
-              </span>
-            </div>
-            <h2 className="mt-2 font-serif text-2xl font-bold text-[#1F2421]">
+            <h2 className="text-xl font-bold text-slate-900 tracking-tight">
               Bill of Quantities (BOQ) Studio
             </h2>
-            <p className="mt-1 text-xs text-[#6B7280]">
-              Every quantity is derived from verified room schedules with explicit formulas, material waste, and master rates.
-            </p>
+            <div className="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+              <span>Verified Room Takeoffs</span>
+              <span aria-hidden="true" className="text-slate-300">·</span>
+              <span>Explicit Formulas &amp; Wastage Norms</span>
+              <span aria-hidden="true" className="text-slate-300">·</span>
+              <span>Master Schedule of Rates</span>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5">
             {/* Revision Picker */}
-            <div className="flex items-center gap-2 rounded-lg border border-[#DDD4C7] bg-[#FAF8F5] px-3 py-1.5 text-xs">
-              <span className="text-[#7A7165] font-medium">Revision:</span>
+            <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs">
+              <span className="text-slate-500 font-medium">Revision:</span>
               <select
                 value={activeRev?.id}
                 onChange={e => onSelectRevision(e.target.value)}
-                className="bg-transparent font-semibold text-[#1F2421] focus:outline-hidden cursor-pointer"
+                className="bg-transparent font-semibold text-slate-900 focus:outline-hidden cursor-pointer"
               >
                 {revisions.map(rev => (
                   <option key={rev.id} value={rev.id}>
@@ -203,18 +199,18 @@ export const BOQGrid: React.FC<BOQGridProps> = ({
             <button
               onClick={onGenerateAIBOQ}
               disabled={isGeneratingAI || isFrozen}
-              className="flex items-center gap-1.5 rounded-lg bg-[#273034] px-4 py-2 text-xs font-semibold text-[#E0A96D] hover:bg-[#1A2022] transition shadow-xs disabled:opacity-50"
-              title="Generate new AI Takeoff Revision from verified site survey dimensions"
+              className="flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 transition shadow-2xs disabled:opacity-50 cursor-pointer"
+              title="Generate new Takeoff Revision from verified site survey dimensions"
             >
               {isGeneratingAI ? (
                 <>
                   <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                  <span>AI Takeoff in progress...</span>
+                  <span>Calculating Takeoffs...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="h-3.5 w-3.5" />
-                  <span>Generate Draft BOQ (AI)</span>
+                  <Layers className="h-3.5 w-3.5 text-sky-400" />
+                  <span>Generate Takeoff Lines</span>
                 </>
               )}
             </button>
@@ -224,16 +220,16 @@ export const BOQGrid: React.FC<BOQGridProps> = ({
               <button
                 onClick={onApproveBaseline}
                 disabled={!isEstimatorOrAdmin}
-                className="flex items-center gap-1.5 rounded-lg bg-[#1E7348] px-4 py-2 text-xs font-semibold text-white hover:bg-[#175C3A] transition shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex items-center gap-1.5 rounded-lg bg-emerald-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-emerald-800 transition shadow-2xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 title={isEstimatorOrAdmin ? "Freeze this revision as approved baseline" : "Only Estimator/Admin can approve baseline"}
               >
                 <CheckCircle2 className="h-3.5 w-3.5" />
-                <span>Approve & Freeze Baseline</span>
+                <span>Approve &amp; Freeze Baseline</span>
               </button>
             ) : (
-              <div className="flex items-center gap-1.5 rounded-lg bg-[#E7F4EE] px-3 py-2 text-xs font-semibold text-[#1E7348] border border-[#B7DFC9]">
-                <Lock className="h-3.5 w-3.5" />
-                <span>Baseline Approved & Frozen</span>
+              <div className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-800 border border-slate-200">
+                <Lock className="h-3.5 w-3.5 text-slate-600" />
+                <span>Baseline Frozen</span>
               </div>
             )}
           </div>
