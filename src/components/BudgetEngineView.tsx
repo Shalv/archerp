@@ -114,26 +114,28 @@ export const BudgetEngineView: React.FC<BudgetEngineViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs">
+      <div className="rounded-xl border border-[#E5DFD7] bg-white p-6 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-              Commercial Budget Engine &amp; Cost Calibration
-            </h2>
-            <div className="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
-              <span>Direct Site Costs</span>
-              <span aria-hidden="true" className="text-slate-300">·</span>
-              <span>Contractor Overheads (5%)</span>
-              <span aria-hidden="true" className="text-slate-300">·</span>
-              <span>Project Risk Contingency (3%)</span>
-              <span aria-hidden="true" className="text-slate-300">·</span>
-              <span>Target Margin Calibration</span>
+            <div className="flex items-center gap-2">
+              <span className="rounded bg-[#EFEAE2] px-2 py-0.5 text-xs font-bold text-[#554B3E]">
+                STEP 4 OF 8
+              </span>
+              <span className="rounded bg-[#E8F3ED] px-2 py-0.5 text-xs font-semibold text-[#1C7346]">
+                Deterministic Cost Accounting & Specification Tiers
+              </span>
             </div>
+            <h2 className="mt-2 font-serif text-2xl font-bold text-[#1F2421]">
+              Commercial Budget Engine & Value Engineering
+            </h2>
+            <p className="mt-1 text-xs text-[#6B7280]">
+              Mathematical separation of direct site costs, indirect contractor overheads, and multi-tier finish alternatives.
+            </p>
           </div>
 
           <button
             onClick={() => onGenerateQuotation(selectedTier)}
-            className="flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 transition shadow-2xs cursor-pointer"
+            className="flex items-center gap-2 rounded-lg bg-[#273034] px-4 py-2.5 text-xs font-semibold text-[#E0A96D] hover:bg-[#1A2022] transition shadow-xs"
           >
             <FileText className="h-4 w-4" />
             <span>Generate Customer Quotation ({selectedTier})</span>

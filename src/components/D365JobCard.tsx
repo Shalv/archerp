@@ -281,46 +281,57 @@ export const D365JobCard: React.FC<D365JobCardProps> = ({
 
   return (
     <div className="space-y-4 pb-4">
-      {/* 1. DOCUMENT HEADER */}
-      <div className="bg-white border border-slate-200/90 p-5 rounded-xl shadow-2xs">
+      {/* 1. DOCUMENT HEADER (D365 Business Central Job Card Title Bar) */}
+      <div className="bg-white border border-slate-200/90 p-4 sm:p-5 rounded-xl shadow-2xs">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                Job Card
+              </span>
+              <span className="font-mono text-xs font-bold text-[#0F6CBD] bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
+                {project.projectCode}
+              </span>
+              <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold px-2 py-0.5 rounded-md flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                In Progress
+              </span>
+              <span className="bg-slate-50 text-slate-600 border border-slate-200 text-xs font-medium px-2 py-0.5 rounded-md">
+                Turnkey Interior
+              </span>
+            </div>
+
             <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
               {project.title}
             </h1>
 
-            {/* Clean unboxed metadata with subtle typographic separators */}
-            <div className="text-xs text-slate-500 flex flex-wrap items-center gap-2 pt-0.5">
-              <span className="font-mono font-semibold text-slate-800">{project.projectCode}</span>
-              <span aria-hidden="true" className="text-slate-300">·</span>
-              <span>Turnkey Residential Interior</span>
-              <span aria-hidden="true" className="text-slate-300">·</span>
-              <span>Client: <strong className="text-slate-700 font-medium">{project.clientName}</strong></span>
-              <span aria-hidden="true" className="text-slate-300">·</span>
-              <span>{project.siteAddress}, {project.city}</span>
-              <span aria-hidden="true" className="text-slate-300">·</span>
-              <span className="text-emerald-700 font-medium">In Progress</span>
+            <div className="text-xs text-slate-500 flex flex-wrap items-center gap-3 pt-0.5">
+              <span>Customer: <strong className="text-slate-800 font-semibold">{project.clientName}</strong></span>
+              <span className="text-slate-300">•</span>
+              <span>Site: <strong className="text-slate-800 font-semibold">{project.siteAddress}, {project.city}</strong></span>
+              <span className="text-slate-300">•</span>
+              <span>Posting Date: <strong className="text-slate-800 font-semibold">11-Sep-2026</strong></span>
             </div>
           </div>
 
           {/* Document Header Action Bar: Vastu Optimizer & Revision Switcher */}
-          <div className="flex flex-wrap items-center gap-2.5 self-start md:self-center shrink-0">
+          <div className="flex flex-wrap items-center gap-2 self-start md:self-center shrink-0">
             <button
               type="button"
               onClick={() => setIsVastuModalOpen(true)}
-              className="px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition flex items-center gap-2 shadow-2xs cursor-pointer"
-              title="Vastu Layout Optimizer - Suggest 3 Vastu-compliant layout options with room breakdown"
+              className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#002050] to-[#0f6cbd] hover:from-[#0c366e] hover:to-[#0b5a9e] text-white text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
+              title="AI Vastu Layout Optimizer - Suggest 3 Vastu-compliant layout options with room breakdown"
             >
-              <Compass className="w-3.5 h-3.5 text-sky-400" />
-              <span>Vastu Layouts (3 Options)</span>
+              <Compass className="w-3.5 h-3.5 text-amber-300" />
+              <span>AI Vastu Layout (3 Options)</span>
             </button>
 
-            <div className="flex items-center gap-2 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-200">
-              <span className="text-xs font-medium text-slate-600">Revision:</span>
+            <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-lg border border-slate-200/90">
+              <span className="text-xs font-semibold text-slate-600">Revision:</span>
               <select
                 value={activeRev?.id}
                 onChange={e => onSelectRevision(e.target.value)}
-                className="bg-white border border-slate-300 rounded-md px-2 py-1 text-xs font-semibold text-slate-800 focus:border-slate-800 focus:outline-hidden cursor-pointer shadow-2xs"
+                className="bg-white border border-slate-300 rounded-md px-2.5 py-1 text-xs font-bold text-slate-800 focus:border-[#0F6CBD] focus:ring-1 focus:ring-[#0F6CBD] focus:outline-hidden cursor-pointer shadow-2xs"
               >
                 {project.revisions.map(r => (
                   <option key={r.id} value={r.id}>
@@ -602,28 +613,31 @@ export const D365JobCard: React.FC<D365JobCardProps> = ({
               </div>
             </div>
 
-            {/* Vastu Layout Optimizer Banner */}
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            {/* AI Vastu Layout Optimizer Banner */}
+            <div className="p-3.5 bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-amber-50/60 rounded-xl border border-blue-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-slate-900 text-sky-400 flex items-center justify-center shrink-0">
-                  <Compass className="w-4 h-4" />
+                <div className="w-10 h-10 rounded-xl bg-[#002050] text-amber-300 flex items-center justify-center shrink-0 shadow-xs">
+                  <Compass className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-xs font-semibold text-slate-900">
-                    Vastu Shastra Layout Optimizer &amp; CAD Solids
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-slate-900">AI Vastu Shastra Layout Optimizer</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200">
+                      3 Options Available
+                    </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 mt-0.5">
-                    Generate 3 Vastu-compliant layout options with room breakdown, dimensions &amp; cardinal zoning.
+                  <p className="text-[11px] text-slate-600 mt-0.5">
+                    Input construction area (e.g. 2,500 sq.ft) to generate 3 Vastu-compliant layout options with room breakdown, dimensions &amp; cardinal zoning.
                   </p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsVastuModalOpen(true)}
-                className="px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium transition flex items-center justify-center gap-2 shadow-2xs shrink-0 cursor-pointer"
+                className="px-3.5 py-2 rounded-lg bg-[#002050] hover:bg-[#0c366e] text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-2xs shrink-0 cursor-pointer"
               >
-                <span>Suggest 3 Layouts</span>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <span>Suggest 3 Vastu Layouts</span>
               </button>
             </div>
 

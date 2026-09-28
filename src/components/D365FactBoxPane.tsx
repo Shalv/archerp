@@ -13,8 +13,7 @@ import {
   ShieldCheck,
   Building,
   Ruler,
-  FileCheck,
-  Calculator
+  FileCheck
 } from 'lucide-react';
 import { ProjectRecord, BOQItem, CostBudgetSummary, UserSession } from '../types/erp';
 
@@ -237,45 +236,45 @@ export const D365FactBoxPane: React.FC<D365FactBoxPaneProps> = ({
         )}
       </div>
 
-      {/* 3. Takeoff & Rate Benchmark Audit FactBox */}
+      {/* 3. Microsoft Copilot / AI Insights FactBox */}
       <div className="bg-white">
         <button
           onClick={() => setCopilotOpen(!copilotOpen)}
-          className="w-full px-3 py-2 flex items-center justify-between text-xs font-semibold text-slate-900 bg-slate-50 hover:bg-slate-100 transition border-b border-slate-200"
+          className="w-full px-3 py-2 flex items-center justify-between text-xs font-semibold text-[#201F1E] bg-[#F8F7F6] hover:bg-[#F3F2F1] transition border-b border-[#EDEBE9]"
         >
           <span className="flex items-center gap-1.5">
-            <ShieldCheck className="h-3.5 w-3.5 text-slate-700" />
-            <span>Quantity &amp; Rate Audit</span>
+            <Sparkles className="h-3.5 w-3.5 text-[#0F6CBD]" />
+            <span>Copilot Takeoff Insights</span>
           </span>
-          {copilotOpen ? <ChevronUp className="h-3.5 w-3.5 text-slate-400" /> : <ChevronDown className="h-3.5 w-3.5 text-slate-400" />}
+          {copilotOpen ? <ChevronUp className="h-3.5 w-3.5 text-[#605E5C]" /> : <ChevronDown className="h-3.5 w-3.5 text-[#605E5C]" />}
         </button>
 
         {copilotOpen && (
           <div className="p-3 text-xs space-y-2">
-            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 p-2 rounded-lg">
-              <Calculator className="h-4 w-4 text-slate-700 shrink-0" />
+            <div className="flex items-center gap-1.5 bg-[#EFF6FC] border border-[#C7E0F4] p-2 rounded">
+              <Sparkles className="h-4 w-4 text-[#0F6CBD] shrink-0" />
               <div>
-                <div className="font-semibold text-slate-900 text-xs">Architectural Estimation Audit</div>
-                <div className="text-[11px] text-slate-500">Benchmark Price Library Grounded</div>
+                <div className="font-semibold text-[#0F6CBD] text-[11px]">Gemini 3.8 Flash AI Model</div>
+                <div className="text-[10px] text-[#605E5C]">Turnkey Estimator Co-Pilot Grounded</div>
               </div>
             </div>
 
-            <div className="text-xs text-slate-700 leading-relaxed">
-              <span className="font-semibold text-slate-900">Project Brief Scope:</span> Parsed client requirements including verified Italian marble flooring, false ceiling perimeter channels, and modular kitchen joinery with soft-close Blum hardware.
+            <div className="text-[11px] text-[#323130] leading-relaxed">
+              <span className="font-semibold text-[#201F1E]">Multilingual brief analyzed:</span> Parsed Hinglish specifications including <em>&quot;Italian marble lagana hai&quot;</em> and <em>&quot;L-shaped modular kitchen with soft-close Blum hardware&quot;</em>.
             </div>
 
-            <div className="bg-slate-50 p-2 rounded-lg border border-slate-200 text-xs space-y-1">
-              <div className="flex justify-between text-slate-600">
-                <span>Dimensional Audit:</span>
-                <span className="font-bold text-emerald-700">100% Verified</span>
+            <div className="bg-[#FAF9F8] p-2 rounded border border-[#EDEBE9] text-[11px] space-y-1">
+              <div className="flex justify-between text-[#605E5C]">
+                <span>AI Confidence:</span>
+                <span className="font-bold text-[#107C41]">98.4%</span>
               </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Wastage Standard:</span>
-                <span className="text-slate-900">IS 1200 Compliant</span>
+              <div className="flex justify-between text-[#605E5C]">
+                <span>Wastage Audit:</span>
+                <span className="text-[#201F1E]">IS 1200 Compliant</span>
               </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Schedule of Rates:</span>
-                <span className="text-slate-900">Delhi-NCR Q3-2026</span>
+              <div className="flex justify-between text-[#605E5C]">
+                <span>NCR Benchmark:</span>
+                <span className="text-[#201F1E]">Gurugram Q3-2026</span>
               </div>
             </div>
           </div>

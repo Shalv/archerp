@@ -48,11 +48,11 @@ export const CustomerQuotationView: React.FC<CustomerQuotationViewProps> = ({
       {/* Top Action Header (Hidden during browser print) */}
       <div className="flex items-center justify-between rounded-xl border border-[#E5DFD7] bg-white p-4 shadow-xs print:hidden">
         <div>
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
-            Commercial Presentation Document
+          <span className="rounded bg-[#E8F3ED] px-2 py-0.5 text-xs font-semibold text-[#1C7346]">
+            Customer Presentation Document
           </span>
-          <h2 className="mt-1 font-display text-lg font-bold text-slate-900">
-            Works Quotation: {quotation.quotationNumber}
+          <h2 className="mt-1 font-serif text-lg font-bold text-[#1F2421]">
+            Commercial Works Quotation: {quotation.quotationNumber}
           </h2>
         </div>
 

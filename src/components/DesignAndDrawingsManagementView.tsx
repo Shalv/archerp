@@ -35,14 +35,7 @@ import {
   X,
   Printer,
   Upload,
-  UserCheck,
-  ZoomIn,
-  ZoomOut,
-  RotateCcw,
-  LayoutGrid,
-  Square,
-  Check,
-  Ruler
+  UserCheck
 } from 'lucide-react';
 import { ProjectRecord, UserSession, AIDesignOption } from '../types/erp';
 import {
@@ -453,45 +446,6 @@ export const DesignAndDrawingsManagementView: React.FC<DesignAndDrawingsManageme
   const [discussionAgenda, setDiscussionAgenda] = useState('Review layout revisions and approve preliminary BOQ');
   const [toastText, setToastText] = useState<string | null>(null);
 
-  // Drawing View & Inspection States
-  const [inspectingDrawing, setInspectingDrawing] = useState<DrawingRecord | null>(null);
-  const [inspectingVisual, setInspectingVisual] = useState<{ title: string; image: string; type: string; subtitle?: string } | null>(null);
-  const [inspectZoom, setInspectZoom] = useState<number>(1);
-  const [cardLayoutColumns, setCardLayoutColumns] = useState<'1' | '2'>('2');
-  const [cardFitModes, setCardFitModes] = useState<Record<string, 'contain' | 'cover'>>({});
-  const [cardZooms, setCardZooms] = useState<Record<string, number>>({});
-
-  const toggleFitMode = (id: string) => {
-    setCardFitModes(prev => ({
-      ...prev,
-      [id]: prev[id] === 'cover' ? 'contain' : 'cover'
-    }));
-  };
-
-  const handleCardZoomIn = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCardZooms(prev => ({
-      ...prev,
-      [id]: Math.min((prev[id] || 1) + 0.25, 2.5)
-    }));
-  };
-
-  const handleCardZoomOut = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCardZooms(prev => ({
-      ...prev,
-      [id]: Math.max((prev[id] || 1) - 0.25, 0.75)
-    }));
-  };
-
-  const handleCardResetZoom = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCardZooms(prev => ({
-      ...prev,
-      [id]: 1
-    }));
-  };
-
   const showToast = (text: string) => {
     setToastText(text);
     setTimeout(() => setToastText(null), 3500);
@@ -653,118 +607,90 @@ export const DesignAndDrawingsManagementView: React.FC<DesignAndDrawingsManageme
         </div>
       )}
 
-      {/* Top Studio Header Card with Architectural Dynamics 365 Styling */}
-      <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Top Banner with Dynamics 365 Architecture Styling */}
+      <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-[#0F6CBD] text-white flex items-center justify-center font-bold shadow-xs shrink-0">
+          <div className="w-9 h-9 rounded bg-[#0F6CBD] text-white flex items-center justify-center font-bold shadow-xs">
             <Sparkles className="w-5 h-5 text-amber-300" />
           </div>
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-base sm:text-lg font-bold text-slate-900 leading-tight">
+            <div className="flex items-center gap-2">
+              <h1 className="text-lg font-bold text-slate-900 leading-tight">
                 Architectural Design, Discovery &amp; AI Studio
               </h1>
-              <span className="text-[11px] bg-blue-50 text-[#0F6CBD] font-mono px-2 py-0.5 rounded font-bold border border-blue-200/70">
+              <span className="text-xs bg-blue-100 text-[#0F6CBD] font-mono px-2 py-0.5 rounded font-bold">
                 End-to-End Client Journey
               </span>
-              <span className="text-[11px] bg-slate-100 text-slate-700 font-mono px-2 py-0.5 rounded font-semibold border border-slate-200">
-                {project.projectCode}
-              </span>
             </div>
-            <p className="text-xs text-slate-500 mt-1">
-              Structured Requirement Intake (A–H) • 64 Categorized Visual Heads • Visual Info Pack • 5 AI Design Concepts • CAD / GFC Revision Control
+            <p className="text-xs text-slate-500 mt-0.5">
+              Structured Requirement Intake (A–H) • 64 Categorized Visual Heads (AI Regen &amp; Upload) • Visual Info Pack • 5 AI Design Concepts • CAD / GFC Revision Control
             </p>
           </div>
         </div>
 
-        {/* Studio Primary Action Button */}
-        {onNavigateTab && (
-          <div className="flex items-center gap-2 shrink-0">
+        {/* Action Button Strip */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => setActiveSubTab('discovery')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition ${
+              activeSubTab === 'discovery' ? 'bg-[#0F6CBD] text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            <span>1. Customer Discovery (A–H)</span>
+          </button>
+          <button
+            onClick={() => setActiveSubTab('heads')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition ${
+              activeSubTab === 'heads' ? 'bg-[#0F6CBD] text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            <span>2. Visual Heads (64)</span>
+          </button>
+          <button
+            onClick={() => setActiveSubTab('info_pack')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition ${
+              activeSubTab === 'info_pack' ? 'bg-[#0F6CBD] text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            <span>3. Visual Info Pack</span>
+          </button>
+          <button
+            onClick={() => setActiveSubTab('ai_options')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition ${
+              activeSubTab === 'ai_options' ? 'bg-[#0F6CBD] text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <span>4. AI Concepts (5)</span>
+          </button>
+          <button
+            onClick={() => setActiveSubTab('drawings')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition ${
+              activeSubTab === 'drawings' ? 'bg-[#0F6CBD] text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span>5. CAD &amp; GFC</span>
+          </button>
+          <button
+            onClick={() => setActiveSubTab('comparison')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition ${
+              activeSubTab === 'comparison' ? 'bg-[#0F6CBD] text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            <span>6. Comparison Matrix</span>
+          </button>
+          {onNavigateTab && (
             <button
               onClick={() => onNavigateTab('arch_studio')}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold transition bg-[#002050] text-amber-300 hover:bg-[#001535] shadow-xs border border-amber-400/40 cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition bg-[#002050] text-amber-300 hover:bg-[#001535] shadow-xs border border-amber-400/40 ml-1"
               title="Launch Full AI Architectural Concept Studio with 6-Sheet CAD Viewer & Ollama synthesis"
             >
-              <Sparkles className="w-4 h-4 text-amber-400" />
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
               <span>Full 6-Sheet CAD Studio</span>
             </button>
-          </div>
-        )}
-      </div>
-
-      {/* Structured Step Navigation Bar (Horizontal Scrolling Tabs) */}
-      <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
-        <button
-          onClick={() => setActiveSubTab('discovery')}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer ${
-            activeSubTab === 'discovery'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-          }`}
-        >
-          <span className="w-4 h-4 rounded-full bg-white/20 text-center text-[10px] leading-4 font-bold">1</span>
-          <span>Customer Discovery (A–H)</span>
-        </button>
-
-        <button
-          onClick={() => setActiveSubTab('heads')}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer ${
-            activeSubTab === 'heads'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-          }`}
-        >
-          <span className="w-4 h-4 rounded-full bg-white/20 text-center text-[10px] leading-4 font-bold">2</span>
-          <span>Visual Heads (64)</span>
-        </button>
-
-        <button
-          onClick={() => setActiveSubTab('info_pack')}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer ${
-            activeSubTab === 'info_pack'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-          }`}
-        >
-          <span className="w-4 h-4 rounded-full bg-white/20 text-center text-[10px] leading-4 font-bold">3</span>
-          <span>Visual Info Pack</span>
-        </button>
-
-        <button
-          onClick={() => setActiveSubTab('ai_options')}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer ${
-            activeSubTab === 'ai_options'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-          }`}
-        >
-          <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-          <span>4. AI Concepts (5)</span>
-        </button>
-
-        <button
-          onClick={() => setActiveSubTab('drawings')}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer ${
-            activeSubTab === 'drawings'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-          }`}
-        >
-          <Layers className="w-3.5 h-3.5" />
-          <span>5. CAD &amp; GFC</span>
-        </button>
-
-        <button
-          onClick={() => setActiveSubTab('comparison')}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer ${
-            activeSubTab === 'comparison'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-          }`}
-        >
-          <span className="w-4 h-4 rounded-full bg-white/20 text-center text-[10px] leading-4 font-bold">6</span>
-          <span>Comparison Matrix</span>
-        </button>
+          )}
+        </div>
       </div>
 
       {/* VIEW 1: STRUCTURED CUSTOMER DISCOVERY (A through H) */}
@@ -884,139 +810,32 @@ export const DesignAndDrawingsManagementView: React.FC<DesignAndDrawingsManageme
             </div>
 
             {/* Visual Deliverables: 3D Photorealistic Render + 2D Measured CAD Layout */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                  <Eye className="w-3.5 h-3.5 text-[#0F6CBD]" />
-                  <span>3D Perspective Visual &amp; 2D Architectural CAD Layout (Expanded Sheet View)</span>
-                </span>
-                <span className="text-[11px] text-slate-500 font-medium hidden sm:inline">
-                  Click on either drawing sheet to inspect in high-resolution
-                </span>
-              </div>
+            <div className="space-y-2">
+              <span className="font-bold text-slate-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                <Eye className="w-3.5 h-3.5 text-[#0F6CBD]" />
+                <span>3D Perspective Visual &amp; 2D Architectural Layout</span>
+              </span>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* 3D Perspective Render Card */}
-                <div className="rounded-xl overflow-hidden border border-slate-200 bg-slate-950 flex flex-col shadow-xs group">
-                  <div className="px-3 py-2 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-xs text-white">
-                    <div className="flex items-center gap-2">
-                      <span className="bg-[#0F6CBD] text-white text-[10px] font-bold px-2 py-0.5 rounded font-mono">
-                        3D PERSPECTIVE
-                      </span>
-                      <span className="text-slate-300 font-medium text-xs truncate max-w-[180px]">
-                        {selectedOption.architecturalStyle}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setInspectingVisual({
-                        title: `${selectedOption.optionName} - 3D Perspective Render`,
-                        image: selectedOption.renderImageUrl || '/assets/images/biophilic_concept_render_1789216627991.jpg',
-                        type: '3D Photorealistic Spatial Render',
-                        subtitle: `Style: ${selectedOption.architecturalStyle} • Budget: ₹${(selectedOption.budgetRangeMin / 100000).toFixed(1)}L - ₹${(selectedOption.budgetRangeMax / 100000).toFixed(1)}L`
-                      })}
-                      className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-medium flex items-center gap-1 transition cursor-pointer"
-                      title="Inspect Fullscreen"
-                    >
-                      <Maximize2 className="w-3 h-3 text-sky-400" />
-                      <span>Inspect</span>
-                    </button>
-                  </div>
-
-                  <div
-                    onClick={() => setInspectingVisual({
-                      title: `${selectedOption.optionName} - 3D Perspective Render`,
-                      image: selectedOption.renderImageUrl || '/assets/images/biophilic_concept_render_1789216627991.jpg',
-                      type: '3D Photorealistic Spatial Render',
-                      subtitle: `Style: ${selectedOption.architecturalStyle} • Budget: ₹${(selectedOption.budgetRangeMin / 100000).toFixed(1)}L - ₹${(selectedOption.budgetRangeMax / 100000).toFixed(1)}L`
-                    })}
-                    className="relative h-[360px] sm:h-[420px] md:h-[460px] bg-slate-950 overflow-hidden cursor-pointer flex items-center justify-center p-2"
-                  >
-                    <img
-                      src={selectedOption.renderImageUrl || '/assets/images/biophilic_concept_render_1789216627991.jpg'}
-                      alt="3D Render"
-                      className="w-full h-full object-cover group-hover:scale-102 transition duration-300 rounded"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-200 flex items-end p-4 pointer-events-none">
-                      <span className="text-white text-xs font-medium flex items-center gap-1.5 drop-shadow-md">
-                        <Maximize2 className="w-4 h-4 text-sky-300" />
-                        <span>Click to expand high-resolution render</span>
-                      </span>
-                    </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="rounded-lg overflow-hidden border border-slate-200 bg-slate-900 group relative">
+                  <img
+                    src={selectedOption.renderImageUrl || '/assets/images/biophilic_concept_render_1789216627991.jpg'}
+                    alt="3D Render"
+                    className="w-full h-44 object-cover group-hover:scale-105 transition duration-300"
+                  />
+                  <div className="absolute top-2 left-2 bg-black/70 text-white text-[10px] px-2 py-0.5 rounded font-bold">
+                    3D Perspective Render
                   </div>
                 </div>
 
-                {/* 2D Space-Planning Architectural Layout Card */}
-                <div className="rounded-xl overflow-hidden border border-slate-200 bg-slate-950 flex flex-col shadow-xs group">
-                  <div className="px-3 py-2 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-xs text-white">
-                    <div className="flex items-center gap-2">
-                      <span className="bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded font-mono">
-                        CAD DRAWING
-                      </span>
-                      <span className="text-slate-300 font-medium text-xs truncate max-w-[180px]">
-                        2D Floor Plan Layout
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleFitMode('concept_cad');
-                        }}
-                        className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-mono transition cursor-pointer"
-                        title="Toggle Sheet Fit vs Fill"
-                      >
-                        {cardFitModes['concept_cad'] === 'cover' ? 'Fit Sheet' : 'Fill'}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setInspectingVisual({
-                          title: `${selectedOption.optionName} - 2D Architectural Floor Plan`,
-                          image: selectedOption.layoutImageUrl || '/assets/images/cad_floor_plan_1789216705163.jpg',
-                          type: '2D Architectural Space-Planning Layout',
-                          subtitle: `Built-up: ${discoveryData.builtUpAreaSqFt || 3400} sq.ft • Style: ${selectedOption.architecturalStyle}`
-                        })}
-                        className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-medium flex items-center gap-1 transition cursor-pointer"
-                        title="Inspect CAD Drawing"
-                      >
-                        <Maximize2 className="w-3 h-3 text-emerald-400" />
-                        <span>Inspect</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div
-                    onClick={() => setInspectingVisual({
-                      title: `${selectedOption.optionName} - 2D Architectural Floor Plan`,
-                      image: selectedOption.layoutImageUrl || '/assets/images/cad_floor_plan_1789216705163.jpg',
-                      type: '2D Architectural Space-Planning Layout',
-                      subtitle: `Built-up: ${discoveryData.builtUpAreaSqFt || 3400} sq.ft • Style: ${selectedOption.architecturalStyle}`
-                    })}
-                    className="relative h-[360px] sm:h-[420px] md:h-[460px] bg-slate-950 overflow-hidden cursor-pointer flex items-center justify-center p-2"
-                  >
-                    {/* Architectural Blueprint Grid Background */}
-                    <div 
-                      className="absolute inset-0 opacity-15 pointer-events-none"
-                      style={{
-                        backgroundImage: 'linear-gradient(to right, #38bdf8 1px, transparent 1px), linear-gradient(to bottom, #38bdf8 1px, transparent 1px)',
-                        backgroundSize: '24px 24px'
-                      }}
-                    />
-
-                    <img
-                      src={selectedOption.layoutImageUrl || '/assets/images/cad_floor_plan_1789216705163.jpg'}
-                      alt="2D Plan"
-                      className={`w-full h-full ${
-                        cardFitModes['concept_cad'] === 'cover' ? 'object-cover' : 'object-contain'
-                      } group-hover:scale-102 transition duration-300 relative z-10`}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-200 flex items-end p-4 pointer-events-none z-20">
-                      <span className="text-white text-xs font-medium flex items-center gap-1.5 drop-shadow-md">
-                        <Maximize2 className="w-4 h-4 text-emerald-300" />
-                        <span>Click to view scaled architectural drawing sheet</span>
-                      </span>
-                    </div>
+                <div className="rounded-lg overflow-hidden border border-slate-200 bg-slate-900 group relative">
+                  <img
+                    src={selectedOption.layoutImageUrl || '/assets/images/cad_floor_plan_1789216705163.jpg'}
+                    alt="2D Plan"
+                    className="w-full h-44 object-cover group-hover:scale-105 transition duration-300"
+                  />
+                  <div className="absolute top-2 left-2 bg-black/70 text-white text-[10px] px-2 py-0.5 rounded font-bold">
+                    2D Space-Planning Layout
                   </div>
                 </div>
               </div>
@@ -1270,262 +1089,97 @@ export const DesignAndDrawingsManagementView: React.FC<DesignAndDrawingsManageme
       {/* VIEW 5: DRAWINGS TRANSMITTAL & GFC REVISIONS */}
       {activeSubTab === 'drawings' && (
         <div className="space-y-4">
-          {/* Header Controls: Filters + View Mode Switcher */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-2xs p-4 flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Discipline:
-                </span>
-                <select
-                  value={disciplineFilter}
-                  onChange={(e) => setDisciplineFilter(e.target.value)}
-                  className="text-xs border border-slate-300 rounded-lg px-2.5 py-1.5 bg-slate-50 text-slate-800 font-medium focus:outline-none focus:ring-1 focus:ring-slate-400"
-                >
-                  <option value="ALL">All Disciplines (4)</option>
-                  <option value="ARCHITECTURAL">Architectural Floor Plans</option>
-                  <option value="INTERIOR_LAYOUT">Interior Joinery &amp; Millwork</option>
-                  <option value="3D_RENDERS">3D Photorealistic Renders</option>
-                  <option value="ELECTRICAL_MEP">Electrical SLD &amp; Automation</option>
-                </select>
-              </div>
-
-              {/* Layout Switcher: 2-Cols vs 1-Col Hero */}
-              <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs">
-                <button
-                  type="button"
-                  onClick={() => setCardLayoutColumns('2')}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition flex items-center gap-1.5 cursor-pointer ${
-                    cardLayoutColumns === '2' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                  title="2-Column Grid (Large Cards)"
-                >
-                  <LayoutGrid className="w-3.5 h-3.5" />
-                  <span>2-Col Grid</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCardLayoutColumns('1')}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition flex items-center gap-1.5 cursor-pointer ${
-                    cardLayoutColumns === '1' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                  title="1-Column Full-Width Hero Sheets"
-                >
-                  <Square className="w-3.5 h-3.5" />
-                  <span>Wide Hero Sheet</span>
-                </button>
-              </div>
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Discipline Filter:
+              </span>
+              <select
+                value={disciplineFilter}
+                onChange={(e) => setDisciplineFilter(e.target.value)}
+                className="text-xs border border-slate-200 rounded px-2.5 py-1 bg-slate-50 text-slate-700"
+              >
+                <option value="ALL">All Disciplines (4)</option>
+                <option value="ARCHITECTURAL">Architectural Floor Plans</option>
+                <option value="3D_RENDERS">3D Photorealistic Renders</option>
+                <option value="ELECTRICAL_MEP">Electrical SLD &amp; Automation</option>
+                <option value="PLUMBING_HVAC">Plumbing &amp; HVAC</option>
+              </select>
             </div>
 
-            <div className="flex items-center gap-3 text-xs text-slate-500">
-              <span className="flex items-center gap-1.5 font-medium">
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                <span>GFC Issued (2)</span>
+            <div className="flex items-center gap-2 text-xs text-slate-500">
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" /> GFC Issued (2)
               </span>
-              <span className="flex items-center gap-1.5 font-medium ml-1">
-                <span className="w-2 h-2 rounded-full bg-purple-500" />
-                <span>Client Approved (2)</span>
-              </span>
-              <span className="text-[11px] text-slate-400 border-l border-slate-200 pl-3">
-                Full-size architectural sheets calibrated to card
+              <span className="flex items-center gap-1 ml-2">
+                <span className="w-2 h-2 rounded-full bg-purple-500" /> Client Approved (2)
               </span>
             </div>
           </div>
 
-          {/* Drawing Cards Grid */}
-          <div className={`grid grid-cols-1 ${cardLayoutColumns === '1' ? 'lg:grid-cols-1' : 'md:grid-cols-2'} gap-6`}>
-            {filteredDrawings.map((dwg) => {
-              const zoom = cardZooms[dwg.id] || 1;
-              const isCover = cardFitModes[dwg.id] === 'cover';
-
-              return (
-                <div
-                  key={dwg.id}
-                  className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden flex flex-col justify-between group transition hover:border-slate-300"
-                >
-                  {/* Card Header Toolbar */}
-                  <div className="p-3.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between flex-wrap gap-2 text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="bg-slate-900 text-white font-mono text-[11px] font-bold px-2 py-0.5 rounded">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {filteredDrawings.map((dwg) => (
+              <div key={dwg.id} className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+                <div>
+                  <div className="relative h-48 bg-slate-900 overflow-hidden group">
+                    <img
+                      src={dwg.imageThumbnail}
+                      alt={dwg.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                    />
+                    <div className="absolute top-2 left-2 flex items-center gap-1">
+                      <span className="bg-black/80 text-white text-[10px] font-mono px-2 py-0.5 rounded font-bold">
                         {dwg.drawingCode}
                       </span>
-                      <span className="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded border border-purple-200">
+                      <span className="bg-purple-700 text-white text-[10px] font-bold px-2 py-0.5 rounded">
                         {dwg.revision}
-                      </span>
-                      <span className="text-slate-500 font-medium text-[11px] hidden sm:inline">
-                        • {dwg.sheetSize} Sheet ({dwg.scale})
-                      </span>
-                    </div>
-
-                    {/* In-Card Drawing View Controls */}
-                    <div className="flex items-center gap-1 bg-white p-1 rounded-lg border border-slate-200 shadow-2xs">
-                      {/* Zoom controls */}
-                      <button
-                        type="button"
-                        onClick={(e) => handleCardZoomOut(dwg.id, e)}
-                        className="p-1 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer"
-                        title="Zoom Out in Card"
-                      >
-                        <ZoomOut className="w-3.5 h-3.5" />
-                      </button>
-                      <span className="px-1.5 text-[10px] font-mono text-slate-600 select-none">
-                        {Math.round(zoom * 100)}%
-                      </span>
-                      <button
-                        type="button"
-                        onClick={(e) => handleCardZoomIn(dwg.id, e)}
-                        className="p-1 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer"
-                        title="Zoom In in Card"
-                      >
-                        <ZoomIn className="w-3.5 h-3.5" />
-                      </button>
-                      {zoom !== 1 && (
-                        <button
-                          type="button"
-                          onClick={(e) => handleCardResetZoom(dwg.id, e)}
-                          className="p-1 rounded text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer"
-                          title="Reset Zoom"
-                        >
-                          <RotateCcw className="w-3 h-3" />
-                        </button>
-                      )}
-
-                      <div className="h-3.5 w-px bg-slate-200 mx-0.5" />
-
-                      {/* Fit vs Cover Toggle */}
-                      <button
-                        type="button"
-                        onClick={() => toggleFitMode(dwg.id)}
-                        className="px-2 py-0.5 rounded text-[10px] font-mono font-medium text-slate-700 hover:bg-slate-100 transition cursor-pointer"
-                        title={isCover ? 'Switch to Fit Entire Drawing Sheet' : 'Switch to Fill Card'}
-                      >
-                        {isCover ? 'Fit Sheet' : 'Fill'}
-                      </button>
-
-                      <div className="h-3.5 w-px bg-slate-200 mx-0.5" />
-
-                      {/* Inspect Fullscreen Modal Button */}
-                      <button
-                        type="button"
-                        onClick={() => setInspectingDrawing(dwg)}
-                        className="p-1 rounded text-slate-700 hover:text-blue-600 hover:bg-blue-50 transition cursor-pointer flex items-center gap-1"
-                        title="Open High-Resolution Inspection Studio"
-                      >
-                        <Maximize2 className="w-3.5 h-3.5" />
-                        <span className="text-[10px] font-semibold pr-1">Inspect</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* High-Resolution Drawing Viewport: Sized Expansively As Per Card */}
-                  <div
-                    onClick={() => setInspectingDrawing(dwg)}
-                    className={`relative ${
-                      cardLayoutColumns === '1' ? 'h-[560px] sm:h-[640px] md:h-[720px]' : 'h-[440px] sm:h-[500px] md:h-[560px]'
-                    } bg-slate-950 overflow-hidden cursor-pointer select-none flex items-center justify-center p-3 sm:p-5`}
-                  >
-                    {/* CAD Blueprint Grid Pattern */}
-                    <div 
-                      className="absolute inset-0 opacity-15 pointer-events-none"
-                      style={{
-                        backgroundImage: 'linear-gradient(to right, #38bdf8 1px, transparent 1px), linear-gradient(to bottom, #38bdf8 1px, transparent 1px)',
-                        backgroundSize: '32px 32px'
-                      }}
-                    />
-
-                    {/* Architectural Drawing Sheet scaled to fill the card */}
-                    <div 
-                      className="w-full h-full flex items-center justify-center transition-transform duration-200 ease-out"
-                      style={{ transform: `scale(${zoom})` }}
-                    >
-                      <img
-                        src={dwg.imageThumbnail}
-                        alt={dwg.title}
-                        className={`w-full h-full ${
-                          isCover ? 'object-cover' : 'object-contain'
-                        } rounded transition-all duration-300 shadow-2xl relative z-10`}
-                      />
-                    </div>
-
-                    {/* Corner Metadata Badges */}
-                    <div className="absolute top-3 left-3 z-20 flex items-center gap-2 pointer-events-none">
-                      <span className="bg-slate-900/90 text-white backdrop-blur-xs text-[10px] font-mono px-2.5 py-1 rounded font-bold border border-slate-700">
-                        {dwg.discipline.replace(/_/g, ' ')}
                       </span>
                     </div>
 
                     {dwg.status === 'GFC_ISSUED' && (
-                      <div className="absolute top-3 right-3 z-20 bg-emerald-600/95 text-white backdrop-blur-xs text-[10px] font-bold px-2.5 py-1 rounded flex items-center gap-1.5 shadow-md pointer-events-none">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
+                      <div className="absolute top-2 right-2 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1 shadow-sm">
+                        <CheckCircle2 className="w-3 h-3" />
                         <span>GFC STAMPED ({dwg.gfcStampDate})</span>
                       </div>
                     )}
-
-                    {/* Bottom Floating Info Bar */}
-                    <div className="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-between pointer-events-none">
-                      <span className="bg-black/75 backdrop-blur-xs text-white text-[10px] font-mono px-2 py-0.5 rounded border border-slate-800">
-                        Scale {dwg.scale} • Sheet {dwg.sheetSize}
-                      </span>
-                      <span className="bg-blue-600/90 backdrop-blur-xs text-white text-[10px] font-semibold px-2 py-0.5 rounded flex items-center gap-1">
-                        <Maximize2 className="w-3 h-3" />
-                        <span>Click to Inspect Fullscreen</span>
-                      </span>
-                    </div>
                   </div>
 
-                  {/* Card Information & Approvals Details */}
-                  <div className="p-4 space-y-3 bg-white">
-                    <div>
-                      <h3 className="font-bold text-slate-900 text-sm leading-snug">{dwg.title}</h3>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-slate-500 mt-2 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                        <div>Sheet: <strong className="text-slate-800">{dwg.sheetSize}</strong></div>
-                        <div>Scale: <strong className="text-slate-800">{dwg.scale}</strong></div>
-                        <div>Author: <strong className="text-slate-800">{dwg.author}</strong></div>
-                        <div>Checker: <strong className="text-slate-800">{dwg.checker}</strong></div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
-                      <span>Released on: <strong className="text-slate-700">{dwg.releaseDate}</strong> ({dwg.fileSizeMb} MB)</span>
-                      <span>Client Comments: <strong className="text-slate-700">{dwg.clientCommentsCount}</strong></span>
-                    </div>
-                  </div>
-
-                  {/* Card Action Footer */}
-                  <div className="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setInspectingDrawing(dwg)}
-                      className="px-3 py-1.5 rounded bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer"
-                    >
-                      <Eye className="w-3.5 h-3.5 text-blue-600" />
-                      <span>High-Res Lightbox</span>
-                    </button>
-
-                    <div className="flex items-center gap-2">
-                      {dwg.status !== 'GFC_ISSUED' && (
-                        <button
-                          type="button"
-                          onClick={() => handleIssueGFC(dwg.id)}
-                          className="px-3 py-1.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
-                        >
-                          <FileCheck className="w-3.5 h-3.5" />
-                          <span>Issue GFC</span>
-                        </button>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => showToast(`Exporting CAD package ${dwg.drawingCode}.dwg (AutoCAD Drawing Database)...`)}
-                        className="px-3 py-1.5 rounded bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
-                      >
-                        <Download className="w-3.5 h-3.5 text-sky-400" />
-                        <span>Export .DWG / PDF</span>
-                      </button>
+                  <div className="p-4 space-y-2">
+                    <h3 className="font-bold text-slate-900 text-sm">{dwg.title}</h3>
+                    <div className="grid grid-cols-2 gap-2 text-xs text-slate-500">
+                      <div>Sheet: <strong>{dwg.sheetSize}</strong> • Scale: <strong>{dwg.scale}</strong></div>
+                      <div>Author: <strong>{dwg.author}</strong></div>
+                      <div>Released: <strong>{dwg.releaseDate}</strong></div>
+                      <div>Size: <strong>{dwg.fileSizeMb} MB</strong></div>
                     </div>
                   </div>
                 </div>
-              );
-            })}
+
+                <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                  <span className="text-xs text-slate-500">
+                    Client Comments: <strong>{dwg.clientCommentsCount}</strong>
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {dwg.status !== 'GFC_ISSUED' && (
+                      <button
+                        onClick={() => handleIssueGFC(dwg.id)}
+                        className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1"
+                      >
+                        <FileCheck className="w-3 h-3" />
+                        <span>Issue GFC</span>
+                      </button>
+                    )}
+                    <button
+                      onClick={() => showToast(`Downloading CAD drawing ${dwg.drawingCode}...`)}
+                      className="px-2.5 py-1 rounded border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-semibold transition flex items-center gap-1"
+                    >
+                      <Download className="w-3 h-3" />
+                      <span>Download</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -1734,207 +1388,6 @@ export const DesignAndDrawingsManagementView: React.FC<DesignAndDrawingsManageme
               >
                 Confirm &amp; Notify Client
               </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* HIGH-RES ARCHITECTURAL DRAWING INSPECTION STUDIO MODAL */}
-      {inspectingDrawing && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col overflow-hidden text-white animate-in fade-in">
-          {/* Modal Header */}
-          <div className="px-6 py-3.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-3">
-              <span className="bg-[#0F6CBD] text-white font-mono text-xs font-bold px-2.5 py-1 rounded">
-                {inspectingDrawing.drawingCode}
-              </span>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-sm sm:text-base font-bold text-white tracking-wide">
-                    {inspectingDrawing.title}
-                  </h2>
-                  <span className="bg-purple-900/80 text-purple-200 border border-purple-700 text-[10px] font-mono font-bold px-2 py-0.5 rounded">
-                    {inspectingDrawing.revision}
-                  </span>
-                  {inspectingDrawing.status === 'GFC_ISSUED' && (
-                    <span className="bg-emerald-900/80 text-emerald-300 border border-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                      <span>GFC STAMPED ({inspectingDrawing.gfcStampDate})</span>
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Discipline: <strong className="text-slate-200">{inspectingDrawing.discipline.replace(/_/g, ' ')}</strong> • Sheet: <strong className="text-slate-200">{inspectingDrawing.sheetSize}</strong> • Scale: <strong className="text-slate-200">{inspectingDrawing.scale}</strong> • Author: <strong className="text-slate-200">{inspectingDrawing.author}</strong>
-                </p>
-              </div>
-            </div>
-
-            {/* Controls */}
-            <div className="flex items-center gap-2">
-              {/* Zoom Controls */}
-              <div className="flex items-center bg-slate-800 rounded-lg p-0.5 border border-slate-700">
-                <button
-                  type="button"
-                  onClick={() => setInspectZoom(prev => Math.max(prev - 0.25, 0.5))}
-                  className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition cursor-pointer"
-                  title="Zoom Out"
-                >
-                  <ZoomOut className="w-4 h-4" />
-                </button>
-                <span className="px-2 text-xs font-mono text-slate-300 select-none">
-                  {Math.round(inspectZoom * 100)}%
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setInspectZoom(prev => Math.min(prev + 0.25, 3.5))}
-                  className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition cursor-pointer"
-                  title="Zoom In"
-                >
-                  <ZoomIn className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setInspectZoom(1)}
-                  className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700 rounded transition border-l border-slate-700 cursor-pointer text-xs"
-                  title="Reset Zoom to 100%"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => showToast(`Exporting CAD package ${inspectingDrawing.drawingCode}.dwg...`)}
-                className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-xs cursor-pointer"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>Export .DWG / PDF</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setInspectingDrawing(null);
-                  setInspectZoom(1);
-                }}
-                className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition cursor-pointer"
-                title="Close Lightbox (Esc)"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-
-          {/* Drawing Canvas Area */}
-          <div className="flex-1 relative bg-slate-950 overflow-auto flex items-center justify-center p-6">
-            {/* Architectural Grid pattern */}
-            <div 
-              className="absolute inset-0 opacity-20 pointer-events-none"
-              style={{
-                backgroundImage: 'linear-gradient(to right, #38bdf8 1px, transparent 1px), linear-gradient(to bottom, #38bdf8 1px, transparent 1px)',
-                backgroundSize: '40px 40px'
-              }}
-            />
-
-            <div 
-              className="relative max-w-full max-h-full flex items-center justify-center transition-transform duration-150 ease-out z-10"
-              style={{ transform: `scale(${inspectZoom})` }}
-            >
-              <img
-                src={inspectingDrawing.imageThumbnail}
-                alt={inspectingDrawing.title}
-                className="max-w-[92vw] max-h-[82vh] object-contain rounded-lg shadow-2xl border border-slate-800"
-              />
-            </div>
-          </div>
-
-          {/* Modal Footer Strip */}
-          <div className="px-6 py-2.5 bg-slate-900 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400 shrink-0">
-            <div>
-              Engineering Release: <strong className="text-white">{inspectingDrawing.releaseDate}</strong> • File Size: <strong className="text-white">{inspectingDrawing.fileSizeMb} MB</strong> • Checker: <strong className="text-white">{inspectingDrawing.checker}</strong>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] text-slate-500">
-                Use controls above to zoom up to 350% for inspection of hairline dimensions and callouts
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* HIGH-RES VISUAL / RENDER INSPECTION MODAL */}
-      {inspectingVisual && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col overflow-hidden text-white animate-in fade-in">
-          <div className="px-6 py-3.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="bg-[#0F6CBD] text-white text-[10px] font-bold px-2 py-0.5 rounded font-mono">
-                  {inspectingVisual.type}
-                </span>
-                <h2 className="text-sm sm:text-base font-bold text-white">
-                  {inspectingVisual.title}
-                </h2>
-              </div>
-              {inspectingVisual.subtitle && (
-                <p className="text-xs text-slate-400 mt-0.5">{inspectingVisual.subtitle}</p>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2">
-              <div className="flex items-center bg-slate-800 rounded-lg p-0.5 border border-slate-700">
-                <button
-                  type="button"
-                  onClick={() => setInspectZoom(prev => Math.max(prev - 0.25, 0.5))}
-                  className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition cursor-pointer"
-                  title="Zoom Out"
-                >
-                  <ZoomOut className="w-4 h-4" />
-                </button>
-                <span className="px-2 text-xs font-mono text-slate-300 select-none">
-                  {Math.round(inspectZoom * 100)}%
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setInspectZoom(prev => Math.min(prev + 0.25, 3.5))}
-                  className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition cursor-pointer"
-                  title="Zoom In"
-                >
-                  <ZoomIn className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setInspectZoom(1)}
-                  className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700 rounded transition border-l border-slate-700 cursor-pointer text-xs"
-                  title="Reset Zoom to 100%"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setInspectingVisual(null);
-                  setInspectZoom(1);
-                }}
-                className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition cursor-pointer"
-                title="Close (Esc)"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-
-          <div className="flex-1 relative bg-slate-950 overflow-auto flex items-center justify-center p-6">
-            <div 
-              className="relative max-w-full max-h-full flex items-center justify-center transition-transform duration-150 ease-out z-10"
-              style={{ transform: `scale(${inspectZoom})` }}
-            >
-              <img
-                src={inspectingVisual.image}
-                alt={inspectingVisual.title}
-                className="max-w-[92vw] max-h-[82vh] object-contain rounded-lg shadow-2xl border border-slate-800"
-              />
             </div>
           </div>
         </div>

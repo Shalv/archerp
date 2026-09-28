@@ -99,17 +99,17 @@ export const D365CommandBar: React.FC<D365CommandBarProps> = ({
   const isFrozen = activeRev?.status === 'APPROVED' || activeRev?.status === 'FROZEN_BASELINE';
 
   return (
-    <div className="bg-white border-b border-slate-200 select-none">
-      {/* Ribbon Tabs Header */}
-      <div className="flex items-center px-4 pt-1 gap-1 border-b border-slate-200 bg-slate-50">
+    <div className="bg-white border-b border-[#E1DFDD] shadow-2xs select-none">
+      {/* Ribbon Tabs Header (Office / D365 standard) */}
+      <div className="flex items-center px-4 pt-1 gap-1 border-b border-[#EDEBE9] bg-[#FAF9F8]">
         {(['HOME', 'PROCESS', 'LINE', 'NAVIGATE', 'REPORT', 'PAGE'] as const).map(tab => (
           <button
             key={tab}
             onClick={() => setActiveRibbonTab(tab)}
-            className={`px-3 py-1.5 text-xs font-semibold tracking-tight transition rounded-t cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-semibold tracking-tight transition rounded-t ${
               activeRibbonTab === tab
-                ? 'bg-white text-slate-950 border-t-2 border-t-slate-900 border-x border-b-0 border-slate-200 -mb-px shadow-2xs'
-                : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100'
+                ? 'bg-white text-[#0F6CBD] border-t-2 border-t-[#0F6CBD] border-x border-b-0 border-[#E1DFDD] -mb-px'
+                : 'text-[#605E5C] hover:text-[#201F1E] hover:bg-[#F3F2F1]'
             }`}
           >
             {tab.charAt(0) + tab.slice(1).toLowerCase()}
@@ -120,45 +120,45 @@ export const D365CommandBar: React.FC<D365CommandBarProps> = ({
           {/* FactBox Toggle Icon */}
           <button
             onClick={onToggleFactBox}
-            className={`flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-md border transition cursor-pointer font-medium ${
+            className={`flex items-center gap-1 px-2 py-1 text-xs rounded border transition ${
               isFactBoxOpen
-                ? 'bg-slate-100 border-slate-300 text-slate-900 shadow-2xs'
-                : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                ? 'bg-[#EFF6FC] border-[#C7E0F4] text-[#0F6CBD]'
+                : 'bg-white border-[#8A8886] text-[#605E5C] hover:bg-[#F3F2F1]'
             }`}
             title="Toggle Details & FactBox Pane (Alt+F2)"
           >
-            <Info className="h-3.5 w-3.5 text-slate-500" />
-            <span className="hidden sm:inline text-xs">FactBox</span>
+            <Info className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline text-[11px] font-medium">FactBox</span>
           </button>
 
           {/* Page Inspector Shortcut */}
           <button
             onClick={handleInspect}
-            className="flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition cursor-pointer font-medium shadow-2xs"
+            className="flex items-center gap-1 px-2 py-1 text-xs rounded border border-[#8A8886] bg-white text-[#201F1E] hover:bg-[#F3F2F1] transition"
             title="Inspect Pages and Data (Ctrl+Alt+F1)"
           >
-            <Database className="h-3.5 w-3.5 text-slate-500" />
-            <span className="hidden md:inline text-xs">Inspect (Ctrl+Alt+F1)</span>
+            <Database className="h-3.5 w-3.5 text-[#0F6CBD]" />
+            <span className="hidden md:inline text-[11px] font-medium">Inspect (Ctrl+Alt+F1)</span>
           </button>
         </div>
       </div>
 
       {/* Ribbon Action Buttons Content Bar */}
-      <div className="px-4 py-2 flex flex-wrap items-center gap-2 min-h-[44px]">
+      <div className="px-4 py-2 flex flex-wrap items-center gap-2 min-h-[48px]">
         {/* HOME TAB */}
         {activeRibbonTab === 'HOME' && (
-          <div className="flex items-center gap-2 divide-x divide-slate-200">
+          <div className="flex items-center gap-2 divide-x divide-[#EDEBE9]">
             {/* Primary Workflow Actions */}
             <div className="flex items-center gap-1.5 pr-2">
               {canRunAITakeoff && (
                 <button
                   onClick={handleRunAI}
                   disabled={isGenerating || isFrozen}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-900 text-white hover:bg-slate-800 text-xs font-semibold shadow-xs transition disabled:opacity-50 cursor-pointer"
-                  title="Run Automated Quantity Takeoff Engine"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#0F6CBD] text-white hover:bg-[#0B5A9E] text-xs font-semibold shadow-2xs transition disabled:opacity-50"
+                  title="Run BuildStorys Copilot AI Takeoff"
                 >
-                  <Calculator className={`h-3.5 w-3.5 ${isGenerating ? 'animate-spin' : ''}`} />
-                  <span>{isGenerating ? 'Calculating Takeoff...' : 'Automated Takeoff'}</span>
+                  <Sparkles className={`h-3.5 w-3.5 ${isGenerating ? 'animate-spin' : ''}`} />
+                  <span>{isGenerating ? 'Copilot Generating...' : 'Copilot Takeoff (AI)'}</span>
                 </button>
               )}
 
@@ -166,15 +166,15 @@ export const D365CommandBar: React.FC<D365CommandBarProps> = ({
                 <button
                   onClick={onApproveBaseline}
                   disabled={isFrozen}
-                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition border cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-semibold transition border ${
                     isFrozen
-                      ? 'bg-slate-100 text-slate-400 border-slate-200'
-                      : 'bg-emerald-700 text-white hover:bg-emerald-800 border-transparent shadow-xs'
+                      ? 'bg-[#F3F2F1] text-[#A19F9D] border-[#EDEBE9]'
+                      : 'bg-[#107C41] text-white hover:bg-[#0E6837] border-transparent'
                   }`}
                   title="Approve and freeze contractual baseline"
                 >
                   <CheckCircle2 className="h-3.5 w-3.5" />
-                  <span>{isFrozen ? 'Baseline Frozen (Rev 3)' : 'Approve Baseline'}</span>
+                  <span>{isFrozen ? 'Baseline Frozen (Rev 1)' : 'Post / Approve Baseline'}</span>
                 </button>
               )}
 
@@ -183,9 +183,9 @@ export const D365CommandBar: React.FC<D365CommandBarProps> = ({
                   if (onRecalculateBudget) onRecalculateBudget();
                   handleNavigate('budget');
                 }}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium text-slate-800 hover:bg-slate-50 border border-slate-200 transition cursor-pointer"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded text-xs font-medium text-[#201F1E] hover:bg-[#F3F2F1] border border-[#D2D0CE] transition"
               >
-                <Calculator className="h-3.5 w-3.5 text-slate-500" />
+                <Calculator className="h-3.5 w-3.5 text-[#0F6CBD]" />
                 <span>Recalculate Budget</span>
               </button>
 
@@ -194,9 +194,9 @@ export const D365CommandBar: React.FC<D365CommandBarProps> = ({
                   if (onGenerateQuotation) onGenerateQuotation();
                   handleNavigate('quotation');
                 }}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium text-slate-800 hover:bg-slate-50 border border-slate-200 transition cursor-pointer"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded text-xs font-medium text-[#201F1E] hover:bg-[#F3F2F1] border border-[#D2D0CE] transition"
               >
-                <FileCheck className="h-3.5 w-3.5 text-slate-500" />
+                <FileCheck className="h-3.5 w-3.5 text-[#107C41]" />
                 <span>Customer Quotation</span>
               </button>
             </div>
@@ -206,11 +206,11 @@ export const D365CommandBar: React.FC<D365CommandBarProps> = ({
               {canExport && (
                 <button
                   onClick={onExportToExcel}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium text-slate-800 bg-white hover:bg-slate-50 border border-slate-200 transition cursor-pointer shadow-2xs"
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded text-xs font-medium text-[#107C41] bg-[#F2FBF6] hover:bg-[#DFF6DD] border border-[#B3E5C7] transition"
                   title="Export Job Planning Lines to Excel"
                 >
-                  <FileSpreadsheet className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>Export to Excel</span>
+                  <FileSpreadsheet className="h-3.5 w-3.5 text-[#107C41]" />
+                  <span>Open in Excel</span>
                 </button>
               )}
 

@@ -100,9 +100,9 @@ export class MongoDBService {
           strict: false,
           deprecationErrors: true,
         },
-        connectTimeoutMS: 3000,
-        socketTimeoutMS: 5000,
-        serverSelectionTimeoutMS: 3000,
+        connectTimeoutMS: 2500,
+        socketTimeoutMS: 3000,
+        serverSelectionTimeoutMS: 2500,
         maxPoolSize: 10,
         minPoolSize: 1,
       });
