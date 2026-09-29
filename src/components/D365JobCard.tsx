@@ -318,6 +318,16 @@ export const D365JobCard: React.FC<D365JobCardProps> = ({
           <div className="flex flex-wrap items-center gap-2 self-start md:self-center shrink-0">
             <button
               type="button"
+              onClick={() => handleNavigate('spatial_ai')}
+              className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-800 hover:to-indigo-800 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer border border-purple-400/40"
+              title="2-Step Spatial AI: Read Plan -> 2D Layouts -> Visual Concept & BOQ Link"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span>2-Step Spatial AI Studio</span>
+            </button>
+
+            <button
+              type="button"
               onClick={() => setIsVastuModalOpen(true)}
               className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#002050] to-[#0f6cbd] hover:from-[#0c366e] hover:to-[#0b5a9e] text-white text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
               title="AI Vastu Layout Optimizer - Suggest 3 Vastu-compliant layout options with room breakdown"

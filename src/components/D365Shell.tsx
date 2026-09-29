@@ -148,6 +148,7 @@ export const D365Shell: React.FC<D365ShellProps> = ({
 
   // Tell Me Search Items
   const tellMeItems = [
+    { title: '2-Step Spatial AI: Floor Plan Reading -> 2D Layouts -> Visuals -> BOQ', category: 'Design & Spatial AI', action: () => handleNavigate('spatial_ai') },
     { title: 'AI Vastu Floor Planner (Submit Plot Size e.g. 1200 sq.ft & Generate 3 Options)', category: 'Design & Vastu', action: () => onOpenVastuModal ? onOpenVastuModal() : handleNavigate('survey') },
     { title: 'Customer Training & Operations Manual (Step-by-Step Module Guide)', category: 'Training & Help', action: () => onOpenTrainingManual?.() },
     { title: 'User Operations Manual & Step-by-Step Customer Curriculum', category: 'Training & Help', action: () => onOpenTrainingManual?.() },
@@ -240,6 +241,9 @@ export const D365Shell: React.FC<D365ShellProps> = ({
         return { category: 'Enquiry & CRM', name: 'Customers & Contacts Directory', code: 'M02' };
       case 'survey':
         return { category: 'Survey & Design', name: 'Site Survey & Laser Scan Hub', code: 'M03' };
+      case 'spatial_ai':
+      case 'floorplan':
+        return { category: 'Survey & Design', name: '2-Step Spatial AI & Visual Studio', code: 'M04-B' };
       case 'drawings':
       case 'architecture':
         return { category: 'Survey & Design', name: 'Architectural Drawings & 3D Renders', code: 'M04' };
@@ -507,6 +511,20 @@ export const D365Shell: React.FC<D365ShellProps> = ({
               </ViewportMenu>
             )}
           </div>
+
+          {/* 2-Step Spatial AI Button */}
+          <button
+            onClick={() => handleNavigate('spatial_ai')}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded transition text-xs font-bold shadow-xs cursor-pointer border ${
+              activeTab === 'spatial_ai' || activeTab === 'floorplan'
+                ? 'bg-purple-600 text-white border-purple-300 ring-1 ring-purple-400'
+                : 'bg-gradient-to-r from-purple-700 via-purple-800 to-indigo-900 hover:from-purple-600 hover:to-indigo-800 text-white border-purple-400/50'
+            }`}
+            title="2-Step Spatial AI: Read Plan -> 2D Layouts -> Visual Concept & BOQ Link"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-amber-300" />
+            <span className="hidden md:inline text-xs font-bold">2-Step Spatial AI</span>
+          </button>
 
           {/* AI Vastu Floor Planner Quick Action */}
           <button

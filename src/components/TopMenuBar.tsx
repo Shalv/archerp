@@ -202,6 +202,16 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
           badgeColor: 'bg-indigo-50 text-indigo-700 border border-indigo-200'
         },
         {
+          id: 'spatial_ai',
+          tabKey: 'spatial_ai',
+          name: '2-Step Spatial AI Studio',
+          shortDesc: 'Floor plan reading -> 2D layouts -> visual concept & BOQ',
+          icon: Sparkles,
+          code: 'M04-B',
+          badge: '2-Step AI',
+          badgeColor: 'bg-purple-50 text-purple-700 border border-purple-200'
+        },
+        {
           id: 'materials',
           tabKey: 'materials',
           name: 'Material & Sample Approvals',

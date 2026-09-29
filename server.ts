@@ -17,7 +17,9 @@ import { mongoDBService } from './src/server/mongoService';
 import { 
   analyzeCustomerRequirementBrief, 
   generateDraftBOQFromRequirements,
-  generateVastuLayoutSuggestions 
+  generateVastuLayoutSuggestions,
+  generateAIFurnitureLayouts,
+  reviseConceptWithClientFeedback
 } from './src/server/geminiService';
 import { getAlternativePackages, getValueEngineeringOptions } from './src/server/syntheticDemo';
 import { UserSession, MasterRateItem, BOQItem, BOQRevision, ProjectRecord, CustomerRequirement, SystemCapabilityReport, CustomerQuotation } from './src/types/erp';
@@ -730,6 +732,93 @@ export async function createApp(isServerless: boolean = false) {
     } catch (err: any) {
       console.error('[Vastu Suggestion API Error]:', err);
       res.status(500).json({ error: err.message || 'Failed to generate Vastu layout suggestions.' });
+    }
+  });
+
+  // --- 2-Step Spatial AI Design Studio Endpoints ---
+  app.get('/api/projects/:id/spatial-studio', (req: Request, res: Response) => {
+    try {
+      const session = dbService.getSpatialSession(req.params.id);
+      res.json(session);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Failed to retrieve spatial studio session.' });
+    }
+  });
+
+  app.put('/api/projects/:id/spatial-studio', (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const session = dbService.saveSpatialSession(user, req.body);
+      res.json(session);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Failed to save spatial studio session.' });
+    }
+  });
+
+  app.post('/api/projects/:id/spatial-studio/generate-layouts', async (req: Request, res: Response) => {
+    try {
+      const { room, customerBrief } = req.body;
+      if (!room || !room.id) {
+        return res.status(400).json({ error: 'Valid extracted room geometry is required.' });
+      }
+      const layouts = await generateAIFurnitureLayouts(room, customerBrief || {});
+      
+      const user = resolveUser(req);
+      if (user) {
+        dbService.logAudit(
+          user,
+          'GENERATE_FURNITURE_LAYOUTS',
+          'SPATIAL_PLANNING',
+          req.params.id,
+          `Generated ${layouts.length} usable furniture layout options for ${room.name} with circulation validation.`
+        );
+      }
+      res.json(layouts);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Failed to generate furniture layouts.' });
+    }
+  });
+
+  app.post('/api/projects/:id/spatial-studio/revise-feedback', async (req: Request, res: Response) => {
+    try {
+      const { previousConcept, clientFeedbackText, room, lockedLayout } = req.body;
+      if (!previousConcept || !clientFeedbackText || !room || !lockedLayout) {
+        return res.status(400).json({ error: 'Missing required parameters for concept revision.' });
+      }
+      const revisedConcept = await reviseConceptWithClientFeedback(
+        previousConcept,
+        clientFeedbackText,
+        room,
+        lockedLayout
+      );
+      
+      const user = resolveUser(req);
+      if (user) {
+        dbService.logAudit(
+          user,
+          'REVISE_CONCEPT_FEEDBACK',
+          'SPATIAL_DESIGN',
+          req.params.id,
+          `Revised visual concept ${revisedConcept.conceptVersionCode} based on client feedback: "${clientFeedbackText.slice(0, 60)}..."`
+        );
+      }
+      res.json(revisedConcept);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Failed to revise concept with feedback.' });
+    }
+  });
+
+  app.post('/api/projects/:id/spatial-studio/link-boq', (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const { conceptVersionId } = req.body;
+      if (!conceptVersionId) {
+        return res.status(400).json({ error: 'conceptVersionId is required.' });
+      }
+      const result = dbService.linkSpatialConceptToBOQ(user, req.params.id, conceptVersionId);
+      res.json({ success: true, ...result });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Failed to link concept to BOQ.' });
     }
   });
 

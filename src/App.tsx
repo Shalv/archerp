@@ -46,6 +46,7 @@ import { AIVastuLayoutSuggesterModal } from './components/AIVastuLayoutSuggester
 import { exportJobPlanningLinesToExcel } from './utils/excelExport';
 import { CostTraceabilityMatrixView } from './components/CostTraceabilityMatrixView';
 import { AgenticAIActionCenter } from './components/AgenticAIActionCenter';
+import { TwoStepSpatialDesignStudio } from './components/floorplan/TwoStepSpatialDesignStudio';
 import { FullJourneyModulesView } from './components/FullJourneyModulesView';
 import { MandatoryReportsHubView } from './components/MandatoryReportsHubView';
 import { TimesheetManagementView } from './components/TimesheetManagementView';
@@ -847,6 +848,13 @@ export default function App() {
               project={activeProject}
               onClose={() => setActiveTab('general')}
               onNavigateToTab={(tab) => setActiveTab(tab)}
+            />
+          ) : (activeTab === 'spatial_ai' || activeTab === 'floorplan') && activeProject ? (
+            <TwoStepSpatialDesignStudio
+              project={activeProject}
+              currentUser={currentUser}
+              onNavigateTab={(tab) => setActiveTab(tab)}
+              onOpenInspectData={() => setIsInspectOpen(true)}
             />
           ) : activeTab === 'traceability' && activeProject ? (
             <CostTraceabilityMatrixView

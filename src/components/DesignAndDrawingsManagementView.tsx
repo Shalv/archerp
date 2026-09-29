@@ -47,6 +47,7 @@ import {
 import { CustomerDiscoveryFormView } from './discovery/CustomerDiscoveryFormView';
 import { CategoryVisualSampleHeadsView } from './discovery/CategoryVisualSampleHeadsView';
 import { VisualInformationPackView } from './discovery/VisualInformationPackView';
+import { TwoStepSpatialDesignStudio } from './floorplan/TwoStepSpatialDesignStudio';
 
 interface DesignAndDrawingsManagementViewProps {
   project: ProjectRecord;
@@ -392,7 +393,7 @@ export const DesignAndDrawingsManagementView: React.FC<DesignAndDrawingsManageme
   onNavigateTab
 }) => {
   // Navigation Sub-Tabs
-  const [activeSubTab, setActiveSubTab] = useState<'discovery' | 'heads' | 'info_pack' | 'ai_options' | 'drawings' | 'comparison'>('discovery');
+  const [activeSubTab, setActiveSubTab] = useState<'discovery' | 'heads' | 'info_pack' | 'spatial_ai' | 'ai_options' | 'drawings' | 'comparison'>('spatial_ai');
 
   // Customer Discovery Data State (with local persistence)
   const [discoveryData, setDiscoveryData] = useState<CustomerDiscoveryData>(() => {
@@ -631,6 +632,18 @@ export const DesignAndDrawingsManagementView: React.FC<DesignAndDrawingsManageme
         {/* Action Button Strip */}
         <div className="flex items-center gap-2 flex-wrap">
           <button
+            onClick={() => setActiveSubTab('spatial_ai')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition ${
+              activeSubTab === 'spatial_ai'
+                ? 'bg-purple-700 text-white shadow-xs'
+                : 'bg-purple-50 text-purple-800 hover:bg-purple-100 border border-purple-200'
+            }`}
+            title="Integrated 2-Step Spatial AI Studio: 2D Measured Layouts -> 3D Visual Concept & BOQ Link"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <span>2-Step Spatial AI (Layouts &amp; Visuals)</span>
+          </button>
+          <button
             onClick={() => setActiveSubTab('discovery')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition ${
               activeSubTab === 'discovery' ? 'bg-[#0F6CBD] text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -682,6 +695,16 @@ export const DesignAndDrawingsManagementView: React.FC<DesignAndDrawingsManageme
           </button>
           {onNavigateTab && (
             <button
+              onClick={() => onNavigateTab('spatial_ai')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition bg-gradient-to-r from-purple-700 to-indigo-800 hover:from-purple-800 hover:to-indigo-900 text-white shadow-xs border border-purple-400/40 ml-1 cursor-pointer"
+              title="2-Step Spatial AI: Read Plan -> 2D Layouts -> Visual Concept & BOQ Link"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span>2-Step Spatial AI (Layout &amp; Visuals)</span>
+            </button>
+          )}
+          {onNavigateTab && (
+            <button
               onClick={() => onNavigateTab('arch_studio')}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition bg-[#002050] text-amber-300 hover:bg-[#001535] shadow-xs border border-amber-400/40 ml-1"
               title="Launch Full AI Architectural Concept Studio with 6-Sheet CAD Viewer & Ollama synthesis"
@@ -693,6 +716,15 @@ export const DesignAndDrawingsManagementView: React.FC<DesignAndDrawingsManageme
         </div>
       </div>
 
+      {/* VIEW 0: INTEGRATED 2-STEP SPATIAL AI STUDIO (Layouts, 3D Visuals & BOQ Linking) */}
+      {activeSubTab === 'spatial_ai' && (
+        <TwoStepSpatialDesignStudio
+          project={project}
+          currentUser={currentUser}
+          onNavigateTab={onNavigateTab}
+        />
+      )}
+
       {/* VIEW 1: STRUCTURED CUSTOMER DISCOVERY (A through H) */}
       {activeSubTab === 'discovery' && (
         <CustomerDiscoveryFormView
@@ -700,6 +732,7 @@ export const DesignAndDrawingsManagementView: React.FC<DesignAndDrawingsManageme
           onSaveDiscoveryData={handleSaveDiscoveryData}
           onGenerateAIOptions={() => setActiveSubTab('ai_options')}
           onNavigateToPack={() => setActiveSubTab('info_pack')}
+          onNavigateToSpatialAI={() => setActiveSubTab('spatial_ai')}
           project={project}
         />
       )}

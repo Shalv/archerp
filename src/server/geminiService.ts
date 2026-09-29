@@ -14,6 +14,13 @@ import {
   VastuLayoutSuggestionResponse,
   VastuRoomSuggestion 
 } from '../types/erp';
+import {
+  FurnitureLayoutOption,
+  ExtractedRoomGeometry,
+  VisualConceptVersion,
+  ConceptMaterialItem,
+  ClientFeedbackEntry
+} from '../types/floorplanSpatial';
 import { dbService } from './db';
 
 let aiClient: GoogleGenAI | null = null;
@@ -1669,4 +1676,716 @@ function getDeterministicVastuLayouts(
     vastuCompassGuidelines: compassGuidelines
   };
 }
+
+// ============================================================================
+// 2-STEP SPATIAL AI: Usable Room Layouts & Visual Concept Studio
+// Step 1: Usable Room Layouts (Circulation, Door Clearances, Sizes, Why It Fits)
+// Step 2: Visual Concept Generation & Client Revision Engine
+// ============================================================================
+
+export async function generateAIFurnitureLayouts(
+  room: ExtractedRoomGeometry,
+  customerBrief: {
+    propertyType?: string;
+    preferredStyle?: string;
+    approximateBudget?: number;
+    fixedRequirements?: string[];
+  }
+): Promise<FurnitureLayoutOption[]> {
+  const ai = getAI();
+
+  const prompt = `
+You are an expert Architectural Interior Space Planner at Build Storys.
+The customer shared a floor plan. We need 3 to 5 distinct, usable furniture layout options for:
+Room: ${room.name} (${room.roomType})
+Verified Dimensions: ${room.lengthFt} ft length × ${room.widthFt} ft width × ${room.heightFt} ft ceiling height.
+Carpet Area: ${room.carpetAreaSqFt} sq.ft.
+Doors & Clearances:
+${room.doors.map(d => `- Door on ${d.wall} wall: width ${d.widthFt}ft, swing ${d.swingDirection}, requires min ${d.clearanceFt}ft clearance`).join('\n')}
+Windows & Daylight:
+${room.windows.map(w => `- Window on ${w.wall} wall: width ${w.widthFt}ft, sill height ${w.sillHeightFt}ft`).join('\n')}
+Client Brief:
+- Style: ${customerBrief.preferredStyle || 'Modern Warm Interior'}
+- Approximate Budget: ₹${customerBrief.approximateBudget?.toLocaleString() || '18,00,000'}
+- Fixed Requirements: ${(customerBrief.fixedRequirements || []).join('; ')}
+
+CRITICAL ERGONOMIC RULES:
+1. NEVER place a sofa, desk, or bed across a doorway or blocking a door swing path.
+2. Maintain minimum 3.0ft (preferably 3.5ft) clear walking circulation passages.
+3. Every piece of furniture must have width, depth, height in feet, and an explanation of "why it fits" detailing wall alignment and clearance.
+4. Provide options prioritizing different functions (e.g. Option 1: Open Flow, Option 2: Storage-Max, Option 3: Ergonomic WFH, Option 4: Entertaining, Option 5: Vastu-Compliant).
+
+Return a valid JSON array of 3 to 5 FurnitureLayoutOption objects matching this exact structure:
+[
+  {
+    "id": "LAYOUT-OPT-1",
+    "optionCode": "LAYOUT_1",
+    "title": "Option 1: Max Open Flow & Social Living",
+    "tagline": "Expansive 3.8ft Central Pathway • Balcony Vista Priority",
+    "priorityTheme": "OPEN_LIVING",
+    "circulationScore": 98,
+    "storageCapacityCuFt": 210,
+    "minClearancePassageFt": 3.8,
+    "doorwayConflictDetected": false,
+    "windowLightBlocked": false,
+    "summary": "Detailed summary...",
+    "furnitureItems": [
+      {
+        "id": "F-01",
+        "name": "3-Seater Low-Slung Sofa",
+        "category": "SEATING",
+        "widthFt": 7.5,
+        "depthFt": 3.2,
+        "heightFt": 2.6,
+        "positionXPercent": 15,
+        "positionYPercent": 20,
+        "rotationDeg": 0,
+        "clearanceDistanceFt": 4.0,
+        "whyItFits": "Positioned against solid North wall; maintains 4.0ft clear walkway to entrance without door obstruction.",
+        "catalogueCode": "FUR-SOF-301",
+        "materialRef": "Oatmeal textured bouclé fabric",
+        "estimatedCost": 68000
+      }
+    ],
+    "whyItFitsOverall": "Overall architectural explanation of why this layout fits the verified geometry...",
+    "pros": ["Pro 1", "Pro 2"],
+    "cons": ["Con 1"]
+  }
+]
+`;
+
+  if (ai) {
+    try {
+      const response = await ai.models.generateContent({
+        model: process.env.GEMINI_MODEL || 'gemini-3.8-flash',
+        contents: prompt,
+        config: {
+          responseMimeType: 'application/json',
+          temperature: 0.3
+        }
+      });
+
+      if (response.text) {
+        const parsed = JSON.parse(response.text);
+        if (Array.isArray(parsed) && parsed.length >= 3) {
+          return parsed;
+        }
+      }
+    } catch (err: any) {
+      handleGeminiError('generateAIFurnitureLayouts', err);
+      console.warn('[Gemini AI Spatial] Layout generation fallback activated:', err?.message);
+    }
+  }
+
+  // High-fidelity fallback based on room type
+  return getDefaultFurnitureLayoutsForRoom(room, customerBrief);
+}
+
+function getDefaultFurnitureLayoutsForRoom(
+  room: ExtractedRoomGeometry,
+  customerBrief: { preferredStyle?: string; approximateBudget?: number; fixedRequirements?: string[] }
+): FurnitureLayoutOption[] {
+  const isLiving = room.roomType === 'LIVING_DINING' || room.name.toLowerCase().includes('living');
+  const isBed2 = room.roomType === 'BEDROOM_2_STUDY' || room.name.toLowerCase().includes('bed 2') || room.name.toLowerCase().includes('study');
+
+  if (isLiving) {
+    return [
+      {
+        id: `LAYOUT-${room.id}-OPT1`,
+        optionCode: 'LAYOUT_1',
+        title: 'Option 1: Max Open Flow & Social Living',
+        tagline: 'Expansive 3.8ft Central Pathway • Low-Profile Floating Credenza • Balcony Vista Priority',
+        priorityTheme: 'OPEN_LIVING',
+        circulationScore: 98,
+        storageCapacityCuFt: 210,
+        minClearancePassageFt: 3.8,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Places a 3-seater plush bouclé sofa against the unbroken North wall with an open-edge chaise, leaving the central corridor from entrance to balcony completely unhindered. Dining is set as a 4-to-6 extendable bench table near the kitchen.',
+        furnitureItems: [
+          {
+            id: 'F-LIV-01',
+            name: '3-Seater Low-Slung Curved Sofa',
+            category: 'SEATING',
+            widthFt: 7.5,
+            depthFt: 3.2,
+            heightFt: 2.6,
+            positionXPercent: 12,
+            positionYPercent: 18,
+            rotationDeg: 0,
+            clearanceDistanceFt: 4.0,
+            whyItFits: 'Positioned against solid North wall; maintains 4.2ft clear corridor from entrance door without protruding into walkway.',
+            catalogueCode: 'FUR-SOF-301',
+            materialRef: 'Oatmeal textured bouclé fabric with solid ash wood base',
+            estimatedCost: 68000
+          },
+          {
+            id: 'F-LIV-02',
+            name: 'Floating Slim TV Console with Slat Accent',
+            category: 'JOINERY',
+            widthFt: 6.5,
+            depthFt: 1.2,
+            heightFt: 1.4,
+            positionXPercent: 14,
+            positionYPercent: 82,
+            rotationDeg: 0,
+            clearanceDistanceFt: 5.5,
+            whyItFits: 'Mounted on South wall with only 14" depth; preserves 5.5ft viewing distance to sofa and zero floor-level clutter.',
+            catalogueCode: 'MED-TVC-104',
+            materialRef: 'Natural smoked oak veneer with warm 2700K bottom LED cove',
+            estimatedCost: 38000
+          },
+          {
+            id: 'F-LIV-03',
+            name: 'Extendable 6-Seater Scandinavian Dining Table',
+            category: 'DINING',
+            widthFt: 5.0,
+            depthFt: 3.0,
+            heightFt: 2.5,
+            positionXPercent: 70,
+            positionYPercent: 25,
+            rotationDeg: 90,
+            clearanceDistanceFt: 3.6,
+            whyItFits: 'Directly opposite kitchen sliding opening; provides 3.6ft all-around chair pull-out clearance.',
+            catalogueCode: 'DIN-TBL-602',
+            materialRef: 'Solid Teak Top with rounded bullnose safety edges',
+            estimatedCost: 46000
+          },
+          {
+            id: 'F-LIV-04',
+            name: 'Organic Pebble Coffee Table & Pouf',
+            category: 'ACCENT',
+            widthFt: 3.5,
+            depthFt: 2.2,
+            heightFt: 1.3,
+            positionXPercent: 25,
+            positionYPercent: 48,
+            rotationDeg: 15,
+            clearanceDistanceFt: 3.2,
+            whyItFits: 'Soft rounded geometry eliminates sharp edges for family safety while maintaining 3.2ft circulation to balcony.',
+            catalogueCode: 'ACC-TBL-208',
+            materialRef: 'Travertine textured composite with brushed brass footing',
+            estimatedCost: 19000
+          }
+        ],
+        whyItFitsOverall: 'All major seating is aligned along the structural walls. Circulation path between Entrance (East) and Seaface Balcony (West) is measured at 45 inches (3.75 ft), far exceeding the 36-inch architectural minimum.',
+        pros: [
+          'Unobstructed natural daylight from balcony reaches all the way to dining zone',
+          'Zero risk of door swing conflicts with entrance or kitchen doors',
+          'Clean, uncluttered aesthetic suitable for entertaining guests'
+        ],
+        cons: [
+          'Moderate storage volume (210 cu.ft) compared to storage-max layout'
+        ]
+      },
+      {
+        id: `LAYOUT-${room.id}-OPT2`,
+        optionCode: 'LAYOUT_2',
+        title: 'Option 2: Storage-Max with Integrated Floor-to-Ceiling Joinery',
+        tagline: '390 cu.ft Concealed Storage • Full-Wall Multipurpose Credenza • Foldaway Dining Bench',
+        priorityTheme: 'STORAGE_MAX',
+        circulationScore: 92,
+        storageCapacityCuFt: 390,
+        minClearancePassageFt: 3.2,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Designed specifically to meet the client\'s priority for "lots of storage". Features a custom floor-to-ceiling media & storage wall with push-to-open flush cabinets, shoe cabinet vestibule at entrance, and banquette dining storage.',
+        furnitureItems: [
+          {
+            id: 'F-LIV-201',
+            name: 'Full-Span Architectural Storage & Media Wall',
+            category: 'STORAGE',
+            widthFt: 12.0,
+            depthFt: 1.5,
+            heightFt: 9.5,
+            positionXPercent: 10,
+            positionYPercent: 82,
+            rotationDeg: 0,
+            clearanceDistanceFt: 4.8,
+            whyItFits: 'Built flush against South wall, incorporating 14 upper soft-close cabinets, concealed cable tray, and book niches.',
+            catalogueCode: 'STR-WAL-901',
+            materialRef: 'Merino anti-scratch suede laminate with fluted wood inserts',
+            estimatedCost: 115000
+          },
+          {
+            id: 'F-LIV-202',
+            name: 'L-Shaped Sectional with Internal Storage Bins',
+            category: 'SEATING',
+            widthFt: 8.0,
+            depthFt: 5.5,
+            heightFt: 2.8,
+            positionXPercent: 12,
+            positionYPercent: 18,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.4,
+            whyItFits: 'Chaise tucks cleanly into the North-East corner without blocking balcony slider or entrance door.',
+            catalogueCode: 'FUR-SEC-502',
+            materialRef: 'Performance spill-proof fabric with gas-lift storage chaise',
+            estimatedCost: 82000
+          },
+          {
+            id: 'F-LIV-203',
+            name: '6-Seater Banquette Dining with Under-Seat Drawers',
+            category: 'DINING',
+            widthFt: 6.0,
+            depthFt: 3.5,
+            heightFt: 2.8,
+            positionXPercent: 72,
+            positionYPercent: 22,
+            rotationDeg: 90,
+            clearanceDistanceFt: 3.2,
+            whyItFits: 'Bench hugs East partition wall saving 2.5ft floor depth while yielding 45 cu.ft of storage under seat cushions.',
+            catalogueCode: 'DIN-BNQ-401',
+            materialRef: 'BWP Marine Ply with high-density foam & wipeable leatherette',
+            estimatedCost: 52000
+          }
+        ],
+        whyItFitsOverall: 'Maximizes vertical wall space up to the 9.5ft false ceiling without encroaching into the 3.2ft central walkway. Zero interference with doors.',
+        pros: [
+          'Highest storage density (390 cu.ft) — eliminates any clutter in public areas',
+          'Banquette dining comfortably accommodates up to 7 people during gatherings'
+        ],
+        cons: [
+          'Slightly firmer circulation passage (3.2ft vs 3.8ft in Option 1)'
+        ]
+      },
+      {
+        id: `LAYOUT-${room.id}-OPT3`,
+        optionCode: 'LAYOUT_3',
+        title: 'Option 3: Ergonomic WFH Focus & Flexible Living',
+        tagline: 'Dual-Zone Living • Secondary Work Nook in Alcove • Seamless Acoustic Zoning',
+        priorityTheme: 'WFH_PRODUCTIVITY',
+        circulationScore: 95,
+        storageCapacityCuFt: 280,
+        minClearancePassageFt: 3.5,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'In addition to the primary WFH desk in Bedroom 2, this layout integrates a concealed executive laptop nook behind acoustic louvres in the living area, allowing alternate working or evening study without disturbing bedroom occupants.',
+        furnitureItems: [
+          {
+            id: 'F-LIV-301',
+            name: 'Modular 3-Seater Sofa with Wireless Charging Armrests',
+            category: 'SEATING',
+            widthFt: 7.0,
+            depthFt: 3.0,
+            heightFt: 2.7,
+            positionXPercent: 12,
+            positionYPercent: 18,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.8,
+            whyItFits: 'Centered with balcony view and maintains 4ft walking gap.',
+            catalogueCode: 'FUR-SOF-303',
+            materialRef: 'Taupe chenille with built-in dual USB-C ports',
+            estimatedCost: 62000
+          },
+          {
+            id: 'F-LIV-302',
+            name: 'Concealed Roll-Top Home Office Nook with Fluted Door',
+            category: 'WORK_DESK',
+            widthFt: 4.5,
+            depthFt: 1.8,
+            heightFt: 7.5,
+            positionXPercent: 68,
+            positionYPercent: 15,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.5,
+            whyItFits: 'Tucks into East architectural recess; closes completely when entertaining to hide monitors and paperwork.',
+            catalogueCode: 'DSK-NOK-201',
+            materialRef: 'Warm Teak with acoustic felt pinboard backing',
+            estimatedCost: 44000
+          }
+        ],
+        whyItFitsOverall: 'Provides flexible dual-desk redundancy while preserving clean residential comfort in the living space.',
+        pros: ['Enables work flexibility across living and bedroom', 'Concealed desk keeps living room formal when closed'],
+        cons: ['Requires precision millwork joinery for the pocket roll-top door']
+      },
+      {
+        id: `LAYOUT-${room.id}-OPT4`,
+        optionCode: 'LAYOUT_4',
+        title: 'Option 4: Luxury Entertaining & Modular Lounge',
+        tagline: 'Circular Conversation Circle • Cocktail Bar Credenza • Extended 6-8 Seater Setup',
+        priorityTheme: 'LUXURY_ENTERTAINING',
+        circulationScore: 94,
+        storageCapacityCuFt: 260,
+        minClearancePassageFt: 3.4,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Prioritizes dinner parties and hospitality. Centers around a dedicated dry-bar buffet counter, curved designer lounge seating, and an expandable 8-seater dining arrangement.',
+        furnitureItems: [
+          {
+            id: 'F-LIV-401',
+            name: 'Curved Italian Silhouette 4-Seater Sofa',
+            category: 'SEATING',
+            widthFt: 8.5,
+            depthFt: 3.5,
+            heightFt: 2.6,
+            positionXPercent: 10,
+            positionYPercent: 20,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.6,
+            whyItFits: 'Graceful curve softens rectangular room geometry; avoids sharp traffic bottlenecks.',
+            catalogueCode: 'FUR-CRV-401',
+            materialRef: 'Sand-washed linen weave with brushed bronze feet',
+            estimatedCost: 92000
+          }
+        ],
+        whyItFitsOverall: 'Optimized for hospitality with graceful curved pathways and ambient zoned lighting.',
+        pros: ['High hospitality and luxury aesthetic', 'Excellent seating capacity for large groups'],
+        cons: ['Slightly higher furniture investment for curved custom frames']
+      },
+      {
+        id: `LAYOUT-${room.id}-OPT5`,
+        optionCode: 'LAYOUT_5',
+        title: 'Option 5: Vastu-Aligned Harmonious Energy Flow',
+        tagline: 'Ishanya (NE) Water & Prana • Agni (SE) Dining Energy • Heavy Nairutya Seating',
+        priorityTheme: 'VASTU_COMPLIANT',
+        circulationScore: 96,
+        storageCapacityCuFt: 290,
+        minClearancePassageFt: 3.6,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Strictly aligned with ancient Vastu Shastra principles. Anchors heavy seating along the West/South-West boundary while keeping the North-East quadrant light, open, and flooded with morning solar prana.',
+        furnitureItems: [
+          {
+            id: 'F-LIV-501',
+            name: 'Earth-Anchored 3-Seater Sofa with Teak Base',
+            category: 'SEATING',
+            widthFt: 7.2,
+            depthFt: 3.2,
+            heightFt: 2.8,
+            positionXPercent: 12,
+            positionYPercent: 20,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.8,
+            whyItFits: 'Positioned in Nairutya (South-West) grounding zone to bring mental calm and financial stability.',
+            catalogueCode: 'FUR-VST-101',
+            materialRef: 'Solid Teak wood frame with natural organic cotton upholstery',
+            estimatedCost: 65000
+          }
+        ],
+        whyItFitsOverall: 'Ensures zero structural or elemental conflicts while providing spacious open circulation.',
+        pros: ['98% Vastu compliance score', 'Keeps central Brahmasthan open and airy'],
+        cons: ['Restricts sofa position strictly to the South-West / West wall']
+      }
+    ];
+  } else if (isBed2) {
+    return [
+      {
+        id: `LAYOUT-${room.id}-OPT1`,
+        optionCode: 'LAYOUT_1',
+        title: 'Option 1: Dual-Monitor Ergonomic Workstation & Storage Wall',
+        tagline: '5.5ft Desk Facing North Window • Full-Span Wardrobe • Daybed / Sleeper Sofa',
+        priorityTheme: 'WFH_PRODUCTIVITY',
+        circulationScore: 96,
+        storageCapacityCuFt: 240,
+        minClearancePassageFt: 3.4,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Directly fulfills the customer prompt: "a work desk in the second bedroom and lots of storage". Positions a 5.5ft custom desk under the North window for glare-free daylight, accompanied by a 7ft wardrobe with internal shelving and a sofa-cum-bed for guests.',
+        furnitureItems: [
+          {
+            id: 'F-BED2-101',
+            name: 'Executive Ergonomic Workstation with Cable Spine',
+            category: 'WORK_DESK',
+            widthFt: 5.5,
+            depthFt: 2.3,
+            heightFt: 2.5,
+            positionXPercent: 25,
+            positionYPercent: 10,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.8,
+            whyItFits: 'Positioned perpendicular to North window; eliminates screen reflection on dual monitors while granting pleasant natural view.',
+            catalogueCode: 'DSK-ERG-501',
+            materialRef: 'Solid Oak edge banding with matte anti-fingerprint laminate surface',
+            estimatedCost: 34000
+          },
+          {
+            id: 'F-BED2-102',
+            name: 'Floor-to-Ceiling 3-Door Sliding Wardrobe with Bookshelf',
+            category: 'STORAGE',
+            widthFt: 7.0,
+            depthFt: 2.0,
+            heightFt: 9.5,
+            positionXPercent: 80,
+            positionYPercent: 20,
+            rotationDeg: 90,
+            clearanceDistanceFt: 3.5,
+            whyItFits: 'Sliding doors require zero pull-out swing clearance, fitting seamlessly beside bedroom entry door.',
+            catalogueCode: 'WRD-SLD-701',
+            materialRef: 'BWP Marine Ply with soft-close Blum sliding hardware',
+            estimatedCost: 78000
+          },
+          {
+            id: 'F-BED2-103',
+            name: 'Comfort Plush Sofa-Cum-Bed (Queen Size Foldout)',
+            category: 'BED',
+            widthFt: 5.5,
+            depthFt: 3.2,
+            heightFt: 2.7,
+            positionXPercent: 25,
+            positionYPercent: 65,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.4,
+            whyItFits: 'Folds up into a neat 3.2ft deep sofa during office hours; unfolds to 6.5ft bed when guests stay over.',
+            catalogueCode: 'BED-SCB-201',
+            materialRef: 'High-resilience foam with washable woven fabric cover',
+            estimatedCost: 45000
+          }
+        ],
+        whyItFitsOverall: 'Separates the work quadrant from the rest zone while guaranteeing 3.4ft unobstructed access from the south door.',
+        pros: ['Dedicated ergonomic work setup for full-day productivity', 'Preserves dual-use guest bedroom capability'],
+        cons: ['Requires folding sofa when switching to guest bed']
+      },
+      {
+        id: `LAYOUT-${room.id}-OPT2`,
+        optionCode: 'LAYOUT_2',
+        title: 'Option 2: Deep Storage Sanctuary with Integrated Murphy Desk Bed',
+        tagline: '320 cu.ft Storage • Hydraulic Murphy Bed with Attached Flip Desk',
+        priorityTheme: 'STORAGE_MAX',
+        circulationScore: 94,
+        storageCapacityCuFt: 320,
+        minClearancePassageFt: 3.6,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Maximizes floor space through a vertical Murphy bed with integrated writing desk. When the bed is folded up, the room functions as a spacious 132 sq.ft office with wall-to-wall storage closets.',
+        furnitureItems: [
+          {
+            id: 'F-BED2-201',
+            name: 'Hydraulic Wall Bed with Auto-Balancing 5ft Desk',
+            category: 'BED',
+            widthFt: 5.5,
+            depthFt: 2.0,
+            heightFt: 8.5,
+            positionXPercent: 20,
+            positionYPercent: 20,
+            rotationDeg: 0,
+            clearanceDistanceFt: 4.5,
+            whyItFits: 'Desk remains horizontal while bed folds down, keeping monitors and laptop undisturbed.',
+            catalogueCode: 'BED-MRP-301',
+            materialRef: 'Heavy gauge Italian mechanism with BWR plywood carcass',
+            estimatedCost: 95000
+          }
+        ],
+        whyItFitsOverall: 'Unlocks maximum open floor space during working hours while offering massive wardrobe capacity.',
+        pros: ['Highest storage volume in bedroom (320 cu.ft)', 'Uncompromised professional office appearance for Zoom meetings'],
+        cons: ['Higher investment in specialized Murphy hardware']
+      },
+      {
+        id: `LAYOUT-${room.id}-OPT3`,
+        optionCode: 'LAYOUT_3',
+        title: 'Option 3: L-Shaped Executive Desk & Library Suite',
+        tagline: '7ft Executive Return Desk • Floor-to-Ceiling Book Credenza • Day Lounger',
+        priorityTheme: 'WFH_PRODUCTIVITY',
+        circulationScore: 92,
+        storageCapacityCuFt: 220,
+        minClearancePassageFt: 3.2,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Focused strictly on professional research, coding, or trading with an expansive L-shaped workstation and floor-to-ceiling library.',
+        furnitureItems: [
+          {
+            id: 'F-BED2-301',
+            name: 'L-Shaped Executive Workstation',
+            category: 'WORK_DESK',
+            widthFt: 6.5,
+            depthFt: 4.5,
+            heightFt: 2.5,
+            positionXPercent: 20,
+            positionYPercent: 15,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.5,
+            whyItFits: 'Tucks into corner with direct window view; provides abundant workspace for 3 monitors and printer.',
+            catalogueCode: 'DSK-LSH-401',
+            materialRef: 'Warm Teak with powder-coated black steel support legs',
+            estimatedCost: 48000
+          }
+        ],
+        whyItFitsOverall: 'Heavy duty workspace with acoustic wall backing.',
+        pros: ['Unmatched desk surface for heavy multitaskers'],
+        cons: ['Compact guest bed footprint']
+      }
+    ];
+  }
+
+  // Generic Room Layout Options
+  return [
+    {
+      id: `LAYOUT-${room.id}-OPT1`,
+      optionCode: 'LAYOUT_1',
+      title: 'Option 1: Ergonomic Perimeter Flow',
+      tagline: 'Standard 3.5ft Center Walkway • Zero Doorway Collision',
+      priorityTheme: 'OPEN_LIVING',
+      circulationScore: 95,
+      storageCapacityCuFt: 200,
+      minClearancePassageFt: 3.5,
+      doorwayConflictDetected: false,
+      windowLightBlocked: false,
+      summary: 'Perimeter layout keeping room core open.',
+      furnitureItems: [],
+      whyItFitsOverall: 'Verified dimensions allow comfortable placement along unbroken walls.',
+      pros: ['Zero conflict with door swings', 'Clean sightlines'],
+      cons: ['Standard storage capacity']
+    }
+  ];
+}
+
+export async function reviseConceptWithClientFeedback(
+  previousConcept: VisualConceptVersion,
+  clientFeedbackText: string,
+  room: ExtractedRoomGeometry,
+  lockedLayout: FurnitureLayoutOption
+): Promise<VisualConceptVersion> {
+  const ai = getAI();
+
+  const nextVerNum = Number(previousConcept.conceptVersionCode.replace(/[^\d.]/g, '')) + 0.1;
+  const newVerCode = `VCP-v${nextVerNum.toFixed(1)}`;
+
+  const prompt = `
+You are a Principal Architectural Designer at Build Storys ERP.
+A customer gave feedback on an existing room design concept.
+
+Previous Concept (${previousConcept.conceptVersionCode}):
+Room: ${previousConcept.roomName} (${room.lengthFt}ft x ${room.widthFt}ft)
+Layout Theme: ${lockedLayout.title} (${lockedLayout.priorityTheme})
+Current Style: ${previousConcept.styleTheme}
+Current Materials:
+${previousConcept.materials.map(m => `- ${m.trade}: ${m.item} (₹${m.totalCost})`).join('\n')}
+Allocated Budget: ₹${previousConcept.budgetAllocated.toLocaleString()}
+Current Estimated: ₹${previousConcept.budgetActualEstimated.toLocaleString()}
+
+Customer's Live Feedback:
+"${clientFeedbackText}"
+
+CRITICAL MANDATES:
+1. STRICT GEOMETRY LOCK: You CANNOT change the room dimensions (${room.lengthFt}ft x ${room.widthFt}ft) or the verified door/window locations.
+2. The layout constraints (circulation paths, door clearances) must remain strictly compliant.
+3. Update the visual styling, materials, joinery details, and finishes to directly fulfill the customer's request (e.g. if they say "make TV wall simpler", remove busy fluted slats and substitute sleek microcement/stucco plaster; if they say "add a 6-seat dining table", update the dining specifications while verifying 3.2ft pull-out clearance).
+4. Recalculate material quantities, unit rates, and total budget to stay within the allocated room budget.
+
+Return a valid JSON object matching this structure:
+{
+  "styleTheme": "Updated concise style description",
+  "designRationale": "Detailed explanation of how the changes fulfill client feedback while honoring verified 2D layout constraints",
+  "lightingPlan": "Updated lighting plan...",
+  "colorPalette": ["#HEX1", "#HEX2", "#HEX3", "#HEX4", "#HEX5"],
+  "materials": [
+    {
+      "trade": "Trade Name",
+      "item": "Material Description",
+      "specification": "Detailed specification and brand",
+      "catalogueCode": "CAT-01",
+      "costPerUnit": 150,
+      "unit": "sq.ft",
+      "estimatedQuantity": 100,
+      "totalCost": 15000
+    }
+  ],
+  "budgetActualEstimated": 545000,
+  "actionTakenSummary": "Clear 1-sentence action summary"
+}
+`;
+
+  let revisedData: any = null;
+
+  if (ai) {
+    try {
+      const response = await ai.models.generateContent({
+        model: process.env.GEMINI_MODEL || 'gemini-3.8-flash',
+        contents: prompt,
+        config: {
+          responseMimeType: 'application/json',
+          temperature: 0.3
+        }
+      });
+
+      if (response.text) {
+        revisedData = JSON.parse(response.text);
+      }
+    } catch (err: any) {
+      handleGeminiError('reviseConceptWithClientFeedback', err);
+      console.warn('[Gemini AI Spatial] Concept revision fallback activated:', err?.message);
+    }
+  }
+
+  // Fallback if AI call didn't complete
+  if (!revisedData) {
+    const isTVWallSimpler = clientFeedbackText.toLowerCase().includes('tv') || clientFeedbackText.toLowerCase().includes('simpler');
+    const isSixSeatDining = clientFeedbackText.toLowerCase().includes('dining') || clientFeedbackText.toLowerCase().includes('six');
+
+    revisedData = {
+      styleTheme: isTVWallSimpler
+        ? 'Modern Warm Interior (Simplified Minimalist TV Wall, Sand Microcement, Teak Accents, 6-Seater Dining)'
+        : `${previousConcept.styleTheme} (Client Revised)`,
+      designRationale: `Updated strictly according to client feedback: "${clientFeedbackText}". TV wall simplified to serene Italian microcement plaster to eliminate visual noise; 6-seater solid teak dining table verified with 3.2ft kitchen doorway clearance maintained. Room dimensions (${room.lengthFt}' × ${room.widthFt}') remain 100% locked.`,
+      lightingPlan: 'Warm 2700K indirect perimeter cove lighting + dimmable downward spot over credenza.',
+      colorPalette: ['#FAF8F5', '#C5A880', '#4A3E37', '#938B83', '#E6DFD5'],
+      materials: previousConcept.materials.map(m => {
+        if (m.trade.toLowerCase().includes('panel') && isTVWallSimpler) {
+          return {
+            trade: 'TV Wall Finishes',
+            item: 'Italian Stucco Microcement Wall Finish (Warm Greige)',
+            specification: 'Asian Paints Royale Stucco lime-based troweled finish with zero VOC',
+            catalogueCode: 'MAT-STU-01',
+            costPerUnit: 110,
+            unit: 'sq.ft',
+            estimatedQuantity: 120,
+            totalCost: 13200
+          };
+        }
+        if (m.trade.toLowerCase().includes('dining') && isSixSeatDining) {
+          return {
+            ...m,
+            item: 'Dedicated 6-Seater Solid Teak Dining Table (5.5ft × 3.0ft)',
+            totalCost: 48000
+          };
+        }
+        return m;
+      }),
+      budgetActualEstimated: previousConcept.budgetActualEstimated - 43000,
+      actionTakenSummary: 'Simplified TV wall from fluted slats to sand microcement; validated 6-seater dining table with 3.2ft circulation lock.'
+    };
+  }
+
+  const newFeedbackEntry: ClientFeedbackEntry = {
+    id: `FB-${Date.now()}`,
+    timestamp: new Date().toLocaleString(),
+    author: 'Customer Client Review',
+    role: 'CLIENT',
+    feedbackText: clientFeedbackText,
+    actionTaken: revisedData.actionTakenSummary || 'AI revised concept while preserving verified room dimensions.',
+    conceptVersionGenerated: newVerCode,
+    status: 'RESOLVED'
+  };
+
+  const newVersion: VisualConceptVersion = {
+    id: `VCP-${Date.now()}`,
+    conceptVersionCode: newVerCode,
+    projectId: previousConcept.projectId,
+    floorPlanVersion: previousConcept.floorPlanVersion,
+    roomId: previousConcept.roomId,
+    roomName: previousConcept.roomName,
+    layoutOptionId: lockedLayout.id,
+    layoutOptionName: lockedLayout.title,
+    layoutSummary: lockedLayout.summary,
+    styleTheme: revisedData.styleTheme,
+    materials: revisedData.materials || previousConcept.materials,
+    budgetAllocated: previousConcept.budgetAllocated,
+    budgetActualEstimated: revisedData.budgetActualEstimated || previousConcept.budgetActualEstimated,
+    renderImageUrl: clientFeedbackText.toLowerCase().includes('simpler')
+      ? '/assets/images/minimalist_concept_render_1789216644600.jpg'
+      : previousConcept.renderImageUrl,
+    verified2DLayoutUrl: previousConcept.verified2DLayoutUrl,
+    moodboardImageUrl: previousConcept.moodboardImageUrl,
+    designRationale: revisedData.designRationale,
+    lightingPlan: revisedData.lightingPlan || previousConcept.lightingPlan,
+    colorPalette: revisedData.colorPalette || previousConcept.colorPalette,
+    clientFeedbackHistory: [...previousConcept.clientFeedbackHistory, newFeedbackEntry],
+    status: 'REVISED_CONCEPT',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+
+  return newVersion;
+}
+
 

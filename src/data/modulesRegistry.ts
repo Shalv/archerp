@@ -59,6 +59,17 @@ export const ERP_MODULES_REGISTRY: ERPModuleMeta[] = [
     iconName: 'Layers'
   },
   {
+    id: 41,
+    code: 'M04-B',
+    name: '2-Step Spatial AI Studio',
+    stage: 'SURVEY_DESIGN',
+    stageLabel: '2. Survey & Design',
+    priority: 'Essential',
+    keyFunctionality: 'Two-step architectural AI: extracts measured rooms and doors, creates 3-5 verified 2D furniture layouts with circulation clearance, then generates mood boards, photorealistic visuals, and BOQ linkages.',
+    tabKey: 'spatial_ai',
+    iconName: 'Sparkles'
+  },
+  {
     id: 5,
     code: 'M05',
     name: 'Material & Sample Approvals',

@@ -38,6 +38,8 @@ import {
   TaxRuleMaster,
   CompanyFinanceSetupMaster
 } from '../types/erp';
+import { TwoStepSpatialDesignSession } from '../types/floorplanSpatial';
+import { INITIAL_2BHK_SPATIAL_SESSION } from '../data/floorplanSpatialData';
 import { DEFAULT_COMPANY_FINANCE_SETUP } from '../data/defaultCompanySetup';
 import { DEFAULT_MASTER_RATES } from './mockMasters';
 import { 
@@ -55,6 +57,7 @@ const DB_FILE = path.join(DATA_DIR, 'buildstorys_db.json');
 
 export interface ERPDatabase {
   operations?: Record<string, any[]>;
+  spatialSessions?: Record<string, TwoStepSpatialDesignSession>;
   version: string;
   users: UserSession[];
   masterRates: MasterRateItem[];
@@ -1066,6 +1069,203 @@ class DatabaseService {
     );
 
     return this.db.companySetup;
+  }
+
+  // --- 2-Step Spatial AI Design Session Methods ---
+  public getSpatialSession(projectId: string): TwoStepSpatialDesignSession {
+    this.db.spatialSessions ||= {};
+    if (this.db.spatialSessions[projectId]) {
+      return this.db.spatialSessions[projectId];
+    }
+
+    const project = this.getProjectById(projectId);
+    // If it's the demo project PROJ-SKYLINE-1402, use the pre-configured rich session
+    if (projectId === 'PROJ-SKYLINE-1402' || !project) {
+      this.db.spatialSessions[projectId] = JSON.parse(JSON.stringify(INITIAL_2BHK_SPATIAL_SESSION));
+      this.persist();
+      return this.db.spatialSessions[projectId];
+    }
+
+    // Initialize clean session for new project
+    const newSession: TwoStepSpatialDesignSession = {
+      projectId: project.id,
+      projectTitle: project.title,
+      customerInput: {
+        floorPlanFileName: `${project.projectCode}_FloorPlan_Upload.pdf`,
+        floorPlanFileUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+        fileType: 'PDF',
+        uploadDate: new Date().toISOString().split('T')[0],
+        scaleText: '1:50 Architectural Scale',
+        isScaleVerified: false,
+        siteLocation: `${project.siteAddress}, ${project.city}`,
+        propertyType: project.projectType === 'RESIDENTIAL' ? '2BHK_APARTMENT' : '3BHK_APARTMENT',
+        totalCarpetAreaSqFt: project.carpetAreaSqFt || 850,
+        roomsToDesign: ['Living & Dining', 'Master Bedroom', 'Bedroom 2 / Study', 'Kitchen'],
+        approximateBudget: project.estimatedBudget || 1800000,
+        preferredStyle: 'Modern Warm Interior',
+        referenceImages: [
+          {
+            id: 'REF-01',
+            title: 'Modern Warm Palette',
+            imageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+            tags: ['Warm Teak', 'Fluted Panels', 'Boucle Fabric']
+          }
+        ],
+        fixedRequirements: [
+          'Lots of concealed storage without crowding spaces',
+          'Dedicated work desk in second bedroom',
+          'Strict 3.0ft door clearance paths'
+        ],
+        siteSurveyStatus: 'PENDING_SURVEY'
+      },
+      planGeometry: {
+        planVersion: 'FP-v1.0-DRAFT',
+        verifiedScale: '1:50 Metric Scale',
+        isDesignerVerified: false,
+        rooms: [
+          {
+            id: 'ROOM-1',
+            name: 'Living & Dining Room',
+            roomType: 'LIVING_DINING',
+            lengthFt: 20,
+            widthFt: 12,
+            heightFt: 9.5,
+            carpetAreaSqFt: 240,
+            doors: [
+              { id: 'D1', wall: 'EAST', widthFt: 3.5, swingDirection: 'INWARD_LEFT', clearanceFt: 3.5, isClearanceMet: true },
+              { id: 'D2', wall: 'WEST', widthFt: 6.0, swingDirection: 'SLIDING', clearanceFt: 3.0, isClearanceMet: true }
+            ],
+            windows: [
+              { id: 'W1', wall: 'WEST', widthFt: 8.0, sillHeightFt: 0.5, lintelHeightFt: 8.5, isDaylightBlocked: false }
+            ],
+            structuralColumns: [],
+            isVerifiedByDesigner: false
+          }
+        ]
+      },
+      activeRoomId: 'ROOM-1',
+      layoutOptionsByRoom: {},
+      selectedLayoutIdByRoom: {},
+      conceptVersions: [],
+      activeConceptVersionId: '',
+      isBoqLinked: false,
+      updatedAt: new Date().toISOString()
+    };
+
+    this.db.spatialSessions[projectId] = newSession;
+    this.persist();
+    return newSession;
+  }
+
+  public saveSpatialSession(user: UserSession, session: TwoStepSpatialDesignSession): TwoStepSpatialDesignSession {
+    this.db.spatialSessions ||= {};
+    session.updatedAt = new Date().toISOString();
+    this.db.spatialSessions[session.projectId] = session;
+    this.persist();
+
+    this.logAudit(
+      user,
+      'UPDATE_SPATIAL_SESSION',
+      'SPATIAL_DESIGN',
+      session.projectId,
+      `Updated 2-Step Spatial AI session for ${session.projectTitle}: Active version ${session.activeConceptVersionId || 'Initial'}.`
+    );
+
+    return session;
+  }
+
+  public linkSpatialConceptToBOQ(
+    user: UserSession, 
+    projectId: string, 
+    conceptVersionId: string
+  ): { itemsAdded: number; boqRevisionId: string } {
+    const session = this.getSpatialSession(projectId);
+    const concept = session.conceptVersions.find(c => c.id === conceptVersionId || c.conceptVersionCode === conceptVersionId);
+    if (!concept) {
+      throw new Error(`Visual concept version ${conceptVersionId} not found.`);
+    }
+
+    const project = this.getProjectById(projectId);
+    if (!project) throw new Error('Project not found');
+
+    let activeRev = project.revisions.find(r => r.id === project.activeRevisionId);
+    if (!activeRev) {
+      activeRev = project.revisions[0];
+    }
+
+    if (!activeRev) {
+      throw new Error('No active BOQ revision found in project.');
+    }
+
+    // Convert each material into a traceable BOQ line item
+    let addedCount = 0;
+    concept.materials.forEach((mat, idx) => {
+      const existing = activeRev!.items.find(i => i.itemCode === mat.catalogueCode);
+      if (!existing) {
+        const costRate = Math.round(mat.costPerUnit * 0.75); // Direct cost estimate
+        const sellingRate = mat.costPerUnit;
+        const qty = mat.estimatedQuantity;
+        const totalCost = Number((costRate * qty).toFixed(2));
+        const sellingAmount = Number((sellingRate * qty).toFixed(2));
+
+        const newItem: BOQItem = {
+          id: `BOQ-SPC-${Date.now()}-${idx}`,
+          boqRevisionId: activeRev!.id,
+          itemCode: mat.catalogueCode || `SPC-${idx + 1}`,
+          trade: 'CARPENTRY_JOINERY',
+          workPackage: mat.trade,
+          floor: 'Flat 1402',
+          roomZone: concept.roomName,
+          description: `${mat.item} - As approved in Spatial AI Concept ${concept.conceptVersionCode}`,
+          specification: mat.specification,
+          brandGrade: 'Tier-1 Approved Catalogue',
+          inclusions: 'Supply, precision joinery fabrication, hardware & site installation',
+          exclusions: 'Structural modifications',
+          unit: mat.unit as any || 'sq.ft',
+          quantityFormula: `Measured verified 2D layout quantity = ${qty} ${mat.unit}`,
+          baseQuantity: qty,
+          wastagePercent: 5,
+          finalQuantity: Number((qty * 1.05).toFixed(2)),
+          quantityType: 'MEASURED',
+          materialRate: costRate,
+          labourRate: 0,
+          equipmentRate: 0,
+          subcontractRate: 0,
+          unitCost: costRate,
+          totalCost: totalCost,
+          markupPercent: 33,
+          sellingRate: sellingRate,
+          sellingAmount: sellingAmount,
+          rateSource: '2-Step Spatial AI Approved Concept',
+          rateStatus: 'APPROVED',
+          sourceDocumentRef: `Concept ${concept.conceptVersionCode} (${concept.roomName})`,
+          assumptions: 'Verified with site survey measurements.',
+          isApprovedByEstimator: true,
+          reviewedBy: user.name
+        };
+
+        activeRev!.items.push(newItem);
+        addedCount++;
+      }
+    });
+
+    session.isBoqLinked = true;
+    session.boqLinkedAt = new Date().toISOString();
+    concept.status = 'LINKED_TO_BOQ';
+    concept.boqLinkedCount = (concept.boqLinkedCount || 0) + addedCount;
+    
+    this.saveSpatialSession(user, session);
+    this.saveProject(user, project);
+
+    this.logAudit(
+      user,
+      'LINK_SPATIAL_CONCEPT_BOQ',
+      'BOQ_LINE_ITEMS',
+      projectId,
+      `Linked ${addedCount} approved materials & furniture items from Concept ${concept.conceptVersionCode} to BOQ Revision ${activeRev.revisionLabel}.`
+    );
+
+    return { itemsAdded: addedCount, boqRevisionId: activeRev.id };
   }
 }
 

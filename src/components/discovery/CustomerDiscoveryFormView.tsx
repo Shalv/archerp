@@ -33,6 +33,7 @@ interface CustomerDiscoveryFormViewProps {
   onSaveDiscoveryData: (updated: CustomerDiscoveryData) => void;
   onGenerateAIOptions: () => void;
   onNavigateToPack: () => void;
+  onNavigateToSpatialAI?: () => void;
   project: ProjectRecord;
 }
 
@@ -79,6 +80,7 @@ export const CustomerDiscoveryFormView: React.FC<CustomerDiscoveryFormViewProps>
   onSaveDiscoveryData,
   onGenerateAIOptions,
   onNavigateToPack,
+  onNavigateToSpatialAI,
   project
 }) => {
   const [formData, setFormData] = useState<CustomerDiscoveryData>(discoveryData);
@@ -176,6 +178,20 @@ export const CustomerDiscoveryFormView: React.FC<CustomerDiscoveryFormViewProps>
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
+          {onNavigateToSpatialAI && (
+            <button
+              type="button"
+              onClick={() => {
+                handleSave();
+                onNavigateToSpatialAI();
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-800 hover:to-indigo-800 text-white text-xs font-bold transition shadow-xs border border-purple-400/40 cursor-pointer"
+              title="Open 2-Step Spatial AI to generate measured 2D layouts and photorealistic concepts"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span>Launch 2-Step Spatial AI</span>
+            </button>
+          )}
           <button
             type="button"
             onClick={handleSave}
