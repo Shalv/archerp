@@ -51,7 +51,7 @@ import {
   VisualConceptVersion,
   FurnitureLayoutItem
 } from '../../types/floorplanSpatial';
-import { INITIAL_2BHK_SPATIAL_SESSION } from '../../data/floorplanSpatialData';
+import { INITIAL_2BHK_SPATIAL_SESSION, getCalibratedConceptForLayout } from '../../data/floorplanSpatialData';
 import { InteractiveRoomPlanCanvas } from './InteractiveRoomPlanCanvas';
 import { RequirementsEditorModal } from './RequirementsEditorModal';
 import { VisualConceptLightboxModal } from './VisualConceptLightboxModal';
@@ -86,6 +86,7 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
   const [showRequirementsModal, setShowRequirementsModal] = useState<boolean>(false);
   const [showLightboxModal, setShowLightboxModal] = useState<boolean>(false);
   const [requirementsMode, setRequirementsMode] = useState<'PRESET_STANDALONE' | 'CUSTOM_ADAPTIVE'>('PRESET_STANDALONE');
+  const [viewMode, setViewMode] = useState<'SPLIT' | 'STEP1_FOCUS' | 'STEP2_FOCUS'>('SPLIT');
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'info' | 'error' } | null>(null);
 
   // Designer Verification Form State
@@ -125,6 +126,7 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
   // Layout options for the active room
   const currentRoomLayouts: FurnitureLayoutOption[] = 
     session.layoutOptionsByRoom[activeRoomId] || 
+    INITIAL_2BHK_SPATIAL_SESSION.layoutOptionsByRoom[activeRoomId] || 
     INITIAL_2BHK_SPATIAL_SESSION.layoutOptionsByRoom['ROOM-LIV-01'] || 
     [];
 
@@ -137,24 +139,65 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
     currentRoomLayouts.find(l => l.id === selectedLayoutId) || 
     currentRoomLayouts[0];
 
-  // Active visual concept version
-  const activeConcept: VisualConceptVersion = 
-    session.conceptVersions.find(c => c.id === session.activeConceptVersionId) || 
-    session.conceptVersions[session.conceptVersions.length - 1] || 
-    INITIAL_2BHK_SPATIAL_SESSION.conceptVersions[1];
+  // Active visual concept dynamically derived from current room AND selected layout
+  const activeConcept: VisualConceptVersion = React.useMemo(() => {
+    // 1. If activeConceptVersionId in session matches current room & selected layout, prioritize it
+    if (session.activeConceptVersionId) {
+      const activeById = session.conceptVersions.find(
+        c => c.id === session.activeConceptVersionId && 
+             (c.roomId === activeRoomId || c.roomId === currentRoom.roomType) && 
+             c.layoutOptionId === selectedLayoutId
+      );
+      if (activeById) return activeById;
+    }
 
-  // Step 1 Handler: Switch Layout Option
+    // 2. Direct match by room and layout option in session concept versions (prefer latest revision)
+    const matchingVersions = session.conceptVersions.filter(
+      c => (c.roomId === activeRoomId || c.roomId === currentRoom.roomType) && 
+           c.layoutOptionId === selectedLayoutId
+    );
+    if (matchingVersions.length > 0) {
+      return matchingVersions[matchingVersions.length - 1];
+    }
+
+    // 3. Fallback to calibrated concept generator for this room and layout
+    return getCalibratedConceptForLayout(currentRoom, currentLayout, session.conceptVersions);
+  }, [session.conceptVersions, session.activeConceptVersionId, activeRoomId, selectedLayoutId, currentRoom, currentLayout]);
+
+  // Step 1 Handler: Switch Layout Option -> Reflects immediately in Step 2 Visual Concept
   const handleSelectLayout = (layoutId: string) => {
-    const updated = {
+    const targetLayout = currentRoomLayouts.find(l => l.id === layoutId) || currentLayout;
+    const matchedConcept = getCalibratedConceptForLayout(currentRoom, targetLayout, session.conceptVersions);
+
+    const hasConceptInSession = session.conceptVersions.some(c => c.id === matchedConcept.id);
+    const updatedConceptVersions = hasConceptInSession
+      ? session.conceptVersions
+      : [...session.conceptVersions, matchedConcept];
+
+    const updatedSession: TwoStepSpatialDesignSession = {
       ...session,
       selectedLayoutIdByRoom: {
         ...session.selectedLayoutIdByRoom,
         [activeRoomId]: layoutId
-      }
+      },
+      activeConceptVersionId: matchedConcept.id,
+      conceptVersions: updatedConceptVersions
     };
-    setSession(updated);
+
+    setSession(updatedSession);
     setSelectedFurniture(null);
-    showToast(`Applied ${currentRoomLayouts.find(l => l.id === layoutId)?.title || 'Layout'} with verified circulation.`);
+
+    // Save session state to backend
+    fetch(`/api/projects/${project.id}/spatial-studio`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-id': currentUser.id
+      },
+      body: JSON.stringify(updatedSession)
+    }).catch(() => {});
+
+    showToast(`Applied ${targetLayout.title} → Step 2 3D Render & Verified CAD updated.`);
   };
 
   // Step 2 Handler: Client Feedback & AI Concept Revision
@@ -620,6 +663,16 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
               onClick={() => {
                 setActiveRoomId(room.id);
                 setSelectedFurniture(null);
+                const nextLayouts = session.layoutOptionsByRoom[room.id] || INITIAL_2BHK_SPATIAL_SESSION.layoutOptionsByRoom[room.id] || [];
+                const nextLayoutId = session.selectedLayoutIdByRoom[room.id] || nextLayouts[0]?.id;
+                const nextLayout = nextLayouts.find(l => l.id === nextLayoutId) || nextLayouts[0];
+                if (nextLayout) {
+                  const nextConcept = getCalibratedConceptForLayout(room, nextLayout, session.conceptVersions);
+                  setSession(prev => ({
+                    ...prev,
+                    activeConceptVersionId: nextConcept.id
+                  }));
+                }
               }}
               className={`shrink-0 px-3.5 py-2 rounded-lg text-xs font-semibold transition border flex items-center gap-2 cursor-pointer ${
                 isSelected
@@ -639,11 +692,67 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
         })}
       </div>
 
-      {/* 4. MAIN DUAL-PANE SIDE-BY-SIDE WORKSPACE */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+      {/* 4. VIEW MODE TOGGLE & SYNCHRONIZATION STATUS BAR */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-slate-100 p-2 rounded-xl border border-slate-200">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-thin">
+          <button
+            type="button"
+            onClick={() => setViewMode('SPLIT')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+              viewMode === 'SPLIT'
+                ? 'bg-white text-slate-900 shadow-xs border border-slate-300'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5 text-blue-600" />
+            <span>Split Dual View (Step 1 &amp; Step 2 Live)</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setViewMode('STEP1_FOCUS')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+              viewMode === 'STEP1_FOCUS'
+                ? 'bg-blue-700 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <Compass className="w-3.5 h-3.5 text-sky-300" />
+            <span>Step 1 Focus: Usable 2D Measured Layout</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setViewMode('STEP2_FOCUS')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+              viewMode === 'STEP2_FOCUS'
+                ? 'bg-purple-700 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <span>Step 2 Focus: 3D Visual Concept &amp; Materials</span>
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2 px-2 text-[11px] text-slate-600 shrink-0">
+          <span className="flex h-2 w-2 relative shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span className="font-semibold text-slate-700">Real-Time Sync:</span>
+          <span className="font-mono text-purple-800 font-bold bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+            {currentLayout.optionCode.replace('_', ' ')}: {currentLayout.priorityTheme.replace('_', ' ')}
+          </span>
+        </div>
+      </div>
+
+      {/* 5. MAIN WORKSPACE (SPLIT OR FOCUSED) */}
+      <div className={`grid gap-4 ${viewMode === 'SPLIT' ? 'grid-cols-1 xl:grid-cols-2' : 'grid-cols-1'}`}>
         {/* ==================================================================== */}
         {/* LEFT PANE: STEP 1 - USABLE 2D MEASURED LAYOUT & ERGONOMICS           */}
         {/* ==================================================================== */}
+        {(viewMode === 'SPLIT' || viewMode === 'STEP1_FOCUS') && (
         <div className="bg-white border border-[#EDEBE9] rounded-xl p-4 shadow-2xs space-y-3.5 flex flex-col">
           {/* Header & Layout Switcher */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
@@ -669,10 +778,16 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
           </div>
 
           {/* 3–5 Layout Option Selector Pills */}
-          <div className="space-y-1.5">
-            <label className="text-[11px] font-semibold text-slate-500 block">
-              Select AI Furniture Layout (3–5 Options):
-            </label>
+          <div className="space-y-1.5 bg-blue-50/40 p-2.5 rounded-lg border border-blue-100">
+            <div className="flex items-center justify-between text-[11px]">
+              <label className="font-semibold text-blue-900 flex items-center gap-1.5">
+                <Compass className="w-3.5 h-3.5 text-blue-600" />
+                <span>Select AI Furniture Layout (Updates Step 2 Instantly):</span>
+              </label>
+              <span className="text-[10px] text-blue-700 font-mono">
+                {currentRoomLayouts.length} Options Calibrated
+              </span>
+            </div>
             <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
               {currentRoomLayouts.map(opt => {
                 const isSelected = opt.id === selectedLayoutId;
@@ -748,11 +863,58 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
               ))}
             </div>
           </div>
+
+          {/* Step 2 Real-Time Live Preview & Jump Card */}
+          <div className="bg-gradient-to-r from-purple-50 via-indigo-50/60 to-white rounded-xl p-3 border border-purple-200 text-xs space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-purple-900 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <span>Live Matched Step 2 3D Visual Concept:</span>
+              </span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-300">
+                ✓ REAL-TIME SYNCHRONIZED
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div 
+                onClick={() => setShowLightboxModal(true)}
+                className="relative rounded-lg overflow-hidden border border-purple-300 w-20 h-14 shrink-0 bg-slate-900 cursor-pointer group shadow-2xs"
+                title="Click to view full-screen 3D Concept Render"
+              >
+                <img
+                  src={activeConcept.renderImageUrl}
+                  alt={activeConcept.styleTheme}
+                  className="w-full h-full object-cover group-hover:scale-105 transition duration-200"
+                />
+                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="font-bold text-slate-900 truncate text-[11px]">
+                  {activeConcept.styleTheme}
+                </div>
+                <div className="text-[10px] text-slate-500 truncate mt-0.5">
+                  Matched 3D Photorealistic Render + Verified 2D CAD ({currentRoom.lengthFt}' × {currentRoom.widthFt}')
+                </div>
+                <div className="text-[10px] font-mono text-emerald-700 font-semibold mt-0.5">
+                  Est. Cost: ₹{activeConcept.budgetActualEstimated.toLocaleString()} • {activeConcept.materials.length} BOQ finishes
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setViewMode('STEP2_FOCUS')}
+                className="px-3 py-1.5 rounded-lg bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs transition shrink-0 cursor-pointer shadow-2xs"
+              >
+                Focus Step 2 →
+              </button>
+            </div>
+          </div>
         </div>
+        )}
 
         {/* ==================================================================== */}
         {/* RIGHT PANE: STEP 2 - VISUAL CONCEPT, MOOD BOARDS & CLIENT REVISIONS  */}
         {/* ==================================================================== */}
+        {(viewMode === 'SPLIT' || viewMode === 'STEP2_FOCUS') && (
         <div className="bg-white border border-[#EDEBE9] rounded-xl p-4 shadow-2xs space-y-3.5 flex flex-col">
           {/* Header & Version Code */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
@@ -772,6 +934,16 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
 
             {/* Approval & Action Buttons */}
             <div className="flex items-center gap-2 flex-wrap">
+              {viewMode === 'STEP2_FOCUS' && (
+                <button
+                  type="button"
+                  onClick={() => setViewMode('SPLIT')}
+                  className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition border border-slate-300 cursor-pointer"
+                >
+                  ← Split View
+                </button>
+              )}
+
               <button
                 type="button"
                 onClick={handleRegenerateAlternativeConcept}
@@ -803,6 +975,63 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
             </div>
           </div>
 
+          {/* Option Selector Pills inside Step 2 (Bi-Directional Synchronization) */}
+          <div className="bg-purple-50/70 border border-purple-200/80 rounded-lg p-2.5 space-y-1.5">
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="font-bold text-purple-900 flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-purple-700" />
+                <span>Select Layout Option (Changes reflect in 3D Render &amp; 2D CAD):</span>
+              </span>
+              <span className="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping"></span>
+                <span>IN REAL-TIME SYNC</span>
+              </span>
+            </div>
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+              {currentRoomLayouts.map(opt => {
+                const isSelected = opt.id === selectedLayoutId;
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => handleSelectLayout(opt.id)}
+                    className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition border flex items-center gap-1.5 cursor-pointer ${
+                      isSelected
+                        ? 'bg-purple-700 text-white border-purple-800 shadow-xs ring-1 ring-purple-400'
+                        : 'bg-white text-slate-700 hover:bg-purple-50 border-slate-300'
+                    }`}
+                  >
+                    <span>{opt.optionCode.replace('_', ' ')}:</span>
+                    <span className="truncate max-w-[150px]">{opt.priorityTheme.replace('_', ' ')}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Active Step 1 -> Step 2 Dynamic Synchronization Bar */}
+          <div className="bg-gradient-to-r from-purple-50 via-indigo-50 to-blue-50 border border-purple-200/80 rounded-lg p-2.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="flex h-2 w-2 relative shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <div className="truncate">
+                <span className="font-bold text-purple-900">Synchronized with Step 1: </span>
+                <span className="font-semibold text-slate-800">{currentLayout.title}</span>
+                <span className="text-slate-500 text-[11px] ml-1">({currentLayout.optionCode.replace('_', ' ')})</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0 text-[10px] font-mono">
+              <span className="bg-white/80 px-2 py-0.5 rounded border border-purple-200 text-purple-800 font-bold">
+                Walkway: {currentLayout.minClearancePassageFt}ft
+              </span>
+              <span className="bg-white/80 px-2 py-0.5 rounded border border-emerald-200 text-emerald-800 font-bold flex items-center gap-1">
+                <Check className="w-3 h-3 text-emerald-600" /> Zero Collisions
+              </span>
+            </div>
+          </div>
+
           {/* Side-by-Side Verification Display: Visual Render vs Verified 2D Layout */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {/* Visual Concept Render */}
@@ -816,8 +1045,9 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
                 alt={activeConcept.styleTheme}
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
               />
-              <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-slate-900/80 backdrop-blur-sm text-white text-[10px] font-mono font-bold border border-white/20">
-                PHOTOREALISTIC CONCEPT
+              <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-slate-900/80 backdrop-blur-sm text-amber-300 text-[10px] font-mono font-bold border border-amber-400/30 flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-amber-400" />
+                <span>3D PHOTOREALISTIC CONCEPT RENDER</span>
               </div>
               <div className="absolute top-2 right-2 flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition">
                 <button
@@ -854,8 +1084,9 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
                 alt="Verified 2D Architectural CAD Plan"
                 className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition"
               />
-              <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-slate-900/80 backdrop-blur-sm text-emerald-300 text-[10px] font-mono font-bold border border-emerald-500/30">
-                VERIFIED 2D MEASURED PLAN
+              <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-slate-900/80 backdrop-blur-sm text-emerald-300 text-[10px] font-mono font-bold border border-emerald-500/30 flex items-center gap-1">
+                <Layers className="w-3 h-3 text-emerald-400" />
+                <span>VERIFIED 2D ARCHITECTURAL CAD</span>
               </div>
               <div className="absolute top-2 right-2 flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition">
                 <button
@@ -878,7 +1109,29 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
               </div>
               <div className="absolute bottom-2 left-2 right-2 p-2 rounded bg-slate-900/90 backdrop-blur-sm text-white text-[10px] flex items-center justify-between">
                 <span>Scale: 1:50 Metric</span>
-                <span className="text-emerald-400 font-bold">DIMENSIONS LOCKED</span>
+                <span className="text-emerald-400 font-bold">{currentRoom.lengthFt}' × {currentRoom.widthFt}' LOCKED</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Architectural CAD & 3D Render Consistency Audit Card */}
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-[11px] space-y-1.5">
+            <div className="font-bold text-slate-800 flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Architectural CAD &amp; 3D Render Consistency Audit:</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-0.5 text-slate-600">
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                <span><strong>Geometry:</strong> {currentRoom.lengthFt}' × {currentRoom.widthFt}' Locked</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                <span><strong>Circulation:</strong> {currentLayout.minClearancePassageFt}ft Clear Path</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                <span><strong>Fenestration:</strong> {currentRoom.doors.length} Doors / {currentRoom.windows.length} Windows Free</span>
               </div>
             </div>
           </div>
@@ -1055,6 +1308,7 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
             </div>
           </div>
         </div>
+        )}
       </div>
 
       {/* 5. AUDITABLE CONCEPT VERSION HISTORY MODAL / DRAWER */}

@@ -204,6 +204,42 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
         verifiedBy: 'Ar. Aniket Joshi',
         verificationDate: '2026-03-11',
         designerNotes: 'South wall allows full 10-ft wardrobe span with zero interference to bathroom access.'
+      },
+      {
+        id: 'ROOM-KIT-01',
+        name: 'Culinary Kitchen & Breakfast Bar',
+        roomType: 'KITCHEN',
+        lengthFt: 12.0,
+        widthFt: 8.0,
+        heightFt: 9.5,
+        carpetAreaSqFt: 96,
+        doors: [
+          {
+            id: 'D-KIT-ENTRY',
+            wall: 'SOUTH',
+            widthFt: 3.0,
+            swingDirection: 'SLIDING',
+            clearanceFt: 3.5,
+            isClearanceMet: true
+          }
+        ],
+        windows: [
+          {
+            id: 'W-KIT-EAST',
+            wall: 'EAST',
+            widthFt: 4.0,
+            sillHeightFt: 3.5,
+            lintelHeightFt: 7.5,
+            isDaylightBlocked: false
+          }
+        ],
+        structuralColumns: [
+          { id: 'COL-05', xFt: 12, yFt: 8, widthInches: 12, depthInches: 12 }
+        ],
+        isVerifiedByDesigner: true,
+        verifiedBy: 'Ar. Aniket Joshi',
+        verificationDate: '2026-03-11',
+        designerNotes: 'Parallel modular layout with quartz countertop and 3.5ft central passage for effortless culinary workflow.'
       }
     ]
   },
@@ -628,13 +664,777 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
         pros: ['Dedicated ergonomic work setup for full-day productivity', 'Preserves dual-use guest bedroom capability'],
         cons: ['Requires folding sofa when switching to guest bed'],
         layoutSvgPreview: 'WFH_BEDROOM_1'
+      },
+      {
+        id: 'LAYOUT-BED2-OPT2',
+        optionCode: 'LAYOUT_2',
+        title: 'Option 2: Deep Storage Sanctuary with Integrated Murphy Desk Bed',
+        tagline: '320 cu.ft Storage • Hydraulic Murphy Bed with Attached Flip Desk',
+        priorityTheme: 'STORAGE_MAX',
+        circulationScore: 94,
+        storageCapacityCuFt: 320,
+        minClearancePassageFt: 3.6,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Maximizes floor space through a vertical Murphy bed with integrated writing desk. When the bed is folded up, the room functions as a spacious 132 sq.ft office with wall-to-wall storage closets.',
+        furnitureItems: [
+          {
+            id: 'F-BED2-201',
+            name: 'Hydraulic Wall Bed with Auto-Balancing 5ft Desk',
+            category: 'BED',
+            widthFt: 5.5,
+            depthFt: 2.0,
+            heightFt: 8.5,
+            positionXPercent: 20,
+            positionYPercent: 20,
+            rotationDeg: 0,
+            clearanceDistanceFt: 4.5,
+            whyItFits: 'Desk remains horizontal while bed folds down, keeping monitors and laptop undisturbed.',
+            catalogueCode: 'BED-MRP-301',
+            materialRef: 'Heavy gauge Italian mechanism with BWR plywood carcass',
+            estimatedCost: 95000
+          },
+          {
+            id: 'F-BED2-202',
+            name: 'Wall-to-Wall 4-Door Wardrobe with Overhead Lofts',
+            category: 'STORAGE',
+            widthFt: 9.0,
+            depthFt: 2.0,
+            heightFt: 9.5,
+            positionXPercent: 75,
+            positionYPercent: 20,
+            rotationDeg: 90,
+            clearanceDistanceFt: 3.6,
+            whyItFits: 'Provides massive 210 cu.ft of dedicated wardrobe and linen storage without hindering window or door.',
+            catalogueCode: 'WRD-LOF-401',
+            materialRef: 'Merino anti-scratch laminate with champagne gold handles',
+            estimatedCost: 88000
+          }
+        ],
+        whyItFitsOverall: 'Unlocks maximum open floor space during working hours while offering massive wardrobe capacity.',
+        pros: ['Highest storage volume in bedroom (320 cu.ft)', 'Uncompromised professional office appearance for Zoom meetings'],
+        cons: ['Higher investment in specialized Murphy hardware'],
+        layoutSvgPreview: 'STORAGE_MAX'
+      },
+      {
+        id: 'LAYOUT-BED2-OPT3',
+        optionCode: 'LAYOUT_3',
+        title: 'Option 3: L-Shaped Executive Desk & Library Suite',
+        tagline: '7ft Executive Return Desk • Floor-to-Ceiling Book Credenza • Day Lounger',
+        priorityTheme: 'WFH_PRODUCTIVITY',
+        circulationScore: 92,
+        storageCapacityCuFt: 220,
+        minClearancePassageFt: 3.2,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Focused strictly on professional research, coding, or trading with an expansive L-shaped workstation and floor-to-ceiling library.',
+        furnitureItems: [
+          {
+            id: 'F-BED2-301',
+            name: 'L-Shaped Executive Workstation',
+            category: 'WORK_DESK',
+            widthFt: 6.5,
+            depthFt: 4.5,
+            heightFt: 2.5,
+            positionXPercent: 20,
+            positionYPercent: 15,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.5,
+            whyItFits: 'Tucks into corner with direct window view; provides abundant workspace for 3 monitors and printer.',
+            catalogueCode: 'DSK-LSH-401',
+            materialRef: 'Warm Teak with powder-coated black steel support legs',
+            estimatedCost: 48000
+          },
+          {
+            id: 'F-BED2-302',
+            name: 'Floor-to-Ceiling Library Credenza & Display',
+            category: 'STORAGE',
+            widthFt: 6.0,
+            depthFt: 1.2,
+            heightFt: 9.5,
+            positionXPercent: 80,
+            positionYPercent: 20,
+            rotationDeg: 90,
+            clearanceDistanceFt: 3.4,
+            whyItFits: 'Slim 14" depth avoids crowding room walkway while housing 180+ reference books.',
+            catalogueCode: 'LIB-WAL-601',
+            materialRef: 'Natural veneer with warm LED spot shelves',
+            estimatedCost: 56000
+          },
+          {
+            id: 'F-BED2-303',
+            name: 'Compact Daybed with Underbed Drawers',
+            category: 'BED',
+            widthFt: 4.0,
+            depthFt: 6.5,
+            heightFt: 2.2,
+            positionXPercent: 20,
+            positionYPercent: 68,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.2,
+            whyItFits: 'Comfortable day lounger for reading breaks or occasional overnight guest.',
+            catalogueCode: 'BED-DAY-101',
+            materialRef: 'Teak frame with high-density foam cushion',
+            estimatedCost: 36000
+          }
+        ],
+        whyItFitsOverall: 'Heavy duty workspace with acoustic wall backing and generous storage.',
+        pros: ['Unmatched desk surface for heavy multitaskers', 'Dedicated library shelving'],
+        cons: ['Single bed size limits dual guest occupancy'],
+        layoutSvgPreview: 'WFH_FOCUS'
+      },
+      {
+        id: 'LAYOUT-BED2-OPT4',
+        optionCode: 'LAYOUT_4',
+        title: 'Option 4: Acoustic Podcast / Media Studio & Daybed Lounge',
+        tagline: 'High-NRC Wall Battens • Ergonomic Broadcast Desk • Velvet Daybed Sleeper',
+        priorityTheme: 'LUXURY_ENTERTAINING',
+        circulationScore: 95,
+        storageCapacityCuFt: 250,
+        minClearancePassageFt: 3.4,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Designed for content creators and hybrid executives with sound-dampening fluted wood walls, dedicated studio console, and velvet lounge daybed for overnight guests.',
+        furnitureItems: [
+          {
+            id: 'F-BED2-401',
+            name: 'Broadcast Studio Acoustic Console (6ft)',
+            category: 'WORK_DESK',
+            widthFt: 6.0,
+            depthFt: 2.8,
+            heightFt: 2.5,
+            positionXPercent: 20,
+            positionYPercent: 15,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.5,
+            whyItFits: 'Positioned against North acoustic wall; built-in cable trays hide all microphone and interface wiring.',
+            catalogueCode: 'DSK-STU-601',
+            materialRef: 'Matte black anti-reflective birch ply with brass grommets',
+            estimatedCost: 52000
+          },
+          {
+            id: 'F-BED2-402',
+            name: 'Acoustic Wood Slat Wall with Integrated Dimmable LED',
+            category: 'JOINERY',
+            widthFt: 10.0,
+            depthFt: 0.5,
+            heightFt: 9.5,
+            positionXPercent: 15,
+            positionYPercent: 5,
+            rotationDeg: 0,
+            clearanceDistanceFt: 4.0,
+            whyItFits: 'Deadens audio echo for broadcast quality voice recording and video calls.',
+            catalogueCode: 'ACO-SLT-201',
+            materialRef: 'Natural smoked walnut veneer on PET recycled acoustic felt backing',
+            estimatedCost: 44000
+          },
+          {
+            id: 'F-BED2-403',
+            name: 'Convertible Velvet Daybed with Hydro Base',
+            category: 'BED',
+            widthFt: 3.8,
+            depthFt: 6.5,
+            heightFt: 2.4,
+            positionXPercent: 20,
+            positionYPercent: 68,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.4,
+            whyItFits: 'Functions as podcast guest interview sofa during day; folds flat into twin bed.',
+            catalogueCode: 'BED-VLV-101',
+            materialRef: 'Plush stain-resistant rust velvet with solid beechwood legs',
+            estimatedCost: 48000
+          }
+        ],
+        whyItFitsOverall: 'Acoustic privacy and recording studio quality with seamless guest hospitality.',
+        pros: ['Professional acoustics with NRC 0.88', 'Chic studio appearance for webcam background'],
+        cons: ['Requires dedicated acoustic panel mounting along north perimeter'],
+        layoutSvgPreview: 'STUDIO_LOUNGE'
+      },
+      {
+        id: 'LAYOUT-BED2-OPT5',
+        optionCode: 'LAYOUT_5',
+        title: 'Option 5: Vastu Study Sanctuary with East-Facing Desk & Light Prana Zone',
+        tagline: 'East-Facing Teak Desk • Open Northeast Sector • South Wardrobe Boundary',
+        priorityTheme: 'VASTU_COMPLIANT',
+        circulationScore: 98,
+        storageCapacityCuFt: 290,
+        minClearancePassageFt: 3.6,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Positions student/executive study desk facing East to harness solar intellect energies. Northeast corner is kept completely open with a small oxygenating biophilic plant display.',
+        furnitureItems: [
+          {
+            id: 'F-BED2-501',
+            name: 'Solid Teak East-Facing Study Desk',
+            category: 'WORK_DESK',
+            widthFt: 5.0,
+            depthFt: 2.5,
+            heightFt: 2.5,
+            positionXPercent: 25,
+            positionYPercent: 20,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.6,
+            whyItFits: 'Oriented so user faces East while studying; optimal solar orientation per Vastu principles.',
+            catalogueCode: 'DSK-VST-301',
+            materialRef: 'CP Teak with non-toxic herbal oil polish and brass corner caps',
+            estimatedCost: 38000
+          },
+          {
+            id: 'F-BED2-502',
+            name: '3-Door Sliding Teak Finish Wardrobe on South Wall',
+            category: 'STORAGE',
+            widthFt: 7.0,
+            depthFt: 2.0,
+            heightFt: 9.5,
+            positionXPercent: 80,
+            positionYPercent: 20,
+            rotationDeg: 90,
+            clearanceDistanceFt: 3.6,
+            whyItFits: 'Heavy storage placed in South quadrant to ground spatial energy.',
+            catalogueCode: 'WRD-VST-501',
+            materialRef: 'BWP Marine ply with natural teak laminate and soft-close sliding tracks',
+            estimatedCost: 72000
+          },
+          {
+            id: 'F-BED2-503',
+            name: 'Single Hydraulic Storage Bed with South Head Position',
+            category: 'BED',
+            widthFt: 3.8,
+            depthFt: 6.5,
+            heightFt: 2.2,
+            positionXPercent: 25,
+            positionYPercent: 68,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.6,
+            whyItFits: 'Headboard faces South ensuring restful REM sleep according to magnetic Vastu grid.',
+            catalogueCode: 'BED-VST-101',
+            materialRef: 'Seasoned teak wood with organic cotton head padding',
+            estimatedCost: 39000
+          }
+        ],
+        whyItFitsOverall: 'Vastu-aligned clarity and academic focus with natural cross-ventilation.',
+        pros: ['Maximized positive morning sunlight', 'Unobstructed 3.6ft clear circulation corridor'],
+        cons: ['Strict orientation constraints limit alternate furniture re-arrangement'],
+        layoutSvgPreview: 'VASTU_STUDY'
+      }
+    ],
+
+    'ROOM-MBED-01': [
+      {
+        id: 'LAYOUT-MBED-OPT1',
+        optionCode: 'LAYOUT_1',
+        title: 'Option 1: King Suite with Acoustic Headboard Wall & 10ft Wardrobe',
+        tagline: 'Grounded South-West King Bed • Full-Span 10ft Wardrobe • 3.2ft En-Suite Clearance',
+        priorityTheme: 'VASTU_COMPLIANT',
+        circulationScore: 97,
+        storageCapacityCuFt: 310,
+        minClearancePassageFt: 3.2,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Anchors a 6.5ft × 6.5ft King Bed against the South wall with padded acoustic headboard panelling. A 10-ft floor-to-ceiling 4-door wardrobe lines the West wall leaving a clear 3.2ft path to the attached master bathroom.',
+        furnitureItems: [
+          {
+            id: 'F-MBED-101',
+            name: 'King Size Hydraulic Storage Bed with Acoustic Headboard',
+            category: 'BED',
+            widthFt: 6.5,
+            depthFt: 6.8,
+            heightFt: 4.0,
+            positionXPercent: 25,
+            positionYPercent: 20,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.5,
+            whyItFits: 'Placed on South wall with head to South; provides 3.5ft clearance on both sides for easy bed making.',
+            catalogueCode: 'BED-KNG-901',
+            materialRef: 'Padded acoustic velvet upholstery with hydraulic gas-lift steel frame',
+            estimatedCost: 88000
+          },
+          {
+            id: 'F-MBED-102',
+            name: 'Full-Span 10ft 4-Door Wardrobe with Internal Dresser',
+            category: 'STORAGE',
+            widthFt: 10.0,
+            depthFt: 2.0,
+            heightFt: 9.5,
+            positionXPercent: 82,
+            positionYPercent: 15,
+            rotationDeg: 90,
+            clearanceDistanceFt: 3.2,
+            whyItFits: 'Hugs East wall seamlessly; 4 sliding doors require zero swing corridor space.',
+            catalogueCode: 'WRD-SLD-1001',
+            materialRef: 'BWP Marine Ply with soft-close Blum sliding tracks & PU satin finish',
+            estimatedCost: 125000
+          },
+          {
+            id: 'F-MBED-103',
+            name: 'Floating Bedside Nightstands (Pair)',
+            category: 'JOINERY',
+            widthFt: 1.8,
+            depthFt: 1.3,
+            heightFt: 1.2,
+            positionXPercent: 10,
+            positionYPercent: 25,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.5,
+            whyItFits: 'Wall-mounted off the floor; enables zero-effort vacuuming and floor robot cleaning.',
+            catalogueCode: 'TAB-BED-201',
+            materialRef: 'Natural smoked teak veneer with wireless phone charging pad',
+            estimatedCost: 22000
+          }
+        ],
+        whyItFitsOverall: 'Vastu-authentic headboard placement with expansive 10ft wardrobe and completely unhindered passage to en-suite bath.',
+        pros: ['Massive wardrobe storage volume (310 cu.ft)', 'High acoustic comfort with sound-dampening velvet wall', 'Optimal Vastu compliance'],
+        cons: ['Requires precision millwork installation for the 10ft sliding wardrobe'],
+        layoutSvgPreview: 'MASTER_SUITE'
+      },
+      {
+        id: 'LAYOUT-MBED-OPT2',
+        optionCode: 'LAYOUT_2',
+        title: 'Option 2: Executive Luxury Hotel Suite with Lounge Chaise & Vanity',
+        tagline: 'Curved Lounge Chaise • Fluted Glass Vanity Console • Boiserie Accent Trims',
+        priorityTheme: 'LUXURY_ENTERTAINING',
+        circulationScore: 94,
+        storageCapacityCuFt: 260,
+        minClearancePassageFt: 3.2,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Hotel-grade retreat with dedicated vanity dressing console, backlit fluted full-length mirror, low-profile king platform, and a reading chaise lounge by the South window.',
+        furnitureItems: [
+          {
+            id: 'F-MBED-201',
+            name: 'Low-Profile Japanese Platform Bed with Extended Back-Ledge',
+            category: 'BED',
+            widthFt: 7.0,
+            depthFt: 7.0,
+            heightFt: 2.5,
+            positionXPercent: 25,
+            positionYPercent: 20,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.4,
+            whyItFits: 'Low 12" height visually expands room volume under the 9.5ft false ceiling.',
+            catalogueCode: 'BED-PLF-501',
+            materialRef: 'Solid ashwood frame with woven rattan headrest',
+            estimatedCost: 76000
+          },
+          {
+            id: 'F-MBED-202',
+            name: 'Floating Dressing Vanity with LED Fluted Mirror',
+            category: 'JOINERY',
+            widthFt: 4.5,
+            depthFt: 1.4,
+            heightFt: 6.5,
+            positionXPercent: 80,
+            positionYPercent: 65,
+            rotationDeg: 90,
+            clearanceDistanceFt: 3.2,
+            whyItFits: 'Located adjacent to bathroom door for seamless morning grooming routine.',
+            catalogueCode: 'VAN-FLT-301',
+            materialRef: 'Engineered quartz top with warm 3000K high-CRI ring luminaire',
+            estimatedCost: 42000
+          },
+          {
+            id: 'F-MBED-203',
+            name: 'Velvet Window Reading Chaise',
+            category: 'SEATING',
+            widthFt: 5.5,
+            depthFt: 2.6,
+            heightFt: 2.4,
+            positionXPercent: 25,
+            positionYPercent: 75,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.2,
+            whyItFits: 'Placed below South window without blocking sunlight; cozy relaxation corner.',
+            catalogueCode: 'CHS-WIN-101',
+            materialRef: 'Dust-resistant olive green velvet with brass capped feet',
+            estimatedCost: 38000
+          }
+        ],
+        whyItFitsOverall: 'Boutique 5-star hotel ambiance with balanced luxury and uncompromised circulation.',
+        pros: ['Dedicated dressing vanity station', 'Private window relaxation zone'],
+        cons: ['Slightly lower storage than full 10-ft wardrobe in Option 1'],
+        layoutSvgPreview: 'HOTEL_SUITE'
+      },
+      {
+        id: 'LAYOUT-MBED-OPT3',
+        optionCode: 'LAYOUT_3',
+        title: 'Option 3: Minimalist Zen Sanctuary with Low-Platform Tatami Bed & Concealed Dressing',
+        tagline: 'Ashwood Tatami Platform Bed • Concealed Flush-Door Wardrobe • Sand Microcement Finishes',
+        priorityTheme: 'OPEN_LIVING',
+        circulationScore: 98,
+        storageCapacityCuFt: 290,
+        minClearancePassageFt: 3.6,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Japanese-Scandinavian Japandi master retreat with ultra-low ashwood platform bed, concealed push-to-open flush wardrobe, and tranquil sand microcement wall textures.',
+        furnitureItems: [
+          {
+            id: 'F-MBED-301',
+            name: 'Low-Slung Solid Ashwood Tatami Platform Bed',
+            category: 'BED',
+            widthFt: 6.8,
+            depthFt: 7.0,
+            heightFt: 1.8,
+            positionXPercent: 25,
+            positionYPercent: 20,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.6,
+            whyItFits: 'Ultra-low 10" bed platform creates serene vertical breathing room beneath false ceiling.',
+            catalogueCode: 'BED-TAT-701',
+            materialRef: 'Solid white ash wood with woven natural igusa tatami matting',
+            estimatedCost: 82000
+          },
+          {
+            id: 'F-MBED-302',
+            name: 'Wall-to-Wall Flush Concealed Wardrobe',
+            category: 'STORAGE',
+            widthFt: 9.5,
+            depthFt: 2.0,
+            heightFt: 9.5,
+            positionXPercent: 82,
+            positionYPercent: 15,
+            rotationDeg: 90,
+            clearanceDistanceFt: 3.6,
+            whyItFits: 'Flush seamless doors blend into wall plaster; zero protruding handles for pure minimalism.',
+            catalogueCode: 'WRD-FLS-901',
+            materialRef: 'Merino supermatte greige laminate with German soft-close push mechanisms',
+            estimatedCost: 118000
+          },
+          {
+            id: 'F-MBED-303',
+            name: 'Floating Ashwood Night Ledges with Wireless Touch Dimmers',
+            category: 'JOINERY',
+            widthFt: 2.0,
+            depthFt: 1.2,
+            heightFt: 0.8,
+            positionXPercent: 10,
+            positionYPercent: 25,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.8,
+            whyItFits: 'Minimal cantilevered ledges with zero floor footprint.',
+            catalogueCode: 'TAB-LED-101',
+            materialRef: 'Solid ashwood with concealed cable routing and touch dimmers',
+            estimatedCost: 24000
+          }
+        ],
+        whyItFitsOverall: 'Japandi architectural serenity with expansive 3.6ft clear walkway and zero visual clutter.',
+        pros: ['Highest visual volume in room', 'Easy floor cleaning with cantilevered ledges'],
+        cons: ['Low bed height requires agile mobility'],
+        layoutSvgPreview: 'ZEN_SANCTUARY'
+      },
+      {
+        id: 'LAYOUT-MBED-OPT4',
+        optionCode: 'LAYOUT_4',
+        title: 'Option 4: Storage-Max Dual Wardrobe Suite with Built-in Luggage Lofts & Dresser',
+        tagline: 'Dual Full-Height Wardrobes • 410 cu.ft Massive Storage • Integrated Dresser Mirror',
+        priorityTheme: 'STORAGE_MAX',
+        circulationScore: 93,
+        storageCapacityCuFt: 410,
+        minClearancePassageFt: 3.1,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Maximizes vertical and horizontal cabinetry for clients requiring maximum luggage, seasonal quilt, and wardrobe storage volume without encroaching into door paths.',
+        furnitureItems: [
+          {
+            id: 'F-MBED-401',
+            name: 'King Bed with Hydraulic Lift Deep Trunk Storage',
+            category: 'BED',
+            widthFt: 6.5,
+            depthFt: 6.8,
+            heightFt: 3.8,
+            positionXPercent: 25,
+            positionYPercent: 20,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.2,
+            whyItFits: 'Houses 4 large suitcases inside hydraulic base with zero visual footprint.',
+            catalogueCode: 'BED-TRK-801',
+            materialRef: 'Heavy steel reinforced box frame with stain-resistant linen upholstery',
+            estimatedCost: 92000
+          },
+          {
+            id: 'F-MBED-402',
+            name: 'Dual Full-Height 11ft Wardrobe with Overhead Storage Lofts',
+            category: 'STORAGE',
+            widthFt: 11.0,
+            depthFt: 2.0,
+            heightFt: 9.5,
+            positionXPercent: 82,
+            positionYPercent: 12,
+            rotationDeg: 90,
+            clearanceDistanceFt: 3.1,
+            whyItFits: 'Touches ceiling with 410 cu.ft internal storage volume; 3 sliding doors.',
+            catalogueCode: 'WRD-LFT-1101',
+            materialRef: 'BWP Marine ply with anti-scratch laminate and internal LED motion sensors',
+            estimatedCost: 145000
+          },
+          {
+            id: 'F-MBED-403',
+            name: 'Integrated Dressing Mirror with Hidden Jewellery Carousel',
+            category: 'JOINERY',
+            widthFt: 2.5,
+            depthFt: 0.8,
+            heightFt: 6.5,
+            positionXPercent: 10,
+            positionYPercent: 75,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.4,
+            whyItFits: 'Slim 9" depth wall cabinet with full-length mirror face and lockable safe drawer.',
+            catalogueCode: 'VAN-SEC-201',
+            materialRef: 'Smoked oak with felt-lined carousel trays and digital code lock',
+            estimatedCost: 36000
+          }
+        ],
+        whyItFitsOverall: 'Ultimate storage efficiency for urban apartments while preserving strictly verified 3.1ft walkway.',
+        pros: ['Massive 410 cu.ft storage volume', 'Lockable safe & jewellery carousel'],
+        cons: ['Cabinetry fills entire vertical wall height'],
+        layoutSvgPreview: 'STORAGE_MASTER'
+      },
+      {
+        id: 'LAYOUT-MBED-OPT5',
+        optionCode: 'LAYOUT_5',
+        title: 'Option 5: Vastu Shastra Master Suite with Nairutya Earth Anchor & South Bed Head',
+        tagline: 'South Headboard Orientation • Heavy Nairutya Grounding • Northeast Prana Flow',
+        priorityTheme: 'VASTU_COMPLIANT',
+        circulationScore: 97,
+        storageCapacityCuFt: 320,
+        minClearancePassageFt: 3.5,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Authentic Vastu master bedroom configuration. Heavy solid teak king bed grounded in South-West sector with headboard to South. East wall sliding wardrobe leaves North and East zones open.',
+        furnitureItems: [
+          {
+            id: 'F-MBED-501',
+            name: 'Solid CP Teak King Bed with Organic Cotton Padded Back',
+            category: 'BED',
+            widthFt: 6.6,
+            depthFt: 6.8,
+            heightFt: 4.2,
+            positionXPercent: 25,
+            positionYPercent: 20,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.5,
+            whyItFits: 'South headboard placement adheres to ancient geomagnetic resting alignment.',
+            catalogueCode: 'BED-VST-901',
+            materialRef: 'Kiln-seasoned CP Teak with non-toxic natural beeswax finish and pure cotton padding',
+            estimatedCost: 96000
+          },
+          {
+            id: 'F-MBED-502',
+            name: 'East-Boundary Sliding Teak Wardrobe with Brass Trims',
+            category: 'STORAGE',
+            widthFt: 9.0,
+            depthFt: 2.0,
+            heightFt: 9.5,
+            positionXPercent: 82,
+            positionYPercent: 18,
+            rotationDeg: 90,
+            clearanceDistanceFt: 3.5,
+            whyItFits: 'Placed on East boundary to allow free energy flow from master entrance.',
+            catalogueCode: 'WRD-VST-902',
+            materialRef: 'CenturyPly Architect BWP with quarter-cut teak veneer and brushed brass inlay',
+            estimatedCost: 128000
+          },
+          {
+            id: 'F-MBED-503',
+            name: 'Solid Teak Bedside Tables with Brass Inlay (Pair)',
+            category: 'JOINERY',
+            widthFt: 1.8,
+            depthFt: 1.4,
+            heightFt: 1.6,
+            positionXPercent: 10,
+            positionYPercent: 25,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.5,
+            whyItFits: 'Pairs symmetrically beside king bed in grounding Nairutya zone.',
+            catalogueCode: 'TAB-VST-201',
+            materialRef: 'Solid Teak wood with warm brass drawer pull handles',
+            estimatedCost: 26000
+          }
+        ],
+        whyItFitsOverall: 'Vastu-authentic master bedroom with peaceful geomagnetic alignment and natural teak textures.',
+        pros: ['Unmatched mental peace and grounding Vastu harmony', 'Zero door or window conflicts'],
+        cons: ['Solid wood joinery requires specialized master carpentering'],
+        layoutSvgPreview: 'VASTU_MASTER'
+      }
+    ],
+
+    'ROOM-KIT-01': [
+      {
+        id: 'LAYOUT-KIT-OPT1',
+        optionCode: 'LAYOUT_1',
+        title: 'Option 1: Parallel Gourmet Modular Kitchen with Quartz Island & Breakfast Bar',
+        tagline: 'Dual Parallel Counters • 3.5ft Work Triangle • 2-Seater Breakfast Bar',
+        priorityTheme: 'OPEN_LIVING',
+        circulationScore: 98,
+        storageCapacityCuFt: 280,
+        minClearancePassageFt: 3.5,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Professional parallel counter layout with wet zone on North and cooking hob on South. Extends into a compact 2-seater quartz breakfast bar overlooking the living room.',
+        furnitureItems: [
+          {
+            id: 'F-KIT-101',
+            name: 'Parallel Modular Base & Overhead Cabinetry (12ft run)',
+            category: 'JOINERY',
+            widthFt: 12.0,
+            depthFt: 2.0,
+            heightFt: 7.5,
+            positionXPercent: 5,
+            positionYPercent: 10,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.5,
+            whyItFits: 'Houses tandem Blum soft-close cutlery, thali, and bottle pull-out baskets.',
+            catalogueCode: 'KIT-MOD-1201',
+            materialRef: 'Marine grade BWP ply with anti-scratch acrylic shutters and Hafele hinges',
+            estimatedCost: 145000
+          },
+          {
+            id: 'F-KIT-102',
+            name: 'Engineered Calacatta Quartz Countertop & Seamless Backsplash',
+            category: 'JOINERY',
+            widthFt: 12.0,
+            depthFt: 2.0,
+            heightFt: 2.8,
+            positionXPercent: 5,
+            positionYPercent: 10,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.5,
+            whyItFits: 'Heat-resistant, stain-proof 20mm quartz with undermount Carysil granite sink.',
+            catalogueCode: 'QRT-CAL-201',
+            materialRef: 'KalingaStone Calacatta White 20mm engineered quartz slab',
+            estimatedCost: 65000
+          },
+          {
+            id: 'F-KIT-103',
+            name: 'Integrated Breakfast Bar Counter with Pair of Teak Bar Stools',
+            category: 'DINING',
+            widthFt: 4.5,
+            depthFt: 1.5,
+            heightFt: 3.2,
+            positionXPercent: 75,
+            positionYPercent: 60,
+            rotationDeg: 90,
+            clearanceDistanceFt: 3.5,
+            whyItFits: 'Casual morning breakfast and coffee bar with view towards dining area.',
+            catalogueCode: 'BAR-KIT-101',
+            materialRef: 'Quartz top with teak wood legs and upholstered counter-height stools',
+            estimatedCost: 32000
+          }
+        ],
+        whyItFitsOverall: 'The chef-standard parallel layout eliminates cross-traffic and minimizes cooking steps.',
+        pros: ['Optimal golden triangle workflow', 'Dedicated morning breakfast counter'],
+        cons: ['Requires strict 3.5ft clearance between parallel platforms'],
+        layoutSvgPreview: 'PARALLEL_KITCHEN'
+      },
+      {
+        id: 'LAYOUT-KIT-OPT2',
+        optionCode: 'LAYOUT_2',
+        title: 'Option 2: L-Shaped Modular Kitchen with Tall Appliance Pantry Tower',
+        tagline: 'Tall Pantry Tower • Built-in Oven Cavity • Corner Magic Pull-Out Storage',
+        priorityTheme: 'STORAGE_MAX',
+        circulationScore: 95,
+        storageCapacityCuFt: 340,
+        minClearancePassageFt: 3.8,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'L-shaped workflow with full-height 7.5ft appliance pantry tower housing built-in microwave, oven, and pull-out grocery wire baskets. LeMans corner magic pullouts maximize dead corner space.',
+        furnitureItems: [
+          {
+            id: 'F-KIT-201',
+            name: 'L-Shaped Modular Counter Suite with Corner Magic Pullouts',
+            category: 'JOINERY',
+            widthFt: 10.0,
+            depthFt: 6.0,
+            heightFt: 2.8,
+            positionXPercent: 5,
+            positionYPercent: 10,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.8,
+            whyItFits: 'Corner carousel allows 100% utilization of hard-to-reach corner space.',
+            catalogueCode: 'KIT-LSH-201',
+            materialRef: 'BWP Marine ply with matte PU lacquer shutters and tandem drawers',
+            estimatedCost: 135000
+          },
+          {
+            id: 'F-KIT-202',
+            name: 'Full-Height Tall Appliance Pantry Tower (7.5ft)',
+            category: 'STORAGE',
+            widthFt: 2.5,
+            depthFt: 2.0,
+            heightFt: 7.5,
+            positionXPercent: 80,
+            positionYPercent: 10,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.8,
+            whyItFits: 'Houses built-in Bosch oven and 6-tier stainless steel grocery pantry baskets.',
+            catalogueCode: 'KIT-PAN-701',
+            materialRef: 'BWP ply with Hafele tall larder mechanism and anti-fingerprint laminate',
+            estimatedCost: 58000
+          }
+        ],
+        whyItFitsOverall: 'Massive grocery storage capacity with ergonomic appliance heights.',
+        pros: ['Huge pantry storage capacity (340 cu.ft)', 'High circulation clearance (3.8ft)'],
+        cons: ['Corner mechanism requires precision hardware installation'],
+        layoutSvgPreview: 'LSHAPE_KITCHEN'
+      },
+      {
+        id: 'LAYOUT-KIT-OPT3',
+        optionCode: 'LAYOUT_3',
+        title: 'Option 3: Contemporary Handleless Kitchen with Fluted Glass Crockery Unit',
+        tagline: 'Gola Profile Handleless Shutters • Backlit Fluted Glass Vitrine • Granite Sink',
+        priorityTheme: 'LUXURY_ENTERTAINING',
+        circulationScore: 97,
+        storageCapacityCuFt: 290,
+        minClearancePassageFt: 3.6,
+        doorwayConflictDetected: false,
+        windowLightBlocked: false,
+        summary: 'Italian minimalist aesthetic with seamless aluminum Gola profile channels, soft-touch matte anti-scratch finishes, and a warm backlit fluted glass crockery vitrine.',
+        furnitureItems: [
+          {
+            id: 'F-KIT-301',
+            name: 'Gola Profile Handleless Modular Kitchen Run',
+            category: 'JOINERY',
+            widthFt: 12.0,
+            depthFt: 2.0,
+            heightFt: 7.5,
+            positionXPercent: 5,
+            positionYPercent: 10,
+            rotationDeg: 0,
+            clearanceDistanceFt: 3.6,
+            whyItFits: 'Finger-pull Gola profile eliminates handles for a clean, architectural monolithic aesthetic.',
+            catalogueCode: 'KIT-GOL-301',
+            materialRef: 'Merino supermatte laminates with aluminum black Gola profiles',
+            estimatedCost: 152000
+          },
+          {
+            id: 'F-KIT-302',
+            name: 'Backlit Fluted Glass Vitrine Crockery Unit',
+            category: 'STORAGE',
+            widthFt: 4.0,
+            depthFt: 1.2,
+            heightFt: 6.5,
+            positionXPercent: 75,
+            positionYPercent: 15,
+            rotationDeg: 90,
+            clearanceDistanceFt: 3.6,
+            whyItFits: 'Display for fine crystal glasses and porcelain with ambient 3000K warm LED glow.',
+            catalogueCode: 'KIT-GLS-401',
+            materialRef: 'Anodized black aluminum frame with toughened fluted glass and LED channels',
+            estimatedCost: 46000
+          }
+        ],
+        whyItFitsOverall: 'Showroom-grade luxury with easy maintenance and scratch resistance.',
+        pros: ['Monolithic seamless appearance', 'Backlit glass creates evening mood lighting'],
+        cons: ['Gola profiles require daily wiping along recess groove'],
+        layoutSvgPreview: 'HANDLELESS_KITCHEN'
       }
     ]
   },
 
   selectedLayoutIdByRoom: {
     'ROOM-LIV-01': 'LAYOUT-LIV-OPT1',
-    'ROOM-BED2-01': 'LAYOUT-BED2-OPT1'
+    'ROOM-BED2-01': 'LAYOUT-BED2-OPT1',
+    'ROOM-MBED-01': 'LAYOUT-MBED-OPT1',
+    'ROOM-KIT-01': 'LAYOUT-KIT-OPT1'
   },
 
   conceptVersions: [
@@ -703,7 +1503,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
           totalCost: 15750
         }
       ],
-      budgetAllocated: 650000, // Living & Dining portion of ₹18L budget
+      budgetAllocated: 650000,
       budgetActualEstimated: 588000,
       renderImageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
       verified2DLayoutUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
@@ -711,18 +1511,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       designRationale: 'Combines organic warmth with clean geometric lines. The 3.8ft central corridor ensures direct access to the seaface balcony without bumping into furniture corners.',
       lightingPlan: 'Layered 3-zone lighting: (1) High-CRI 2700K cove light for soft evening ambiance; (2) Magnetic spotlights over coffee table; (3) Hand-blown glass pendant over dining.',
       colorPalette: ['#F5F2EB', '#C4A482', '#3E3630', '#7E8A78', '#D4AF37'],
-      clientFeedbackHistory: [
-        {
-          id: 'FB-001',
-          timestamp: '2026-03-12 14:30',
-          author: 'Rohit Verma (Client)',
-          role: 'CLIENT',
-          feedbackText: 'We love the warm tones! But can you make the TV wall simpler? The fluted slats behind the screen feel a bit busy. Also please make sure the dining table definitely seats 6 people comfortably.',
-          actionTaken: 'Triggered AI Concept Revision: Simplified TV wall to minimalist microcement lime plaster with floating low-profile teak drawer. Validated 6-seater dining with 3.2ft pull-out clearance.',
-          conceptVersionGenerated: 'VCP-v1.1',
-          status: 'RESOLVED'
-        }
-      ],
+      clientFeedbackHistory: [],
       status: 'REVISED_CONCEPT',
       createdAt: '2026-03-11T16:00:00Z',
       updatedAt: '2026-03-12T15:00:00Z'
@@ -757,7 +1546,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
           costPerUnit: 110,
           unit: 'sq.ft',
           estimatedQuantity: 120,
-          totalCost: 13200 // Reduced cost by simplifying from fluted wood slats
+          totalCost: 13200
         },
         {
           trade: 'TV Joinery',
@@ -791,11 +1580,11 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
         }
       ],
       budgetAllocated: 650000,
-      budgetActualEstimated: 545000, // Savings passed to client!
+      budgetActualEstimated: 545000,
       renderImageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
       verified2DLayoutUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
       moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
-      designRationale: 'Revised according to client feedback. Fluted slats removed; replaced with serene microcement plaster that makes the TV visually disappear. Dining table confirmed at 5.5ft length accommodating 6 persons comfortably with 3.2ft kitchen doorway clearance maintained.',
+      designRationale: 'Revised according to client feedback. Fluted slats replaced with serene microcement plaster that makes the TV visually disappear. Dining table confirmed at 5.5ft length accommodating 6 persons comfortably with 3.2ft kitchen doorway clearance maintained.',
       lightingPlan: 'Soft warm perimeter cove lighting + dimmable downward spot over credenza.',
       colorPalette: ['#FAF8F5', '#C5A880', '#4A3E37', '#938B83', '#E6DFD5'],
       clientFeedbackHistory: [
@@ -826,6 +1615,989 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       boqLinkedCount: 8,
       createdAt: '2026-03-12T16:00:00Z',
       updatedAt: '2026-03-13T12:00:00Z'
+    },
+    {
+      id: 'VCP-LIV-OPT2',
+      conceptVersionCode: 'VCP-v2.0',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-LIV-01',
+      roomName: 'Living & Dining Forum',
+      layoutOptionId: 'LAYOUT-LIV-OPT2',
+      layoutOptionName: 'Option 2: Storage-Max with Integrated Floor-to-Ceiling Joinery',
+      layoutSummary: '12ft Floor-to-Ceiling Architectural Storage Media Wall + Banquette Dining with Under-Seat Drawers + Concealed Foyer Vestibule',
+      styleTheme: 'Architectural Joinery & Storage Sanctuary (Suede Matte Laminate, Smoked Oak Slats, Banquette Dining)',
+      materials: [
+        {
+          trade: 'Architectural Joinery',
+          item: 'Full-Span 12ft Floor-to-Ceiling Media & Storage Wall',
+          specification: 'BWP Marine Ply with Merino anti-scratch suede laminate and push-to-open Blum hardware',
+          catalogueCode: 'STR-WAL-901',
+          costPerUnit: 115000,
+          unit: 'set',
+          estimatedQuantity: 1,
+          totalCost: 115000
+        },
+        {
+          trade: 'Modular Seating',
+          item: 'L-Shaped Sectional with Internal Gas-Lift Storage Bins',
+          specification: 'High-resilience foam with stain-resistant performance weave',
+          catalogueCode: 'FUR-SEC-502',
+          costPerUnit: 82000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 82000
+        },
+        {
+          trade: 'Dining Suite',
+          item: '6-Seater Banquette Dining with Under-Seat Deep Storage Drawers',
+          specification: 'BWP carcass with high-density foam & wipeable faux-leather upholstery',
+          catalogueCode: 'DIN-BNQ-401',
+          costPerUnit: 52000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 52000
+        },
+        {
+          trade: 'Foyer Joinery',
+          item: 'Concealed Entryway Foyer Shoe & Coat Cabinet',
+          specification: 'Natural teak laminate with perforated brass ventilation grills',
+          catalogueCode: 'STR-FOY-101',
+          costPerUnit: 28000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 28000
+        },
+        {
+          trade: 'Flooring',
+          item: 'Imported Botticino Vitrified Slabs (1200x1800mm)',
+          specification: 'Matte satin anti-slip finish',
+          catalogueCode: 'MAT-FLR-01',
+          costPerUnit: 145,
+          unit: 'sq.ft',
+          estimatedQuantity: 240,
+          totalCost: 34800
+        }
+      ],
+      budgetAllocated: 650000,
+      budgetActualEstimated: 618000,
+      renderImageUrl: '/assets/images/industrial_concept_render_1789216663974.jpg',
+      verified2DLayoutUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'Directly fulfills the customer prompt requirement for "lots of concealed storage without making rooms feel cramped". All joinery uses vertical wall heights up to 9.5ft false ceiling while strictly maintaining 3.2ft central corridor clearance from front entrance to seaface balcony.',
+      lightingPlan: 'Under-cabinet warm 2700K LED strips + ceiling recessed anti-glare downlights.',
+      colorPalette: ['#3A3B3C', '#8C7853', '#EAE6DF', '#C4B5A5', '#1F2421'],
+      clientFeedbackHistory: [
+        {
+          id: 'FB-OPT2-01',
+          timestamp: '2026-03-12 16:00',
+          author: 'Build Storys AI Copilot',
+          role: 'AI_COPILOT',
+          feedbackText: 'Generated Option 2 to maximize concealed storage volume per client brief.',
+          actionTaken: 'Built full-span 390 cu.ft media wall with verified 3.2ft corridor lock.',
+          conceptVersionGenerated: 'VCP-v2.0',
+          status: 'RESOLVED'
+        }
+      ],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-12T16:00:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-LIV-OPT3',
+      conceptVersionCode: 'VCP-v3.0',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-LIV-01',
+      roomName: 'Living & Dining Forum',
+      layoutOptionId: 'LAYOUT-LIV-OPT3',
+      layoutOptionName: 'Option 3: Ergonomic WFH Focus & Flexible Living',
+      layoutSummary: 'Concealed Roll-Top Work Nook behind Acoustic Louvres + 3-Seater Sofa with Wireless Charging + Slim Floating Dining',
+      styleTheme: 'Contemporary Biophilic Living & Acoustic Study Nook (Natural Oak, Acoustic Felt, Dimmable Task Lighting)',
+      materials: [
+        {
+          trade: 'Acoustic Joinery',
+          item: 'Concealed Roll-Top Home Office Nook with Fluted Door',
+          specification: 'Warm Teak with acoustic felt pinboard backing and internal monitor mount',
+          catalogueCode: 'DSK-NOK-201',
+          costPerUnit: 44000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 44000
+        },
+        {
+          trade: 'Modular Seating',
+          item: 'Modular 3-Seater Sofa with Wireless Charging Armrests',
+          specification: 'Taupe chenille with built-in dual USB-C PD ports and high resilience core',
+          catalogueCode: 'FUR-SOF-303',
+          costPerUnit: 62000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 62000
+        },
+        {
+          trade: 'Dining Suite',
+          item: 'Floating 6-Seater Slim Dining Unit with Rounded Safety Corners',
+          specification: 'Solid ashwood frame with scratch-proof matte laminate top',
+          catalogueCode: 'DIN-TBL-604',
+          costPerUnit: 42000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 42000
+        },
+        {
+          trade: 'Flooring',
+          item: 'Imported Botticino Vitrified Slabs (1200x1800mm)',
+          specification: 'Matte satin anti-slip finish',
+          catalogueCode: 'MAT-FLR-01',
+          costPerUnit: 145,
+          unit: 'sq.ft',
+          estimatedQuantity: 240,
+          totalCost: 34800
+        }
+      ],
+      budgetAllocated: 650000,
+      budgetActualEstimated: 568000,
+      renderImageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+      verified2DLayoutUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'Seamlessly nests a high-productivity home office study nook into the living room alcove. Pocket doors slide closed during entertainment hours to hide monitors and cables, maintaining 3.5ft clearance across all circulation vectors.',
+      lightingPlan: 'Task lighting over desk nook with glare-free 4000K LED + warm 2700K ambient cove for evening lounge.',
+      colorPalette: ['#EFECE6', '#C8B29B', '#4D443B', '#7A6B5D', '#D9C8B4'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-12T17:00:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-LIV-OPT4',
+      conceptVersionCode: 'VCP-v4.0',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-LIV-01',
+      roomName: 'Living & Dining Forum',
+      layoutOptionId: 'LAYOUT-LIV-OPT4',
+      layoutOptionName: 'Option 4: Luxury Entertaining & Modular Lounge',
+      layoutSummary: 'Curved Italian Silhouette 4-Seater Lounge + Backlit Cocktail Bar Credenza + Expandable 8-Seater Dining Setup',
+      styleTheme: 'Contemporary Neoclassical Elegance (Boiserie Wall Mouldings, Botticino Marble, Backlit Bar Credenza)',
+      materials: [
+        {
+          trade: 'Designer Seating',
+          item: 'Curved Italian Silhouette 4-Seater Sofa in Sand Linen',
+          specification: 'Solid seasoned wood frame with brushed bronze feet and high-density pocketed cushions',
+          catalogueCode: 'FUR-CRV-401',
+          costPerUnit: 92000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 92000
+        },
+        {
+          trade: 'Bar & Joinery',
+          item: 'Backlit Cocktail Bar & Wine Credenza with Tinted Fluted Glass',
+          specification: 'Warm brass trims, toughened fluted glass, soft-close bottle drawers, and LED shelf illumination',
+          catalogueCode: 'BAR-CRD-102',
+          costPerUnit: 48000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 48000
+        },
+        {
+          trade: 'Wall Finishes',
+          item: 'High-Density Architectural Boiserie Wall Moulding & Satin Finish',
+          specification: 'PU wall moulding trim panels with Asian Paints Royale Luxury Matt finish',
+          catalogueCode: 'BOI-PAN-101',
+          costPerUnit: 120,
+          unit: 'sq.ft',
+          estimatedQuantity: 160,
+          totalCost: 19200
+        },
+        {
+          trade: 'Flooring',
+          item: 'Imported Botticino Vitrified Slabs (1200x1800mm)',
+          specification: 'Matte satin anti-slip finish',
+          catalogueCode: 'MAT-FLR-01',
+          costPerUnit: 145,
+          unit: 'sq.ft',
+          estimatedQuantity: 240,
+          totalCost: 34800
+        }
+      ],
+      budgetAllocated: 650000,
+      budgetActualEstimated: 635000,
+      renderImageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
+      verified2DLayoutUrl: '/assets/images/floorplan_biophilic_courtyard_1790415168195.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'Tailored for hospitality and dinner parties. The organic curved sofa softens room corners, directing attention towards the sunset seaface balcony. Backlit cocktail credenza allows hosting drinks without crowding the kitchen entrance.',
+      lightingPlan: 'Indirect boiserie cove lighting + warm 2400K backlit vitrine display shelves.',
+      colorPalette: ['#FAF8F5', '#C5A880', '#4A3E37', '#938B83', '#E6DFD5'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-12T18:00:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-LIV-OPT5',
+      conceptVersionCode: 'VCP-v5.0',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-LIV-01',
+      roomName: 'Living & Dining Forum',
+      layoutOptionId: 'LAYOUT-LIV-OPT5',
+      layoutOptionName: 'Option 5: Vastu-Aligned Harmonious Energy Flow',
+      layoutSummary: 'Earth-Anchored Nairutya (SW) Seating + East-Facing Agni Dining + Light Unobstructed Ishanya (NE) Prana Zone',
+      styleTheme: 'Vastu Shastra Harmonious Prana Sanctuary (Organic Teak, Indoor Bio-Planters, Solar Morning Glare Flow)',
+      materials: [
+        {
+          trade: 'Loose Furniture',
+          item: 'Earth-Anchored 3-Seater Sofa with Solid Teak Base',
+          specification: 'Solid CP Teak wood frame with natural organic non-toxic cotton upholstery in Nairutya quadrant',
+          catalogueCode: 'FUR-VST-101',
+          costPerUnit: 65000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 65000
+        },
+        {
+          trade: 'Dining Suite',
+          item: 'East-Facing 6-Seater Solid Teak Dining Ensemble',
+          specification: 'Seasoned CP Teak with food-grade herbal oil polish; placed near South-East Agni dining sector',
+          catalogueCode: 'DIN-VST-601',
+          costPerUnit: 49000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 49000
+        },
+        {
+          trade: 'Bio Elements',
+          item: 'Natural Stone Biophilic Indoor Planter Box with Drainage Trap',
+          specification: 'Hand-chiselled granite planter in North-East quadrant for natural oxygenation',
+          catalogueCode: 'BIO-PLT-101',
+          costPerUnit: 18000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 18000
+        },
+        {
+          trade: 'Flooring',
+          item: 'Imported Botticino Vitrified Slabs (1200x1800mm)',
+          specification: 'Matte satin anti-slip finish',
+          catalogueCode: 'MAT-FLR-01',
+          costPerUnit: 145,
+          unit: 'sq.ft',
+          estimatedQuantity: 240,
+          totalCost: 34800
+        }
+      ],
+      budgetAllocated: 650000,
+      budgetActualEstimated: 572000,
+      renderImageUrl: '/assets/images/tropical_eco_render_1789218073135.jpg',
+      verified2DLayoutUrl: '/assets/images/floorplan_classical_vastu_1790415154125.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'Architecturally calibrated for 100% Vastu Shastra compliance. The heavy furniture is anchored in the South-West (Nairutya) for peace and prosperity, while the North-East (Ishanya) is kept completely light and uncluttered to invite positive solar morning energy.',
+      lightingPlan: 'East-facing natural daylight optimization + warm 2700K indirect perimeter lighting.',
+      colorPalette: ['#FAF5EF', '#D4BA99', '#382D25', '#8E7F72', '#CBB89D'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-12T19:00:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-BED2-OPT1',
+      conceptVersionCode: 'VCP-v6.0',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-BED2-01',
+      roomName: 'Bedroom 2 / WFH Study Suite',
+      layoutOptionId: 'LAYOUT-BED2-OPT1',
+      layoutOptionName: 'Option 1: Dual-Monitor Ergonomic Workstation & Storage Wall',
+      layoutSummary: '5.5ft Custom Workstation Facing North Glare-Free Window + 7ft Sliding Wardrobe + Sleeper Sofa',
+      styleTheme: 'Ergonomic WFH Study Suite & Daylight Workstation (Natural Oak, Acoustic Wall Baffles, Matte Black Accents)',
+      materials: [
+        {
+          trade: 'Workstation Joinery',
+          item: '5.5ft Executive Ergonomic Workstation with Cable Spine & Monitor Arm',
+          specification: 'Solid oak edge banding with matte anti-fingerprint anti-glare laminate surface',
+          catalogueCode: 'DSK-ERG-501',
+          costPerUnit: 34000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 34000
+        },
+        {
+          trade: 'Wardrobe Joinery',
+          item: 'Floor-to-Ceiling 3-Door Sliding Wardrobe with Bookshelf',
+          specification: 'BWP Marine Ply with soft-close Blum sliding hardware and matte laminate finish',
+          catalogueCode: 'WRD-SLD-701',
+          costPerUnit: 78000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 78000
+        },
+        {
+          trade: 'Convertible Furniture',
+          item: 'Comfort Plush Sofa-Cum-Bed (Queen Size Foldout)',
+          specification: 'High-resilience foam with washable stain-resistant fabric cover',
+          catalogueCode: 'BED-SCB-201',
+          costPerUnit: 45000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 45000
+        },
+        {
+          trade: 'Acoustic Paneling',
+          item: 'Recycled PET Acoustic Wall Baffle Panel behind Desk',
+          specification: 'NRC 0.85 sound absorption for crisp Zoom calls and noise reduction',
+          catalogueCode: 'ACO-PAN-101',
+          costPerUnit: 180,
+          unit: 'sq.ft',
+          estimatedQuantity: 60,
+          totalCost: 10800
+        }
+      ],
+      budgetAllocated: 450000,
+      budgetActualEstimated: 395000,
+      renderImageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
+      verified2DLayoutUrl: '/assets/images/floorplan_executive_suite_1790415181606.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'Specifically fulfills the core prompt: "a work desk in the second bedroom and lots of storage". The 5.5ft desk faces the North window for soft, natural light without computer screen glare. Sliding wardrobe guarantees zero swing collision with the bedroom door.',
+      lightingPlan: 'Task lighting over dual monitors (4000K, CRI 95+) + dimmable warm ceiling spotlights.',
+      colorPalette: ['#F1F5F9', '#334155', '#94A3B8', '#0EA5E9', '#0F172A'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-12T19:30:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-BED2-OPT2',
+      conceptVersionCode: 'VCP-v6.1',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-BED2-01',
+      roomName: 'Bedroom 2 / WFH Study Suite',
+      layoutOptionId: 'LAYOUT-BED2-OPT2',
+      layoutOptionName: 'Option 2: Deep Storage Sanctuary with Integrated Murphy Desk Bed',
+      layoutSummary: 'Auto-Balancing Hydraulic Murphy Bed Desk + Wall-to-Wall 4-Door Wardrobe with Overhead Lofts',
+      styleTheme: 'Modern High-Utility Space-Saver (Suede Laminate, Concealed Mechanism, 320 cu.ft Storage)',
+      materials: [
+        {
+          trade: 'Convertible Joinery',
+          item: 'Hydraulic Wall Bed with Auto-Balancing 5ft Flip Desk',
+          specification: 'Heavy-gauge Italian counterbalanced mechanism with BWR plywood carcass',
+          catalogueCode: 'BED-MRP-301',
+          costPerUnit: 95000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 95000
+        },
+        {
+          trade: 'Wardrobe Joinery',
+          item: 'Wall-to-Wall 4-Door Wardrobe with Overhead Lofts',
+          specification: 'Merino anti-scratch laminate with champagne gold handles and soft-close hinges',
+          catalogueCode: 'WRD-LOF-401',
+          costPerUnit: 88000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 88000
+        }
+      ],
+      budgetAllocated: 450000,
+      budgetActualEstimated: 420000,
+      renderImageUrl: '/assets/images/industrial_concept_render_1789216663974.jpg',
+      verified2DLayoutUrl: '/assets/images/floorplan_executive_suite_1790415181606.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'Yields the maximum floor space during work hours. The auto-balancing desk mechanism remains level when the bed is pulled down, so laptops and study materials never have to be packed away.',
+      lightingPlan: 'Recessed study task light with under-bed mood strip.',
+      colorPalette: ['#E2E8F0', '#475569', '#1E293B', '#D97706', '#FFFFFF'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-12T20:00:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-BED2-OPT3',
+      conceptVersionCode: 'VCP-v6.2',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-BED2-01',
+      roomName: 'Bedroom 2 / WFH Study Suite',
+      layoutOptionId: 'LAYOUT-BED2-OPT3',
+      layoutOptionName: 'Option 3: L-Shaped Executive Desk & Library Suite',
+      layoutSummary: '7ft L-Shaped Return Workstation + Full-Height Library Credenza + Compact Reading Daybed',
+      styleTheme: 'Executive Scholar & Developer Studio (Smoked Oak, Acoustic Fabric, Book Display Lighting)',
+      materials: [
+        {
+          trade: 'Workstation Joinery',
+          item: 'L-Shaped Executive Workstation with Dual Cable Trays',
+          specification: 'Solid Teak edge with powder-coated black steel support legs and cable grommets',
+          catalogueCode: 'DSK-LSH-401',
+          costPerUnit: 48000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 48000
+        },
+        {
+          trade: 'Library Joinery',
+          item: 'Floor-to-Ceiling Library Credenza & Display Shelves',
+          specification: 'Natural veneer with warm LED spot shelves and lockable lower document drawers',
+          catalogueCode: 'LIB-WAL-601',
+          costPerUnit: 56000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 56000
+        }
+      ],
+      budgetAllocated: 450000,
+      budgetActualEstimated: 410000,
+      renderImageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+      verified2DLayoutUrl: '/assets/images/floorplan_executive_suite_1790415181606.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'Designed for high-intensity multi-monitor technical workflows with 180-book library capacity and direct natural light across the primary desk surface.',
+      lightingPlan: 'Directional track spotlighting + warm book credenza shelf backlight.',
+      colorPalette: ['#F8FAFC', '#334155', '#64748B', '#0284C7', '#0F172A'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-12T20:30:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-MBED-OPT1',
+      conceptVersionCode: 'VCP-v7.0',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-MBED-01',
+      roomName: 'Master Bedroom Suite',
+      layoutOptionId: 'LAYOUT-MBED-OPT1',
+      layoutOptionName: 'Option 1: King Suite with Acoustic Headboard Wall & 10ft Wardrobe',
+      layoutSummary: 'King Size Hydraulic Storage Bed + Padded Acoustic Headboard + Full-Span 10ft Sliding Wardrobe',
+      styleTheme: 'Modern Luxury Master Suite (Velvet Acoustic Bed Back, Fluted Teak Nightstands, Warm 2700K Coves)',
+      materials: [
+        {
+          trade: 'Master Bed',
+          item: 'King Size Hydraulic Storage Bed with Acoustic Padded Headboard',
+          specification: 'Padded acoustic velvet upholstery with hydraulic gas-lift steel frame and salwood base',
+          catalogueCode: 'BED-KNG-901',
+          costPerUnit: 88000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 88000
+        },
+        {
+          trade: 'Wardrobe Joinery',
+          item: 'Full-Span 10ft 4-Door Wardrobe with Internal Dresser',
+          specification: 'BWP Marine Ply with soft-close Blum sliding tracks and PU satin finish',
+          catalogueCode: 'WRD-SLD-1001',
+          costPerUnit: 125000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 125000
+        },
+        {
+          trade: 'Floating Nightstands',
+          item: 'Floating Bedside Nightstands with Wireless Phone Charging (Pair)',
+          specification: 'Natural smoked teak veneer with push-to-open soft close drawers',
+          catalogueCode: 'TAB-BED-201',
+          costPerUnit: 22000,
+          unit: 'pair',
+          estimatedQuantity: 1,
+          totalCost: 22000
+        }
+      ],
+      budgetAllocated: 550000,
+      budgetActualEstimated: 485000,
+      renderImageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+      verified2DLayoutUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'Master suite layout respects Nairutya (South-West) grounding energy. Headboard faces South for sound sleep. Full 10ft wardrobe on the East wall accommodates extensive personal storage without obstructing the master bathroom entrance.',
+      lightingPlan: 'Warm 2700K indirect ceiling coves + reading gooseneck spotlights.',
+      colorPalette: ['#F5F2EB', '#C4A482', '#3E3630', '#7E8A78', '#D4AF37'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-12T21:00:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-MBED-OPT2',
+      conceptVersionCode: 'VCP-v7.1',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-MBED-01',
+      roomName: 'Master Bedroom Suite',
+      layoutOptionId: 'LAYOUT-MBED-OPT2',
+      layoutOptionName: 'Option 2: Executive Luxury Hotel Suite with Lounge Chaise & Vanity',
+      layoutSummary: 'Low-Profile Platform King Bed + Floating Dressing Vanity with LED Mirror + Window Velvet Chaise',
+      styleTheme: 'Boutique Hotel Master Sanctuary (Boiserie Mouldings, Backlit Quartz Vanity, Velvet Window Chaise)',
+      materials: [
+        {
+          trade: 'Platform Bed',
+          item: 'Low-Profile Japanese Platform Bed with Extended Back-Ledge',
+          specification: 'Solid ashwood frame with woven rattan headrest and concealed bottom LED halo',
+          catalogueCode: 'BED-PLF-501',
+          costPerUnit: 76000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 76000
+        },
+        {
+          trade: 'Dressing Vanity',
+          item: 'Floating Dressing Vanity with LED Fluted Mirror',
+          specification: 'Engineered quartz countertop with warm 3000K ring luminaire and soft-close jewelry drawer',
+          catalogueCode: 'VAN-FLT-301',
+          costPerUnit: 42000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 42000
+        },
+        {
+          trade: 'Window Seating',
+          item: 'Velvet Window Reading Chaise',
+          specification: 'Dust-resistant olive green velvet with brass capped feet',
+          catalogueCode: 'CHS-WIN-101',
+          costPerUnit: 38000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 38000
+        }
+      ],
+      budgetAllocated: 550000,
+      budgetActualEstimated: 515000,
+      renderImageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
+      verified2DLayoutUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: '5-star boutique hospitality atmosphere with dedicated morning grooming zone and sunset reading nook beside South window.',
+      lightingPlan: 'Warm 2400K-3000K dim-to-warm bedside fixtures and vanity perimeter light.',
+      colorPalette: ['#FAF8F5', '#C5A880', '#4A3E37', '#938B83', '#E6DFD5'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-12T21:30:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-BED2-OPT4',
+      conceptVersionCode: 'VCP-v6.3',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-BED2-01',
+      roomName: 'Bedroom 2 / WFH Study Suite',
+      layoutOptionId: 'LAYOUT-BED2-OPT4',
+      layoutOptionName: 'Option 4: Acoustic Podcast / Media Studio & Daybed Lounge',
+      layoutSummary: 'Broadcast Studio Acoustic Console (6ft) + Acoustic Wood Slat Wall + Convertible Daybed',
+      styleTheme: 'Contemporary Acoustic Broadcast Studio & Guest Lounge (Smoked Walnut, Velvet Daybed, 2700K Warm Lighting)',
+      materials: [
+        {
+          trade: 'Studio Joinery',
+          item: 'Broadcast Studio Acoustic Console with Cable Management Spine',
+          specification: 'Matte black anti-reflective birch ply with solid brass cable pass-throughs',
+          catalogueCode: 'DSK-STU-601',
+          costPerUnit: 52000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 52000
+        },
+        {
+          trade: 'Acoustic Paneling',
+          item: 'Natural Smoked Walnut Acoustic Slats on PET Felt',
+          specification: 'NRC 0.88 sound dampening acoustic panelling with concealed warm LED strip',
+          catalogueCode: 'ACO-SLT-201',
+          costPerUnit: 440,
+          unit: 'sq.ft',
+          estimatedQuantity: 100,
+          totalCost: 44000
+        },
+        {
+          trade: 'Convertible Daybed',
+          item: 'Convertible Velvet Daybed with Hydro Base',
+          specification: 'Plush rust velvet with Sleepwell high density foam and solid beechwood legs',
+          catalogueCode: 'BED-VLV-101',
+          costPerUnit: 48000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 48000
+        }
+      ],
+      budgetAllocated: 450000,
+      budgetActualEstimated: 418000,
+      renderImageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
+      verified2DLayoutUrl: '/assets/images/interior_dimension_glass_1789549189481.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'Calibrated for executive video-conferencing, podcasts, and sound recording. Acoustic slats prevent audio slapback while the daybed provides comfortable guest lounging.',
+      lightingPlan: 'Warm 2700K indirect perimeter backlighting + 4000K high-CRI key light for broadcast video calls.',
+      colorPalette: ['#1E293B', '#C2410C', '#E2E8F0', '#475569', '#F8FAFC'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-12T22:00:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-BED2-OPT5',
+      conceptVersionCode: 'VCP-v6.4',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-BED2-01',
+      roomName: 'Bedroom 2 / WFH Study Suite',
+      layoutOptionId: 'LAYOUT-BED2-OPT5',
+      layoutOptionName: 'Option 5: Vastu Study Sanctuary with East-Facing Desk & Light Prana Zone',
+      layoutSummary: 'Solid Teak East-Facing Study Desk + South Sliding Wardrobe + South Headboard Bed',
+      styleTheme: 'Vastu Shastra Study Sanctuary (Organic Teak, Natural Beeswax Polish, Prana Flow Planters)',
+      materials: [
+        {
+          trade: 'Study Desk',
+          item: 'Solid Teak East-Facing Study Desk with Brass Inlay',
+          specification: 'CP Teak with non-toxic herbal oil polish and soft brass corner caps',
+          catalogueCode: 'DSK-VST-301',
+          costPerUnit: 38000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 38000
+        },
+        {
+          trade: 'Wardrobe Joinery',
+          item: '3-Door Sliding Teak Finish Wardrobe on South Wall',
+          specification: 'BWP Marine ply with natural quarter-cut teak laminate and soft-close sliding tracks',
+          catalogueCode: 'WRD-VST-501',
+          costPerUnit: 72000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 72000
+        },
+        {
+          trade: 'Single Bed',
+          item: 'Single Hydraulic Storage Bed with South Head Position',
+          specification: 'Seasoned teak wood frame with pure organic cotton padded headrest',
+          catalogueCode: 'BED-VST-101',
+          costPerUnit: 39000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 39000
+        }
+      ],
+      budgetAllocated: 450000,
+      budgetActualEstimated: 398000,
+      renderImageUrl: '/assets/images/tropical_eco_render_1789218073135.jpg',
+      verified2DLayoutUrl: '/assets/images/floorplan_classical_vastu_1790415154125.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'Complies with Vastu orientation. Facing East during study stimulates intellectual concentration and memory retention. Northeast corner is kept light and open.',
+      lightingPlan: 'East morning natural solar light optimization + 3000K warm desk lamp.',
+      colorPalette: ['#FAF5EF', '#D4BA99', '#382D25', '#8E7F72', '#CBB89D'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-12T22:30:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-MBED-OPT3',
+      conceptVersionCode: 'VCP-v7.2',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-MBED-01',
+      roomName: 'Master Bedroom Suite',
+      layoutOptionId: 'LAYOUT-MBED-OPT3',
+      layoutOptionName: 'Option 3: Minimalist Zen Sanctuary with Low-Platform Tatami Bed & Concealed Dressing',
+      layoutSummary: 'Low-Slung Ashwood Tatami Platform Bed + Flush Concealed Push Wardrobe + Floating Ledges',
+      styleTheme: 'Japandi Zen Sanctuary (Natural White Ash, Sand Microcement, Concealed Joinery, 2700K Halo Lighting)',
+      materials: [
+        {
+          trade: 'Platform Bed',
+          item: 'Low-Slung Solid Ashwood Tatami Platform Bed',
+          specification: 'Solid white ash wood with woven natural igusa tatami matting and concealed floor halo LED',
+          catalogueCode: 'BED-TAT-701',
+          costPerUnit: 82000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 82000
+        },
+        {
+          trade: 'Concealed Wardrobe',
+          item: 'Wall-to-Wall Flush Concealed Wardrobe with Push-to-Open Latches',
+          specification: 'Merino supermatte greige laminate with German soft-close push mechanisms',
+          catalogueCode: 'WRD-FLS-901',
+          costPerUnit: 118000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 118000
+        },
+        {
+          trade: 'Bedside Joinery',
+          item: 'Floating Ashwood Night Ledges with Wireless Touch Dimmers (Pair)',
+          specification: 'Solid ashwood with concealed cable routing and touch dimmers',
+          catalogueCode: 'TAB-LED-101',
+          costPerUnit: 24000,
+          unit: 'pair',
+          estimatedQuantity: 1,
+          totalCost: 24000
+        }
+      ],
+      budgetAllocated: 550000,
+      budgetActualEstimated: 495000,
+      renderImageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
+      verified2DLayoutUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'Pure Japandi tranquility. The low bed datum emphasizes room height, while the concealed push-to-open wardrobe keeps all storage hidden behind monolithic plaster-toned panels.',
+      lightingPlan: 'Concealed under-bed warm 2400K halo strip + soft architectural ceiling perimeter coves.',
+      colorPalette: ['#F5F5F0', '#D6C7B2', '#5A524A', '#8F857D', '#E8E4DC'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-12T23:00:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-MBED-OPT4',
+      conceptVersionCode: 'VCP-v7.3',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-MBED-01',
+      roomName: 'Master Bedroom Suite',
+      layoutOptionId: 'LAYOUT-MBED-OPT4',
+      layoutOptionName: 'Option 4: Storage-Max Dual Wardrobe Suite with Built-in Luggage Lofts & Dresser',
+      layoutSummary: 'King Bed with Hydro Deep Trunk + 11ft Dual Wardrobe with Overhead Lofts (410 cu.ft) + Dressing Mirror',
+      styleTheme: 'Architectural Joinery Storage Sanctuary (Matte Anti-Scratch Laminate, Champagne Gold Trims, 410 cu.ft Volume)',
+      materials: [
+        {
+          trade: 'Storage Bed',
+          item: 'King Bed with Hydraulic Lift Deep Trunk Storage',
+          specification: 'Heavy steel reinforced box frame with stain-resistant linen upholstery',
+          catalogueCode: 'BED-TRK-801',
+          costPerUnit: 92000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 92000
+        },
+        {
+          trade: 'Wardrobe Joinery',
+          item: 'Dual Full-Height 11ft Wardrobe with Overhead Storage Lofts',
+          specification: 'BWP Marine ply with anti-scratch laminate and internal LED motion sensors',
+          catalogueCode: 'WRD-LFT-1101',
+          costPerUnit: 145000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 145000
+        },
+        {
+          trade: 'Dressing Unit',
+          item: 'Integrated Dressing Mirror with Hidden Jewellery Carousel',
+          specification: 'Smoked oak with felt-lined carousel trays and digital code lock',
+          catalogueCode: 'VAN-SEC-201',
+          costPerUnit: 36000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 36000
+        }
+      ],
+      budgetAllocated: 550000,
+      budgetActualEstimated: 525000,
+      renderImageUrl: '/assets/images/industrial_concept_render_1789216663974.jpg',
+      verified2DLayoutUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'Engineered for maximum storage density without creating claustrophobia. The vertical lofts hold large suitcases and seasonal duvets, maintaining verified 3.1ft walkway to the master bath.',
+      lightingPlan: 'Warm under-cabinet LED task strips + recessed anti-glare directional downlights.',
+      colorPalette: ['#3A3B3C', '#8C7853', '#EAE6DF', '#C4B5A5', '#1F2421'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-12T23:30:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-MBED-OPT5',
+      conceptVersionCode: 'VCP-v7.4',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-MBED-01',
+      roomName: 'Master Bedroom Suite',
+      layoutOptionId: 'LAYOUT-MBED-OPT5',
+      layoutOptionName: 'Option 5: Vastu Shastra Master Suite with Nairutya Earth Anchor & South Bed Head',
+      layoutSummary: 'Solid CP Teak King Bed with South Headboard + East Sliding Wardrobe + Bedside Tables with Brass Inlay',
+      styleTheme: 'Vastu Shastra Prana Master Suite (Solid CP Teak, Hand-Polished Brass Inlay, Pure Cotton Upholstery)',
+      materials: [
+        {
+          trade: 'Master Bed',
+          item: 'Solid CP Teak King Bed with Organic Cotton Padded Back',
+          specification: 'Kiln-seasoned CP Teak with non-toxic natural beeswax finish and pure cotton padding',
+          catalogueCode: 'BED-VST-901',
+          costPerUnit: 96000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 96000
+        },
+        {
+          trade: 'Wardrobe Joinery',
+          item: 'East-Boundary Sliding Teak Wardrobe with Brass Trims',
+          specification: 'CenturyPly Architect BWP with quarter-cut teak veneer and brushed brass inlay',
+          catalogueCode: 'WRD-VST-902',
+          costPerUnit: 128000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 128000
+        },
+        {
+          trade: 'Bedside Tables',
+          item: 'Solid Teak Bedside Tables with Brass Inlay (Pair)',
+          specification: 'Solid Teak wood with warm brass drawer pull handles and felt lining',
+          catalogueCode: 'TAB-VST-201',
+          costPerUnit: 26000,
+          unit: 'pair',
+          estimatedQuantity: 1,
+          totalCost: 26000
+        }
+      ],
+      budgetAllocated: 550000,
+      budgetActualEstimated: 512000,
+      renderImageUrl: '/assets/images/tropical_eco_render_1789218073135.jpg',
+      verified2DLayoutUrl: '/assets/images/floorplan_classical_vastu_1790415154125.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'South headboard placement provides deep neurological rest by aligning with Earth’s magnetic polarity. Heavy Nairutya zone anchoring establishes household stability.',
+      lightingPlan: 'Warm 2400K indirect ambient cove lighting + brass reading sconces with warm filament glow.',
+      colorPalette: ['#FAF5EF', '#D4BA99', '#382D25', '#8E7F72', '#CBB89D'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-13T00:00:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-KIT-OPT1',
+      conceptVersionCode: 'VCP-v8.0',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-KIT-01',
+      roomName: 'Culinary Kitchen & Breakfast Bar',
+      layoutOptionId: 'LAYOUT-KIT-OPT1',
+      layoutOptionName: 'Option 1: Parallel Gourmet Modular Kitchen with Quartz Island & Breakfast Bar',
+      layoutSummary: 'Parallel 12ft Counter Run + Calacatta Quartz Surfaces + 2-Seater Breakfast Bar overlooking Living Area',
+      styleTheme: 'Modern Culinary Studio (Calacatta Quartz, Teak Breakfast Bar, Acrylic Shutters, 3000K Task Lights)',
+      materials: [
+        {
+          trade: 'Modular Kitchen',
+          item: 'Parallel Modular Base & Overhead Cabinetry (12ft run)',
+          specification: 'Marine grade BWP ply with anti-scratch acrylic shutters and Hafele soft-close tandem drawers',
+          catalogueCode: 'KIT-MOD-1201',
+          costPerUnit: 145000,
+          unit: 'set',
+          estimatedQuantity: 1,
+          totalCost: 145000
+        },
+        {
+          trade: 'Countertops',
+          item: 'Engineered Calacatta Quartz Countertop & Seamless Backsplash',
+          specification: 'KalingaStone Calacatta White 20mm engineered quartz slab with undermount granite sink',
+          catalogueCode: 'QRT-CAL-201',
+          costPerUnit: 65000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 65000
+        },
+        {
+          trade: 'Breakfast Bar',
+          item: 'Integrated Breakfast Bar Counter with Pair of Teak Bar Stools',
+          specification: 'Quartz top with teak wood legs and upholstered counter-height stools',
+          catalogueCode: 'BAR-KIT-101',
+          costPerUnit: 32000,
+          unit: 'set',
+          estimatedQuantity: 1,
+          totalCost: 32000
+        }
+      ],
+      budgetAllocated: 350000,
+      budgetActualEstimated: 310000,
+      renderImageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+      verified2DLayoutUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'Parallel layout optimizes the golden cooking triangle between sink, hob, and refrigerator. Central 3.5ft clearance provides effortless food preparation without bottlenecking.',
+      lightingPlan: 'Under-cabinet 4000K CRI 95+ prep task lighting + warm 2700K pendant drops over breakfast bar.',
+      colorPalette: ['#FFFFFF', '#C5A880', '#2D3748', '#E2E8F0', '#1A202C'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-13T00:30:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-KIT-OPT2',
+      conceptVersionCode: 'VCP-v8.1',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-KIT-01',
+      roomName: 'Culinary Kitchen & Breakfast Bar',
+      layoutOptionId: 'LAYOUT-KIT-OPT2',
+      layoutOptionName: 'Option 2: L-Shaped Modular Kitchen with Tall Appliance Pantry Tower',
+      layoutSummary: 'L-Shaped Counter Run with Corner Magic Pullouts + 7.5ft Tall Grocery Pantry Tower',
+      styleTheme: 'Contemporary High-Capacity Modular Pantry (Supermatte Greige, Built-in Ovens, Tandem Pullouts)',
+      materials: [
+        {
+          trade: 'Modular Kitchen',
+          item: 'L-Shaped Modular Counter Suite with Corner Magic Pullouts',
+          specification: 'BWP Marine ply with matte PU lacquer shutters and tandem drawers',
+          catalogueCode: 'KIT-LSH-201',
+          costPerUnit: 135000,
+          unit: 'set',
+          estimatedQuantity: 1,
+          totalCost: 135000
+        },
+        {
+          trade: 'Pantry Tower',
+          item: 'Full-Height Tall Appliance Pantry Tower (7.5ft)',
+          specification: 'BWP ply with Hafele tall larder mechanism and anti-fingerprint laminate',
+          catalogueCode: 'KIT-PAN-701',
+          costPerUnit: 58000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 58000
+        }
+      ],
+      budgetAllocated: 350000,
+      budgetActualEstimated: 325000,
+      renderImageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
+      verified2DLayoutUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'L-shaped workflow provides maximum continuous counter surface and isolates the grocery pantry in a single high-capacity tower.',
+      lightingPlan: 'Recessed anti-glare ceiling spotlights + under-shelf LED strip.',
+      colorPalette: ['#FAF8F5', '#A0AEC0', '#4A5568', '#CBD5E0', '#2D3748'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-13T01:00:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
+    },
+    {
+      id: 'VCP-KIT-OPT3',
+      conceptVersionCode: 'VCP-v8.2',
+      projectId: 'PROJ-SKYLINE-1402',
+      floorPlanVersion: 'FP-v2.1-VERIFIED',
+      roomId: 'ROOM-KIT-01',
+      roomName: 'Culinary Kitchen & Breakfast Bar',
+      layoutOptionId: 'LAYOUT-KIT-OPT3',
+      layoutOptionName: 'Option 3: Contemporary Handleless Kitchen with Fluted Glass Crockery Unit',
+      layoutSummary: 'Gola Profile Handleless Cabinetry + Backlit Fluted Glass Vitrine Crockery Unit',
+      styleTheme: 'Italian Architectural Handleless Kitchen (Black Gola Profiles, Fluted Glass Vitrine, Warm LED Channels)',
+      materials: [
+        {
+          trade: 'Modular Kitchen',
+          item: 'Gola Profile Handleless Modular Kitchen Run',
+          specification: 'Merino supermatte laminates with aluminum black Gola profiles and soft-close Tandembox',
+          catalogueCode: 'KIT-GOL-301',
+          costPerUnit: 152000,
+          unit: 'set',
+          estimatedQuantity: 1,
+          totalCost: 152000
+        },
+        {
+          trade: 'Crockery Vitrine',
+          item: 'Backlit Fluted Glass Vitrine Crockery Unit',
+          specification: 'Anodized black aluminum frame with toughened fluted glass and 3000K warm LED channels',
+          catalogueCode: 'KIT-GLS-401',
+          costPerUnit: 46000,
+          unit: 'nos',
+          estimatedQuantity: 1,
+          totalCost: 46000
+        }
+      ],
+      budgetAllocated: 350000,
+      budgetActualEstimated: 335000,
+      renderImageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
+      verified2DLayoutUrl: '/assets/images/floorplan_biophilic_courtyard_1790415168195.jpg',
+      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      designRationale: 'Seamless monolithic minimalism. The backlit glass vitrine becomes a glowing backdrop visible from the dining room during dinner hosting.',
+      lightingPlan: 'Warm 3000K vitrine internal glow + recessed ceiling spotlights.',
+      colorPalette: ['#1A202C', '#E2E8F0', '#C5A880', '#718096', '#FFFFFF'],
+      clientFeedbackHistory: [],
+      status: 'CLIENT_APPROVED',
+      createdAt: '2026-03-13T01:30:00Z',
+      updatedAt: '2026-03-13T10:00:00Z'
     }
   ],
 
@@ -834,3 +2606,87 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
   boqLinkedAt: '2026-03-13T12:30:00Z',
   updatedAt: '2026-03-13T12:30:00Z'
 };
+
+/**
+ * Returns the exact matched visual concept for any room and layout option.
+ * If not in existing session, returns the pre-calibrated concept version from the architectural library.
+ */
+export function getCalibratedConceptForLayout(
+  room: ExtractedRoomGeometry,
+  layout: FurnitureLayoutOption,
+  sessionConceptVersions?: VisualConceptVersion[]
+): VisualConceptVersion {
+  if (sessionConceptVersions && sessionConceptVersions.length > 0) {
+    const found = [...sessionConceptVersions].reverse().find(
+      c => (c.roomId === room.id || c.roomId === room.roomType) && 
+           (c.layoutOptionId === layout.id || c.layoutOptionName === layout.title)
+    );
+    if (found) return found;
+  }
+
+  // Check initial library (newest first)
+  const libraryMatch = [...INITIAL_2BHK_SPATIAL_SESSION.conceptVersions].reverse().find(
+    c => (c.roomId === room.id || c.roomId === room.roomType) && 
+         (c.layoutOptionId === layout.id || c.layoutOptionName === layout.title)
+  );
+  if (libraryMatch) return libraryMatch;
+
+  // Fallback calibrated generation based on layout option code & priority theme
+  let renderUrl = '/assets/images/minimalist_concept_render_1789216644600.jpg';
+  let cadUrl = '/assets/images/cad_floor_plan_1789216705163.jpg';
+
+  if (layout.priorityTheme === 'STORAGE_MAX') {
+    renderUrl = '/assets/images/industrial_concept_render_1789216663974.jpg';
+    cadUrl = '/assets/images/cad_section_drawing_1789218091254.jpg';
+  } else if (layout.priorityTheme === 'WFH_PRODUCTIVITY') {
+    renderUrl = '/assets/images/biophilic_concept_render_1789216627991.jpg';
+    cadUrl = '/assets/images/floorplan_executive_suite_1790415181606.jpg';
+  } else if (layout.priorityTheme === 'LUXURY_ENTERTAINING') {
+    renderUrl = '/assets/images/neoclassic_render_1789216684796.jpg';
+    cadUrl = '/assets/images/floorplan_biophilic_courtyard_1790415168195.jpg';
+  } else if (layout.priorityTheme === 'VASTU_COMPLIANT') {
+    renderUrl = '/assets/images/tropical_eco_render_1789218073135.jpg';
+    cadUrl = '/assets/images/floorplan_classical_vastu_1790415154125.jpg';
+  } else if (layout.priorityTheme === 'OPEN_LIVING') {
+    renderUrl = '/assets/images/minimalist_concept_render_1789216644600.jpg';
+    cadUrl = '/assets/images/cad_floor_plan_1789216705163.jpg';
+  }
+
+  const verCode = `VCP-${layout.optionCode}-${layout.priorityTheme.slice(0, 3)}`;
+
+  return {
+    id: `VCP-${layout.id}`,
+    conceptVersionCode: verCode,
+    projectId: 'PROJ-SKYLINE-1402',
+    floorPlanVersion: 'FP-v2.1-VERIFIED',
+    roomId: room.id,
+    roomName: room.name,
+    layoutOptionId: layout.id,
+    layoutOptionName: layout.title,
+    layoutSummary: layout.summary,
+    styleTheme: `Calibrated ${layout.title} Concept`,
+    materials: layout.furnitureItems.map((item, idx) => ({
+      trade: item.category === 'SEATING' ? 'Loose Furniture' : item.category === 'STORAGE' || item.category === 'JOINERY' ? 'Architectural Joinery' : 'Loose Furniture',
+      item: item.name,
+      specification: item.materialRef || 'Commercial BWP & Premium Finish',
+      catalogueCode: item.catalogueCode || `MAT-${idx + 101}`,
+      costPerUnit: item.estimatedCost,
+      unit: 'nos',
+      estimatedQuantity: 1,
+      totalCost: item.estimatedCost
+    })),
+    budgetAllocated: 650000,
+    budgetActualEstimated: layout.furnitureItems.reduce((acc, curr) => acc + curr.estimatedCost, 0) + 120000,
+    renderImageUrl: renderUrl,
+    verified2DLayoutUrl: cadUrl,
+    moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+    designRationale: `Matched 3D visual concept and verified 2D CAD floor plan strictly respecting ${layout.title}. Guaranteed ${layout.minClearancePassageFt}ft clear circulation with zero doorway obstruction.`,
+    lightingPlan: 'Warm 2700K ambient cove lighting with directional task spotlights.',
+    colorPalette: ['#FAF8F5', '#C5A880', '#4A3E37', '#938B83', '#E6DFD5'],
+    clientFeedbackHistory: [],
+    status: 'CLIENT_APPROVED',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+}
+

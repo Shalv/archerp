@@ -148,6 +148,7 @@ export const D365Shell: React.FC<D365ShellProps> = ({
 
   // Tell Me Search Items
   const tellMeItems = [
+    { title: 'Interior Design: Usable 2D Measured Layout & 3D Visual Concept Studio (CAD + Renders + BOQ)', category: 'Interior Design', action: () => handleNavigate('spatial_ai') },
     { title: '2-Step Spatial AI: Floor Plan Reading -> 2D Layouts -> Visuals -> BOQ', category: 'Design & Spatial AI', action: () => handleNavigate('spatial_ai') },
     { title: 'AI Vastu Floor Planner (Submit Plot Size e.g. 1200 sq.ft & Generate 3 Options)', category: 'Design & Vastu', action: () => onOpenVastuModal ? onOpenVastuModal() : handleNavigate('survey') },
     { title: 'Customer Training & Operations Manual (Step-by-Step Module Guide)', category: 'Training & Help', action: () => onOpenTrainingManual?.() },
