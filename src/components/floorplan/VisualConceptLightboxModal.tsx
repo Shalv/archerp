@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { X, Download, ZoomIn, Sparkles, RefreshCw, Layers, ShieldCheck, CheckCircle2, Camera, Check } from 'lucide-react';
+import React from 'react';
+import { X, Download, Sparkles, RefreshCw, Layers, ShieldCheck, Camera, Check, FileCode2 } from 'lucide-react';
 import { VisualConceptVersion, ExtractedRoomGeometry, FurnitureLayoutOption, FloorPlanReferenceImage } from '../../types/floorplanSpatial';
-import { VILLA_253_ALL_REFERENCE_IMAGES } from '../../data/villa253ReferenceImages';
+import { getReferenceImagesForRoom } from '../../data/villa253ReferenceImages';
+import { Villa253VectorCadPreview } from './Villa253VectorCadPreview';
+import { buildRoomSpecificFilename, triggerDownloadVilla253Dxf } from '../../utils/villa253CadDataAndDxf';
 
 interface VisualConceptLightboxModalProps {
   concept: VisualConceptVersion;
@@ -70,12 +72,27 @@ export const VisualConceptLightboxModal: React.FC<VisualConceptLightboxModalProp
 
             <button
               type="button"
-              onClick={() => handleDownloadImage(concept.renderImageUrl, `${concept.conceptVersionCode}_render.jpg`)}
+              onClick={() =>
+                handleDownloadImage(
+                  concept.renderImageUrl,
+                  buildRoomSpecificFilename(room.id, concept.styleTheme, concept.renderImageUrl.endsWith('.svg') ? 'svg' : 'jpg')
+                )
+              }
               className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition flex items-center gap-1.5 border border-slate-700 cursor-pointer"
-              title="Download high-resolution 3D visual concept render"
+              title="Download room-specific 3D visual concept render"
             >
               <Download className="w-3.5 h-3.5 text-slate-300" />
-              <span>Download Render</span>
+              <span>Download Room Render</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={triggerDownloadVilla253Dxf}
+              className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
+              title="Download Editable AutoCAD DXF (8 Layers)"
+            >
+              <FileCode2 className="w-3.5 h-3.5" />
+              <span>Editable DXF</span>
             </button>
 
             <button
@@ -102,49 +119,41 @@ export const VisualConceptLightboxModal: React.FC<VisualConceptLightboxModalProp
                 />
                 <div className="absolute top-3 left-3 px-2.5 py-1 rounded bg-black/70 backdrop-blur-md text-amber-300 text-xs font-mono font-bold border border-amber-400/30 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  <span>3D PHOTOREALISTIC CONCEPT RENDER</span>
+                  <span>3D PHOTOREALISTIC CONCEPT RENDER ({room.lengthFt}&apos; × {room.widthFt}&apos;)</span>
                 </div>
                 <div className="absolute bottom-3 right-3">
                   <button
                     type="button"
-                    onClick={() => handleDownloadImage(concept.renderImageUrl, `${concept.conceptVersionCode}_render.jpg`)}
+                    onClick={() =>
+                      handleDownloadImage(
+                        concept.renderImageUrl,
+                        buildRoomSpecificFilename(room.id, concept.styleTheme, concept.renderImageUrl.endsWith('.svg') ? 'svg' : 'jpg')
+                      )
+                    }
                     className="px-3 py-1.5 rounded bg-black/80 hover:bg-black text-white text-xs font-semibold backdrop-blur-md flex items-center gap-1.5 border border-white/20 transition cursor-pointer"
                   >
                     <Download className="w-3.5 h-3.5" />
-                    <span>Save Image</span>
+                    <span>Save Room Render</span>
                   </button>
                 </div>
               </div>
 
               {/* Design Rationale */}
               <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 text-xs text-slate-300 leading-relaxed">
-                <strong className="text-white block mb-1">Architectural Design Rationale:</strong>
+                <strong className="text-white block mb-1">Architectural Design Rationale (Wall-Marking R0 Verified):</strong>
                 {concept.designRationale}
               </div>
             </div>
 
-            {/* Side-by-Side Measured 2D Layout Plan (5 Cols) */}
+            {/* Side-by-Side Measured 2D Vector CAD Plan (5 Cols) */}
             <div className="lg:col-span-5 space-y-2 flex flex-col">
-              <div className="relative rounded-xl overflow-hidden border border-slate-700 bg-slate-950 aspect-video group shadow-lg">
-                <img
-                  src={concept.verified2DLayoutUrl}
-                  alt="Verified 2D CAD Plan"
-                  className="w-full h-full object-cover opacity-95 hover:opacity-100 transition"
+              <div className="relative rounded-xl overflow-hidden border border-slate-700 bg-slate-950 shadow-lg">
+                <Villa253VectorCadPreview
+                  roomId={room.id}
+                  compact={true}
+                  showLayerControls={false}
+                  showDownloadBar={true}
                 />
-                <div className="absolute top-3 left-3 px-2.5 py-1 rounded bg-black/70 backdrop-blur-md text-emerald-300 text-xs font-mono font-bold border border-emerald-400/30 flex items-center gap-1.5">
-                  <Layers className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>VERIFIED 2D ARCHITECTURAL CAD</span>
-                </div>
-                <div className="absolute bottom-3 right-3">
-                  <button
-                    type="button"
-                    onClick={() => handleDownloadImage(concept.verified2DLayoutUrl, `${concept.conceptVersionCode}_2D_plan.jpg`)}
-                    className="px-3 py-1.5 rounded bg-black/80 hover:bg-black text-white text-xs font-semibold backdrop-blur-md flex items-center gap-1.5 border border-white/20 transition cursor-pointer"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>Save 2D CAD</span>
-                  </button>
-                </div>
               </div>
 
               {/* Room Specifications & Material Summary */}
@@ -160,7 +169,7 @@ export const VisualConceptLightboxModal: React.FC<VisualConceptLightboxModalProp
                   </div>
                   <div className="flex items-center justify-between text-[11px] pt-1">
                     <span className="text-slate-400">Circulation Clearance:</span>
-                    <strong className="text-sky-300 font-mono">Min 3.2ft Passage Guaranteed</strong>
+                    <strong className="text-sky-300 font-mono">Min {layout?.minClearancePassageFt || 3.5}ft Passage Guaranteed</strong>
                   </div>
                 </div>
 
@@ -191,63 +200,68 @@ export const VisualConceptLightboxModal: React.FC<VisualConceptLightboxModalProp
             </div>
           </div>
 
-          {/* Reference Images Quick Selector Strip */}
-          <div className="pt-3 border-t border-slate-800 space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-amber-300 flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
-                <Camera className="w-3.5 h-3.5 text-amber-400" />
-                <span>Reference Images Applied to This Floor Plan (Click to Switch View):</span>
-              </span>
-              <span className="text-[10px] text-slate-400">
-                {VILLA_253_ALL_REFERENCE_IMAGES.length} Project References Available
-              </span>
-            </div>
+          {/* Room-Specific Reference Images Quick Selector Strip */}
+          {(() => {
+            const roomRefs = getReferenceImagesForRoom(room.id, room.name);
+            return (
+              <div className="pt-3 border-t border-slate-800 space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-amber-300 flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
+                    <Camera className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Room-Specific Reference Visuals for {room.name} (De-Duplicated):</span>
+                  </span>
+                  <span className="text-[10px] text-slate-400">
+                    {roomRefs.length} Verified Room Reference{roomRefs.length === 1 ? '' : 's'}
+                  </span>
+                </div>
 
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
-              {VILLA_253_ALL_REFERENCE_IMAGES.map((refImg) => {
-                const isActive = concept.renderImageUrl === refImg.imageUrl;
-                return (
-                  <button
-                    key={refImg.id}
-                    type="button"
-                    onClick={() => onApplyReferenceImage?.(refImg)}
-                    className={`shrink-0 w-44 rounded-xl border text-left overflow-hidden transition-all duration-150 group cursor-pointer bg-slate-950 ${
-                      isActive 
-                        ? 'border-amber-400 ring-2 ring-amber-400/40 shadow-lg' 
-                        : 'border-slate-800 hover:border-slate-700 hover:bg-slate-900'
-                    }`}
-                  >
-                    <div className="relative aspect-video bg-black overflow-hidden">
-                      <img
-                        src={refImg.imageUrl}
-                        alt={refImg.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                      />
-                      {isActive && (
-                        <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-emerald-600/90 text-white text-[9px] font-mono font-bold flex items-center gap-1">
-                          <Check className="w-2.5 h-2.5" />
-                          <span>ACTIVE</span>
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+                  {roomRefs.map((refImg) => {
+                    const isActive = concept.renderImageUrl === refImg.imageUrl;
+                    return (
+                      <button
+                        key={refImg.id}
+                        type="button"
+                        onClick={() => onApplyReferenceImage?.(refImg)}
+                        className={`shrink-0 w-52 rounded-xl border text-left overflow-hidden transition-all duration-150 group cursor-pointer bg-slate-950 ${
+                          isActive 
+                            ? 'border-amber-400 ring-2 ring-amber-400/40 shadow-lg' 
+                            : 'border-slate-800 hover:border-slate-700 hover:bg-slate-900'
+                        }`}
+                      >
+                        <div className="relative aspect-video bg-black overflow-hidden">
+                          <img
+                            src={refImg.imageUrl}
+                            alt={refImg.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                          />
+                          {isActive && (
+                            <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-emerald-600/90 text-white text-[9px] font-mono font-bold flex items-center gap-1">
+                              <Check className="w-2.5 h-2.5" />
+                              <span>ACTIVE</span>
+                            </div>
+                          )}
+                          {refImg.cadDimensionReference && (
+                            <div className="absolute bottom-1 right-1 px-1 py-0.5 rounded bg-black/80 text-amber-300 text-[8px] font-mono">
+                              {refImg.cadDimensionReference}
+                            </div>
+                          )}
                         </div>
-                      )}
-                      {refImg.cameraHotspot && (
-                        <div className="absolute bottom-1 right-1 px-1 py-0.5 rounded bg-black/80 text-amber-300 text-[8px] font-mono">
-                          {refImg.cameraHotspot.cameraLabel.split(' ')[0]}
+                        <div className="p-2">
+                          <div className="text-[10px] font-bold text-white truncate group-hover:text-amber-300">
+                            {refImg.title}
+                          </div>
+                          <div className="text-[9px] text-slate-400 truncate mt-0.5">
+                            {refImg.subtitle}
+                          </div>
                         </div>
-                      )}
-                    </div>
-                    <div className="p-2">
-                      <div className="text-[10px] font-bold text-white truncate group-hover:text-amber-300">
-                        {refImg.title}
-                      </div>
-                      <div className="text-[9px] text-slate-400 truncate mt-0.5">
-                        {refImg.category.replace(/_/g, ' ')}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </div>
     </div>

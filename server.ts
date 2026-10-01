@@ -23,8 +23,15 @@ import {
 } from './src/server/geminiService';
 import { 
   analyzeFloorPlanAndGenerateOptions, 
-  generatePhotorealisticInteriorRender 
+  generatePhotorealisticInteriorRender,
+  generateInteriorConceptRender,
+  generateAllVilla253RoomImages
 } from './src/server/interiorRenderEngine';
+import {
+  generateVilla253EditableDxf,
+  generateVilla253SourcePdfBytes,
+  generateVilla253VectorCadSvg
+} from './src/utils/villa253CadDataAndDxf';
 import { getAlternativePackages, getValueEngineeringOptions } from './src/server/syntheticDemo';
 import { UserSession, MasterRateItem, BOQItem, BOQRevision, ProjectRecord, CustomerRequirement, SystemCapabilityReport, CustomerQuotation } from './src/types/erp';
 
@@ -1224,77 +1231,53 @@ export async function createApp(isServerless: boolean = false) {
     res.status(201).json(quotation);
   });
 
-  // --- 8B. 2-Step Spatial AI & Interior Design Studio Endpoints ---
-  const spatialSessionsStore: Record<string, any> = {};
-
-  app.get('/api/projects/:id/spatial-studio', (req: Request, res: Response) => {
-    const projId = req.params.id;
-    if (spatialSessionsStore[projId]) {
-      return res.json(spatialSessionsStore[projId]);
-    }
-    // Return null or 404 to let frontend hydrate with pre-calibrated session
-    res.status(404).json({ error: 'No stored spatial session for this project ID.' });
+  // --- 8B. Villa 253 Authoritative CAD (DXF / PDF / Vector SVG) & Room-Specific Render Endpoints ---
+  app.get(['/api/cad/villa253.dxf', '/api/cad/Villa253_FloorPlan_Editable_R0.dxf'], (_req: Request, res: Response) => {
+    const dxf = generateVilla253EditableDxf();
+    res.setHeader('Content-Type', 'application/dxf; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="Villa253_FloorPlan_Editable_R0.dxf"');
+    res.send(dxf);
   });
 
-  app.put('/api/projects/:id/spatial-studio', (req: Request, res: Response) => {
-    const user = getUserFromReq(req);
-    const projId = req.params.id;
-    spatialSessionsStore[projId] = {
-      ...req.body,
-      updatedAt: new Date().toISOString()
-    };
-    dbService.logAudit(
-      user,
-      'UPDATE_SPATIAL_STUDIO',
-      'PROJECT',
-      projId,
-      `Updated spatial layout & visual concepts for project ${projId}`
-    );
-    res.json(spatialSessionsStore[projId]);
+  app.get(['/api/cad/villa253.pdf', '/api/cad/VILLA_253_WALL_MARKING_10_10_24_REV0.pdf'], (_req: Request, res: Response) => {
+    const pdfBytes = generateVilla253SourcePdfBytes();
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename="VILLA_253_WALL_MARKING_10_10_24_REV0.pdf"');
+    res.send(Buffer.from(pdfBytes));
   });
 
-  app.post('/api/projects/:id/spatial-studio/revise-feedback', async (req: Request, res: Response) => {
+  app.get('/api/cad/villa253.svg', (req: Request, res: Response) => {
+    const activeRoomId = typeof req.query.roomId === 'string' ? req.query.roomId : undefined;
+    const svg = generateVilla253VectorCadSvg({ activeRoomId });
+    res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
+    res.send(svg);
+  });
+
+  app.post('/api/spatial-studio/generate-render', async (req: Request, res: Response) => {
     try {
-      const { previousConcept, clientFeedbackText, room, lockedLayout } = req.body;
-      const revisedVersion = await reviseConceptWithClientFeedback(
-        previousConcept,
-        clientFeedbackText,
-        room,
-        lockedLayout
-      );
-      res.json(revisedVersion);
+      const result = await generateInteriorConceptRender(req.body);
+      res.json(result);
     } catch (err: any) {
-      console.error('Error revising concept with feedback:', err);
-      res.status(500).json({ error: err.message || 'Failed to revise concept.' });
+      res.status(500).json({ error: err.message || 'Failed to generate room-specific interior render.' });
     }
   });
 
-  app.post('/api/projects/:id/spatial-studio/link-boq', (req: Request, res: Response) => {
+  app.post('/api/spatial-studio/generate-all-renders', async (req: Request, res: Response) => {
     try {
-      const user = getUserFromReq(req);
-      const project = dbService.getProjectById(req.params.id);
-      if (!project) return res.status(404).json({ error: 'Project not found' });
-
-      const activeRev = project.revisions.find(r => r.id === project.activeRevisionId) || project.revisions[0];
-      if (!activeRev) return res.status(400).json({ error: 'No active BOQ revision found' });
-
-      // Add audit log
-      dbService.logAudit(
-        user,
-        'LINK_SPATIAL_CONCEPTS_TO_BOQ',
-        'BOQ_REVISION',
-        activeRev.id,
-        `Synchronized interior concept finishes directly into BOQ planning lines for ${project.title}`
-      );
-
+      const { styleTheme, cctKelvin, customPromptNotes } = req.body || {};
+      const resultsByRoom = await generateAllVilla253RoomImages({
+        styleTheme,
+        cctKelvin,
+        customPromptNotes
+      });
       res.json({
         success: true,
-        boqRevisionId: activeRev.id,
-        itemsAdded: 5,
-        message: 'Spatial design finishes successfully linked to ERP BOQ.'
+        roomsCount: Object.keys(resultsByRoom).length,
+        resultsByRoom,
+        generatedAt: new Date().toISOString()
       });
     } catch (err: any) {
-      res.status(500).json({ error: err.message || 'Failed to link finishes to BOQ.' });
+      res.status(500).json({ error: err.message || 'Failed to generate all Villa 253 room images.' });
     }
   });
 

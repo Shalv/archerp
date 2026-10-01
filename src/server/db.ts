@@ -40,6 +40,7 @@ import {
 } from '../types/erp';
 import { TwoStepSpatialDesignSession } from '../types/floorplanSpatial';
 import { INITIAL_2BHK_SPATIAL_SESSION } from '../data/floorplanSpatialData';
+import { VILLA_253_SPATIAL_SESSION } from '../data/villa253BlueprintData';
 import { DEFAULT_COMPANY_FINANCE_SETUP } from '../data/defaultCompanySetup';
 import { DEFAULT_MASTER_RATES } from './mockMasters';
 import { 
@@ -1074,87 +1075,24 @@ class DatabaseService {
   // --- 2-Step Spatial AI Design Session Methods ---
   public getSpatialSession(projectId: string): TwoStepSpatialDesignSession {
     this.db.spatialSessions ||= {};
-    if (this.db.spatialSessions[projectId]) {
-      return this.db.spatialSessions[projectId];
+    const existing = this.db.spatialSessions[projectId];
+    if (
+      existing &&
+      existing.planGeometry?.planVersion === 'VILLA-253-REV0' &&
+      (existing.planGeometry?.rooms?.length || 0) >= 7 &&
+      (existing.conceptVersions?.length || 0) >= 7
+    ) {
+      return existing;
     }
 
-    const project = this.getProjectById(projectId);
-    // If it's the demo project PROJ-SKYLINE-1402, use the pre-configured rich session
-    if (projectId === 'PROJ-SKYLINE-1402' || !project) {
-      this.db.spatialSessions[projectId] = JSON.parse(JSON.stringify(INITIAL_2BHK_SPATIAL_SESSION));
-      this.persist();
-      return this.db.spatialSessions[projectId];
-    }
-
-    // Initialize clean session for new project
-    const newSession: TwoStepSpatialDesignSession = {
-      projectId: project.id,
-      projectTitle: project.title,
-      customerInput: {
-        floorPlanFileName: `${project.projectCode}_FloorPlan_Upload.pdf`,
-        floorPlanFileUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
-        fileType: 'PDF',
-        uploadDate: new Date().toISOString().split('T')[0],
-        scaleText: '1:50 Architectural Scale',
-        isScaleVerified: false,
-        siteLocation: `${project.siteAddress}, ${project.city}`,
-        propertyType: project.projectType === 'RESIDENTIAL' ? '2BHK_APARTMENT' : '3BHK_APARTMENT',
-        totalCarpetAreaSqFt: project.carpetAreaSqFt || 850,
-        roomsToDesign: ['Living & Dining', 'Master Bedroom', 'Bedroom 2 / Study', 'Kitchen'],
-        approximateBudget: project.estimatedBudget || 1800000,
-        preferredStyle: 'Modern Warm Interior',
-        referenceImages: [
-          {
-            id: 'REF-01',
-            title: 'Modern Warm Palette',
-            imageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
-            tags: ['Warm Teak', 'Fluted Panels', 'Boucle Fabric']
-          }
-        ],
-        fixedRequirements: [
-          'Lots of concealed storage without crowding spaces',
-          'Dedicated work desk in second bedroom',
-          'Strict 3.0ft door clearance paths'
-        ],
-        siteSurveyStatus: 'PENDING_SURVEY'
-      },
-      planGeometry: {
-        planVersion: 'FP-v1.0-DRAFT',
-        verifiedScale: '1:50 Metric Scale',
-        isDesignerVerified: false,
-        rooms: [
-          {
-            id: 'ROOM-1',
-            name: 'Living & Dining Room',
-            roomType: 'LIVING_DINING',
-            lengthFt: 20,
-            widthFt: 12,
-            heightFt: 9.5,
-            carpetAreaSqFt: 240,
-            doors: [
-              { id: 'D1', wall: 'EAST', widthFt: 3.5, swingDirection: 'INWARD_LEFT', clearanceFt: 3.5, isClearanceMet: true },
-              { id: 'D2', wall: 'WEST', widthFt: 6.0, swingDirection: 'SLIDING', clearanceFt: 3.0, isClearanceMet: true }
-            ],
-            windows: [
-              { id: 'W1', wall: 'WEST', widthFt: 8.0, sillHeightFt: 0.5, lintelHeightFt: 8.5, isDaylightBlocked: false }
-            ],
-            structuralColumns: [],
-            isVerifiedByDesigner: false
-          }
-        ]
-      },
-      activeRoomId: 'ROOM-1',
-      layoutOptionsByRoom: {},
-      selectedLayoutIdByRoom: {},
-      conceptVersions: [],
-      activeConceptVersionId: '',
-      isBoqLinked: false,
-      updatedAt: new Date().toISOString()
-    };
-
-    this.db.spatialSessions[projectId] = newSession;
+    // Hydrate with authoritative Villa 253 Wall Marking R0 7-room spatial session
+    const calibratedSession: TwoStepSpatialDesignSession = JSON.parse(
+      JSON.stringify(VILLA_253_SPATIAL_SESSION)
+    );
+    calibratedSession.projectId = projectId || 'PROJ-VILLA-253';
+    this.db.spatialSessions[projectId] = calibratedSession;
     this.persist();
-    return newSession;
+    return this.db.spatialSessions[projectId];
   }
 
   public saveSpatialSession(user: UserSession, session: TwoStepSpatialDesignSession): TwoStepSpatialDesignSession {

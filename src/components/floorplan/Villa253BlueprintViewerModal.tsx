@@ -13,13 +13,21 @@ import {
   Table,
   ArrowRight,
   Eye,
-  Info
+  Info,
+  Download,
+  FileCode2
 } from 'lucide-react';
 import { 
   VILLA_253_SCHEDULE, 
   Villa253DoorWindowScheduleItem,
   VILLA_253_ROOMS
 } from '../../data/villa253BlueprintData';
+import { Villa253VectorCadPreview } from './Villa253VectorCadPreview';
+import {
+  VILLA_253_CAD_LAYERS,
+  triggerDownloadVilla253Dxf,
+  triggerDownloadVilla253Pdf
+} from '../../utils/villa253CadDataAndDxf';
 
 interface Villa253BlueprintViewerModalProps {
   isOpen: boolean;
@@ -32,7 +40,7 @@ export const Villa253BlueprintViewerModal: React.FC<Villa253BlueprintViewerModal
   onClose,
   onSelectRoom
 }) => {
-  const [activeTab, setActiveTab] = useState<'GROUND' | 'FIRST' | 'SCHEDULE' | 'SECTIONS'>('GROUND');
+  const [activeTab, setActiveTab] = useState<'GROUND' | 'FIRST' | 'SCHEDULE' | 'SECTIONS' | 'CAD_DXF' | 'PDF_DOCS'>('GROUND');
   const [filterType, setFilterType] = useState<string>('ALL');
 
   if (!isOpen) return null;
@@ -75,12 +83,30 @@ export const Villa253BlueprintViewerModal: React.FC<Villa253BlueprintViewerModal
             </div>
           </div>
 
-          <button 
-            onClick={onClose}
-            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={triggerDownloadVilla253Dxf}
+              className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors"
+              title="Download Editable AutoCAD DXF (8 Layers)"
+            >
+              <FileCode2 className="w-3.5 h-3.5" />
+              <span>Download Editable DXF</span>
+            </button>
+            <button
+              onClick={triggerDownloadVilla253Pdf}
+              className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors"
+              title="Download Authoritative Villa 253 Wall Marking R0 PDF"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Source R0 PDF</span>
+            </button>
+            <button 
+              onClick={onClose}
+              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Navigation Tabs */}
@@ -126,6 +152,28 @@ export const Villa253BlueprintViewerModal: React.FC<Villa253BlueprintViewerModal
             >
               <Table className="w-3.5 h-3.5" />
               Door & Window Schedule ({VILLA_253_SCHEDULE.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('CAD_DXF')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
+                activeTab === 'CAD_DXF'
+                  ? 'bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/20'
+                  : 'text-emerald-300 hover:bg-slate-800 hover:text-white border border-emerald-500/30'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5" />
+              8-Layer Vector CAD &amp; DXF
+            </button>
+            <button
+              onClick={() => setActiveTab('PDF_DOCS')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
+                activeTab === 'PDF_DOCS'
+                  ? 'bg-blue-500 text-white font-bold shadow-md shadow-blue-500/20'
+                  : 'text-blue-300 hover:bg-slate-800 hover:text-white border border-blue-500/30'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5" />
+              Source PDF &amp; CAD Logic Docs
             </button>
           </div>
 
@@ -427,6 +475,129 @@ export const Villa253BlueprintViewerModal: React.FC<Villa253BlueprintViewerModal
                       ))}
                     </tbody>
                   </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 5: 8-LAYER VECTOR CAD & EDITABLE DXF */}
+          {activeTab === 'CAD_DXF' && (
+            <div className="space-y-4">
+              <Villa253VectorCadPreview
+                roomId="ROOM-V253-LIV-01"
+                showLayerControls={true}
+                showDownloadBar={true}
+                onSelectRoom={onSelectRoom}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                {VILLA_253_CAD_LAYERS.map(layer => (
+                  <div
+                    key={layer.id}
+                    className="p-3 rounded-xl bg-slate-950/90 border border-slate-800 flex flex-col justify-between"
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <span className="font-mono text-xs font-bold text-white flex items-center gap-1.5">
+                        <span
+                          className="w-2.5 h-2.5 rounded-full inline-block"
+                          style={{ backgroundColor: layer.colorHex }}
+                        />
+                        {layer.dxfLayerName}
+                      </span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-900 text-slate-400">
+                        ACI {layer.aciColor}
+                      </span>
+                    </div>
+                    <div className="text-xs font-semibold text-slate-200">{layer.label}</div>
+                    <p className="text-[11px] text-slate-400 mt-1">{layer.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 6: SOURCE PDF & CAD/IMAGE LOGIC DOCUMENTATION */}
+          {activeTab === 'PDF_DOCS' && (
+            <div className="space-y-5">
+              {/* Important CAD Authority Notice Banner */}
+              <div className="p-4 rounded-xl bg-amber-950/40 border border-amber-500/40 text-amber-100 space-y-2">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <h3 className="text-sm font-bold text-amber-300 flex items-center gap-2">
+                    <Info className="w-4 h-4" />
+                    Important CAD &amp; Construction Authority Distinction
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={triggerDownloadVilla253Dxf}
+                      className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5"
+                    >
+                      <FileCode2 className="w-3.5 h-3.5" />
+                      Download Villa253_FloorPlan_Editable_R0.dxf
+                    </button>
+                    <button
+                      onClick={triggerDownloadVilla253Pdf}
+                      className="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      Download Source R0 PDF
+                    </button>
+                  </div>
+                </div>
+                <p className="text-xs leading-relaxed text-amber-100/90">
+                  The editable DXF (<code className="text-amber-300 font-mono">Villa253_FloorPlan_Editable_R0.dxf</code>) is a <strong>dimension-driven working CAD reconstruction</strong> from the supplied Villa 253 Wall Marking Drawing R0 (dated 10-10-24) with 8 separate layers (Walls, Doors, Windows, Staircase, Decks/Balconies, Dimensions, Text, Notes) rather than pretending a raster image is a CAD file. It is not a certified construction DWG — the <strong>original architectural PDF remains the construction authority</strong> and the DXF should be verified by the project architect/CAD operator before site execution.
+                </p>
+              </div>
+
+              {/* Embedded PDF Preview + Logic Summary */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex flex-col">
+                  <div className="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+                    <span className="text-xs font-bold text-white flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-blue-400" />
+                      Authoritative Source PDF (VILLA_253_WALL_MARKING_10_10_24_REV0.pdf)
+                    </span>
+                    <a
+                      href="/api/cad/villa253.pdf"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[11px] text-blue-400 hover:underline flex items-center gap-1"
+                    >
+                      Open PDF <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                  <iframe
+                    src="/api/cad/villa253.pdf"
+                    title="Villa 253 Wall Marking Drawing R0 PDF"
+                    className="w-full h-[420px] bg-slate-900"
+                  />
+                </div>
+
+                <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3 overflow-y-auto max-h-[465px]">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400">
+                    Summary of CAD &amp; Room Image Logic Fixes Applied
+                  </h4>
+                  <ul className="space-y-2 text-xs text-slate-300">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <span><strong>Removed Wildcard ALL Image Mapping:</strong> Eliminated the <code className="text-amber-300">ALL</code> room tag that caused the same exterior/living room visuals to repeat across different rooms.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <span><strong>Corrected Canonical Room IDs:</strong> Synchronized <code className="text-amber-300">ROOM-V253-LIV-01</code> (25&apos;4&quot;×19&apos;), <code className="text-amber-300">ROOM-V253-BED1-01</code> (14&apos;0&quot;×19&apos;), <code className="text-amber-300">ROOM-V253-BED2-01</code> (18&apos;11&quot;×19&apos;), <code className="text-amber-300">ROOM-V253-BED3-01</code> (20&apos;8&quot;×19&apos;), <code className="text-amber-300">ROOM-V253-KIT-01</code> (14&apos;6&quot;×9&apos;), <code className="text-amber-300">ROOM-V253-STAIR-01</code> (7&apos;6&quot;×19&apos;), and <code className="text-amber-300">ROOM-V253-GAZEBO-01</code> (24&apos;×18&apos;).</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <span><strong>Strict Image De-Duplication &amp; Room-Specific Fallback:</strong> Added URL de-duplication and removed the fallback that displayed a living-room render for bedrooms, kitchen, or staircase.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <span><strong>Source Floor-Plan &amp; Dimension-Driven Renders:</strong> Interior generation prompts and room filenames are now deterministically anchored to the Villa 253 R0 wall-marking dimensions and schedule marks.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <span><strong>Vector Floor-Plan Preview &amp; 8-Layer Editable DXF:</strong> Replaced misleading raster &ldquo;CAD&rdquo; thumbnails with a true vector floor-plan preview and downloadable AutoCAD DXF with 8 architectural layers.</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>

@@ -2496,9 +2496,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 350000,
       budgetActualEstimated: 310000,
-      renderImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
-      verified2DLayoutUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
-      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
+      renderImageUrl: '/assets/images/villa253_kitchen_utility_14x9_r0.svg',
+      verified2DLayoutUrl: '/assets/images/villa253_cad_blueprint_r0.svg',
+      moodboardImageUrl: '/assets/images/villa253_kitchen_utility_14x9_r0.svg',
       designRationale: 'Parallel layout optimizes the golden cooking triangle between sink, hob, and refrigerator. Central 3.5ft clearance provides effortless food preparation without bottlenecking.',
       lightingPlan: 'Under-cabinet 4000K CRI 95+ prep task lighting + warm 2700K pendant drops over breakfast bar.',
       colorPalette: ['#FFFFFF', '#C5A880', '#2D3748', '#E2E8F0', '#1A202C'],
@@ -2542,9 +2542,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 350000,
       budgetActualEstimated: 325000,
-      renderImageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
-      verified2DLayoutUrl: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
-      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
+      renderImageUrl: '/assets/images/villa253_kitchen_utility_14x9_r0.svg',
+      verified2DLayoutUrl: '/assets/images/villa253_cad_blueprint_r0.svg',
+      moodboardImageUrl: '/assets/images/villa253_kitchen_utility_14x9_r0.svg',
       designRationale: 'L-shaped workflow provides maximum continuous counter surface and isolates the grocery pantry in a single high-capacity tower.',
       lightingPlan: 'Recessed anti-glare ceiling spotlights + under-shelf LED strip.',
       colorPalette: ['#FAF8F5', '#A0AEC0', '#4A5568', '#CBD5E0', '#2D3748'],
@@ -2588,9 +2588,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 350000,
       budgetActualEstimated: 335000,
-      renderImageUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
-      verified2DLayoutUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
-      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
+      renderImageUrl: '/assets/images/villa253_kitchen_utility_14x9_r0.svg',
+      verified2DLayoutUrl: '/assets/images/villa253_cad_blueprint_r0.svg',
+      moodboardImageUrl: '/assets/images/villa253_kitchen_utility_14x9_r0.svg',
       designRationale: 'Seamless monolithic minimalism. The backlit glass vitrine becomes a glowing backdrop visible from the dining room during dinner hosting.',
       lightingPlan: 'Warm 3000K vitrine internal glow + recessed ceiling spotlights.',
       colorPalette: ['#1A202C', '#E2E8F0', '#C5A880', '#718096', '#FFFFFF'],
@@ -2609,7 +2609,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
 
 /**
  * Returns the exact matched visual concept for any room and layout option.
- * If not in existing session, returns the pre-calibrated concept version from the architectural library.
+ * Strictly maps room IDs/names to their room-specific Villa 253 visual asset (never falling back to a living room image for a bedroom/kitchen/staircase).
  */
 export function getCalibratedConceptForLayout(
   room: ExtractedRoomGeometry,
@@ -2617,54 +2617,62 @@ export function getCalibratedConceptForLayout(
   sessionConceptVersions?: VisualConceptVersion[]
 ): VisualConceptVersion {
   if (sessionConceptVersions && sessionConceptVersions.length > 0) {
-    const found = [...sessionConceptVersions].reverse().find(
-      c => (c.roomId === room.id || c.roomId === room.roomType) && 
-           (c.layoutOptionId === layout.id || c.layoutOptionName === layout.title)
+    // 1. Exact room + layout match
+    const exactLayoutMatch = [...sessionConceptVersions].reverse().find(
+      c => c.roomId === room.id && (c.layoutOptionId === layout.id || c.layoutOptionName === layout.title)
     );
-    if (found) return found;
+    if (exactLayoutMatch) return exactLayoutMatch;
+
+    // 2. Room match (most recent concept for this specific room)
+    const roomMatch = [...sessionConceptVersions].reverse().find(c => c.roomId === room.id);
+    if (roomMatch) return roomMatch;
   }
 
-  // Check initial library (newest first)
+  // Check initial library strictly by roomId + layout
   const libraryMatch = [...INITIAL_2BHK_SPATIAL_SESSION.conceptVersions].reverse().find(
-    c => (c.roomId === room.id || c.roomId === room.roomType) && 
-         (c.layoutOptionId === layout.id || c.layoutOptionName === layout.title)
+    c => c.roomId === room.id && (c.layoutOptionId === layout.id || c.layoutOptionName === layout.title)
   );
   if (libraryMatch) return libraryMatch;
 
-  // Fallback calibrated generation based on layout option code & priority theme
-  let renderUrl = '/assets/images/villa253_living_greatroom_1790833681710.jpg';
-  let cadUrl = '/assets/images/villa253_facade_exterior_1790833735467.jpg';
+  // Room-specific image resolution (NEVER falling back to living-room for bedrooms/kitchen/staircase/gazebo)
+  const rid = (room.id || '').toUpperCase();
+  const rname = (room.name || '').toUpperCase();
+  const rtype = (room.roomType || '').toUpperCase();
 
-  if (layout.priorityTheme === 'STORAGE_MAX') {
+  let renderUrl = '/assets/images/villa253_living_greatroom_1790833681710.jpg';
+  const cadUrl = '/assets/images/villa253_cad_blueprint_r0.svg';
+
+  if (rid.includes('BED3') || rname.includes('BEDROOM 3') || rname.includes('FIRST FLOOR')) {
+    renderUrl = '/assets/images/villa253_bedroom3_firstfloor_20x19_r0.svg';
+  } else if (rid.includes('BED2') || rname.includes('BEDROOM 2') || rname.includes('BAR DECK')) {
     renderUrl = '/assets/images/villa253_guest_suite_1790833711200.jpg';
-    cadUrl = '/assets/images/villa253_facade_exterior_1790833735467.jpg';
-  } else if (layout.priorityTheme === 'WFH_PRODUCTIVITY') {
+  } else if (rid.includes('BED1') || rname.includes('BEDROOM 1') || rname.includes('MASTER') || rtype.includes('MASTER')) {
+    renderUrl = '/assets/images/villa253_master_suite_1790833696550.jpg';
+  } else if (rid.includes('KIT') || rname.includes('KITCHEN') || rtype.includes('KITCHEN')) {
+    renderUrl = '/assets/images/villa253_kitchen_utility_14x9_r0.svg';
+  } else if (rid.includes('STAIR') || rname.includes('STAIR')) {
+    renderUrl = '/assets/images/villa253_staircase_core_7x19_r0.svg';
+  } else if (rid.includes('GAZEBO') || rname.includes('GAZEBO') || rtype === 'BALCONY') {
+    renderUrl = '/assets/images/villa253_gazebo_terrace_1790833723445.jpg';
+  } else if (rtype.includes('BEDROOM')) {
     renderUrl = '/assets/images/villa253_guest_suite_1790833711200.jpg';
-    cadUrl = '/assets/images/villa253_master_suite_1790833696550.jpg';
-  } else if (layout.priorityTheme === 'LUXURY_ENTERTAINING') {
-    renderUrl = '/assets/images/villa253_living_greatroom_1790833681710.jpg';
-    cadUrl = '/assets/images/villa253_facade_exterior_1790833735467.jpg';
   } else if (layout.priorityTheme === 'VASTU_COMPLIANT') {
     renderUrl = '/assets/images/villa253_living_modern_1790830799942.jpg';
-    cadUrl = '/assets/images/villa253_facade_exterior_1790833735467.jpg';
-  } else if (layout.priorityTheme === 'OPEN_LIVING') {
-    renderUrl = '/assets/images/villa253_living_greatroom_1790833681710.jpg';
-    cadUrl = '/assets/images/villa253_facade_exterior_1790833735467.jpg';
   }
 
-  const verCode = `VCP-${layout.optionCode}-${layout.priorityTheme.slice(0, 3)}`;
+  const verCode = `VCP-${layout.optionCode}-${room.id.replace(/[^A-Z0-9]/gi, '').slice(-5)}`;
 
   return {
-    id: `VCP-${layout.id}`,
+    id: `VCP-${room.id}-${layout.id}`,
     conceptVersionCode: verCode,
-    projectId: 'PROJ-SKYLINE-1402',
-    floorPlanVersion: 'FP-v2.1-VERIFIED',
+    projectId: 'PROJ-VILLA-253',
+    floorPlanVersion: 'VILLA-253-REV0',
     roomId: room.id,
     roomName: room.name,
     layoutOptionId: layout.id,
     layoutOptionName: layout.title,
     layoutSummary: layout.summary,
-    styleTheme: `Calibrated ${layout.title} Concept`,
+    styleTheme: `Calibrated ${room.name} (${room.lengthFt}' × ${room.widthFt}') — ${layout.title}`,
     materials: layout.furnitureItems.map((item, idx) => ({
       trade: item.category === 'SEATING' ? 'Loose Furniture' : item.category === 'STORAGE' || item.category === 'JOINERY' ? 'Architectural Joinery' : 'Loose Furniture',
       item: item.name,
@@ -2679,8 +2687,8 @@ export function getCalibratedConceptForLayout(
     budgetActualEstimated: layout.furnitureItems.reduce((acc, curr) => acc + curr.estimatedCost, 0) + 120000,
     renderImageUrl: renderUrl,
     verified2DLayoutUrl: cadUrl,
-    moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
-    designRationale: `Matched 3D visual concept and verified 2D CAD floor plan strictly respecting ${layout.title}. Guaranteed ${layout.minClearancePassageFt}ft clear circulation with zero doorway obstruction.`,
+    moodboardImageUrl: renderUrl,
+    designRationale: `Calibrated to Villa 253 Wall Marking R0 for ${room.name} (${room.lengthFt}ft × ${room.widthFt}ft, ${room.carpetAreaSqFt} sq.ft). Respects ${layout.title} with ${layout.minClearancePassageFt}ft minimum walk clearance.`,
     lightingPlan: 'Warm 2700K ambient cove lighting with directional task spotlights.',
     colorPalette: ['#FAF8F5', '#C5A880', '#4A3E37', '#938B83', '#E6DFD5'],
     clientFeedbackHistory: [],

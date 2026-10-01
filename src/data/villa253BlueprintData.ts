@@ -962,13 +962,177 @@ export const VILLA_253_LAYOUTS_BY_ROOM: Record<string, FurnitureLayoutOption[]> 
         }
       ]
     }
+  ],
+
+  'ROOM-V253-BED2-01': [
+    {
+      id: 'V253-LAY-BED2-01',
+      optionCode: 'LAYOUT_1',
+      title: 'Option A: East Bar-Deck & North Garden Suite',
+      tagline: '18\'11" × 19\'0" Suite with King Bed, 7\'9" × 9\'8" Wardrobe & SD6 Bar Deck Portal',
+      priorityTheme: 'OPEN_LIVING',
+      circulationScore: 95,
+      storageCapacityCuFt: 260,
+      minClearancePassageFt: 3.8,
+      doorwayConflictDetected: false,
+      windowLightBlocked: false,
+      summary: 'Calibrated to the 18\'11" × 19\'0" East Wing footprint. Maintains 3.8ft clear passage between the SD2 (12\'0") North Deck slider and SD6 (9\'0") East Bar Unit Deck slider.',
+      pros: ['Dual deck access (North 57\'2" deck + East 14\'0"×30\'10" Bar Deck)', 'Dedicated 7\'9" × 9\'8" recessed wardrobe vestibule', 'Direct access to 10\'4" × 9\'8" Toilet 2 via D3'],
+      cons: ['Media console offset to preserve SD6 9ft slider opening'],
+      whyItFitsOverall: 'Respects all 3 doorways (D1, SD2, SD6) and W5 window with 3.8ft minimum walk clearance.',
+      furnitureItems: [
+        {
+          id: 'V253-FUR-BED2-01',
+          name: 'King Teak & Cane Platform Bed with Acoustic Headboard',
+          category: 'BED',
+          widthFt: 6.5,
+          depthFt: 7.0,
+          heightFt: 3.4,
+          positionXPercent: 45,
+          positionYPercent: 48,
+          rotationDeg: 0,
+          clearanceDistanceFt: 4.0,
+          whyItFits: 'Centered in the 18\'11" × 19\'0" suite with unobstructed views toward North Deck (SD2) and East Bar Deck (SD6).',
+          catalogueCode: 'BED-B2-650',
+          materialRef: 'Seasoned CP Teak frame with woven rattan cane & linen upholstery',
+          estimatedCost: 148000
+        },
+        {
+          id: 'V253-FUR-BED2-02',
+          name: 'Recessed Wardrobe Joinery System (7\'9" × 9\'8" Vestibule)',
+          category: 'JOINERY',
+          widthFt: 7.75,
+          depthFt: 2.2,
+          heightFt: 9.5,
+          positionXPercent: 25,
+          positionYPercent: 85,
+          rotationDeg: 0,
+          clearanceDistanceFt: 4.2,
+          whyItFits: 'Installed inside the dedicated 7\'9" × 9\'8" dressing vestibule leading to Toilet 2 (D3).',
+          catalogueCode: 'WRD-B2-798',
+          materialRef: 'BWP Marine Ply with fluted teak louvers & concealed warm LED strips',
+          estimatedCost: 215000
+        }
+      ]
+    }
+  ],
+
+  'ROOM-V253-KIT-01': [
+    {
+      id: 'V253-LAY-KIT-01',
+      optionCode: 'LAYOUT_1',
+      title: 'Option A: Ergonomic Parallel Culinary Galley & Utility Spine',
+      tagline: '14\'6" × 9\'0" Kitchen + 9\'0" × 9\'8" Wet Utility + 5\'0" × 9\'8" Powder Room',
+      priorityTheme: 'STORAGE_MAX',
+      circulationScore: 94,
+      storageCapacityCuFt: 290,
+      minClearancePassageFt: 4.2,
+      doorwayConflictDetected: false,
+      windowLightBlocked: false,
+      summary: 'Engineered for the exact 14\'6" × 9\'0" kitchen footprint with parallel 2ft deep Statuario quartz counters leaving a 5\'0" central culinary work aisle and direct connection to the 9\'0" × 9\'8" utility.',
+      pros: ['Ergonomic work triangle between hob, sink & tall appliance bank', 'Seamless wet utility (9\'0" × 9\'8") segregation with W4 window', 'Discrete 5\'0" × 9\'8" Powder Room (D4 / W3)'],
+      cons: ['Breakfast counter integrated on dining threshold'],
+      whyItFitsOverall: 'Maximizes storage along the 14\'6" walls while preserving a generous 4.2ft–5.0ft central galley passage.',
+      furnitureItems: [
+        {
+          id: 'V253-FUR-KIT-01',
+          name: 'Parallel Modular Culinary Counter & Tall Appliance Bank (14\'6" Run)',
+          category: 'JOINERY',
+          widthFt: 14.5,
+          depthFt: 2.0,
+          heightFt: 7.5,
+          positionXPercent: 50,
+          positionYPercent: 20,
+          rotationDeg: 0,
+          clearanceDistanceFt: 4.5,
+          whyItFits: 'Runs full 14\'6" length of the North/South kitchen walls with Hafele soft-close tandem drawers.',
+          catalogueCode: 'KIT-MOD-146',
+          materialRef: '20mm Statuario Quartz countertop over BWP marine ply & walnut acrylic shutters',
+          estimatedCost: 385000
+        }
+      ]
+    }
+  ],
+
+  'ROOM-V253-BED3-01': [
+    {
+      id: 'V253-LAY-BED3-01',
+      optionCode: 'LAYOUT_1',
+      title: 'Option A: First-Floor Penthouse Suite & Dual Balcony Flow',
+      tagline: '20\'8" × 19\'0" Suite opening to 24\'4" × 4\'0" Front Balcony (SD1A) & Terrace (SD2A)',
+      priorityTheme: 'OPEN_LIVING',
+      circulationScore: 97,
+      storageCapacityCuFt: 310,
+      minClearancePassageFt: 4.0,
+      doorwayConflictDetected: false,
+      windowLightBlocked: false,
+      summary: 'Tailored to Villa 253\'s largest bedroom (20\'8" × 19\'0" on First Floor). Positions the king bed for panoramic views through SD1A (12\'0") to the 24\'4" × 4\'0" front balcony, with lounge seating near SD2A (10\'0") and ensuite Toilet 3 (9\'9" × 9\'2").',
+      pros: ['Unobstructed access to SD1A (12\'), SD2A (10\') and SD3A (8\') sliding portals', 'Private reading lounge within the 20\'8" span', 'Direct en-suite Toilet 3 (9\'9" × 9\'2") access via D2A'],
+      cons: ['Wardrobe aligned to East wall to keep all 3 balcony sliders clear'],
+      whyItFitsOverall: 'Uses the generous 20\'8" × 19\'0" (393 sq.ft) area to provide both a king sleeping zone and private upper lounge.',
+      furnitureItems: [
+        {
+          id: 'V253-FUR-BED3-01',
+          name: 'First-Floor Penthouse King Bed with Pitched Timber Headboard',
+          category: 'BED',
+          widthFt: 6.8,
+          depthFt: 7.2,
+          heightFt: 3.5,
+          positionXPercent: 48,
+          positionYPercent: 45,
+          rotationDeg: 0,
+          clearanceDistanceFt: 4.2,
+          whyItFits: 'Faces SD1A (12\'0") slider and 24\'4" × 4\'0" North Balcony while clearing SD2A (10\'0").',
+          catalogueCode: 'BED-B3-208',
+          materialRef: 'Brushed Teak & Natural Linen Upholstered Frame',
+          estimatedCost: 172000
+        }
+      ]
+    }
+  ],
+
+  'ROOM-V253-STAIR-01': [
+    {
+      id: 'V253-LAY-STAIR-01',
+      optionCode: 'LAYOUT_1',
+      title: 'Option A: 21-Riser Dogleg Architectural Spine & Foyer Console',
+      tagline: '7\'6" × 19\'0" Core • 21 Risers (11" Tread / 6.25" Riser) • W2/W2A Double-Height Glass',
+      priorityTheme: 'OPEN_LIVING',
+      circulationScore: 98,
+      storageCapacityCuFt: 45,
+      minClearancePassageFt: 3.5,
+      doorwayConflictDetected: false,
+      windowLightBlocked: false,
+      summary: 'Preserves the exact 7\'6" × 19\'0" staircase core with two 3\'6" flight widths, 3\'6" × 7\'6" mid-landing adjacent to W2/W2A (5\'0" fixed glazing), and SD3 (5\'0" × 10\'3") North Deck portal.',
+      pros: ['Full compliance with 21-riser dogleg geometry (Tread 11", Riser 6.25")', 'Daylight flooding through W2 & W2A 5\'0" fixed glass', 'Direct North Deck threshold via SD3 (5\'0" × 10\'3")'],
+      cons: ['No bulky furniture placed in vertical circulation zone'],
+      whyItFitsOverall: 'Maintains 3\'6" clear flight width and landing clearances per Villa 253 Wall Marking R0.',
+      furnitureItems: [
+        {
+          id: 'V253-FUR-STAIR-01',
+          name: 'Sculptural Teak & Toughened Glass Balustrade with Step LEDs (21 Risers)',
+          category: 'JOINERY',
+          widthFt: 7.5,
+          depthFt: 19.0,
+          heightFt: 3.2,
+          positionXPercent: 50,
+          positionYPercent: 50,
+          rotationDeg: 0,
+          clearanceDistanceFt: 3.5,
+          whyItFits: 'Engineered specifically for the 7\'6" × 19\'0" dogleg core with 11" treads and 6.25" risers.',
+          catalogueCode: 'STR-BAL-21R',
+          materialRef: '2" Solid Burma Teak treads + 12mm Low-Iron Toughened Glass railing',
+          estimatedCost: 245000
+        }
+      ]
+    }
   ]
 };
 
 export const INITIAL_VILLA_253_CONCEPTS: VisualConceptVersion[] = [
   {
     id: 'VCP-V253-LIV-01',
-    conceptVersionCode: 'VCP-v1.0-V253',
+    conceptVersionCode: 'VCP-v1.0-V253-LIV',
     projectId: 'PROJ-VILLA-253',
     floorPlanVersion: 'VILLA-253-REV0',
     roomId: 'ROOM-V253-LIV-01',
@@ -1032,9 +1196,9 @@ export const INITIAL_VILLA_253_CONCEPTS: VisualConceptVersion[] = [
     budgetAllocated: 850000,
     budgetActualEstimated: 679600,
     renderImageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
-    verified2DLayoutUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
+    verified2DLayoutUrl: '/assets/images/villa253_cad_blueprint_r0.svg',
     moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
-    designRationale: 'Designed specifically according to Villa 253 blueprint page 1-2. Capitalizes on the 27\'0" × 10\'3" aluminum sliding doors (SD1) to integrate the 57\'2" × 9\'6" front deck into the living space. 8-seater dining table placed adjacent to kitchen pass with 3.8ft unhindered walk circulation.',
+    designRationale: 'Designed specifically according to Villa 253 Wall Marking R0 (10-10-24) Sheet 1/2. Capitalizes on the 27\'0" × 10\'3" aluminum sliding doors (SD1) to integrate the 57\'2" × 9\'6" front deck into the 25\'4" × 19\'0" living space.',
     lightingPlan: 'Warm 2700K concealed perimeter cove lighting + magnetic architectural downward spots + designer linear pendant over dining table.',
     colorPalette: ['#FAF7F2', '#D8CAB8', '#5E4028', '#A88947', '#E4DCD0'],
     clientFeedbackHistory: [],
@@ -1066,7 +1230,7 @@ export const INITIAL_VILLA_253_CONCEPTS: VisualConceptVersion[] = [
       },
       {
         trade: 'Walk-in Wardrobe',
-        item: 'Bespoke Smoked Glass & Warm Oak Walk-In Wardrobe (36 r.ft)',
+        item: 'Bespoke Smoked Glass & Warm Oak Walk-In Wardrobe (10\'2" × 11\'9" - 36 r.ft)',
         specification: '18mm BWP marine ply carcass with Hafele sensor warm LED profiles',
         catalogueCode: 'WRD-WIW-36',
         costPerUnit: 320000,
@@ -1078,11 +1242,185 @@ export const INITIAL_VILLA_253_CONCEPTS: VisualConceptVersion[] = [
     budgetAllocated: 600000,
     budgetActualEstimated: 485000,
     renderImageUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
-    verified2DLayoutUrl: '/assets/images/villa253_master_bedroom_1790830829821.jpg',
-    moodboardImageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
-    designRationale: 'Master Suite oriented towards private terrace deck (SD2). Features fluted oak acoustic wall with integrated warm backlighting, expansive walk-in wardrobe with glass vitrines, and effortless access to the 24ft long master bath (Toilet 1).',
+    verified2DLayoutUrl: '/assets/images/villa253_cad_blueprint_r0.svg',
+    moodboardImageUrl: '/assets/images/villa253_master_bedroom_1790830829821.jpg',
+    designRationale: 'Master Suite (14\'0" × 19\'0") oriented towards private 11\'6" × 4\'6" terrace deck (SD2 12\'0" × 10\'3"). Includes dedicated 10\'2" × 11\'9" walk-in wardrobe (SD7) and 6\'0" × 24\'9" Toilet 1 (D2).',
     lightingPlan: 'Warm 2700K concealed backlighting behind headboard + brass bedside reading sconces + internal wardrobe sensor lights.',
     colorPalette: ['#FAF7F2', '#D8CAB8', '#5E4028', '#A88947', '#E4DCD0'],
+    clientFeedbackHistory: [],
+    status: 'CLIENT_APPROVED',
+    createdAt: '2026-10-10T10:00:00Z',
+    updatedAt: '2026-10-10T10:00:00Z'
+  },
+  {
+    id: 'VCP-V253-BED2-01',
+    conceptVersionCode: 'VCP-v1.0-V253-BED2',
+    projectId: 'PROJ-VILLA-253',
+    floorPlanVersion: 'VILLA-253-REV0',
+    roomId: 'ROOM-V253-BED2-01',
+    roomName: 'Bedroom 2 & Bar Deck Suite',
+    layoutOptionId: 'V253-LAY-BED2-01',
+    layoutOptionName: 'Option A: East Bar-Deck & North Garden Suite',
+    layoutSummary: '18\'11" × 19\'0" East Suite opening to 14\'0" × 30\'10" Bar Deck (SD6) & North Deck (SD2) + 7\'9" × 9\'8" Wardrobe',
+    styleTheme: 'East-Wing Garden Suite (Teak Louvers, Terrazzo & Limewash Plaster)',
+    materials: [
+      {
+        trade: 'Bedroom 2 Suite Bed',
+        item: 'King Teak & Rattan Cane Platform Bed with Floating Side Tables',
+        specification: 'Seasoned CP Teak frame calibrated for the 18\'11" × 19\'0" suite',
+        catalogueCode: 'BED-B2-650',
+        costPerUnit: 148000,
+        unit: 'nos',
+        estimatedQuantity: 1,
+        totalCost: 148000
+      },
+      {
+        trade: 'Dressing Vestibule',
+        item: 'Louvered Teak Wardrobe in 7\'9" × 9\'8" Vestibule leading to Toilet 2 (10\'4" × 9\'8")',
+        specification: 'BWP Marine Ply with soft-close hinges and internal sensor lighting',
+        catalogueCode: 'WRD-B2-798',
+        costPerUnit: 215000,
+        unit: 'set',
+        estimatedQuantity: 1,
+        totalCost: 215000
+      }
+    ],
+    budgetAllocated: 480000,
+    budgetActualEstimated: 363000,
+    renderImageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
+    verified2DLayoutUrl: '/assets/images/villa253_cad_blueprint_r0.svg',
+    moodboardImageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
+    designRationale: 'Calibrated strictly to Bedroom 2 (18\'11" × 19\'0", 359 sq.ft) with dual sliding portals SD2 (12\'0" North Deck) and SD6 (9\'0" Bar Unit Deck 14\'0" × 30\'10").',
+    lightingPlan: 'Recessed warm 2700K architectural downlights + woven bedside pendant luminaires.',
+    colorPalette: ['#F5F2EB', '#C8B69E', '#6E472B', '#2C3539', '#D9CFC1'],
+    clientFeedbackHistory: [],
+    status: 'CLIENT_APPROVED',
+    createdAt: '2026-10-10T10:00:00Z',
+    updatedAt: '2026-10-10T10:00:00Z'
+  },
+  {
+    id: 'VCP-V253-KIT-01',
+    conceptVersionCode: 'VCP-v1.0-V253-KIT',
+    projectId: 'PROJ-VILLA-253',
+    floorPlanVersion: 'VILLA-253-REV0',
+    roomId: 'ROOM-V253-KIT-01',
+    roomName: 'Culinary Kitchen, Utility & Powder Wing',
+    layoutOptionId: 'V253-LAY-KIT-01',
+    layoutOptionName: 'Option A: Ergonomic Parallel Culinary Galley & Utility Spine',
+    layoutSummary: '14\'6" × 9\'0" Kitchen with Parallel Statuario Quartz Counters + 9\'0" × 9\'8" Utility + 5\'0" × 9\'8" Powder',
+    styleTheme: 'Bespoke Culinary Atelier (Statuario Quartz, Fluted Walnut & Cashmere Lacquer)',
+    materials: [
+      {
+        trade: 'Modular Kitchen Joinery',
+        item: 'Parallel 14\'6" × 9\'0" Modular Kitchen with Hafele Tandem Hardware & Tall Unit',
+        specification: 'BWP Marine Plywood carcass with anti-fingerprint matte acrylic & fluted walnut',
+        catalogueCode: 'KIT-MOD-146',
+        costPerUnit: 385000,
+        unit: 'set',
+        estimatedQuantity: 1,
+        totalCost: 385000
+      },
+      {
+        trade: 'Countertop & Utility',
+        item: '20mm Statuario Quartz Countertop + 9\'0" × 9\'8" Wet Utility Laundry Counter',
+        specification: 'Non-porous engineered quartz slab with double undermount sound-deadened sink',
+        catalogueCode: 'QTZ-STA-20',
+        costPerUnit: 135000,
+        unit: 'set',
+        estimatedQuantity: 1,
+        totalCost: 135000
+      }
+    ],
+    budgetAllocated: 600000,
+    budgetActualEstimated: 520000,
+    renderImageUrl: '/assets/images/villa253_kitchen_utility_14x9_r0.svg',
+    verified2DLayoutUrl: '/assets/images/villa253_cad_blueprint_r0.svg',
+    moodboardImageUrl: '/assets/images/villa253_kitchen_utility_14x9_r0.svg',
+    designRationale: 'Built around the exact 14\'6" × 9\'0" kitchen dimensions on the South-Central spine, linking directly to the 9\'0" × 9\'8" Utility room (W4 3\'0"×4\'0") and 5\'0" × 9\'8" Powder Room (D4 / W3).',
+    lightingPlan: '3000K CRI 97+ under-cabinet linear task LED profiles + recessed anti-glare ceiling spots.',
+    colorPalette: ['#F6F3EC', '#DED6C6', '#5C3A21', '#1E293B', '#94A3B8'],
+    clientFeedbackHistory: [],
+    status: 'CLIENT_APPROVED',
+    createdAt: '2026-10-10T10:00:00Z',
+    updatedAt: '2026-10-10T10:00:00Z'
+  },
+  {
+    id: 'VCP-V253-BED3-01',
+    conceptVersionCode: 'VCP-v1.0-V253-BED3',
+    projectId: 'PROJ-VILLA-253',
+    floorPlanVersion: 'VILLA-253-REV0',
+    roomId: 'ROOM-V253-BED3-01',
+    roomName: 'First Floor Bedroom 3 & Balconies',
+    layoutOptionId: 'V253-LAY-BED3-01',
+    layoutOptionName: 'Option A: First-Floor Penthouse Suite & Dual Balcony Flow',
+    layoutSummary: '20\'8" × 19\'0" First Floor Suite + 24\'4" × 4\'0" Front Balcony (SD1A) + 9\'9" × 9\'2" Toilet 3',
+    styleTheme: 'Elevated Pitched-Roof Suite (Exposed Timber Rafters, Brushed Teak & Panoramic Glazing)',
+    materials: [
+      {
+        trade: 'First Floor Suite Bed',
+        item: 'Penthouse King Platform Bed with Pitched-Ceiling Acoustic Paneling',
+        specification: 'Custom proportioned for the 20\'8" × 19\'0" (393 sq.ft) First Floor bedroom',
+        catalogueCode: 'BED-B3-208',
+        costPerUnit: 172000,
+        unit: 'nos',
+        estimatedQuantity: 1,
+        totalCost: 172000
+      },
+      {
+        trade: 'Wardrobe & Balcony Threshold',
+        item: 'Full-Height Teak & Fluted Glass Wardrobe + Weatherproof Balcony Decking (24\'4" × 4\'0")',
+        specification: 'Integrated with SD1A (12\'), SD2A (10\'), SD3A (8\') sliders and Toilet 3 (9\'9" × 9\'2")',
+        catalogueCode: 'WRD-B3-393',
+        costPerUnit: 248000,
+        unit: 'set',
+        estimatedQuantity: 1,
+        totalCost: 248000
+      }
+    ],
+    budgetAllocated: 550000,
+    budgetActualEstimated: 420000,
+    renderImageUrl: '/assets/images/villa253_bedroom3_firstfloor_20x19_r0.svg',
+    verified2DLayoutUrl: '/assets/images/villa253_cad_blueprint_r0.svg',
+    moodboardImageUrl: '/assets/images/villa253_bedroom3_firstfloor_20x19_r0.svg',
+    designRationale: 'Calibrated to Sheet 1/2 First Floor Plan: 20\'8" × 19\'0" Bedroom 3 with wrap-around 24\'4" × 4\'0" North Balcony (SD1A 12\'), 14\'10" × 4\'0" Side Balcony, and 9\'9" × 9\'2" Toilet 3 (D2A).',
+    lightingPlan: 'Warm 2700K rafter uplighting + recessed trimless spots + balcony step markers.',
+    colorPalette: ['#F3EFE6', '#D4C3AE', '#4A2C11', '#38BDF8', '#1E293B'],
+    clientFeedbackHistory: [],
+    status: 'CLIENT_APPROVED',
+    createdAt: '2026-10-10T10:00:00Z',
+    updatedAt: '2026-10-10T10:00:00Z'
+  },
+  {
+    id: 'VCP-V253-STAIR-01',
+    conceptVersionCode: 'VCP-v1.0-V253-STAIR',
+    projectId: 'PROJ-VILLA-253',
+    floorPlanVersion: 'VILLA-253-REV0',
+    roomId: 'ROOM-V253-STAIR-01',
+    roomName: 'Architectural Staircase & Double-Height Core',
+    layoutOptionId: 'V253-LAY-STAIR-01',
+    layoutOptionName: 'Option A: 21-Riser Dogleg Architectural Spine & Foyer Console',
+    layoutSummary: '7\'6" × 19\'0" Staircase Core • 21 Risers (Tread 11", Riser 6.25") • W2/W2A Fixed Glazing & SD3 Portal',
+    styleTheme: 'Sculptural Vertical Spine (Solid Burma Teak Treads, 12mm Toughened Glass & Step LEDs)',
+    materials: [
+      {
+        trade: 'Staircase Treads & Balustrade',
+        item: '21-Riser Solid Burma Teak Treads (11" Tread × 3\'6" Flight) & 12mm Toughened Glass Railing',
+        specification: 'Matches R0 drawing staircase schedule: 21 risers, 6.25" riser height, 3\'6" waist & mid-landing slab',
+        catalogueCode: 'STR-BAL-21R',
+        costPerUnit: 245000,
+        unit: 'set',
+        estimatedQuantity: 1,
+        totalCost: 245000
+      }
+    ],
+    budgetAllocated: 300000,
+    budgetActualEstimated: 245000,
+    renderImageUrl: '/assets/images/villa253_staircase_core_7x19_r0.svg',
+    verified2DLayoutUrl: '/assets/images/villa253_cad_blueprint_r0.svg',
+    moodboardImageUrl: '/assets/images/villa253_staircase_core_7x19_r0.svg',
+    designRationale: 'Strictly engineered to the 7\'6" × 19\'0" central staircase bay between Bedroom 1 (14\'0" × 19\'0") and Living & Dining (25\'4" × 19\'0"), with W2 & W2A (5\'0" × Mid-Landing) double-height glazing.',
+    lightingPlan: 'Concealed 2700K LED nosing profiles under all 21 treads + double-height chandelier drop.',
+    colorPalette: ['#F5F2EB', '#9A5B25', '#CBD5E1', '#F59E0B', '#0F172A'],
     clientFeedbackHistory: [],
     status: 'CLIENT_APPROVED',
     createdAt: '2026-10-10T10:00:00Z',
@@ -1134,9 +1472,9 @@ export const INITIAL_VILLA_253_CONCEPTS: VisualConceptVersion[] = [
     budgetAllocated: 750000,
     budgetActualEstimated: 640000,
     renderImageUrl: '/assets/images/villa253_gazebo_terrace_1790833723445.jpg',
-    verified2DLayoutUrl: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
-    moodboardImageUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
-    designRationale: 'Directly mirrors the signature triangular roof gazebo shown in Villa 253 blueprint Section BB\' and rear elevation. Elevated timber pergola provides 360-degree garden and sky views with all-weather cocktail entertainment amenities.',
+    verified2DLayoutUrl: '/assets/images/villa253_cad_blueprint_r0.svg',
+    moodboardImageUrl: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
+    designRationale: 'Directly mirrors the signature triangular roof gazebo shown in Villa 253 blueprint Section BB\' (12\'9" ridge height) and rear elevation.',
     lightingPlan: 'Warm 2400K hanging woven lantern luminaires + concealed rafter grazing strips + IP65 floor step lights.',
     colorPalette: ['#FAF5EE', '#7D4F27', '#5C381E', '#2B2520', '#C9BAA7'],
     clientFeedbackHistory: [],
@@ -1151,7 +1489,7 @@ export const VILLA_253_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
   projectTitle: 'Villa 253 (24 Type - 3BHK with Roof Gazebo - North Facing)',
   customerInput: {
     floorPlanFileName: 'VILLA_253_WALL_MARKING_10_10_24_REV0.pdf',
-    floorPlanFileUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
+    floorPlanFileUrl: '/assets/images/villa253_cad_blueprint_r0.svg',
     fileType: 'PDF',
     uploadDate: '2026-10-10',
     scaleText: '1:50 Metric Scale (Verified from Page 1-2 & 2-2)',
@@ -1215,6 +1553,10 @@ export const VILLA_253_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
   selectedLayoutIdByRoom: {
     'ROOM-V253-LIV-01': 'V253-LAY-LIV-01',
     'ROOM-V253-BED1-01': 'V253-LAY-BED1-01',
+    'ROOM-V253-BED2-01': 'V253-LAY-BED2-01',
+    'ROOM-V253-KIT-01': 'V253-LAY-KIT-01',
+    'ROOM-V253-BED3-01': 'V253-LAY-BED3-01',
+    'ROOM-V253-STAIR-01': 'V253-LAY-STAIR-01',
     'ROOM-V253-GAZEBO-01': 'V253-LAY-GAZ-01'
   },
   conceptVersions: INITIAL_VILLA_253_CONCEPTS,

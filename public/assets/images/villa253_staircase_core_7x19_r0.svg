@@ -1,0 +1,67 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="stairWall" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F5F2EB" />
+      <stop offset="100%" stop-color="#DFD8CC" />
+    </linearGradient>
+    <linearGradient id="glassW2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#87B5D6" />
+      <stop offset="60%" stop-color="#D7EBF7" />
+      <stop offset="100%" stop-color="#8EB37A" />
+    </linearGradient>
+  </defs>
+
+  <!-- Double-Height Staircase Core: 7'-6" x 19'-0" (22.5ft Double Height, 21 Risers) -->
+  <rect width="1600" height="900" fill="url(#stairWall)" />
+
+  <!-- Double-Height Fixed Glass Tower W2 & W2A (5'-0" x Up to Mid-Landing & Beam) with Wooden Beading -->
+  <rect x="520" y="40" width="560" height="720" fill="url(#glassW2)" stroke="#5C3D24" stroke-width="14" />
+  <line x1="800" y1="40" x2="800" y2="760" stroke="#5C3D24" stroke-width="8" />
+  <line x1="520" y1="400" x2="1080" y2="400" stroke="#5C3D24" stroke-width="10" />
+
+  <!-- Mid-Landing Slab (3'-6" Waist & Landing Slab) -->
+  <polygon points="360,450 1240,450 1320,495 280,495" fill="#D5CBB8" stroke="#8C7B68" stroke-width="3" />
+
+  <!-- First Flight Risers (11" Tread, 6.25" Riser, 3'-6" Width) -->
+  <g fill="#C29B6F" stroke="#6E4E2E" stroke-width="2">
+    <polygon points="340,780 760,780 740,745 360,745" />
+    <polygon points="360,745 740,745 725,710 380,710" />
+    <polygon points="380,710 725,710 710,675 400,675" />
+    <polygon points="400,675 710,675 695,640 420,640" />
+    <polygon points="420,640 695,640 680,605 440,605" />
+    <polygon points="440,605 680,605 665,570 460,570" />
+    <polygon points="460,570 665,570 650,535 480,535" />
+    <polygon points="480,535 650,535 635,495 500,495" />
+  </g>
+
+  <!-- Second Upper Flight Ascending to First Floor & Roof Gazebo Access (SD4A) -->
+  <g fill="#B38B5E" stroke="#5C3E20" stroke-width="2">
+    <polygon points="840,450 1160,450 1180,415 855,415" />
+    <polygon points="855,415 1180,415 1200,380 870,380" />
+    <polygon points="870,380 1200,380 1220,345 885,345" />
+    <polygon points="885,345 1220,345 1240,310 900,310" />
+    <polygon points="900,310 1240,310 1260,275 915,275" />
+    <polygon points="915,275 1260,275 1280,240 930,240" />
+  </g>
+
+  <!-- Frameless Toughened Glass Balustrade with Brushed Brass Handrail -->
+  <polygon points="340,780 500,495 500,405 340,680" fill="#E0F2FE" fill-opacity="0.35" stroke="#C5A059" stroke-width="4" />
+  <polygon points="840,450 930,240 930,150 840,360" fill="#E0F2FE" fill-opacity="0.35" stroke="#C5A059" stroke-width="4" />
+
+  <!-- Cascading Architectural Pendant Chandelier -->
+  <line x1="720" y1="0" x2="720" y2="280" stroke="#C5A059" stroke-width="3" />
+  <line x1="800" y1="0" x2="800" y2="340" stroke="#C5A059" stroke-width="3" />
+  <line x1="880" y1="0" x2="880" y2="230" stroke="#C5A059" stroke-width="3" />
+  <circle cx="720" cy="290" r="22" fill="#FFF3C4" stroke="#C5A059" stroke-width="3" />
+  <circle cx="800" cy="350" r="28" fill="#FFF3C4" stroke="#C5A059" stroke-width="3" />
+  <circle cx="880" cy="240" r="20" fill="#FFF3C4" stroke="#C5A059" stroke-width="3" />
+
+  <!-- Architectural Verification Stamp -->
+  <g transform="translate(36, 36)" font-family="monospace">
+    <rect width="580" height="94" rx="10" fill="#0F172A" fill-opacity="0.9" stroke="#A78BFA" stroke-width="1.5" />
+    <text x="20" y="28" fill="#C084FC" font-size="13" font-weight="bold">VILLA 253 • ARCHITECTURAL DOGLEG STAIRCASE CORE</text>
+    <text x="20" y="50" fill="#FFFFFF" font-size="14" font-weight="bold">EXACT DIMENSIONS: 7'-6" × 19'-0" (143 SQ.FT) • REV 0</text>
+    <text x="20" y="70" fill="#34D399" font-size="11">21 Risers • Tread: 11" • Riser: 6.25" • Waist &amp; Landing: 3'-6"</text>
+    <text x="20" y="85" fill="#94A3B8" font-size="10">Glazing: W2 &amp; W2A Fixed Glass (5'-0") • Sliders: SD3 &amp; SD4A</text>
+  </g>
+</svg>

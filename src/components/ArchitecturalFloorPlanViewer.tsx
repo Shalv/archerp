@@ -19,11 +19,7 @@ import {
   Info
 } from 'lucide-react';
 import { VastuLayoutOption, VastuRoomSuggestion, ProjectRecord } from '../types/erp';
-
-// High-resolution architectural CAD plan assets generated for each layout option
-import classicalVastuPlanImg from '../assets/images/villa253_facade_exterior_1790833735467.jpg';
-import biophilicCourtyardPlanImg from '../assets/images/villa253_living_modern_1790830799942.jpg';
-import executiveSuitePlanImg from '../assets/images/villa253_master_suite_1790833696550.jpg';
+import { triggerDownloadVilla253Dxf, triggerDownloadVilla253Pdf } from '../utils/villa253CadDataAndDxf';
 
 interface ArchitecturalFloorPlanViewerProps {
   layoutOption: VastuLayoutOption;
@@ -42,23 +38,14 @@ export const ArchitecturalFloorPlanViewer: React.FC<ArchitecturalFloorPlanViewer
   const [showDimensions, setShowDimensions] = useState<boolean>(true);
   const [showVastuOverlay, setShowVastuOverlay] = useState<boolean>(true);
   const [showTitleBlock, setShowTitleBlock] = useState<boolean>(true);
-  const [activeViewMode, setActiveViewMode] = useState<'cad_render' | 'cad_vector' | 'split'>('cad_render');
+  const [activeViewMode, setActiveViewMode] = useState<'cad_render' | 'cad_vector' | 'split'>('cad_vector');
   const [hoveredRoom, setHoveredRoom] = useState<VastuRoomSuggestion | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<VastuRoomSuggestion | null>(null);
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
 
-  // Map option number to corresponding generated high-res architectural blueprint drawing
-  const getFloorPlanImage = (optionNum: 1 | 2 | 3): string => {
-    switch (optionNum) {
-      case 1:
-        return classicalVastuPlanImg;
-      case 2:
-        return biophilicCourtyardPlanImg;
-      case 3:
-        return executiveSuitePlanImg;
-      default:
-        return classicalVastuPlanImg;
-    }
+  // Use true vector architectural CAD floor-plan blueprint instead of misleading raster photos
+  const getFloorPlanImage = (_optionNum: 1 | 2 | 3): string => {
+    return '/assets/images/villa253_cad_blueprint_r0.svg';
   };
 
   const currentPlanImage = getFloorPlanImage(layoutOption.optionNumber);

@@ -1,0 +1,80 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="kitWall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F6F3EC" />
+      <stop offset="100%" stop-color="#E6DFD3" />
+    </linearGradient>
+    <linearGradient id="kitFloor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D7CFC2" />
+      <stop offset="100%" stop-color="#B8AD9E" />
+    </linearGradient>
+    <linearGradient id="quartzTop" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FAF9F6" />
+      <stop offset="50%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#EAE6DF" />
+    </linearGradient>
+    <linearGradient id="teakCabinet" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7B5233" />
+      <stop offset="100%" stop-color="#52341E" />
+    </linearGradient>
+    <radialGradient id="coveLight" cx="50%" cy="12%" r="60%">
+      <stop offset="0%" stop-color="#FFE4A3" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#FFE4A3" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Room Perspective Envelope: Kitchen 14'-6" x 9'-0" -->
+  <rect width="1600" height="900" fill="url(#kitWall)" />
+  <polygon points="0,0 1600,0 1320,150 280,150" fill="#FAF8F5" />
+  <polygon points="280,150 1320,150 1300,164 300,164" fill="#FFD984" />
+  <rect width="1600" height="400" fill="url(#coveLight)" />
+
+  <!-- Back Wall with Service Window W4 (3'-0" x 4'-0") to Utility (9'-0" x 9'-8") -->
+  <rect x="280" y="150" width="1040" height="490" fill="#EFEAE1" stroke="#D5CBB9" stroke-width="2" />
+  <!-- Floor Plane -->
+  <polygon points="0,900 280,640 1320,640 1600,900" fill="url(#kitFloor)" />
+  <!-- Floor Tile Grid (3.8ft central ergonomic aisle) -->
+  <g stroke="#9E9282" stroke-width="1.2" opacity="0.55">
+    <line x1="200" y1="710" x2="1400" y2="710" />
+    <line x1="110" y1="795" x2="1490" y2="795" />
+    <line x1="540" y1="640" x2="420" y2="900" />
+    <line x1="800" y1="640" x2="800" y2="900" />
+    <line x1="1060" y1="640" x2="1180" y2="900" />
+  </g>
+
+  <!-- Utility & Daylight Window W4 (3'-0" x 4'-0") -->
+  <rect x="640" y="250" width="320" height="190" fill="#D2E7F5" stroke="#2D3748" stroke-width="8" />
+  <line x1="800" y1="250" x2="800" y2="440" stroke="#2D3748" stroke-width="5" />
+  <rect x="648" y="385" width="304" height="48" fill="#689F38" opacity="0.35" />
+
+  <!-- Overhead Modular Cabinetry (Left & Right Runs) -->
+  <polygon points="60,120 280,190 280,380 60,360" fill="#3B3A38" stroke="#262524" stroke-width="2" />
+  <polygon points="1540,120 1320,190 1320,380 1540,360" fill="#3B3A38" stroke="#262524" stroke-width="2" />
+  <!-- Under-cabinet 3000K LED Task Strip -->
+  <polygon points="60,360 280,380 280,392 60,375" fill="#FFE082" opacity="0.9" />
+  <polygon points="1540,360 1320,380 1320,392 1540,375" fill="#FFE082" opacity="0.9" />
+
+  <!-- Parallel Base Cabinetry & Calacatta Quartz Countertops (14'-6" Run) -->
+  <!-- Left Counter Run (Hob & Prep Zone) -->
+  <polygon points="0,540 360,480 490,640 0,830" fill="url(#teakCabinet)" stroke="#3D2616" stroke-width="2" />
+  <polygon points="0,515 370,465 500,485 130,555" fill="url(#quartzTop)" stroke="#D0C9BD" stroke-width="2" />
+  <!-- Right Counter Run (Sink & Appliance Zone) -->
+  <polygon points="1600,540 1240,480 1110,640 1600,830" fill="url(#teakCabinet)" stroke="#3D2616" stroke-width="2" />
+  <polygon points="1600,515 1230,465 1100,485 1470,555" fill="url(#quartzTop)" stroke="#D0C9BD" stroke-width="2" />
+
+  <!-- Rear Countertop & Backsplash -->
+  <rect x="280" y="480" width="1040" height="160" fill="url(#teakCabinet)" stroke="#3D2616" stroke-width="2" />
+  <rect x="280" y="464" width="1040" height="18" fill="url(#quartzTop)" stroke="#CCC4B8" />
+  <!-- Induction Hob & Brushed Brass Faucet -->
+  <rect x="420" y="466" width="150" height="12" fill="#1A1A1A" />
+  <path d="M 820,464 L 820,415 Q 820,395 840,395 L 855,395 L 855,415" fill="none" stroke="#C5A059" stroke-width="6" />
+
+  <!-- Architectural Verification Badge -->
+  <g transform="translate(36, 36)" font-family="monospace">
+    <rect width="560" height="94" rx="10" fill="#0F172A" fill-opacity="0.9" stroke="#F59E0B" stroke-width="1.5" />
+    <text x="20" y="28" fill="#FBBF24" font-size="13" font-weight="bold">VILLA 253 • CULINARY KITCHEN, UTILITY &amp; POWDER WING</text>
+    <text x="20" y="50" fill="#FFFFFF" font-size="14" font-weight="bold">EXACT DIMENSIONS: 14'-6" × 9'-0" (131 SQ.FT) • REV 0</text>
+    <text x="20" y="70" fill="#34D399" font-size="11">Adjuncts: Utility 9'-0" × 9'-8" (W4) • Powder 5'-0" × 9'-8" (D4, W3)</text>
+    <text x="20" y="85" fill="#94A3B8" font-size="10">Parallel Calacatta Quartz Counters • 3.8ft Ergonomic Central Aisle</text>
+  </g>
+</svg>
