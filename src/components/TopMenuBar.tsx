@@ -860,6 +860,20 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
         {/* Right Side: Quick Search & Module Finder + Mobile Drawer Trigger */}
         <div className="flex items-center gap-1.5 shrink-0">
           
+          {/* Villa 253 Spatial Studio Quick Jump Button */}
+          <button
+            onClick={() => handleSelectModule('spatial_ai')}
+            className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition shadow-2xs cursor-pointer border ${
+              activeTab === 'spatial_ai' || activeTab === 'floorplan'
+                ? 'bg-purple-700 text-white border-purple-800 shadow-sm'
+                : 'bg-purple-50 hover:bg-purple-100 text-purple-800 border-purple-200'
+            }`}
+            title="Open Villa 253 Spatial Studio & Interior Theme Customizer"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <span>Villa 253 Themes</span>
+          </button>
+
           {/* Quick Find Module Button */}
           <div className="relative">
             <button

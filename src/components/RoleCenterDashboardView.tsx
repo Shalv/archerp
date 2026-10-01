@@ -590,6 +590,41 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
         </div>
       </div>
 
+      {/* VILLA 253 ARCHITECTURAL BLUEPRINT FEATURE BANNER */}
+      <div 
+        onClick={() => onNavigateTab('spatial_ai')}
+        className="bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 border border-amber-500/40 rounded-2xl p-4 sm:p-5 shadow-lg text-white cursor-pointer hover:border-amber-400 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 group"
+      >
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 shrink-0 group-hover:scale-105 transition-transform">
+            <Sparkles className="w-6 h-6" />
+          </div>
+          <div>
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-amber-500 text-slate-950">
+                ACTIVE BLUEPRINT LOADED
+              </span>
+              <span className="text-xs font-mono text-amber-300 font-bold">
+                VILLA 253 • 24 TYPE - 3BHK WITH ROOF GAZEBO (NORTH FACING)
+              </span>
+            </div>
+            <h3 className="text-sm sm:text-base font-bold text-white group-hover:text-amber-200 transition-colors">
+              Explore 6 Interior Design Themes • Edit Finishes, Lighting &amp; Furniture • BOQ Sync
+            </h3>
+            <p className="text-xs text-slate-300 mt-0.5">
+              25'4" × 19'0" Living opening to 57ft deck, Master Suite with walk-in closet, and Signature Roof Gazebo terrace pavilion.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0 self-stretch sm:self-auto justify-end">
+          <span className="px-3.5 py-2 rounded-xl bg-amber-500 group-hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md transition-all flex items-center gap-1.5">
+            <span>Open Spatial Design Studio</span>
+            <ArrowRight className="w-4 h-4" />
+          </span>
+        </div>
+      </div>
+
       {/* 2. EXECUTIVE KPI CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {profile.kpis.map((kpi, idx) => (

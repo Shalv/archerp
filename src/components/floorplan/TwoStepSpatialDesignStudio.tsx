@@ -40,7 +40,9 @@ import {
   HelpCircle,
   FolderKanban,
   Printer,
-  ChevronDown
+  ChevronDown,
+  Camera,
+  Image as ImageIcon
 } from 'lucide-react';
 
 import { ProjectRecord, UserSession } from '../../types/erp';
@@ -49,12 +51,26 @@ import {
   FurnitureLayoutOption, 
   ExtractedRoomGeometry, 
   VisualConceptVersion,
-  FurnitureLayoutItem
+  FurnitureLayoutItem,
+  FloorPlanReferenceImage,
+  InteriorSpecificationInput,
+  InteriorDesignOption
 } from '../../types/floorplanSpatial';
 import { INITIAL_2BHK_SPATIAL_SESSION, getCalibratedConceptForLayout } from '../../data/floorplanSpatialData';
+import { 
+  VILLA_253_SPATIAL_SESSION, 
+  VILLA_253_THEMES, 
+  Villa253ThemeConfig 
+} from '../../data/villa253BlueprintData';
+import { VILLA_253_ALL_REFERENCE_IMAGES } from '../../data/villa253ReferenceImages';
 import { InteractiveRoomPlanCanvas } from './InteractiveRoomPlanCanvas';
 import { RequirementsEditorModal } from './RequirementsEditorModal';
 import { VisualConceptLightboxModal } from './VisualConceptLightboxModal';
+import { Villa253BlueprintViewerModal } from './Villa253BlueprintViewerModal';
+import { ThemeCustomizerModal } from './ThemeCustomizerModal';
+import { ThemeComparisonModal } from './ThemeComparisonModal';
+import { FloorPlanReferenceGallery } from './FloorPlanReferenceGallery';
+import { FloorPlanUploadStudioModal } from './FloorPlanUploadStudioModal';
 import { printInteriorClientDossier } from '../../utils/interiorDossierPrint';
 
 interface TwoStepSpatialDesignStudioProps {
@@ -70,13 +86,16 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
   onNavigateTab,
   onOpenInspectData
 }) => {
+  // Active Blueprint Source (Defaults to the attached Villa 253 Blueprint)
+  const [activeBlueprintSource, setActiveBlueprintSource] = useState<'VILLA_253' | 'SKYLINE_2BHK'>('VILLA_253');
+  
   // Session State
   const [session, setSession] = useState<TwoStepSpatialDesignSession>(() => {
-    return JSON.parse(JSON.stringify(INITIAL_2BHK_SPATIAL_SESSION));
+    return JSON.parse(JSON.stringify(VILLA_253_SPATIAL_SESSION));
   });
 
   const [activeStep, setActiveStep] = useState<number>(5); // Default to Step 5 (Layout & Visuals)
-  const [activeRoomId, setActiveRoomId] = useState<string>('ROOM-LIV-01');
+  const [activeRoomId, setActiveRoomId] = useState<string>('ROOM-V253-LIV-01');
   const [selectedFurniture, setSelectedFurniture] = useState<FurnitureLayoutItem | null>(null);
   const [clientFeedbackInput, setClientFeedbackInput] = useState<string>('');
   const [isRevisingConcept, setIsRevisingConcept] = useState<boolean>(false);
@@ -85,6 +104,11 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
   const [showVersionHistory, setShowVersionHistory] = useState<boolean>(false);
   const [showRequirementsModal, setShowRequirementsModal] = useState<boolean>(false);
   const [showLightboxModal, setShowLightboxModal] = useState<boolean>(false);
+  const [showBlueprintModal, setShowBlueprintModal] = useState<boolean>(false);
+  const [showThemeCustomizerModal, setShowThemeCustomizerModal] = useState<boolean>(false);
+  const [showThemeComparisonModal, setShowThemeComparisonModal] = useState<boolean>(false);
+  const [showReferenceGalleryModal, setShowReferenceGalleryModal] = useState<boolean>(false);
+  const [showUploadStudioModal, setShowUploadStudioModal] = useState<boolean>(false);
   const [requirementsMode, setRequirementsMode] = useState<'PRESET_STANDALONE' | 'CUSTOM_ADAPTIVE'>('PRESET_STANDALONE');
   const [viewMode, setViewMode] = useState<'SPLIT' | 'STEP1_FOCUS' | 'STEP2_FOCUS'>('SPLIT');
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'info' | 'error' } | null>(null);
@@ -99,7 +123,7 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
     setTimeout(() => setToastMessage(null), 4000);
   };
 
-  // Fetch session from server or seed with 2BHK preset
+  // Fetch session from server or default to Villa 253
   useEffect(() => {
     fetch(`/api/projects/${project.id}/spatial-studio`)
       .then(async r => {
@@ -107,14 +131,15 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
         return r.json();
       })
       .then(data => {
-        if (data && data.projectId) {
+        if (data && data.projectId && data.planGeometry) {
           setSession(data);
           if (data.activeRoomId) setActiveRoomId(data.activeRoomId);
         }
       })
       .catch(() => {
-        // Fallback to initial 2BHK session
-        setSession(JSON.parse(JSON.stringify(INITIAL_2BHK_SPATIAL_SESSION)));
+        // Fallback to Villa 253 session
+        setSession(JSON.parse(JSON.stringify(VILLA_253_SPATIAL_SESSION)));
+        setActiveRoomId('ROOM-V253-LIV-01');
       });
   }, [project.id]);
 
@@ -133,11 +158,12 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
   // Selected layout for the room
   const selectedLayoutId = 
     session.selectedLayoutIdByRoom[activeRoomId] || 
-    (currentRoomLayouts[0]?.id ?? 'LAYOUT-LIV-OPT1');
+    (currentRoomLayouts[0]?.id ?? 'V253-LAY-LIV-01');
 
   const currentLayout: FurnitureLayoutOption = 
     currentRoomLayouts.find(l => l.id === selectedLayoutId) || 
-    currentRoomLayouts[0];
+    currentRoomLayouts[0] ||
+    VILLA_253_SPATIAL_SESSION.layoutOptionsByRoom['ROOM-V253-LIV-01'][0];
 
   // Active visual concept dynamically derived from current room AND selected layout
   const activeConcept: VisualConceptVersion = React.useMemo(() => {
@@ -160,7 +186,15 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
       return matchingVersions[matchingVersions.length - 1];
     }
 
-    // 3. Fallback to calibrated concept generator for this room and layout
+    // 3. Match by room alone in session concept versions
+    const matchingRoomVersions = session.conceptVersions.filter(
+      c => c.roomId === activeRoomId || c.roomId === currentRoom.id
+    );
+    if (matchingRoomVersions.length > 0) {
+      return matchingRoomVersions[matchingRoomVersions.length - 1];
+    }
+
+    // 4. Fallback to calibrated concept generator for this room and layout
     return getCalibratedConceptForLayout(currentRoom, currentLayout, session.conceptVersions);
   }, [session.conceptVersions, session.activeConceptVersionId, activeRoomId, selectedLayoutId, currentRoom, currentLayout]);
 
@@ -247,7 +281,7 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
           ? 'Modern Warm Interior (Simplified Minimalist TV Wall, Sand Microcement, Teak Accents, 6-Seater Dining)'
           : `${activeConcept.styleTheme} (Client Revised)`,
         renderImageUrl: isTVWallSimpler 
-          ? '/assets/images/minimalist_concept_render_1789216644600.jpg'
+          ? '/assets/images/villa253_guest_suite_1790833711200.jpg'
           : activeConcept.renderImageUrl,
         designRationale: `Updated strictly according to client feedback: "${clientFeedbackInput}". TV wall simplified to serene Italian microcement plaster to eliminate visual noise; 6-seater solid teak dining table verified with 3.2ft kitchen doorway clearance maintained. Room dimensions (${currentRoom.lengthFt}' × ${currentRoom.widthFt}') remain 100% locked.`,
         clientFeedbackHistory: [
@@ -289,25 +323,25 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
     const styleThemes = [
       {
         theme: 'Japandi Earth & Fluted Oak (Concealed Storage, Low-Profile Platform, Rice Paper Luminaires)',
-        image: '/assets/images/minimalist_concept_render_1789216644600.jpg',
+        image: '/assets/images/villa253_guest_suite_1790833711200.jpg',
         palette: ['#EFECE6', '#C8B29B', '#4D443B', '#7A6B5D', '#D9C8B4'],
         materialsSummary: 'Fluted white oak wall paneling, imported terrazzo vitrified tiles, engineered quartz'
       },
       {
         theme: 'Biophilic Luxury Sanctuary (Indoor Planters, Travertine Stone, Brushed Brass, Italian Velvet)',
-        image: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+        image: '/assets/images/villa253_living_modern_1790830799942.jpg',
         palette: ['#F4F1EA', '#B8A88A', '#2E4034', '#A38753', '#D6D1C4'],
         materialsSummary: 'Silver vein-cut travertine slabs, acoustic moss paneling, brushed brass accent trims'
       },
       {
         theme: 'Contemporary Neoclassical Elegance (Boiserie Wall Moulding, Botticino Marble, Warm Teak)',
-        image: '/assets/images/neoclassic_render_1789216684796.jpg',
+        image: '/assets/images/villa253_master_suite_1790833696550.jpg',
         palette: ['#FAF8F5', '#C5A880', '#4A3E37', '#938B83', '#E6DFD5'],
         materialsSummary: 'High-density PU wall mouldings, Italian Botticino vitrified tiles, PU satin cabinetry'
       },
       {
         theme: 'Modern Warm Minimalism (Simplified Sand Microcement, Teak Accents, 6-Seater Dining)',
-        image: '/assets/images/tropical_eco_render_1789218073135.jpg',
+        image: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
         palette: ['#FAF5EF', '#D4BA99', '#382D25', '#8E7F72', '#CBB89D'],
         materialsSummary: 'Sand microcement wall texture, solid CP teakwood dining set, boucle lounge'
       }
@@ -431,8 +465,203 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
   const handleLoadPromptScenario = () => {
     setSession(JSON.parse(JSON.stringify(INITIAL_2BHK_SPATIAL_SESSION)));
     setActiveRoomId('ROOM-LIV-01');
+    setActiveBlueprintSource('SKYLINE_2BHK');
     setRequirementsMode('PRESET_STANDALONE');
     showToast('Loaded Standalone 2BHK Brief: ₹18 Lakh, Modern warm interior, lots of storage & WFH desk in second bedroom.');
+  };
+
+  // Quick Preset: Load Villa 253 Blueprint Scenario (Attached Plan)
+  const handleLoadVilla253Scenario = () => {
+    setSession(JSON.parse(JSON.stringify(VILLA_253_SPATIAL_SESSION)));
+    setActiveRoomId('ROOM-V253-LIV-01');
+    setActiveBlueprintSource('VILLA_253');
+    setRequirementsMode('PRESET_STANDALONE');
+    showToast('Loaded Villa 253 (24 Type - 3BHK with Roof Gazebo - North Facing) from attached blueprint.');
+  };
+
+  // Handler: Select & Apply a Theme Preset from VILLA_253_THEMES
+  const handleSelectThemeConfig = (theme: Villa253ThemeConfig) => {
+    const nextVerNum = Number(activeConcept.conceptVersionCode.replace(/[^\d.]/g, '') || '1.0') + 0.1;
+    const newVerCode = `VCP-v${nextVerNum.toFixed(1)}-${theme.id.slice(6, 9)}`;
+
+    const updatedConcept: VisualConceptVersion = {
+      ...activeConcept,
+      id: `VCP-${Date.now()}`,
+      conceptVersionCode: newVerCode,
+      styleTheme: `${theme.name} (${theme.tagline})`,
+      colorPalette: [
+        theme.palette.primaryWall,
+        theme.palette.accentWall,
+        theme.palette.woodFinish,
+        theme.palette.metalHardware,
+        theme.palette.textileTone
+      ],
+      renderImageUrl: theme.renderImage,
+      moodboardImageUrl: theme.moodboardImage,
+      designRationale: `Applied ${theme.name}. Designed specifically for ${currentRoom.name} (${currentRoom.lengthFt.toFixed(1)}' × ${currentRoom.widthFt.toFixed(1)}') respecting all architectural door and window openings from blueprint page 1-2. Guaranteed minimum 3.5ft walk clearance.`,
+      lightingPlan: `${theme.cctKelvin}K Architectural lighting with concealed cove and high-CRI fixtures.`,
+      clientFeedbackHistory: [
+        ...activeConcept.clientFeedbackHistory,
+        {
+          id: `FB-${Date.now()}`,
+          timestamp: new Date().toLocaleString(),
+          author: currentUser.name,
+          role: 'DESIGNER',
+          feedbackText: `Theme switched to ${theme.name}`,
+          actionTaken: `Updated finishes, color palette (${theme.cctKelvin}K CCT), and 3D concept render with locked 2D room geometry.`,
+          conceptVersionGenerated: newVerCode,
+          status: 'RESOLVED'
+        }
+      ],
+      status: 'CLIENT_APPROVED',
+      updatedAt: new Date().toISOString()
+    };
+
+    const hasConceptInSession = session.conceptVersions.some(c => c.id === updatedConcept.id);
+    const updatedConceptVersions = hasConceptInSession
+      ? session.conceptVersions
+      : [...session.conceptVersions, updatedConcept];
+
+    const updatedSession: TwoStepSpatialDesignSession = {
+      ...session,
+      conceptVersions: updatedConceptVersions,
+      activeConceptVersionId: updatedConcept.id
+    };
+
+    setSession(updatedSession);
+    showToast(`Applied theme: ${theme.name} (${theme.tagline})`);
+  };
+
+  // Handler: Apply Theme to all rooms in Villa 253
+  const handleApplyThemeToEntireVilla = (themeId: string) => {
+    const theme = VILLA_253_THEMES.find(t => t.id === themeId) || VILLA_253_THEMES[0];
+    const updatedVersions = session.conceptVersions.map(c => ({
+      ...c,
+      styleTheme: `${theme.name} (${theme.tagline})`,
+      colorPalette: [
+        theme.palette.primaryWall,
+        theme.palette.accentWall,
+        theme.palette.woodFinish,
+        theme.palette.metalHardware,
+        theme.palette.textileTone
+      ],
+      renderImageUrl: theme.renderImage,
+      moodboardImageUrl: theme.moodboardImage,
+      lightingPlan: `${theme.cctKelvin}K Architectural lighting with concealed cove.`,
+      updatedAt: new Date().toISOString()
+    }));
+
+    setSession({
+      ...session,
+      conceptVersions: updatedVersions
+    });
+    showToast(`Applied "${theme.name}" across all rooms in Villa 253!`);
+  };
+
+  // Handler: Apply any reference image directly to the interior view
+  const handleApplyReferenceImage = (refImg: FloorPlanReferenceImage) => {
+    // If there is a matching theme config, find it
+    const matchedTheme = refImg.themeMappingId 
+      ? VILLA_253_THEMES.find(t => t.id === refImg.themeMappingId) 
+      : null;
+
+    const nextVerNum = Number(activeConcept.conceptVersionCode.replace(/[^\d.]/g, '') || '1.0') + 0.1;
+    const newVerCode = `VCP-v${nextVerNum.toFixed(1)}-REF`;
+
+    const updatedConcept: VisualConceptVersion = {
+      ...activeConcept,
+      id: `VCP-${Date.now()}`,
+      conceptVersionCode: newVerCode,
+      styleTheme: matchedTheme ? `${matchedTheme.name} (${refImg.title})` : refImg.title,
+      renderImageUrl: refImg.imageUrl,
+      colorPalette: matchedTheme ? Object.values(matchedTheme.palette) : activeConcept.colorPalette,
+      designRationale: `${refImg.description} [Applied from Reference Image: ${refImg.id}]. Measured room boundary (${currentRoom.lengthFt}' × ${currentRoom.widthFt}') and 2D architectural CAD clearances remain 100% locked.`,
+      lightingPlan: matchedTheme ? `${matchedTheme.cctKelvin}K Architectural lighting with indirect cove.` : activeConcept.lightingPlan,
+      clientFeedbackHistory: [
+        ...activeConcept.clientFeedbackHistory,
+        {
+          id: `FB-${Date.now()}`,
+          timestamp: new Date().toLocaleString(),
+          author: currentUser.name,
+          role: 'DESIGNER',
+          feedbackText: `Applied reference image: ${refImg.title}`,
+          actionTaken: `Updated interior render to reference image ${refImg.id} with camera alignment and material specifications locked.`,
+          conceptVersionGenerated: newVerCode,
+          status: 'RESOLVED'
+        }
+      ],
+      status: 'CLIENT_APPROVED',
+      updatedAt: new Date().toISOString()
+    };
+
+    const hasConceptInSession = session.conceptVersions.some(c => c.id === updatedConcept.id);
+    const updatedConceptVersions = hasConceptInSession
+      ? session.conceptVersions.map(c => c.id === updatedConcept.id ? updatedConcept : c)
+      : [...session.conceptVersions, updatedConcept];
+
+    const updatedSession: TwoStepSpatialDesignSession = {
+      ...session,
+      conceptVersions: updatedConceptVersions,
+      activeConceptVersionId: updatedConcept.id
+    };
+
+    setSession(updatedSession);
+    showToast(`Applied "${refImg.title}" to interior view!`, 'success');
+  };
+
+  // Handler: Apply an interior option & system-generated render from the FloorPlanUploadStudioModal
+  const handleApplyOptionFromUploadStudio = (
+    option: InteriorDesignOption,
+    specs: InteriorSpecificationInput,
+    generatedImageUrl: string
+  ) => {
+    const newVerCode = `VCP-AI-${Date.now()}`;
+    const newConcept: VisualConceptVersion = {
+      id: `VCP-${Date.now()}`,
+      conceptVersionCode: newVerCode,
+      projectId: session.projectId,
+      floorPlanVersion: session.planGeometry.planVersion,
+      roomId: currentRoom.id,
+      roomName: specs.roomName || currentRoom.name,
+      layoutOptionId: currentLayout.id,
+      layoutOptionName: currentLayout.title,
+      layoutSummary: currentLayout.summary,
+      styleTheme: option.title,
+      materials: option.materials,
+      budgetAllocated: activeConcept.budgetAllocated || 650000,
+      budgetActualEstimated: option.totalEstimatedCost,
+      renderImageUrl: generatedImageUrl,
+      verified2DLayoutUrl: specs.floorPlanImageBase64 || activeConcept.verified2DLayoutUrl,
+      moodboardImageUrl: activeConcept.moodboardImageUrl,
+      designRationale: option.whyBestForThisFloorPlan,
+      lightingPlan: option.lightingScheme.map(l => `${l.type}: ${l.description} (${l.kelvin}K)`).join(' • '),
+      colorPalette: option.colorPalette.map(c => c.hex),
+      clientFeedbackHistory: [
+        ...activeConcept.clientFeedbackHistory,
+        {
+          id: `FB-${Date.now()}`,
+          timestamp: new Date().toLocaleString(),
+          author: currentUser.name,
+          role: 'CLIENT',
+          feedbackText: `Applied optimal style "${option.title}" with specifications: ${specs.preferredStyle} (${specs.lengthFt}' × ${specs.widthFt}').`,
+          actionTaken: 'Synthesized high-quality architectural render and synchronized material specification.',
+          conceptVersionGenerated: newVerCode,
+          status: 'RESOLVED'
+        }
+      ],
+      status: 'CLIENT_APPROVED',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    const updatedSession: TwoStepSpatialDesignSession = {
+      ...session,
+      conceptVersions: [newConcept, ...session.conceptVersions],
+      activeConceptVersionId: newConcept.id
+    };
+
+    setSession(updatedSession);
+    showToast(`Applied "${option.title}" & fresh system-generated render!`, 'success');
   };
 
   // Requirements Modal Handlers: Change requirements or re-generate adaptive layouts
@@ -505,6 +734,149 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
 
   return (
     <div className="space-y-4">
+      {/* VILLA 253 ARCHITECTURAL BLUEPRINT & INTERIOR THEME COMMAND CENTER */}
+      <div className="bg-gradient-to-r from-slate-900 via-slate-950 to-purple-950 border border-amber-500/40 rounded-2xl p-4 sm:p-5 shadow-xl text-white">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+          <div className="flex items-start gap-3.5">
+            <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+              <Building2 className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-amber-500 text-slate-950 tracking-wider">
+                  ATTACHED ARCHITECTURAL BLUEPRINT
+                </span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-300 border border-slate-700">
+                  DATE: 10-10-24 • REV: 0
+                </span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-950 text-blue-300 border border-blue-700/60">
+                  NORTH FACING
+                </span>
+              </div>
+              <h1 className="text-lg sm:text-xl font-bold text-white tracking-wide flex items-center gap-2">
+                <span>VILLA 253 • 24 Type - 3 Bedroom with Roof Gazebo</span>
+              </h1>
+              <p className="text-xs text-slate-300 max-w-3xl mt-0.5">
+                Integrated spatial studio configured directly per your blueprint: 25'4" × 19'0" Living & Dining with 27ft sliding glass doors (SD1), 57ft front deck, private ground-floor master suites, wrap-around first-floor balconies, and signature pitched timber Roof Gazebo pavilion.
+              </p>
+            </div>
+          </div>
+
+          {/* Core Action Buttons */}
+          <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+            <button
+              onClick={() => setShowBlueprintModal(true)}
+              className="flex-1 sm:flex-none px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Eye className="w-4 h-4" />
+              <span>Inspect Blueprint & Schedule</span>
+            </button>
+
+            <button
+              onClick={() => setShowThemeCustomizerModal(true)}
+              className="flex-1 sm:flex-none px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg shadow-purple-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Sliders className="w-4 h-4 text-purple-200" />
+              <span>Edit & Customize Theme</span>
+            </button>
+
+            <button
+              onClick={() => setShowThemeComparisonModal(true)}
+              className="flex-1 sm:flex-none px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Palette className="w-4 h-4 text-blue-400" />
+              <span>Compare Themes Side-by-Side</span>
+            </button>
+
+            {/* Blueprint Switcher Dropdown */}
+            <div className="flex items-center rounded-xl bg-slate-950 border border-slate-800 p-0.5 text-xs font-medium">
+              <button
+                onClick={handleLoadVilla253Scenario}
+                className={`px-2.5 py-1.5 rounded-lg transition-all ${
+                  activeBlueprintSource === 'VILLA_253'
+                    ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+                title="Active Villa 253 Blueprint"
+              >
+                Villa 253 (Active)
+              </button>
+              <button
+                onClick={handleLoadPromptScenario}
+                className={`px-2.5 py-1.5 rounded-lg transition-all ${
+                  activeBlueprintSource === 'SKYLINE_2BHK'
+                    ? 'bg-purple-500/20 text-purple-300 font-bold border border-purple-500/40'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+                title="Switch to 2BHK Apartment"
+              >
+                Skyline 2BHK
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* QUICK THEME SWITCHER TOOLBAR */}
+        <div className="pt-3.5">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-amber-300 flex items-center gap-1.5 uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Interior Design Theme Options for Villa 253 (Click to Apply Instantly):</span>
+            </span>
+            <span className="text-[11px] text-slate-400">
+              Active Room: <strong className="text-white font-mono">{currentRoom.name}</strong>
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+            {VILLA_253_THEMES.map((theme) => {
+              const isCurrent = activeConcept.styleTheme.toLowerCase().includes(theme.name.toLowerCase().slice(0, 10));
+              return (
+                <button
+                  key={theme.id}
+                  onClick={() => handleSelectThemeConfig(theme)}
+                  className={`p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between group cursor-pointer ${
+                    isCurrent
+                      ? 'bg-purple-900/60 border-amber-400 ring-2 ring-amber-400/30 shadow-md'
+                      : 'bg-slate-950/70 border-slate-800 hover:border-slate-700 hover:bg-slate-900'
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-1 mb-1">
+                      <span className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors truncate">
+                        {theme.name}
+                      </span>
+                      {isCurrent && (
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                      )}
+                    </div>
+                    <span className="text-[10px] text-slate-400 block truncate mb-2">
+                      {theme.tagline}
+                    </span>
+                  </div>
+
+                  <div>
+                    {/* Small 5-color palette strip */}
+                    <div className="flex items-center gap-1 h-2 rounded overflow-hidden mb-1.5">
+                      {Object.values(theme.palette).map((col, idx) => (
+                        <div key={idx} className="h-full flex-1" style={{ backgroundColor: col }} />
+                      ))}
+                    </div>
+
+                    <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono">
+                      <span>{theme.cctKelvin}K CCT</span>
+                      <span className={isCurrent ? 'text-amber-300 font-bold' : 'text-slate-500'}>
+                        {isCurrent ? 'ACTIVE' : 'APPLY'}
+                      </span>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
       {/* 1. TOP PROCESS FLOWCHART STEPPER (Mermaid Diagram Implementation) */}
       <div className="bg-white border border-[#EDEBE9] rounded-xl p-3.5 shadow-2xs">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 pb-3 border-b border-slate-100">
@@ -514,44 +886,37 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
                 AI SPATIAL COPILOT
               </span>
               <span className="text-xs font-semibold text-slate-500">
-                End-to-End Architectural Two-Step Protocol
+                Architectural Two-Step Protocol • 2D Verification + 3D Visual Concept
               </span>
             </div>
-            <h1 className="text-base sm:text-lg font-bold text-slate-900 mt-0.5 flex items-center gap-2">
-              <span>Two-Step Spatial AI: Usable 2D Room Layout → Visual Concept</span>
-            </h1>
-            <p className="text-xs text-slate-500">
-              "A beautiful image alone may place a sofa across a doorway. First create a usable measured layout, then generate the visual concept."
-            </p>
+            <h2 className="text-base font-bold text-slate-900 mt-0.5 flex items-center gap-2">
+              <span>Usable Room Layout (Step 1) &amp; Visual Concept (Step 2)</span>
+            </h2>
           </div>
 
           {/* Quick Scenario Loader & Controls */}
           <div className="flex flex-wrap items-center gap-2">
             <button
-              onClick={() => setShowRequirementsModal(true)}
-              className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer border border-blue-400/40"
-              title="Change requirements, budget, style, and room constraints or adapt layouts"
+              onClick={() => setShowUploadStudioModal(true)}
+              className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-600 via-indigo-600 to-indigo-700 hover:from-amber-700 hover:to-indigo-800 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer border border-amber-500/40"
+              title="Upload any floor plan and add specifications to generate the best interior options and dynamic render"
             >
-              <Sliders className="w-3.5 h-3.5 text-amber-300" />
-              <span>Change Requirements</span>
+              <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+              <span>Upload Plan &amp; AI Generator</span>
             </button>
 
             <button
-              onClick={handleLoadPromptScenario}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer border ${
-                requirementsMode === 'PRESET_STANDALONE'
-                  ? 'bg-purple-800 text-purple-100 border-purple-400/50 hover:bg-purple-900'
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
-              }`}
-              title="Run as standalone per original 2BHK ₹18L specifications"
+              onClick={() => setShowRequirementsModal(true)}
+              className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border border-slate-300"
+              title="Change requirements, budget, style, and room constraints or adapt layouts"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              <span>Standalone (2BHK ₹18L)</span>
+              <Sliders className="w-3.5 h-3.5 text-purple-600" />
+              <span>Custom Brief</span>
             </button>
 
             <button
               onClick={() => printInteriorClientDossier(project, session, currentRoom, currentLayout, activeConcept)}
-              className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer border border-emerald-500/50"
+              className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer border border-emerald-500/50"
               title="Print or export client-ready Architectural Concept & Layout Dossier"
             >
               <Printer className="w-3.5 h-3.5 text-white" />
@@ -663,7 +1028,10 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
               onClick={() => {
                 setActiveRoomId(room.id);
                 setSelectedFurniture(null);
-                const nextLayouts = session.layoutOptionsByRoom[room.id] || INITIAL_2BHK_SPATIAL_SESSION.layoutOptionsByRoom[room.id] || [];
+                const nextLayouts = session.layoutOptionsByRoom[room.id] || 
+                  VILLA_253_SPATIAL_SESSION.layoutOptionsByRoom[room.id] || 
+                  INITIAL_2BHK_SPATIAL_SESSION.layoutOptionsByRoom[room.id] || 
+                  [];
                 const nextLayoutId = session.selectedLayoutIdByRoom[room.id] || nextLayouts[0]?.id;
                 const nextLayout = nextLayouts.find(l => l.id === nextLayoutId) || nextLayouts[0];
                 if (nextLayout) {
@@ -809,13 +1177,16 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
             </div>
           </div>
 
-          {/* Interactive 2D Room Plan Canvas */}
+          {/* Interactive 2D Room Plan Canvas with Camera Viewpoint Pins */}
           <div className="flex-1 min-h-[380px]">
             <InteractiveRoomPlanCanvas
               room={currentRoom}
               layout={currentLayout}
               selectedFurnitureId={selectedFurniture?.id}
               onSelectFurniture={setSelectedFurniture}
+              referenceImages={VILLA_253_ALL_REFERENCE_IMAGES}
+              activeReferenceImageId={activeConcept.renderImageUrl}
+              onSelectReferenceImage={handleApplyReferenceImage}
             />
           </div>
 
@@ -963,6 +1334,16 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
               >
                 <Maximize2 className="w-3.5 h-3.5 text-slate-600" />
                 <span>Expand View</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowReferenceGalleryModal(true)}
+                className="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-950 text-xs font-bold transition flex items-center gap-1.5 border border-amber-300 cursor-pointer shadow-2xs"
+                title="Browse all 22 project reference images applied to the floor plan"
+              >
+                <Camera className="w-3.5 h-3.5 text-amber-600" />
+                <span>Reference Images ({VILLA_253_ALL_REFERENCE_IMAGES.length})</span>
               </button>
 
               <span className={`px-2.5 py-1 rounded-full text-[11px] font-semibold border ${
@@ -1113,6 +1494,14 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
               </div>
             </div>
           </div>
+
+          {/* Reference Images Applied to This Room & Floor Plan Carousel */}
+          <FloorPlanReferenceGallery
+            currentRoom={currentRoom}
+            activeImageUrl={activeConcept.renderImageUrl}
+            onApplyReferenceImage={handleApplyReferenceImage}
+            isCompactCarousel={true}
+          />
 
           {/* Architectural CAD & 3D Render Consistency Audit Card */}
           <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-[11px] space-y-1.5">
@@ -1366,6 +1755,7 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
           onClose={() => setShowLightboxModal(false)}
           onRegenerateConcept={handleRegenerateAlternativeConcept}
           isRegenerating={isRevisingConcept}
+          onApplyReferenceImage={handleApplyReferenceImage}
         />
       )}
 
@@ -1378,6 +1768,86 @@ export const TwoStepSpatialDesignStudio: React.FC<TwoStepSpatialDesignStudioProp
           onResetToStandalone={handleResetToStandalone}
           onClose={() => setShowRequirementsModal(false)}
         />
+      )}
+
+      {/* Villa 253 Blueprint & Door/Window Schedule Viewer Modal */}
+      {showBlueprintModal && (
+        <Villa253BlueprintViewerModal
+          isOpen={showBlueprintModal}
+          onClose={() => setShowBlueprintModal(false)}
+          onSelectRoom={(roomId) => {
+            setActiveRoomId(roomId);
+            showToast(`Selected room: ${session.planGeometry.rooms.find(r => r.id === roomId)?.name || roomId}`);
+          }}
+        />
+      )}
+
+      {/* Interactive Theme Customizer & Option Editor Modal */}
+      {showThemeCustomizerModal && (
+        <ThemeCustomizerModal
+          isOpen={showThemeCustomizerModal}
+          onClose={() => setShowThemeCustomizerModal(false)}
+          room={currentRoom}
+          layout={currentLayout}
+          concept={activeConcept}
+          onSaveConcept={(updatedConcept) => {
+            const hasExisting = session.conceptVersions.some(c => c.id === updatedConcept.id);
+            const nextVersions = hasExisting
+              ? session.conceptVersions.map(c => c.id === updatedConcept.id ? updatedConcept : c)
+              : [...session.conceptVersions, updatedConcept];
+
+            setSession({
+              ...session,
+              conceptVersions: nextVersions,
+              activeConceptVersionId: updatedConcept.id
+            });
+            showToast(`Saved customized theme: ${updatedConcept.styleTheme}`);
+          }}
+          onApplyThemeToEntireVilla={handleApplyThemeToEntireVilla}
+          onLinkBOQ={handleLinkToBOQ}
+        />
+      )}
+
+      {/* Side-by-Side Theme Comparison Modal */}
+      {showThemeComparisonModal && (
+        <ThemeComparisonModal
+          isOpen={showThemeComparisonModal}
+          onClose={() => setShowThemeComparisonModal(false)}
+          room={currentRoom}
+          currentConcept={activeConcept}
+          onSelectTheme={(theme) => handleSelectThemeConfig(theme)}
+        />
+      )}
+
+      {/* Full Reference Images Library & Inspector Modal */}
+      {showReferenceGalleryModal && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 md:p-6 animate-in fade-in duration-200">
+          <div className="w-full max-w-6xl max-h-[95vh] flex flex-col rounded-2xl overflow-hidden shadow-2xl bg-slate-900 border border-slate-700">
+            <div className="flex justify-between items-center px-4 py-2.5 bg-slate-950 border-b border-slate-800">
+              <span className="text-xs font-bold text-amber-300 flex items-center gap-1.5 font-mono">
+                <Camera className="w-3.5 h-3.5" />
+                <span>PROJECT REFERENCE IMAGE LIBRARY • VILLA 253</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowReferenceGalleryModal(false)}
+                className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+              >
+                ✕ Close Gallery
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <FloorPlanReferenceGallery
+                currentRoom={currentRoom}
+                activeImageUrl={activeConcept.renderImageUrl}
+                onApplyReferenceImage={(refImg) => {
+                  handleApplyReferenceImage(refImg);
+                  setShowReferenceGalleryModal(false);
+                }}
+              />
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Toast Notification */}

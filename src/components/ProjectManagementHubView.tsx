@@ -418,7 +418,7 @@ export const ProjectManagementHubView: React.FC<ProjectManagementHubViewProps> =
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="border border-[#EDEBE9] rounded-lg overflow-hidden group">
               <img
-                src="/assets/images/cad_floor_plan_1789216705163.jpg"
+                src="/assets/images/villa253_facade_exterior_1790833735467.jpg"
                 alt="CAD Floor Plan"
                 className="w-full h-44 object-cover group-hover:scale-102 transition"
               />
@@ -431,7 +431,7 @@ export const ProjectManagementHubView: React.FC<ProjectManagementHubViewProps> =
 
             <div className="border border-[#EDEBE9] rounded-lg overflow-hidden group">
               <img
-                src="/assets/images/materials_moodboard_1789218106559.jpg"
+                src="/assets/images/villa253_living_greatroom_1790833681710.jpg"
                 alt="Materials Moodboard"
                 className="w-full h-44 object-cover group-hover:scale-102 transition"
               />
@@ -444,7 +444,7 @@ export const ProjectManagementHubView: React.FC<ProjectManagementHubViewProps> =
 
             <div className="border border-[#EDEBE9] rounded-lg overflow-hidden group">
               <img
-                src="/assets/images/cad_section_drawing_1789218091254.jpg"
+                src="/assets/images/villa253_roof_gazebo_1790830815235.jpg"
                 alt="CAD Section Drawing"
                 className="w-full h-44 object-cover group-hover:scale-102 transition"
               />
@@ -660,10 +660,10 @@ export const ProjectManagementHubView: React.FC<ProjectManagementHubViewProps> =
                     className="w-full border border-[#EDEBE9] rounded p-2 bg-white"
                   >
                     <option value="">No Image Attachment</option>
-                    <option value="/assets/images/cad_floor_plan_1789216705163.jpg">Floor Plan CAD Drawing</option>
-                    <option value="/assets/images/materials_moodboard_1789218106559.jpg">Materials Swatch Moodboard</option>
-                    <option value="/assets/images/minimalist_concept_render_1789216644600.jpg">Minimalist 3D Concept Render</option>
-                    <option value="/assets/images/biophilic_concept_render_1789216627991.jpg">Biophilic Living Room Render</option>
+                    <option value="/assets/images/villa253_facade_exterior_1790833735467.jpg">Floor Plan CAD Drawing</option>
+                    <option value="/assets/images/villa253_living_greatroom_1790833681710.jpg">Materials Swatch Moodboard</option>
+                    <option value="/assets/images/villa253_guest_suite_1790833711200.jpg">Minimalist 3D Concept Render</option>
+                    <option value="/assets/images/villa253_living_modern_1790830799942.jpg">Biophilic Living Room Render</option>
                   </select>
                 </div>
               </div>

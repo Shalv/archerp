@@ -1092,7 +1092,7 @@ class DatabaseService {
       projectTitle: project.title,
       customerInput: {
         floorPlanFileName: `${project.projectCode}_FloorPlan_Upload.pdf`,
-        floorPlanFileUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+        floorPlanFileUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
         fileType: 'PDF',
         uploadDate: new Date().toISOString().split('T')[0],
         scaleText: '1:50 Architectural Scale',
@@ -1107,7 +1107,7 @@ class DatabaseService {
           {
             id: 'REF-01',
             title: 'Modern Warm Palette',
-            imageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+            imageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
             tags: ['Warm Teak', 'Fluted Panels', 'Boucle Fabric']
           }
         ],

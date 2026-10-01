@@ -87,7 +87,7 @@ const INITIAL_DRAWINGS: DrawingRecord[] = [
     checker: 'Ar. Sanjay Puri (Principal)',
     releaseDate: '2026-03-02',
     fileSizeMb: 14.2,
-    imageThumbnail: '/assets/images/cad_floor_plan_1789216705163.jpg',
+    imageThumbnail: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
     gfcStampDate: '2026-03-03',
     clientCommentsCount: 2
   },
@@ -104,7 +104,7 @@ const INITIAL_DRAWINGS: DrawingRecord[] = [
     checker: 'Project Lead',
     releaseDate: '2026-02-28',
     fileSizeMb: 19.4,
-    imageThumbnail: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+    imageThumbnail: '/assets/images/villa253_living_modern_1790830799942.jpg',
     clientCommentsCount: 3
   },
   {
@@ -120,7 +120,7 @@ const INITIAL_DRAWINGS: DrawingRecord[] = [
     checker: 'Ar. Aniket Joshi',
     releaseDate: '2026-02-26',
     fileSizeMb: 24.1,
-    imageThumbnail: '/assets/images/minimalist_concept_render_1789216644600.jpg',
+    imageThumbnail: '/assets/images/villa253_guest_suite_1790833711200.jpg',
     clientCommentsCount: 1
   },
   {
@@ -136,7 +136,7 @@ const INITIAL_DRAWINGS: DrawingRecord[] = [
     checker: 'Project Lead',
     releaseDate: '2026-03-04',
     fileSizeMb: 18.7,
-    imageThumbnail: '/assets/images/cad_section_drawing_1789218091254.jpg',
+    imageThumbnail: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
     gfcStampDate: '2026-03-05',
     clientCommentsCount: 0
   }
@@ -185,8 +185,8 @@ const INITIAL_AI_OPTIONS: AIDesignOption[] = [
     approvedByEstimatorOrLead: 'Ar. Sanjay Puri (Principal)',
     approvedDate: '2026-03-01',
     internalReviewNotes: 'Fully vetted by estimation team. All rates aligned with master library.',
-    renderImageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
-    layoutImageUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+    renderImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
+    layoutImageUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
     suggestedPalette: ['#F5F2EB', '#C5A059', '#3D3D3D', '#5C715E', '#A89F91'],
     flooringRecommendation: 'Imported Botticino Classico Italian Marble with diamond mirror polish',
     wallTreatment: 'Acoustic Smoked Teak Veneer Wall Slats with warm indirect 2700K cove light',
@@ -234,8 +234,8 @@ const INITIAL_AI_OPTIONS: AIDesignOption[] = [
     approvedByEstimatorOrLead: 'Estimator R. Sen',
     approvedDate: '2026-02-28',
     internalReviewNotes: 'Approved as premium alternative for customer comparison.',
-    renderImageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
-    layoutImageUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+    renderImageUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
+    layoutImageUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
     suggestedPalette: ['#FAF7F2', '#B8977E', '#D4AF37', '#2B3A42', '#7A6B5D'],
     flooringRecommendation: 'Engineered European White Oak Herringbone Parquet with border inlays',
     wallTreatment: 'High-density PU wall mouldings with Stucco Veneziano Italian plaster',
@@ -280,8 +280,8 @@ const INITIAL_AI_OPTIONS: AIDesignOption[] = [
     internalApprovalStatus: 'INTERNAL_APPROVED',
     approvedByEstimatorOrLead: 'Estimator R. Sen',
     approvedDate: '2026-02-28',
-    renderImageUrl: '/assets/images/industrial_concept_render_1789216663974.jpg',
-    layoutImageUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+    renderImageUrl: '/assets/images/villa253_gazebo_terrace_1790833723445.jpg',
+    layoutImageUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
     suggestedPalette: ['#E6E6E6', '#222222', '#8C7B6D', '#B0A8A0', '#4A5568'],
     flooringRecommendation: 'Seamless Microtopping Concrete 3mm in Warm Pebble Grey',
     wallTreatment: 'Exposed treated concrete panels with acoustic felt baffles and matte black metal reveals',
@@ -326,8 +326,8 @@ const INITIAL_AI_OPTIONS: AIDesignOption[] = [
     internalApprovalStatus: 'INTERNAL_APPROVED',
     approvedByEstimatorOrLead: 'Ar. Sanjay Puri',
     approvedDate: '2026-03-01',
-    renderImageUrl: '/assets/images/tropical_eco_render_1789218073135.jpg',
-    layoutImageUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+    renderImageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
+    layoutImageUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
     suggestedPalette: ['#EFECE6', '#7D8471', '#C29B7F', '#5E4B3E', '#A3B19B'],
     flooringRecommendation: 'Leather-finish Kota stone with brass divider trims and terracotta tiles',
     wallTreatment: 'Breathable mineral lime plaster with natural clay wall wash',
@@ -375,8 +375,8 @@ const INITIAL_AI_OPTIONS: AIDesignOption[] = [
     internalApprovalStatus: 'INTERNAL_APPROVED',
     approvedByEstimatorOrLead: 'Ar. Sanjay Puri',
     approvedDate: '2026-03-02',
-    renderImageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
-    layoutImageUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+    renderImageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
+    layoutImageUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
     suggestedPalette: ['#F7F3E9', '#D4AF37', '#8C4329', '#2E473B', '#5A3E2A'],
     flooringRecommendation: 'White Makrana Marble with Jaisalmer Gold inlays',
     wallTreatment: 'Zero-VOC mineral lime plaster with fluted teakwood jaali partitions',
@@ -852,7 +852,7 @@ export const DesignAndDrawingsManagementView: React.FC<DesignAndDrawingsManageme
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="rounded-lg overflow-hidden border border-slate-200 bg-slate-900 group relative">
                   <img
-                    src={selectedOption.renderImageUrl || '/assets/images/biophilic_concept_render_1789216627991.jpg'}
+                    src={selectedOption.renderImageUrl || '/assets/images/villa253_living_modern_1790830799942.jpg'}
                     alt="3D Render"
                     className="w-full h-44 object-cover group-hover:scale-105 transition duration-300"
                   />
@@ -863,7 +863,7 @@ export const DesignAndDrawingsManagementView: React.FC<DesignAndDrawingsManageme
 
                 <div className="rounded-lg overflow-hidden border border-slate-200 bg-slate-900 group relative">
                   <img
-                    src={selectedOption.layoutImageUrl || '/assets/images/cad_floor_plan_1789216705163.jpg'}
+                    src={selectedOption.layoutImageUrl || '/assets/images/villa253_facade_exterior_1790833735467.jpg'}
                     alt="2D Plan"
                     className="w-full h-44 object-cover group-hover:scale-105 transition duration-300"
                   />

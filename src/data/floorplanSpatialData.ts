@@ -16,7 +16,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
   projectTitle: 'Skyline Residency Flat 1402 (2BHK)',
   customerInput: {
     floorPlanFileName: 'Customer_2BHK_Architectural_Plan_Rev2.pdf',
-    floorPlanFileUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+    floorPlanFileUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
     fileType: 'PDF',
     uploadDate: '2026-03-08',
     scaleText: '1:50 Metric Scale (Dimensions confirmed in feet & inches)',
@@ -36,19 +36,19 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       {
         id: 'REF-01',
         title: 'Warm Japandi / Modern Minimalist Living',
-        imageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+        imageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
         tags: ['Warm Teak', 'Fluted Accents', 'Hidden Storage', 'Neutral Beige']
       },
       {
         id: 'REF-02',
         title: 'Acoustic Ergonomic Work-From-Home Desk',
-        imageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
+        imageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
         tags: ['WFH Desk', 'Cable Management', 'Floating Shelves', 'Daylight Facing']
       },
       {
         id: 'REF-03',
         title: 'Space-Saving Built-In Storage Solutions',
-        imageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+        imageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
         tags: ['Concealed Wardrobes', 'Hydraulic Storage', 'Matte Laminate', 'Clean Lines']
       }
     ],
@@ -1455,7 +1455,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
           item: 'Imported Botticino Classico Italian Marble Look Glazed Vitrified Tiles (1200x1800mm)',
           specification: 'Simpolo / Kajaria Royale zero-grout rectified vitrified slabs with matte satin polish',
           catalogueCode: 'MAT-FLR-01',
-          swatchImageUrl: '/assets/images/cement_pour_macro_1789549128682.jpg',
+          swatchImageUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
           costPerUnit: 145,
           unit: 'sq.ft',
           estimatedQuantity: 240,
@@ -1466,7 +1466,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
           item: 'Acoustic Smoked Teak Fluted Wall Slats with Concealed LED Channel',
           specification: 'CenturyPly Architect BWP base with natural quarter-cut smoked teak veneer & PU satin finish',
           catalogueCode: 'MAT-PAN-02',
-          swatchImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+          swatchImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
           costPerUnit: 380,
           unit: 'sq.ft',
           estimatedQuantity: 120,
@@ -1505,9 +1505,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 650000,
       budgetActualEstimated: 588000,
-      renderImageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
-      verified2DLayoutUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Combines organic warmth with clean geometric lines. The 3.8ft central corridor ensures direct access to the seaface balcony without bumping into furniture corners.',
       lightingPlan: 'Layered 3-zone lighting: (1) High-CRI 2700K cove light for soft evening ambiance; (2) Magnetic spotlights over coffee table; (3) Hand-blown glass pendant over dining.',
       colorPalette: ['#F5F2EB', '#C4A482', '#3E3630', '#7E8A78', '#D4AF37'],
@@ -1581,9 +1581,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 650000,
       budgetActualEstimated: 545000,
-      renderImageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
-      verified2DLayoutUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Revised according to client feedback. Fluted slats replaced with serene microcement plaster that makes the TV visually disappear. Dining table confirmed at 5.5ft length accommodating 6 persons comfortably with 3.2ft kitchen doorway clearance maintained.',
       lightingPlan: 'Soft warm perimeter cove lighting + dimmable downward spot over credenza.',
       colorPalette: ['#FAF8F5', '#C5A880', '#4A3E37', '#938B83', '#E6DFD5'],
@@ -1681,9 +1681,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 650000,
       budgetActualEstimated: 618000,
-      renderImageUrl: '/assets/images/industrial_concept_render_1789216663974.jpg',
-      verified2DLayoutUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_gazebo_terrace_1790833723445.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Directly fulfills the customer prompt requirement for "lots of concealed storage without making rooms feel cramped". All joinery uses vertical wall heights up to 9.5ft false ceiling while strictly maintaining 3.2ft central corridor clearance from front entrance to seaface balcony.',
       lightingPlan: 'Under-cabinet warm 2700K LED strips + ceiling recessed anti-glare downlights.',
       colorPalette: ['#3A3B3C', '#8C7853', '#EAE6DF', '#C4B5A5', '#1F2421'],
@@ -1758,9 +1758,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 650000,
       budgetActualEstimated: 568000,
-      renderImageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
-      verified2DLayoutUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Seamlessly nests a high-productivity home office study nook into the living room alcove. Pocket doors slide closed during entertainment hours to hide monitors and cables, maintaining 3.5ft clearance across all circulation vectors.',
       lightingPlan: 'Task lighting over desk nook with glare-free 4000K LED + warm 2700K ambient cove for evening lounge.',
       colorPalette: ['#EFECE6', '#C8B29B', '#4D443B', '#7A6B5D', '#D9C8B4'],
@@ -1824,9 +1824,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 650000,
       budgetActualEstimated: 635000,
-      renderImageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
-      verified2DLayoutUrl: '/assets/images/floorplan_biophilic_courtyard_1790415168195.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Tailored for hospitality and dinner parties. The organic curved sofa softens room corners, directing attention towards the sunset seaface balcony. Backlit cocktail credenza allows hosting drinks without crowding the kitchen entrance.',
       lightingPlan: 'Indirect boiserie cove lighting + warm 2400K backlit vitrine display shelves.',
       colorPalette: ['#FAF8F5', '#C5A880', '#4A3E37', '#938B83', '#E6DFD5'],
@@ -1890,9 +1890,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 650000,
       budgetActualEstimated: 572000,
-      renderImageUrl: '/assets/images/tropical_eco_render_1789218073135.jpg',
-      verified2DLayoutUrl: '/assets/images/floorplan_classical_vastu_1790415154125.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Architecturally calibrated for 100% Vastu Shastra compliance. The heavy furniture is anchored in the South-West (Nairutya) for peace and prosperity, while the North-East (Ishanya) is kept completely light and uncluttered to invite positive solar morning energy.',
       lightingPlan: 'East-facing natural daylight optimization + warm 2700K indirect perimeter lighting.',
       colorPalette: ['#FAF5EF', '#D4BA99', '#382D25', '#8E7F72', '#CBB89D'],
@@ -1956,9 +1956,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 450000,
       budgetActualEstimated: 395000,
-      renderImageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
-      verified2DLayoutUrl: '/assets/images/floorplan_executive_suite_1790415181606.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Specifically fulfills the core prompt: "a work desk in the second bedroom and lots of storage". The 5.5ft desk faces the North window for soft, natural light without computer screen glare. Sliding wardrobe guarantees zero swing collision with the bedroom door.',
       lightingPlan: 'Task lighting over dual monitors (4000K, CRI 95+) + dimmable warm ceiling spotlights.',
       colorPalette: ['#F1F5F9', '#334155', '#94A3B8', '#0EA5E9', '#0F172A'],
@@ -2002,9 +2002,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 450000,
       budgetActualEstimated: 420000,
-      renderImageUrl: '/assets/images/industrial_concept_render_1789216663974.jpg',
-      verified2DLayoutUrl: '/assets/images/floorplan_executive_suite_1790415181606.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_gazebo_terrace_1790833723445.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Yields the maximum floor space during work hours. The auto-balancing desk mechanism remains level when the bed is pulled down, so laptops and study materials never have to be packed away.',
       lightingPlan: 'Recessed study task light with under-bed mood strip.',
       colorPalette: ['#E2E8F0', '#475569', '#1E293B', '#D97706', '#FFFFFF'],
@@ -2048,9 +2048,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 450000,
       budgetActualEstimated: 410000,
-      renderImageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
-      verified2DLayoutUrl: '/assets/images/floorplan_executive_suite_1790415181606.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Designed for high-intensity multi-monitor technical workflows with 180-book library capacity and direct natural light across the primary desk surface.',
       lightingPlan: 'Directional track spotlighting + warm book credenza shelf backlight.',
       colorPalette: ['#F8FAFC', '#334155', '#64748B', '#0284C7', '#0F172A'],
@@ -2104,9 +2104,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 550000,
       budgetActualEstimated: 485000,
-      renderImageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
-      verified2DLayoutUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Master suite layout respects Nairutya (South-West) grounding energy. Headboard faces South for sound sleep. Full 10ft wardrobe on the East wall accommodates extensive personal storage without obstructing the master bathroom entrance.',
       lightingPlan: 'Warm 2700K indirect ceiling coves + reading gooseneck spotlights.',
       colorPalette: ['#F5F2EB', '#C4A482', '#3E3630', '#7E8A78', '#D4AF37'],
@@ -2160,9 +2160,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 550000,
       budgetActualEstimated: 515000,
-      renderImageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
-      verified2DLayoutUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: '5-star boutique hospitality atmosphere with dedicated morning grooming zone and sunset reading nook beside South window.',
       lightingPlan: 'Warm 2400K-3000K dim-to-warm bedside fixtures and vanity perimeter light.',
       colorPalette: ['#FAF8F5', '#C5A880', '#4A3E37', '#938B83', '#E6DFD5'],
@@ -2216,9 +2216,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 450000,
       budgetActualEstimated: 418000,
-      renderImageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
-      verified2DLayoutUrl: '/assets/images/interior_dimension_glass_1789549189481.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_master_bedroom_1790830829821.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Calibrated for executive video-conferencing, podcasts, and sound recording. Acoustic slats prevent audio slapback while the daybed provides comfortable guest lounging.',
       lightingPlan: 'Warm 2700K indirect perimeter backlighting + 4000K high-CRI key light for broadcast video calls.',
       colorPalette: ['#1E293B', '#C2410C', '#E2E8F0', '#475569', '#F8FAFC'],
@@ -2272,9 +2272,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 450000,
       budgetActualEstimated: 398000,
-      renderImageUrl: '/assets/images/tropical_eco_render_1789218073135.jpg',
-      verified2DLayoutUrl: '/assets/images/floorplan_classical_vastu_1790415154125.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Complies with Vastu orientation. Facing East during study stimulates intellectual concentration and memory retention. Northeast corner is kept light and open.',
       lightingPlan: 'East morning natural solar light optimization + 3000K warm desk lamp.',
       colorPalette: ['#FAF5EF', '#D4BA99', '#382D25', '#8E7F72', '#CBB89D'],
@@ -2328,9 +2328,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 550000,
       budgetActualEstimated: 495000,
-      renderImageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
-      verified2DLayoutUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Pure Japandi tranquility. The low bed datum emphasizes room height, while the concealed push-to-open wardrobe keeps all storage hidden behind monolithic plaster-toned panels.',
       lightingPlan: 'Concealed under-bed warm 2400K halo strip + soft architectural ceiling perimeter coves.',
       colorPalette: ['#F5F5F0', '#D6C7B2', '#5A524A', '#8F857D', '#E8E4DC'],
@@ -2384,9 +2384,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 550000,
       budgetActualEstimated: 525000,
-      renderImageUrl: '/assets/images/industrial_concept_render_1789216663974.jpg',
-      verified2DLayoutUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_gazebo_terrace_1790833723445.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Engineered for maximum storage density without creating claustrophobia. The vertical lofts hold large suitcases and seasonal duvets, maintaining verified 3.1ft walkway to the master bath.',
       lightingPlan: 'Warm under-cabinet LED task strips + recessed anti-glare directional downlights.',
       colorPalette: ['#3A3B3C', '#8C7853', '#EAE6DF', '#C4B5A5', '#1F2421'],
@@ -2440,9 +2440,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 550000,
       budgetActualEstimated: 512000,
-      renderImageUrl: '/assets/images/tropical_eco_render_1789218073135.jpg',
-      verified2DLayoutUrl: '/assets/images/floorplan_classical_vastu_1790415154125.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'South headboard placement provides deep neurological rest by aligning with Earth’s magnetic polarity. Heavy Nairutya zone anchoring establishes household stability.',
       lightingPlan: 'Warm 2400K indirect ambient cove lighting + brass reading sconces with warm filament glow.',
       colorPalette: ['#FAF5EF', '#D4BA99', '#382D25', '#8E7F72', '#CBB89D'],
@@ -2496,9 +2496,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 350000,
       budgetActualEstimated: 310000,
-      renderImageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
-      verified2DLayoutUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Parallel layout optimizes the golden cooking triangle between sink, hob, and refrigerator. Central 3.5ft clearance provides effortless food preparation without bottlenecking.',
       lightingPlan: 'Under-cabinet 4000K CRI 95+ prep task lighting + warm 2700K pendant drops over breakfast bar.',
       colorPalette: ['#FFFFFF', '#C5A880', '#2D3748', '#E2E8F0', '#1A202C'],
@@ -2542,9 +2542,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 350000,
       budgetActualEstimated: 325000,
-      renderImageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
-      verified2DLayoutUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'L-shaped workflow provides maximum continuous counter surface and isolates the grocery pantry in a single high-capacity tower.',
       lightingPlan: 'Recessed anti-glare ceiling spotlights + under-shelf LED strip.',
       colorPalette: ['#FAF8F5', '#A0AEC0', '#4A5568', '#CBD5E0', '#2D3748'],
@@ -2588,9 +2588,9 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
       ],
       budgetAllocated: 350000,
       budgetActualEstimated: 335000,
-      renderImageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
-      verified2DLayoutUrl: '/assets/images/floorplan_biophilic_courtyard_1790415168195.jpg',
-      moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+      renderImageUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
+      verified2DLayoutUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
+      moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
       designRationale: 'Seamless monolithic minimalism. The backlit glass vitrine becomes a glowing backdrop visible from the dining room during dinner hosting.',
       lightingPlan: 'Warm 3000K vitrine internal glow + recessed ceiling spotlights.',
       colorPalette: ['#1A202C', '#E2E8F0', '#C5A880', '#718096', '#FFFFFF'],
@@ -2632,24 +2632,24 @@ export function getCalibratedConceptForLayout(
   if (libraryMatch) return libraryMatch;
 
   // Fallback calibrated generation based on layout option code & priority theme
-  let renderUrl = '/assets/images/minimalist_concept_render_1789216644600.jpg';
-  let cadUrl = '/assets/images/cad_floor_plan_1789216705163.jpg';
+  let renderUrl = '/assets/images/villa253_living_greatroom_1790833681710.jpg';
+  let cadUrl = '/assets/images/villa253_facade_exterior_1790833735467.jpg';
 
   if (layout.priorityTheme === 'STORAGE_MAX') {
-    renderUrl = '/assets/images/industrial_concept_render_1789216663974.jpg';
-    cadUrl = '/assets/images/cad_section_drawing_1789218091254.jpg';
+    renderUrl = '/assets/images/villa253_guest_suite_1790833711200.jpg';
+    cadUrl = '/assets/images/villa253_facade_exterior_1790833735467.jpg';
   } else if (layout.priorityTheme === 'WFH_PRODUCTIVITY') {
-    renderUrl = '/assets/images/biophilic_concept_render_1789216627991.jpg';
-    cadUrl = '/assets/images/floorplan_executive_suite_1790415181606.jpg';
+    renderUrl = '/assets/images/villa253_guest_suite_1790833711200.jpg';
+    cadUrl = '/assets/images/villa253_master_suite_1790833696550.jpg';
   } else if (layout.priorityTheme === 'LUXURY_ENTERTAINING') {
-    renderUrl = '/assets/images/neoclassic_render_1789216684796.jpg';
-    cadUrl = '/assets/images/floorplan_biophilic_courtyard_1790415168195.jpg';
+    renderUrl = '/assets/images/villa253_living_greatroom_1790833681710.jpg';
+    cadUrl = '/assets/images/villa253_facade_exterior_1790833735467.jpg';
   } else if (layout.priorityTheme === 'VASTU_COMPLIANT') {
-    renderUrl = '/assets/images/tropical_eco_render_1789218073135.jpg';
-    cadUrl = '/assets/images/floorplan_classical_vastu_1790415154125.jpg';
+    renderUrl = '/assets/images/villa253_living_modern_1790830799942.jpg';
+    cadUrl = '/assets/images/villa253_facade_exterior_1790833735467.jpg';
   } else if (layout.priorityTheme === 'OPEN_LIVING') {
-    renderUrl = '/assets/images/minimalist_concept_render_1789216644600.jpg';
-    cadUrl = '/assets/images/cad_floor_plan_1789216705163.jpg';
+    renderUrl = '/assets/images/villa253_living_greatroom_1790833681710.jpg';
+    cadUrl = '/assets/images/villa253_facade_exterior_1790833735467.jpg';
   }
 
   const verCode = `VCP-${layout.optionCode}-${layout.priorityTheme.slice(0, 3)}`;
@@ -2679,7 +2679,7 @@ export function getCalibratedConceptForLayout(
     budgetActualEstimated: layout.furnitureItems.reduce((acc, curr) => acc + curr.estimatedCost, 0) + 120000,
     renderImageUrl: renderUrl,
     verified2DLayoutUrl: cadUrl,
-    moodboardImageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+    moodboardImageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
     designRationale: `Matched 3D visual concept and verified 2D CAD floor plan strictly respecting ${layout.title}. Guaranteed ${layout.minClearancePassageFt}ft clear circulation with zero doorway obstruction.`,
     lightingPlan: 'Warm 2700K ambient cove lighting with directional task spotlights.',
     colorPalette: ['#FAF8F5', '#C5A880', '#4A3E37', '#938B83', '#E6DFD5'],

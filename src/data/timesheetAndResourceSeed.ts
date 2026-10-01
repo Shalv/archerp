@@ -672,7 +672,7 @@ export const INITIAL_PROJECT_TASKS: ProjectTask[] = [
     checklistCompleted: 0,
     priority: 2,
     isMilestone: false,
-    imagePreview: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+    imagePreview: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     dueDate: '2024-11-26',
     description: 'Integrate automated drip irrigation and preserved moss accent panel in foyer reception.'
   },
@@ -762,7 +762,7 @@ export const INITIAL_PROJECT_TASKS: ProjectTask[] = [
     checklistCompleted: 2,
     priority: 2,
     isMilestone: false,
-    imagePreview: '/assets/images/materials_moodboard_1789218106559.jpg',
+    imagePreview: '/assets/images/villa253_master_suite_1790833696550.jpg',
     dueDate: '2024-11-22',
     description: 'Selection and client approval of veneer finishes, Italian marble slabs, and designer sanitaryware.'
   },
@@ -805,7 +805,7 @@ export const INITIAL_PROJECT_TASKS: ProjectTask[] = [
     checklistCompleted: 1,
     priority: 3,
     isMilestone: true,
-    imagePreview: '/assets/images/minimalist_concept_render_1789216644600.jpg',
+    imagePreview: '/assets/images/villa253_guest_suite_1790833711200.jpg',
     dueDate: '2024-11-20',
     description: 'Photorealistic VR render panorama for master suite and open modular island kitchen.'
   },
@@ -827,7 +827,7 @@ export const INITIAL_PROJECT_TASKS: ProjectTask[] = [
     checklistCompleted: 2,
     priority: 3,
     isMilestone: true,
-    imagePreview: '/assets/images/cad_floor_plan_1789216705163.jpg',
+    imagePreview: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
     dueDate: '2024-11-21',
     description: 'Detailed GFC Revision B architectural CAD drawings with partition details and floor finishes.'
   },

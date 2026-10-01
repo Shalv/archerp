@@ -2372,7 +2372,7 @@ Return a valid JSON object matching this structure:
     budgetAllocated: previousConcept.budgetAllocated,
     budgetActualEstimated: revisedData.budgetActualEstimated || previousConcept.budgetActualEstimated,
     renderImageUrl: clientFeedbackText.toLowerCase().includes('simpler')
-      ? '/assets/images/minimalist_concept_render_1789216644600.jpg'
+      ? '/assets/images/villa253_guest_suite_1790833711200.jpg'
       : previousConcept.renderImageUrl,
     verified2DLayoutUrl: previousConcept.verified2DLayoutUrl,
     moodboardImageUrl: previousConcept.moodboardImageUrl,

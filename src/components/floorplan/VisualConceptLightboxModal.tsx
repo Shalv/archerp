@@ -1,6 +1,7 @@
-import React from 'react';
-import { X, Download, ZoomIn, Sparkles, RefreshCw, Layers, ShieldCheck, CheckCircle2 } from 'lucide-react';
-import { VisualConceptVersion, ExtractedRoomGeometry, FurnitureLayoutOption } from '../../types/floorplanSpatial';
+import React, { useState } from 'react';
+import { X, Download, ZoomIn, Sparkles, RefreshCw, Layers, ShieldCheck, CheckCircle2, Camera, Check } from 'lucide-react';
+import { VisualConceptVersion, ExtractedRoomGeometry, FurnitureLayoutOption, FloorPlanReferenceImage } from '../../types/floorplanSpatial';
+import { VILLA_253_ALL_REFERENCE_IMAGES } from '../../data/villa253ReferenceImages';
 
 interface VisualConceptLightboxModalProps {
   concept: VisualConceptVersion;
@@ -9,6 +10,7 @@ interface VisualConceptLightboxModalProps {
   onClose: () => void;
   onRegenerateConcept?: () => void;
   isRegenerating?: boolean;
+  onApplyReferenceImage?: (image: FloorPlanReferenceImage) => void;
 }
 
 export const VisualConceptLightboxModal: React.FC<VisualConceptLightboxModalProps> = ({
@@ -17,7 +19,8 @@ export const VisualConceptLightboxModal: React.FC<VisualConceptLightboxModalProp
   layout,
   onClose,
   onRegenerateConcept,
-  isRegenerating = false
+  isRegenerating = false,
+  onApplyReferenceImage
 }) => {
   const handleDownloadImage = (url: string, filename: string) => {
     const link = document.createElement('a');
@@ -187,8 +190,67 @@ export const VisualConceptLightboxModal: React.FC<VisualConceptLightboxModalProp
               </div>
             </div>
           </div>
+
+          {/* Reference Images Quick Selector Strip */}
+          <div className="pt-3 border-t border-slate-800 space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-bold text-amber-300 flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
+                <Camera className="w-3.5 h-3.5 text-amber-400" />
+                <span>Reference Images Applied to This Floor Plan (Click to Switch View):</span>
+              </span>
+              <span className="text-[10px] text-slate-400">
+                {VILLA_253_ALL_REFERENCE_IMAGES.length} Project References Available
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+              {VILLA_253_ALL_REFERENCE_IMAGES.map((refImg) => {
+                const isActive = concept.renderImageUrl === refImg.imageUrl;
+                return (
+                  <button
+                    key={refImg.id}
+                    type="button"
+                    onClick={() => onApplyReferenceImage?.(refImg)}
+                    className={`shrink-0 w-44 rounded-xl border text-left overflow-hidden transition-all duration-150 group cursor-pointer bg-slate-950 ${
+                      isActive 
+                        ? 'border-amber-400 ring-2 ring-amber-400/40 shadow-lg' 
+                        : 'border-slate-800 hover:border-slate-700 hover:bg-slate-900'
+                    }`}
+                  >
+                    <div className="relative aspect-video bg-black overflow-hidden">
+                      <img
+                        src={refImg.imageUrl}
+                        alt={refImg.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                      />
+                      {isActive && (
+                        <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-emerald-600/90 text-white text-[9px] font-mono font-bold flex items-center gap-1">
+                          <Check className="w-2.5 h-2.5" />
+                          <span>ACTIVE</span>
+                        </div>
+                      )}
+                      {refImg.cameraHotspot && (
+                        <div className="absolute bottom-1 right-1 px-1 py-0.5 rounded bg-black/80 text-amber-300 text-[8px] font-mono">
+                          {refImg.cameraHotspot.cameraLabel.split(' ')[0]}
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-2">
+                      <div className="text-[10px] font-bold text-white truncate group-hover:text-amber-300">
+                        {refImg.title}
+                      </div>
+                      <div className="text-[9px] text-slate-400 truncate mt-0.5">
+                        {refImg.category.replace(/_/g, ' ')}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
+

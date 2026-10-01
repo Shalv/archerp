@@ -276,7 +276,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'ARCHITECTURE',
     headName: 'Front Elevation & Façade',
     description: 'Contemporary double-height architectural entrance façade with vertical louvers and warm linear wash.',
-    imageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+    imageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-01',
     tags: ['Façade', 'Louvers', 'Modern', 'Entrance']
@@ -286,7 +286,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'ARCHITECTURE',
     headName: 'Rear Elevation & Private Courtyard',
     description: 'Full-height structural glazing opening into landscaped private courtyard and pool deck.',
-    imageUrl: '/assets/images/tropical_eco_render_1789218073135.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-02',
     tags: ['Courtyard', 'Rear', 'Glazing', 'Deck']
@@ -296,7 +296,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'ARCHITECTURE',
     headName: 'Side Elevation & Service Core',
     description: 'Acoustic louvered service ducts, rainwater harvesting downspouts and cantilevered shading fins.',
-    imageUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
+    imageUrl: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-02',
     tags: ['Elevation', 'Service Core', 'Shading', 'Section']
@@ -306,7 +306,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'ARCHITECTURE',
     headName: 'Gate & Boundary Wall',
     description: 'CNC cut Corten steel automated sliding gate with integrated video intercom and granite bollards.',
-    imageUrl: '/assets/images/industrial_concept_render_1789216663974.jpg',
+    imageUrl: '/assets/images/villa253_gazebo_terrace_1790833723445.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-03',
     tags: ['Gate', 'Boundary', 'Security', 'Automation']
@@ -316,7 +316,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'ARCHITECTURE',
     headName: 'Entrance Portico & Foyer Façade',
     description: 'Bespoke floating canopy with integrated warm LED profile rings and double pivot brass entrance door.',
-    imageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
+    imageUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-03',
     tags: ['Canopy', 'Foyer', 'Pivot Door', 'Portico']
@@ -326,7 +326,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'ARCHITECTURE',
     headName: 'Cantilever Balcony & Railing',
     description: 'Seamless laminated toughened glass balustrade with concealed drainage trough and composite deck.',
-    imageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+    imageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-04',
     tags: ['Balcony', 'Glass Railing', 'Deck', 'Outdoor']
@@ -336,7 +336,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'ARCHITECTURE',
     headName: 'Rooftop Terrace & Pergola',
     description: 'Motorized louvered bioclimatic aluminum pergola with outdoor bar counter and perimeter planters.',
-    imageUrl: '/assets/images/tropical_eco_render_1789218073135.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-04',
     tags: ['Terrace', 'Pergola', 'Bioclimatic', 'Rooftop']
@@ -346,7 +346,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'ARCHITECTURE',
     headName: 'Night-View Architectural Lighting',
     description: '3000K architectural grazing illumination highlighting stone textures, cantilever massing and trees.',
-    imageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
+    imageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-05',
     tags: ['Night View', 'Lighting', 'Illumination', 'Façade']
@@ -356,7 +356,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'ARCHITECTURE',
     headName: 'Landscape Architecture & Garden',
     description: 'Native xeriscape tropical vegetation with basalt stone stepping pavers and concealed drip irrigation.',
-    imageUrl: '/assets/images/tropical_eco_render_1789218073135.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-05',
     tags: ['Landscape', 'Garden', 'Pavers', 'Water']
@@ -366,7 +366,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'ARCHITECTURE',
     headName: 'Modern Luxury Villa Concept',
     description: 'Massing volumes with clean interlocking white stucco cubes, dark metal trims and continuous waterbody.',
-    imageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+    imageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-06',
     tags: ['Villa', 'Modern', 'Massing', 'Luxury']
@@ -376,7 +376,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'ARCHITECTURE',
     headName: 'Traditional Heritage House / Courtyard',
     description: 'Sloped clay Mangalore tiled roof with central Brahmastanam open-to-sky courtyard and carved stone pillars.',
-    imageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
+    imageUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-06',
     tags: ['Heritage', 'Courtyard', 'Stone Pillars', 'Vernacular']
@@ -386,7 +386,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'ARCHITECTURE',
     headName: 'Commercial Façade & Retail Display',
     description: 'Double-height structural silicone curtain wall with high-transmittance low-e solar control glazing.',
-    imageUrl: '/assets/images/industrial_concept_render_1789216663974.jpg',
+    imageUrl: '/assets/images/villa253_gazebo_terrace_1790833723445.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-07',
     tags: ['Commercial', 'Curtain Wall', 'Low-E', 'Retail']
@@ -396,7 +396,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'ARCHITECTURE',
     headName: 'Countryside Farmhouse Retreat',
     description: 'Low-slung rammed earth and exposed brick architecture integrated with mature canopy trees.',
-    imageUrl: '/assets/images/tropical_eco_render_1789218073135.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-07',
     tags: ['Farmhouse', 'Earth', 'Brick', 'Nature']
@@ -406,7 +406,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'ARCHITECTURE',
     headName: 'Apartment Tower Elevation & Lobby',
     description: 'Multi-tiered luxury residential tower elevation with staggered green sky-gardens and triple-height drop-off.',
-    imageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+    imageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-08',
     tags: ['Apartment', 'Tower', 'Sky Garden', 'Urban']
@@ -418,7 +418,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Living Room Formal Lounge',
     description: 'Continuous Botticino marble flooring with Italian curved sofa, brass floor lamps, and sea-view vista.',
-    imageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+    imageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-01',
     tags: ['Living Room', 'Marble', 'Lounge', 'Luxury']
@@ -428,7 +428,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Drawing Room & Guest Salon',
     description: 'Neo-classical wall wainscoting with brushed gold accents, plush velvet armchairs, and coffered ceiling.',
-    imageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
+    imageUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-01',
     tags: ['Drawing Room', 'Neo-Classical', 'Velvet', 'Wainscot']
@@ -438,7 +438,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Dining Room & Bar Credenza',
     description: 'Solid marble monolithic 10-seater dining table with bespoke sculptural acoustic pendant and illuminated bar.',
-    imageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
+    imageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-02',
     tags: ['Dining', 'Bar', 'Lighting', 'Marble Table']
@@ -448,7 +448,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Master Bedroom Suite',
     description: 'European white oak herringbone flooring with suede upholstered wall panelling and warm 2700K ambient cove.',
-    imageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
+    imageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-02',
     tags: ['Master Bedroom', 'Oak Parquet', 'Panelling', 'Cove']
@@ -458,7 +458,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Kids’ Bedroom & Study Hub',
     description: 'Multi-functional bunk unit with integrated study desk, whiteboard wall, and playful acoustic felt pinboards.',
-    imageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+    imageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-03',
     tags: ['Kids Room', 'Study', 'Storage', 'Modern']
@@ -468,7 +468,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Guest Bedroom & Luggage Bench',
     description: 'Serene minimalist palette with concealed storage wardrobe, upholstered daybed, and luggage drop zone.',
-    imageUrl: '/assets/images/tropical_eco_render_1789218073135.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-03',
     tags: ['Guest Room', 'Minimalist', 'Luggage', 'Warm']
@@ -478,7 +478,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Gourmet Modular Kitchen & Island',
     description: 'Dekton porcelain waterfall island with Blum motorized servo-drive drawers, induction cooktop, and ducted hood.',
-    imageUrl: '/assets/images/industrial_concept_render_1789216663974.jpg',
+    imageUrl: '/assets/images/villa253_gazebo_terrace_1790833723445.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-04',
     tags: ['Kitchen', 'Island', 'Dekton', 'Blum']
@@ -488,7 +488,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Walk-in Wardrobe & Dressing Room',
     description: 'Fluted glass tinted wardrobe shutters with concealed vertical LED channels and central accessory island.',
-    imageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-04',
     tags: ['Wardrobe', 'Walk-in', 'LED', 'Glass']
@@ -498,7 +498,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Feature TV Wall & Media Console',
     description: 'Bookmatched Italian travertine slab with acoustic wooden fluted slats and floating cantilevered credenza.',
-    imageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+    imageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-05',
     tags: ['TV Wall', 'Travertine', 'Acoustic', 'Media']
@@ -508,7 +508,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Executive Home Office & Library',
     description: 'Acoustic double-glazed partition with bespoke walnut executive desk and floor-to-ceiling library display.',
-    imageUrl: '/assets/images/industrial_concept_render_1789216663974.jpg',
+    imageUrl: '/assets/images/villa253_gazebo_terrace_1790833723445.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-05',
     tags: ['Home Office', 'Library', 'Desk', 'Acoustic']
@@ -518,7 +518,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Sacred Pooja Room & Mandir',
     description: 'Carved white Makrana marble sanctum with backlit brass jaali fretwork and floating drawer storage.',
-    imageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
+    imageUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-06',
     tags: ['Pooja Room', 'Mandir', 'Marble', 'Jaali']
@@ -528,7 +528,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Master Bathroom Spa Ensuite',
     description: 'Bookmatched porcelain wall slabs with freestanding solid-surface soaking tub, rain shower, and double vanity.',
-    imageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
+    imageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-06',
     tags: ['Bathroom', 'Ensuite', 'Tub', 'Vanity']
@@ -538,7 +538,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Architectural Floating Staircase',
     description: 'Cantilevered solid teak treads anchored to hidden steel stringer with frameless structural glass balustrade.',
-    imageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+    imageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-07',
     tags: ['Staircase', 'Cantilever', 'Teak', 'Glass']
@@ -548,7 +548,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Private Entrance Foyer & Lobby',
     description: 'Bespoke entryway console table with backlit fluted marble wall niche and sculptural bronze mirror.',
-    imageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
+    imageUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-07',
     tags: ['Foyer', 'Lobby', 'Mirror', 'Entryway']
@@ -558,7 +558,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Balcony Deck & Sit-out Lounge',
     description: 'All-weather rattan outdoor lounge with micro-irrigation planter troughs and anti-skid timber composite tiles.',
-    imageUrl: '/assets/images/tropical_eco_render_1789218073135.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-07',
     tags: ['Balcony', 'Deck', 'Outdoor', 'Rattan']
@@ -568,7 +568,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Utility, Scullery & Laundry Station',
     description: 'Ergonomic front-load washer-dryer stack with quartz counter, deep soaking sink, and concealed laundry pullouts.',
-    imageUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+    imageUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-08',
     tags: ['Utility', 'Laundry', 'Storage', 'Sink']
@@ -578,7 +578,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Private Acoustic Home Cinema',
     description: '150" 4K laser projection with Dolby Atmos 9.2.4 architectural in-wall speakers and motorized leather recliners.',
-    imageUrl: '/assets/images/industrial_concept_render_1789216663974.jpg',
+    imageUrl: '/assets/images/villa253_gazebo_terrace_1790833723445.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-08',
     tags: ['Home Theatre', 'Cinema', 'Acoustic', 'Dolby']
@@ -588,7 +588,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Hospitality & Fine Dine Restaurant',
     description: 'Layered mood lighting with curved banquette leather seating, exposed brick arches, and artisanal bar gantry.',
-    imageUrl: '/assets/images/industrial_concept_render_1789216663974.jpg',
+    imageUrl: '/assets/images/villa253_gazebo_terrace_1790833723445.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-08',
     tags: ['Hospitality', 'Restaurant', 'Banquette', 'Bar']
@@ -598,7 +598,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Corporate Office & Collaboration Zone',
     description: 'Biophilic open workstations with acoustic ceiling baffles, phone privacy pods, and touch-screen boardrooms.',
-    imageUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
+    imageUrl: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-09',
     tags: ['Office', 'Corporate', 'Acoustic', 'Workstations']
@@ -608,7 +608,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'INTERIOR',
     headName: 'Luxury Retail Flagship Showroom',
     description: 'Architectural display plinths with CRI 98+ magnetic track lighting and interactive digital mirrors.',
-    imageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
+    imageUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-09',
     tags: ['Retail', 'Showroom', 'Display', 'Luxury']
@@ -620,7 +620,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'CONSTRUCTION',
     headName: 'Site Preparation & Demolition Protection',
     description: 'Dust barrier zip-walls, floor protection corflute sheets, and structural survey benchmarks.',
-    imageUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+    imageUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-01',
     tags: ['Site Prep', 'Demolition', 'Protection', 'Safety']
@@ -630,7 +630,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'CONSTRUCTION',
     headName: 'Foundation & Raft Reinforcement',
     description: 'TMT bar grid reinforcement inspection with cover blocks and anti-termite chemical spray.',
-    imageUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
+    imageUrl: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-02',
     tags: ['Foundation', 'Raft', 'RCC', 'Steel']
@@ -640,7 +640,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'CONSTRUCTION',
     headName: 'RCC Column & Slab Formwork',
     description: 'Plywood formwork with heavy-duty steel props, laser level slab casting, and cube test cube sampling.',
-    imageUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
+    imageUrl: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-02',
     tags: ['RCC', 'Slab', 'Formwork', 'Concrete']
@@ -650,7 +650,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'CONSTRUCTION',
     headName: 'Masonry Brickwork & Lintels',
     description: 'AAC lightweight blockwork with polymer joint mortar and reinforced lintel band beams.',
-    imageUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+    imageUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-03',
     tags: ['Brickwork', 'Masonry', 'AAC Blocks', 'Lintel']
@@ -660,7 +660,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'CONSTRUCTION',
     headName: 'Sanitary Plumbing & Hydrostatic Testing',
     description: 'Multi-layer CPVC / UPVC piping with acoustic sewage pipe insulation and 10 bar pressure testing.',
-    imageUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
+    imageUrl: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-03',
     tags: ['Plumbing', 'Piping', 'Pressure Test', 'Sanitary']
@@ -670,7 +670,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'CONSTRUCTION',
     headName: 'Concealed Electrical Conduit Chasing',
     description: 'FR-LSH copper wiring routed through heavy-duty PVC conduits with laser aligned switch boxes.',
-    imageUrl: '/assets/images/cad_floor_plan_1789216705163.jpg',
+    imageUrl: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-04',
     tags: ['Electrical', 'Conduit', 'Wiring', 'Chasing']
@@ -680,7 +680,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'CONSTRUCTION',
     headName: 'Multi-Coat Waterproofing & Ponding Test',
     description: 'Polyurethane elastomeric waterproofing with fiber-mesh corners and 72-hour stagnant ponding test.',
-    imageUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
+    imageUrl: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-04',
     tags: ['Waterproofing', 'Ponding Test', 'Polyurethane', 'Leakproof']
@@ -690,7 +690,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'CONSTRUCTION',
     headName: 'Marble Dry-Lay & Crystallization',
     description: 'Factory numbered marble slab dry-lay mock-up followed by white cement adhesive screed and diamond polishing.',
-    imageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-05',
     tags: ['Flooring', 'Marble Dry-lay', 'Polishing', 'Installation']
@@ -700,7 +700,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'CONSTRUCTION',
     headName: 'False Ceiling Framework & Gypsum Board',
     description: 'GI perimeter channels, cross tees with moisture-resistant Saint-Gobain Gyproc boards and expansion joints.',
-    imageUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
+    imageUrl: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-05',
     tags: ['False Ceiling', 'Gypsum', 'GI Channels', 'Cove']
@@ -710,7 +710,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'CONSTRUCTION',
     headName: 'Wall Putty, Primer & Airless Spray Painting',
     description: 'Multi-coat acrylic wall putty with laser sanded finish, alkali primer, and zero-VOC luxury emulsion.',
-    imageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
+    imageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-06',
     tags: ['Painting', 'Putty', 'Airless Spray', 'Emulsion']
@@ -720,7 +720,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'CONSTRUCTION',
     headName: 'Modular Kitchen & Millwork Assembly',
     description: 'Laser-levelled base cabinet installation with Blum drawer adjustment and concealed cable routing.',
-    imageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-06',
     tags: ['Modular Assembly', 'Carpentry', 'Cabinets', 'Hardware']
@@ -730,7 +730,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'CONSTRUCTION',
     headName: 'Final Deep Cleaning & Snagging Inspection',
     description: 'Industrial HEPA extraction, silicone seam sealing, appliance testing, and 240-point snag checklist signoff.',
-    imageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+    imageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-07',
     tags: ['Handover', 'Snagging', 'Deep Clean', 'Quality']
@@ -740,7 +740,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'CONSTRUCTION',
     headName: 'Before & After Transformation Showcase',
     description: 'Side-by-side comparative documentation showing bare concrete shell transformed into luxury finished penthouse.',
-    imageUrl: '/assets/images/neoclassic_render_1789216684796.jpg',
+    imageUrl: '/assets/images/villa253_master_suite_1790833696550.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-07',
     tags: ['Before After', 'Transformation', 'Showcase', 'Portfolio']
@@ -752,7 +752,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'Flooring Samples & Texture Boards',
     description: 'Engineered oak planks, microtopping cement swatches, flamed granite, and vitrified tiles.',
-    imageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-01',
     tags: ['Flooring', 'Samples', 'Oak', 'Granite']
@@ -762,7 +762,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'Imported Marble & Exotic Quartzite',
     description: 'Botticino Classico, Statuario White, Grigio Orobico, and Brazilian Patagonia quartzite slabs.',
-    imageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-01',
     tags: ['Marble', 'Granite', 'Quartzite', 'Statuario']
@@ -772,7 +772,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'Large-Format Porcelain Tiles & Slabs',
     description: '1200x2400mm continuous porcelain slabs with bookmatched veins and anti-slip R10 slip rating.',
-    imageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
+    imageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-02',
     tags: ['Tiles', 'Porcelain', 'Large Format', 'Slabs']
@@ -782,7 +782,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'Natural Wood Veneer & Smoked Teak',
     description: 'Smoked Teak, American Walnut, White Ash, and quarter-cut European Oak natural sheets.',
-    imageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-02',
     tags: ['Veneer', 'Teak', 'Walnut', 'Wood']
@@ -792,7 +792,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'High-Pressure & Anti-Fingerprint Laminate',
     description: '1.2mm zero-reflection super-matte laminates with thermal healing surface technology.',
-    imageUrl: '/assets/images/industrial_concept_render_1789216663974.jpg',
+    imageUrl: '/assets/images/villa253_gazebo_terrace_1790833723445.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-03',
     tags: ['Laminate', 'HPL', 'Anti-Fingerprint', 'Matte']
@@ -802,7 +802,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'High-Gloss Acrylic Finishes',
     description: '2mm UV-resistant acrylic sheets with mirror reflection for modular wardrobe and kitchen shutters.',
-    imageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-03',
     tags: ['Acrylic', 'Gloss', 'UV Resistant', 'Shutters']
@@ -812,7 +812,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'Polyurethane (PU) Lacquer Finishes',
     description: 'Italian ICA/Milesi pigmented PU lacquer in dead matte, satin, and high-gloss metallic hues.',
-    imageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
+    imageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-04',
     tags: ['PU Finish', 'Lacquer', 'Italian', 'Matte']
@@ -822,7 +822,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'Architectural Fluted & Tinted Glass',
     description: 'Moru fluted glass, grey-tinted reflective glass, dichroic art glass, and acoustic laminated panels.',
-    imageUrl: '/assets/images/industrial_concept_render_1789216663974.jpg',
+    imageUrl: '/assets/images/villa253_gazebo_terrace_1790833723445.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-04',
     tags: ['Glass', 'Fluted', 'Tinted', 'Acoustic']
@@ -832,7 +832,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'Textured Wallpaper & Wall Coverings',
     description: 'Natural woven grasscloth, embossed vinyl fabric, and custom bespoke botanical wall murals.',
-    imageUrl: '/assets/images/tropical_eco_render_1789218073135.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-05',
     tags: ['Wallpaper', 'Grasscloth', 'Mural', 'Wall Covering']
@@ -842,7 +842,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'Luxury Paint Shades & Limewash Textures',
     description: 'Zero-VOC mineral lime plaster, velvet touch luxury emulsions, and Stucco Veneziano metallics.',
-    imageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-05',
     tags: ['Paint', 'Limewash', 'Stucco', 'Texture']
@@ -852,7 +852,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'Ceiling Design Details & Wood Rafts',
     description: 'Concealed magnetic track channels, acoustic wooden louvers, and indirect perimeter cove details.',
-    imageUrl: '/assets/images/cad_section_drawing_1789218091254.jpg',
+    imageUrl: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-06',
     tags: ['Ceiling', 'Wooden Rafts', 'Cove', 'Acoustic']
@@ -862,7 +862,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'Architectural Lighting Fixtures & Pendants',
     description: 'Anti-glare magnetic track spots, deep recess architectural downlights, and blown-glass dining chandeliers.',
-    imageUrl: '/assets/images/biophilic_concept_render_1789216627991.jpg',
+    imageUrl: '/assets/images/villa253_living_modern_1790830799942.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-06',
     tags: ['Lighting', 'Pendants', 'Track Lights', 'Downlights']
@@ -872,7 +872,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'Door Handles, Hardware & Mortise Locks',
     description: 'Solid brass knurled handles by Buster + Punch, concealed 3D adjustable hinges, and magnetic locks.',
-    imageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-07',
     tags: ['Door Handles', 'Brass', 'Hardware', 'Hinges']
@@ -882,7 +882,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'Sanitary Fittings & Faucets',
     description: 'Brushed rose gold thermostatic diverters, ceiling rainfall showers, and rimless wall-hung smart toilets.',
-    imageUrl: '/assets/images/minimalist_concept_render_1789216644600.jpg',
+    imageUrl: '/assets/images/villa253_guest_suite_1790833711200.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-07',
     tags: ['Sanitary', 'Faucets', 'Showers', 'Smart Toilet']
@@ -892,7 +892,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'Kitchen Hardware & Organizational Pull-outs',
     description: 'Blum Tandembox, motorized servo-drive lift systems, corner carousels, and integrated waste sorters.',
-    imageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-08',
     tags: ['Kitchen Hardware', 'Blum', 'Servo-drive', 'Storage']
@@ -902,7 +902,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'Wardrobe Organizers & Leather Trays',
     description: 'Velvet jewelry pullouts, motorized drop-down trouser racks, tie organizers, and sensor LED profiles.',
-    imageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-08',
     tags: ['Wardrobe', 'Accessories', 'Jewelry Trays', 'Lighting']
@@ -912,7 +912,7 @@ export const INITIAL_CATEGORY_SAMPLE_HEADS: CategorySampleHead[] = [
     category: 'MATERIALS',
     headName: 'Upholstery Fabrics, Velvets & Leather',
     description: 'High-rub test bouclé, stain-resistant Crypton performance weaves, top-grain Italian aniline leathers.',
-    imageUrl: '/assets/images/materials_moodboard_1789218106559.jpg',
+    imageUrl: '/assets/images/villa253_living_greatroom_1790833681710.jpg',
     sourceType: 'ARCHITECTURAL_LIBRARY',
     updatedAt: '2026-03-09',
     tags: ['Fabrics', 'Leather', 'Boucle', 'Upholstery']

@@ -180,3 +180,80 @@ export interface TwoStepSpatialDesignSession {
   boqLinkedAt?: string;
   updatedAt: string;
 }
+
+export interface CameraHotspotInfo {
+  cameraLabel: string;
+  positionXPercent: number; // 0-100 on room canvas
+  positionYPercent: number; // 0-100 on room canvas
+  angleDegrees: number;     // 0 = right, 90 = down, 180 = left, 270 = up (towards north)
+  fieldOfViewDegrees: number;
+  viewTargetName: string;
+}
+
+export interface FloorPlanReferenceImage {
+  id: string;
+  title: string;
+  subtitle: string;
+  category: 
+    | 'INTERIOR_RENDER' 
+    | 'EXTERIOR_ELEVATION' 
+    | 'MOODBOARD' 
+    | 'CAD_AND_SECTION' 
+    | 'SPATIAL_PLAN' 
+    | 'STRUCTURAL_DETAIL' 
+    | 'CONCEPT_SKETCH';
+  imageUrl: string;
+  applicableRooms: string[]; // room IDs or 'ALL'
+  cameraHotspot?: CameraHotspotInfo;
+  themeMappingId?: string; // e.g. 'THEME-WARM-LUXURY', 'THEME-BIOPHILIC-TROPICAL'
+  description: string;
+  keyDesignElements: string[];
+  materialsReferenced: string[];
+  cadDimensionReference?: string;
+  aspectRatio?: '16:9' | '4:3' | '1:1';
+}
+
+export interface InteriorSpecificationInput {
+  floorPlanImageBase64?: string;
+  floorPlanFileName?: string;
+  roomType: string; // 'LIVING_DINING' | 'MASTER_BEDROOM' | 'KITCHEN_PANTRY' | 'GUEST_BEDROOM' | 'BALCONY_GAZEBO' | 'PENTHOUSE_LOUNGE' | 'CUSTOM';
+  roomName: string;
+  lengthFt: number;
+  widthFt: number;
+  ceilingHeightFt: number;
+  preferredStyle: string; // 'WARM_LUXURY' | 'JAPANDI_MINIMAL' | 'BIOPHILIC_MODERN' | 'ITALIAN_MONOLITHIC' | 'SCANDINAVIAN' | 'CUSTOM';
+  customStylePrompt?: string;
+  keyFurnitureRequirements: string[];
+  materialPreferences: string[];
+  lightingPreference: string;
+  budgetTier: 'BUDGET_CONTEMPORARY' | 'PREMIUM_LUXURY' | 'BESPOKE_ULTRA_LUXURY';
+  facingDirection: 'NORTH' | 'SOUTH' | 'EAST' | 'WEST' | 'NORTH_EAST';
+  specialNotes?: string;
+}
+
+export interface InteriorDesignOption {
+  id: string;
+  title: string;
+  subtitle: string;
+  tagline: string;
+  isRecommended?: boolean;
+  styleCategory: string;
+  designPhilosophy: string;
+  whyBestForThisFloorPlan: string;
+  spatialArrangementSummary: string;
+  colorPalette: { name: string; hex: string }[];
+  materials: ConceptMaterialItem[];
+  lightingScheme: { type: string; description: string; kelvin: number }[];
+  pros: string[];
+  considerations: string[];
+  vastuComplianceScore: number; // 0-100
+  circulationScore: number; // 0-100
+  estimatedCostPerSqFt: number;
+  totalEstimatedCost: number;
+  renderPrompt: string;
+  generatedRenderUrl?: string;
+  generatedTimestamp?: string;
+  systemGeneratedBadge?: string;
+}
+
+

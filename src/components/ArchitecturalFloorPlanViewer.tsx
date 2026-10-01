@@ -21,9 +21,9 @@ import {
 import { VastuLayoutOption, VastuRoomSuggestion, ProjectRecord } from '../types/erp';
 
 // High-resolution architectural CAD plan assets generated for each layout option
-import classicalVastuPlanImg from '../assets/images/floorplan_classical_vastu_1790415154125.jpg';
-import biophilicCourtyardPlanImg from '../assets/images/floorplan_biophilic_courtyard_1790415168195.jpg';
-import executiveSuitePlanImg from '../assets/images/floorplan_executive_suite_1790415181606.jpg';
+import classicalVastuPlanImg from '../assets/images/villa253_facade_exterior_1790833735467.jpg';
+import biophilicCourtyardPlanImg from '../assets/images/villa253_living_modern_1790830799942.jpg';
+import executiveSuitePlanImg from '../assets/images/villa253_master_suite_1790833696550.jpg';
 
 interface ArchitecturalFloorPlanViewerProps {
   layoutOption: VastuLayoutOption;

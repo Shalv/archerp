@@ -103,13 +103,13 @@ export const CategoryVisualSampleHeadsView: React.FC<CategoryVisualSampleHeadsVi
         showToast(`AI image regenerated for "${selectedHeadForRegenerate.headName}" via ${sourceLabel}!`);
       } else {
         // Fallback to high quality asset
-        const fallback = '/assets/images/biophilic_concept_render_1789216627991.jpg';
+        const fallback = '/assets/images/villa253_living_modern_1790830799942.jpg';
         onUpdateHead(selectedHeadForRegenerate.id, fallback, 'AI_GENERATED');
         showToast(`Sample visual loaded for "${selectedHeadForRegenerate.headName}"!`);
       }
     } catch (err) {
       console.warn('AI generation API error, using architectural render asset:', err);
-      const fallback = '/assets/images/tropical_eco_render_1789218073135.jpg';
+      const fallback = '/assets/images/villa253_living_greatroom_1790833681710.jpg';
       onUpdateHead(selectedHeadForRegenerate.id, fallback, 'AI_GENERATED');
       showToast(`AI image updated for "${selectedHeadForRegenerate.headName}"!`);
     } finally {
