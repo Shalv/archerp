@@ -17,7 +17,7 @@
  * deterministic path with a visible message. Nothing silently pretends.
  */
 
-import { GoogleGenAI } from '@google/genai';
+import type { GoogleGenAI } from '@google/genai';
 
 // ---------------------------------------------------------------------------
 // Configuration
@@ -43,8 +43,28 @@ function readKey(): string {
 
 let client: GoogleGenAI | null = null;
 let remoteDenied = false;
+let sdkUnavailableReason = '';
 
-function getClient(): GoogleGenAI {
+/**
+ * The SDK is imported lazily on first use. If the dependency is missing or
+ * fails to load in a deployment, the AI routes degrade to "not configured"
+ * instead of taking the whole server down at module load.
+ */
+async function loadSdk(): Promise<new (opts: any) => GoogleGenAI> {
+  try {
+    const mod: any = await import('@google/genai');
+    const Ctor = mod?.GoogleGenAI || mod?.default?.GoogleGenAI || mod?.default;
+    if (typeof Ctor !== 'function') throw new Error('GoogleGenAI export not found');
+    return Ctor;
+  } catch (err: any) {
+    sdkUnavailableReason = String(err?.message || err).slice(0, 200);
+    throw new AiNotConfiguredError(
+      `The Gemini SDK (@google/genai) could not be loaded on the server (${sdkUnavailableReason}). Run npm install in the deployment, then retry.`
+    );
+  }
+}
+
+async function getClient(): Promise<GoogleGenAI> {
   const apiKey = readKey();
   if (!apiKey) {
     throw new AiNotConfiguredError(
@@ -55,13 +75,14 @@ function getClient(): GoogleGenAI {
     throw new AiCallError('Gemini rejected this API key earlier in this session (permission denied). Fix the key and restart the server.', 'PERMISSION_DENIED');
   }
   if (!client) {
-    client = new GoogleGenAI({ apiKey, httpOptions: { headers: { 'User-Agent': 'buildstorys-erp' } } });
+    const Ctor = await loadSdk();
+    client = new Ctor({ apiKey, httpOptions: { headers: { 'User-Agent': 'buildstorys-erp' } } });
   }
   return client;
 }
 
 export function getAiStatus(): AiStatus {
-  const configured = Boolean(readKey()) && !remoteDenied;
+  const configured = Boolean(readKey()) && !remoteDenied && !sdkUnavailableReason;
   return {
     provider: 'gemini',
     configured,
@@ -70,7 +91,9 @@ export function getAiStatus(): AiStatus {
     imageGenerationEnabled: configured,
     note: configured
       ? `Gemini ${DEFAULT_TEXT_MODEL} is configured on the server. Drawings, narratives and renders run server-side; quantities and rates stay deterministic.`
-      : 'Gemini is not configured (no GEMINI_API_KEY). The studio runs on the deterministic engine only.'
+      : sdkUnavailableReason
+        ? `Gemini SDK failed to load on the server (${sdkUnavailableReason}). The studio runs on the deterministic engine.`
+        : 'Gemini is not configured (no GEMINI_API_KEY). The studio runs on the deterministic engine only.'
   };
 }
 
@@ -177,7 +200,7 @@ export async function extractRoomsFromPlan(input: {
   mimeType: string;
   fileName?: string;
 }): Promise<PlanExtractionResult> {
-  const ai = getClient();
+  const ai = await getClient();
   const prompt = [
     'You are reading an architectural floor plan for a construction ERP.',
     'Return every enclosed room or space with its dimensions converted to FEET (decimal).',
@@ -296,7 +319,7 @@ export interface NarrativeResult {
  * that come from the BOQ, not from a language model.
  */
 export async function writeConceptNarrative(input: NarrativeInput): Promise<NarrativeResult> {
-  const ai = getClient();
+  const ai = await getClient();
   const prompt = [
     `Write a client-facing interior design narrative for "${input.conceptName}" (${input.style}).`,
     input.propertyType ? `Property: ${input.propertyType.toLowerCase().replace(/_/g, ' ')}.` : '',
@@ -364,7 +387,7 @@ export interface RenderResult {
  * specification. Returns a data URI the studio stores as a PENDING asset.
  */
 export async function renderRoom(input: RenderInput): Promise<RenderResult> {
-  const ai = getClient();
+  const ai = await getClient();
   let response: any;
   try {
     response = await withTimeout(

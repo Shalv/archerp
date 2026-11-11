@@ -168,6 +168,26 @@ Full guide: `docs/GEMINI_AI.md`. Audit findings: `docs/M04C_AUDIT.md`.
 
 ---
 
+## 4a. Diagnosing a failing API call
+
+Any API error in the studio now offers **Run server diagnostics** in the error banner. It calls
+`GET /api/system/diagnostics` (signed in) and reports: build commit / node env / serverless flag, which
+database file is loaded and its size, the project ids it contains, how many studio sessions and twins exist,
+the Gemini status, the last ten server errors, and three pass/fail checks.
+
+Reading the error text:
+
+| Message | What it means | What to do |
+| --- | --- | --- |
+| `…returned HTML instead of JSON` / `HTTP 404` | `/api/*` is not routed to the app | the `vercel.json` rewrite is missing from that deployment — redeploy `main` |
+| `HTTP 500` + `Host said: "FUNCTION_INVOCATION_FAILED"` | the API function crashed while starting | open diagnostics; if the database or a dependency is the cause it is listed there |
+| `HTTP 503 AI_NOT_CONFIGURED` | no `GEMINI_API_KEY` on the server | set it and restart; everything else keeps working |
+| `projects: PROJ-SKYLINE-1402` in diagnostics | the running database is the old demo file | it now self-migrates on boot; if it does not, `POST /api/system/reset-demo` as an admin |
+
+A 500 with a non-JSON body is a **server-side crash**, not a routing problem — the route itself is fine
+(`/api/design-studio/PROJ-SKYLINE-1402` returns 200 JSON locally, for any project id, even one that does not exist:
+it creates an empty session).
+
 ## 4b. If the studio shows "…is not valid JSON"
 
 That message means the request never reached the Express app — the host answered with its own HTML page.

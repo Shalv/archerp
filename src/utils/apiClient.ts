@@ -54,13 +54,20 @@ export async function apiJson<T = any>(
   const raw = await res.text();
 
   if (!contentType.includes('json')) {
+    // Surface what the host actually said - "FUNCTION_INVOCATION_FAILED" tells
+    // you the serverless function crashed, which is a different problem from a
+    // missing route.
+    const snippet = raw.replace(/\s+/g, ' ').trim().slice(0, 160);
     if (looksLikeHtml(raw) || res.status === 404) {
       throw new ApiUnavailableError(path, res.status, options.hint || DEFAULT_HINT);
     }
     throw new ApiUnavailableError(
       path,
       res.status,
-      options.hint || 'The server returned a non-JSON response. Check the server log for the failing route.'
+      options.hint ||
+        `The server returned a non-JSON response (${contentType || 'no content-type'}). ` +
+          (snippet ? `Host said: "${snippet}". ` : '') +
+          'A 500 here usually means the API function crashed while starting - sign in and open /api/system/diagnostics for the build, database and AI status.'
     );
   }
 

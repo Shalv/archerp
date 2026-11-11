@@ -387,6 +387,33 @@ class DatabaseService {
             parsed.users = [...DEMO_USERS];
           }
 
+          // --- legacy demo fixture migration ----------------------------------
+          // The original demo project (Skyline Residences Unit 1402) was replaced
+          // by Villa 253. If a database file still holds that untouched fixture,
+          // swap it for the current demo so the studio/twin are not pointed at a
+          // project whose geometry no longer exists. Fingerprint-matched: a file
+          // where the user edited that project is left alone.
+          const LEGACY_DEMO_ID = 'PROJ-SKYLINE-1402';
+          const legacy = parsed.projects.find(p => p && p.id === LEGACY_DEMO_ID);
+          const hasVillaProject = parsed.projects.some(p => p && p.id === 'PROJ-VILLA-253');
+          let legacyMigrated = false;
+          if (legacy && !hasVillaProject && /Skyline Residences/i.test(String(legacy.title || ''))) {
+            legacyMigrated = true;
+            parsed.projects = parsed.projects.map(p =>
+              p && p.id === LEGACY_DEMO_ID ? getVilla253DemoProject() : p
+            );
+            parsed.operations = { ...(parsed.operations || {}), ...JSON.parse(JSON.stringify(VILLA253_OPERATIONS)) };
+            parsed.designStudioSessions = {
+              ...(parsed.designStudioSessions || {}),
+              [VILLA253_DESIGN_STUDIO_SESSION.projectId]: JSON.parse(JSON.stringify(VILLA253_DESIGN_STUDIO_SESSION))
+            };
+            parsed.designTwins = {
+              ...(parsed.designTwins || {}),
+              [VILLA253_DESIGN_TWIN.projectId]: JSON.parse(JSON.stringify(VILLA253_DESIGN_TWIN))
+            };
+            console.info('[Build Storys] Replaced the legacy Skyline demo project with PROJ-VILLA-253 and loaded its studio, twin and registers.');
+          }
+
           // --- additive migration for existing database files -----------------
           // A file written before the studio / twin existed would otherwise make
           // those tabs look empty (and show the old Skyline project). We only ADD
@@ -410,7 +437,7 @@ class DatabaseService {
               parsed.operations = JSON.parse(JSON.stringify(VILLA253_OPERATIONS));
               console.info('[Build Storys] Added the operational registers to the existing database.');
             }
-          } else {
+          } else if (!legacyMigrated) {
             console.warn(
               '[Build Storys] This database file holds projects other than PROJ-VILLA-253, so the Villa 253 demo data was not injected. ' +
               'POST /api/system/reset-demo as an admin (or delete data/buildstorys_db.json and restart) to load the demo dataset.'

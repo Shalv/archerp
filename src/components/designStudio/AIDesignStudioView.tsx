@@ -39,7 +39,7 @@ import {
   History
 } from 'lucide-react';
 import { ProjectRecord, UserSession } from '../../types/erp';
-import { apiJson, isApiUnavailable } from '../../utils/apiClient';
+import { apiJson, ApiUnavailableError, isApiUnavailable } from '../../utils/apiClient';
 import { VILLA253_MEDIA_LIBRARY } from '../../data/villa253MediaLibrary';
 
 import {
@@ -141,6 +141,7 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
   const [selectedConceptId, setSelectedConceptId] = useState<string>('');
   const [planFile, setPlanFile] = useState<File | null>(null);
   const [ocrText, setOcrText] = useState<string>('');
+  const [diagnostics, setDiagnostics] = useState<any>(null);
   const [aiStatus, setAiStatus] = useState<{ configured: boolean; textModel: string; imageModel: string; note: string } | null>(null);
   const [aiBusy, setAiBusy] = useState<string>('');
   const [aiProgress, setAiProgress] = useState<{ done: number; total: number; label: string }>({ done: 0, total: 0, label: '' });
@@ -525,9 +526,39 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
       </div>
 
       {error && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded p-3 flex items-start gap-2">
-          <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
-          <span>{error}</span>
+        <div className="bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded p-3">
+          <div className="flex items-start gap-2">
+            <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+            <span>{error}</span>
+          </div>
+          {/reachable|non-JSON|API route/i.test(error) && (
+            <div className="mt-2 pl-6">
+              <button
+                onClick={() =>
+                  apiJson<any>('/api/system/diagnostics')
+                    .then(setDiagnostics)
+                    .catch(err => setDiagnostics({ error: err.message }))
+                }
+                className="text-[11px] font-semibold text-rose-800 underline"
+              >
+                Run server diagnostics
+              </button>
+              {diagnostics && (
+                <pre className="mt-1 max-h-40 overflow-auto bg-white border border-rose-200 rounded p-2 text-[10px] text-slate-700 whitespace-pre-wrap">
+{diagnostics.error
+  ? `Diagnostics also failed: ${diagnostics.error}`
+  : [
+      `build: ${diagnostics.build?.commit} · ${diagnostics.build?.nodeEnv} · serverless=${diagnostics.build?.serverless}`,
+      `database: ${diagnostics.database?.source}${diagnostics.database?.sizeKb ? ` (${diagnostics.database.sizeKb} KB)` : ''} · projects=${(diagnostics.database?.projects || []).join(', ')}`,
+      `studio sessions: ${(diagnostics.database?.studioSessions || []).length} · twins: ${(diagnostics.database?.designTwins || []).length}`,
+      `ai: ${diagnostics.ai?.provider} configured=${diagnostics.ai?.configured} (${diagnostics.ai?.textModel})`,
+      ...(diagnostics.checks || []).map((c: any) => `${c.ok ? 'OK  ' : 'FAIL'} ${c.id}: ${c.detail}`),
+      ...(diagnostics.recentErrors || []).slice(0, 3).map((e: any) => `error ${e.at} ${e.path}: ${e.message}`)
+    ].join('\n')}
+                </pre>
+              )}
+            </div>
+          )}
         </div>
       )}
       {notice && (

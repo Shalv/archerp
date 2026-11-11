@@ -208,6 +208,84 @@ export async function createApp(isServerless: boolean = false) {
   });
 
   // --- 1. System Capability & Health ---
+  // --- Diagnostics: turn "check the server log" into something visible ------
+  const serverErrors: { at: string; path: string; message: string; stack?: string }[] = [];
+  const recordServerError = (path: string, err: any) => {
+    serverErrors.unshift({
+      at: new Date().toISOString(),
+      path,
+      message: String(err?.message || err || 'unknown error').slice(0, 500),
+      stack: String(err?.stack || '').split('\n').slice(0, 6).join('\n')
+    });
+    if (serverErrors.length > 25) serverErrors.pop();
+  };
+  const APP_BUILD = {
+    version: '2.0.0',
+    commit: process.env.VERCEL_GIT_COMMIT_SHA || process.env.GIT_COMMIT || 'local',
+    nodeEnv: process.env.NODE_ENV || 'development',
+    serverless: Boolean(process.env.VERCEL || process.env.ERP_SERVERLESS === '1')
+  };
+
+  app.get('/api/system/diagnostics', (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const snapshot = dbService.snapshot();
+      const dbFile = path.join(process.cwd(), 'data', 'buildstorys_db.json');
+      let dbFileInfo: Record<string, any> = { path: dbFile, exists: false };
+      try {
+        const stat = fs.statSync(dbFile);
+        dbFileInfo = { path: dbFile, exists: true, sizeKb: Math.round(stat.size / 1024), modifiedAt: stat.mtime.toISOString() };
+      } catch { /* no file (serverless or first boot) */ }
+
+      const projectIds = (snapshot.projects || []).map(p => p.id);
+      const studioIds = Object.keys(snapshot.designStudioSessions || {});
+      const twinIds = Object.keys(snapshot.designTwins || {});
+
+      res.json({
+        build: APP_BUILD,
+        user: { id: user.id, role: user.role },
+        database: {
+          ...dbFileInfo,
+          source: dbFileInfo.exists ? 'data/buildstorys_db.json' : 'in-memory seed (no file written)',
+          projects: projectIds,
+          hasVillaProject: projectIds.includes('PROJ-VILLA-253'),
+          studioSessions: studioIds,
+          designTwins: twinIds,
+          counts: {
+            users: snapshot.users?.length || 0,
+            customers: snapshot.customers?.length || 0,
+            vendors: snapshot.vendors?.length || 0,
+            masterRates: snapshot.masterRates?.length || 0,
+            operations: Object.keys(snapshot.operations || {}).length
+          }
+        },
+        ai: getAiStatus(),
+        recentErrors: serverErrors.slice(0, 10),
+        checks: [
+          {
+            id: 'VILLA_PROJECT',
+            ok: projectIds.includes('PROJ-VILLA-253'),
+            detail: projectIds.includes('PROJ-VILLA-253')
+              ? 'PROJ-VILLA-253 is loaded.'
+              : `Loaded projects: ${projectIds.join(', ') || 'none'}. The demo data was not seeded - run POST /api/system/reset-demo as an admin, or delete data/buildstorys_db.json and restart.`
+          },
+          {
+            id: 'DESIGN_STUDIO',
+            ok: studioIds.length > 0,
+            detail: studioIds.length ? `Studio session(s): ${studioIds.join(', ')}` : 'No studio session - it is created on first open.'
+          },
+          {
+            id: 'AI_CONFIGURED',
+            ok: getAiStatus().configured,
+            detail: getAiStatus().note
+          }
+        ]
+      });
+    } catch (err: any) {
+      res.status(err?.status || 500).json({ error: err.message || 'Diagnostics failed.' });
+    }
+  });
+
   app.get('/api/health', (req: Request, res: Response) => {
     res.json({ status: 'ok', service: 'Build Storys ERP Core', time: new Date().toISOString() });
   });
@@ -2275,6 +2353,7 @@ export async function createApp(isServerless: boolean = false) {
 
   app.use('/api', (req, res) => { res.status(404).json({ error: 'API endpoint not found.' }); });
   app.use((err: any, req: Request, res: Response, next: express.NextFunction) => {
+    recordServerError(req.path, err);
     if (err?.name === 'MongoNetworkError' || err?.name === 'MongoServerSelectionError' || err?.message?.includes?.('buffering timed out')) {
       console.warn('[AI Studio] Database offline or timed out — continuing with local store');
       if (req.method === 'GET') {
