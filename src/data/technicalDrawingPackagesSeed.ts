@@ -123,6 +123,31 @@ export const SEED_WALL_ELEVATIONS: WallElevationDetail[] = [
     ],
     furnitureIntegrated: ['FUR-TV-003: Floating Media Console with Slotted Acoustic Storage'],
     drawingReference: 'DRW-MBR-004'
+  },
+  {
+    wallId: 'COR-WALL-E',
+    wallLabel: 'Elevation E',
+    orientation: 'NORTH',
+    lengthMm: 12400,
+    heightMm: 5200,
+    title: '3F Public Corridor & SPA Reception - Elevation E (Detailed Grand Elevation with Stepped Cove & Salon Portal)',
+    finishes: [
+      { panelType: 'Teakwood Fluted Corinthian Pilasters (Tags M1, M7, M13)', materialCode: 'MAT-WD-M01', areaSqM: 18.5, heightFromFflMm: 0 },
+      { panelType: 'Stepped Ceiling Light Trough (+5200mm SSL) with Crystal Chandelier Rose', materialCode: 'MAT-GYP-001', areaSqM: 24.0, heightFromFflMm: 3800 },
+      { panelType: 'Classical Boiserie Wainscoting Panels (Tags WP01, WP02, WP03)', materialCode: 'MAT-WPN-002', areaSqM: 32.4, heightFromFflMm: 150 },
+      { panelType: 'Statuario Italian Marble Skirting (Tag SK2 - 150mm Ht)', materialCode: 'MAT-MAR-SK2', areaSqM: 3.6, heightFromFflMm: 0 }
+    ],
+    openings: [
+      { type: 'DOOR', code: 'D1', widthMm: 1800, heightMm: 2400, sillHeightMm: 0 },
+      { type: 'PORTAL', code: 'SPA-ENT', widthMm: 2200, heightMm: 3200, sillHeightMm: 0 }
+    ],
+    electricalPoints: [
+      { code: 'E-CHAN1', type: 'Grand Chandelier Rigging Point with 150kg Seismic Anchor', heightFromFflMm: 5200, distanceFromLeftMm: 4600 },
+      { code: 'E-SCN1..4', type: 'Wall Sconce Ambient Light Points (2800K Dimmable)', heightFromFflMm: 2200, distanceFromLeftMm: 1800 },
+      { code: 'E-COVE1', type: 'Continuous Perimeter Architectural Cove LED Strip (24V IP44)', heightFromFflMm: 3800, distanceFromLeftMm: 0 }
+    ],
+    furnitureIntegrated: ['FUR-COR-001: 3F Corridor Classical Joinery Package with Console Credenzas'],
+    drawingReference: 'DRW-3F-COR-001'
   }
 ];
 

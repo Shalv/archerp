@@ -639,7 +639,7 @@ export const AIDrawingDocumentationView: React.FC<Props> = ({
                         <circle cx="700" cy="275" r="4" fill="#0f172a" />
                         <text x="750" y="280" fill="#475569" fontSize="10" textAnchor="middle">DOOR D1 (914 × 2134)</text>
                       </g>
-                    ) : (
+                    ) : selectedWallId === 'MBR-WALL-01' ? (
                       /* WALL A: Bed Head Wall Elevation */
                       <g id="wallAElevation">
                         {/* Bed Head Wall Paneling */}
@@ -663,14 +663,75 @@ export const AIDrawingDocumentationView: React.FC<Props> = ({
                         <text x="210" y="180" fill="#b45309" fontSize="8" textAnchor="middle">Sconce 3000K</text>
                         <text x="690" y="180" fill="#b45309" fontSize="8" textAnchor="middle">Sconce 3000K</text>
                       </g>
+                    ) : (
+                      /* COR-WALL-E: 3F Public Corridor & SPA Reception - Elevation E */
+                      <g id="corridorWallEElevation">
+                        {/* Stepped Ceiling Cove (+5200mm SSL) */}
+                        <polygon points="340,30 380,30 380,45 420,45 420,60 560,60 560,45 600,45 600,30 640,30 660,80 320,80" fill="#fef3c7" stroke="#b45309" strokeWidth="1.5" />
+                        <text x="490" y="48" fill="#b45309" fontSize="9" fontWeight="bold" textAnchor="middle">STEPPED COVE +5200mm SSL • CHANDELIER ROSE</text>
+                        
+                        {/* Crystal Chandelier Rigging */}
+                        <line x1="490" y1="50" x2="490" y2="120" stroke="#d97706" strokeWidth="2" />
+                        <polygon points="460,120 520,120 500,165 480,165" fill="#fef08a" stroke="#d97706" strokeWidth="1.5" />
+                        <circle cx="490" cy="145" r="14" fill="#fde047" opacity="0.6" />
+                        <text x="490" y="180" fill="#92400e" fontSize="8" fontWeight="bold" textAnchor="middle">CRYSTAL CHANDELIER</text>
+
+                        {/* False Ceiling Line (+3800mm FFL) */}
+                        <line x1="50" y1="80" x2="850" y2="80" stroke="#0f172a" strokeWidth="2" strokeDasharray="4 2" />
+                        <text x="60" y="72" fill="#0f172a" fontSize="8" fontWeight="bold">CEILING DATUM +3800mm FFL</text>
+
+                        {/* Statuario Skirting SK2 (150mm) */}
+                        <rect x="50" y="375" width="800" height="15" fill="#cbd5e1" stroke="#475569" />
+                        <text x="80" y="386" fill="#0f172a" fontSize="8" fontWeight="bold">150mm STATUARIO SKIRTING [SK2]</text>
+
+                        {/* Pilaster M1 (Left-most) */}
+                        <rect x="70" y="80" width="30" height="295" fill="#78350f" stroke="#0f172a" />
+                        <rect x="66" y="74" width="38" height="10" fill="#d97706" stroke="#92400e" />
+                        <text x="85" y="65" fill="#b45309" fontSize="8" fontWeight="bold" textAnchor="middle">M1/M7</text>
+
+                        {/* Wainscoting Panel Section 1 (WP01) */}
+                        <rect x="110" y="100" width="130" height="180" fill="#f8fafc" stroke="#64748b" strokeWidth="1.5" />
+                        <rect x="120" y="110" width="110" height="160" fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="3 2" />
+                        <text x="175" y="195" fill="#64748b" fontSize="9" fontWeight="bold" textAnchor="middle">ARTWORK [WP01]</text>
+                        {/* Lower Dado WP02 */}
+                        <rect x="110" y="295" width="130" height="75" fill="#f1f5f9" stroke="#64748b" strokeWidth="1.5" />
+                        <text x="175" y="340" fill="#64748b" fontSize="8" textAnchor="middle">DADO [WP02]</text>
+
+                        {/* Pilaster M13 */}
+                        <rect x="250" y="80" width="30" height="295" fill="#78350f" stroke="#0f172a" />
+                        <rect x="246" y="74" width="38" height="10" fill="#d97706" stroke="#92400e" />
+                        <text x="265" y="65" fill="#b45309" fontSize="8" fontWeight="bold" textAnchor="middle">M13</text>
+
+                        {/* Open to SPA Corridor Portal */}
+                        <rect x="370" y="120" width="120" height="255" fill="#eff6ff" stroke="#3b82f6" strokeWidth="1.5" strokeDasharray="4 2" />
+                        <text x="430" y="240" fill="#2563eb" fontSize="9" fontWeight="bold" textAnchor="middle">OPEN TO SPA</text>
+                        <text x="430" y="255" fill="#2563eb" fontSize="8" textAnchor="middle">CORRIDOR</text>
+
+                        {/* Beauty Salon Arched Door D1 on Right */}
+                        <path d="M 690,180 A 45,45 0 0,1 780,180 L 780,375 L 690,375 Z" fill="#fffbeb" stroke="#d97706" strokeWidth="2" />
+                        <line x1="735" y1="135" x2="735" y2="375" stroke="#d97706" strokeWidth="1.5" />
+                        <circle cx="725" cy="280" r="3" fill="#92400e" />
+                        <circle cx="745" cy="280" r="3" fill="#92400e" />
+                        <text x="735" y="230" fill="#b45309" fontSize="8" fontWeight="bold" textAnchor="middle">BEAUTY SALON</text>
+                        <text x="735" y="245" fill="#b45309" fontSize="8" textAnchor="middle">ARCHED DOOR [D1]</text>
+
+                        {/* Pilaster M1 (Far Right) */}
+                        <rect x="790" y="80" width="30" height="295" fill="#78350f" stroke="#0f172a" />
+                        <rect x="786" y="74" width="38" height="10" fill="#d97706" stroke="#92400e" />
+                        <text x="805" y="65" fill="#b45309" fontSize="8" fontWeight="bold" textAnchor="middle">M1/M7</text>
+                      </g>
                     )}
 
                     {/* Width Dimension String */}
-                    <line x1="80" y1="430" x2="560" y2="430" stroke="#0284c7" strokeWidth="1.5" />
+                    <line x1="80" y1="430" x2="800" y2="430" stroke="#0284c7" strokeWidth="1.5" />
                     <polygon points="80,430 88,426 88,434" fill="#0284c7" />
-                    <polygon points="560,430 552,426 552,434" fill="#0284c7" />
-                    <text x="320" y="445" fill="#0284c7" fontSize="10" fontWeight="bold" textAnchor="middle">
-                      {selectedWallId === 'MBR-WALL-03' ? '2,700 mm (1,800mm Wardrobe + 900mm Study)' : '3,600 mm Bed Wall Feature'}
+                    <polygon points="800,430 792,426 792,434" fill="#0284c7" />
+                    <text x="440" y="445" fill="#0284c7" fontSize="10" fontWeight="bold" textAnchor="middle">
+                      {selectedWallId === 'COR-WALL-E'
+                        ? '12,400 mm (3F Public Corridor & SPA Reception - Elevation E Set)'
+                        : selectedWallId === 'MBR-WALL-03'
+                        ? '2,700 mm (1,800mm Wardrobe + 900mm Study)'
+                        : '3,600 mm Bed Wall Feature'}
                     </text>
                   </svg>
                 </div>

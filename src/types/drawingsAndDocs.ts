@@ -29,8 +29,8 @@ export type TechnicalPackageType =
   | 'PACKAGE_E_MATERIAL_SCHEDULE';
 
 export interface WallElevationDetail {
-  wallId: string;         // MBR-WALL-01, MBR-WALL-02, MBR-WALL-03, MBR-WALL-04
-  wallLabel: 'Wall A' | 'Wall B' | 'Wall C' | 'Wall D';
+  wallId: string;         // MBR-WALL-01, MBR-WALL-02, MBR-WALL-03, MBR-WALL-04, COR-WALL-E
+  wallLabel: 'Wall A' | 'Wall B' | 'Wall C' | 'Wall D' | 'Elevation D' | 'Elevation E' | 'Elevation F' | string;
   orientation: 'NORTH' | 'SOUTH' | 'EAST' | 'WEST';
   lengthMm: number;       // e.g. 5800mm
   heightMm: number;       // e.g. 2900mm
@@ -42,7 +42,7 @@ export interface WallElevationDetail {
     heightFromFflMm: number;
   }[];
   openings: {
-    type: 'DOOR' | 'WINDOW' | 'SLIDER' | 'NICHE';
+    type: 'DOOR' | 'WINDOW' | 'SLIDER' | 'NICHE' | 'PORTAL';
     code: string;
     widthMm: number;
     heightMm: number;
