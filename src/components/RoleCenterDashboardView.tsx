@@ -260,7 +260,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
             'None (Super-User Administrator Full Authority)'
           ],
           kpis: [
-            { label: 'Portfolio Contract Value', value: '₹48,90,000', subtext: 'Skyline Penthouse 1402 turnkey contract', trend: 'Active baseline', color: 'text-slate-900', targetTab: 'general' },
+            { label: 'Portfolio Contract Value', value: '₹99,54,702', subtext: 'Villa 253 (Karjat) turnkey contract incl. GST', trend: 'Active baseline', color: 'text-slate-900', targetTab: 'general' },
             { label: 'Earned Value CPI', value: '1.04', subtext: 'Cost Performance Index (Cost favorable by 4%)', trend: 'Profitable', color: 'text-emerald-700', targetTab: 'reports' },
             { label: 'Operating Cash Balance', value: '+₹1,44,041', subtext: 'Collections exceed active site disbursements', trend: 'Positive', color: 'text-emerald-700', targetTab: 'reports' },
             { label: 'Configured Users & Roles', value: `${allUsers.length} Active`, subtext: 'Role-Based Access Control (RBAC) enforced', trend: 'Security OK', color: 'text-purple-700', targetTab: 'users' }
@@ -458,7 +458,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
                 <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-wider text-slate-400">
                   <span>Active Project</span>
                   <span className="font-mono bg-blue-100/70 text-[#0F6CBD] border border-blue-200/60 px-1.5 py-0.2 rounded font-bold text-[9px] shrink-0">
-                    {activeProject?.projectCode || 'PROJ-SKYLINE-1402'}
+                    {activeProject?.projectCode || 'PROJ-VILLA-253'}
                   </span>
                 </div>
                 {projects && projects.length > 0 ? (
@@ -476,7 +476,7 @@ export const RoleCenterDashboardView: React.FC<RoleCenterDashboardViewProps> = (
                   </select>
                 ) : (
                   <div className="text-xs font-bold text-slate-900 truncate max-w-[210px]">
-                    {activeProject?.title || 'Skyline Penthouse 1402'}
+                    {activeProject?.title || 'Villa 253 (Karjat) Turnkey Interiors'}
                   </div>
                 )}
               </div>

@@ -22,6 +22,7 @@ import {
   FileText
 } from 'lucide-react';
 import { ProjectRecord, UserSession, DailyProgressReport } from '../types/erp';
+import { VILLA253_DPRS, VILLA253_WBS } from '../data/villa253DemoSeeds';
 
 interface SiteExecutionAndDPRViewProps {
   project: ProjectRecord;
@@ -48,81 +49,9 @@ interface WBSMilestoneTask {
   varianceDays: number; // 0 = on time, positive = delayed
 }
 
-const INITIAL_DPRS: DPRRecordExtended[] = [
-  {
-    id: 'DPR-001',
-    dprCode: 'DPR-2026-03-12',
-    date: '2026-03-12',
-    weatherCondition: 'Sunny / 31°C Clear Skies (Zero Rain Delay)',
-    milestonePhase: 'Phase 3: Civil Waterproofing & Joinery Framing',
-    overallProgressPercent: 48,
-    labourCountOnSite: {
-      masons: 4,
-      carpenters: 6,
-      electricians: 2,
-      plumbers: 2,
-      helpers: 8
-    },
-    activitiesExecuted: [
-      'Completed 72-hr ponding test in Master Ensuite sunken slab - 0mm leakage confirmed.',
-      'Framing of bedroom 1 & 2 full-height wardrobe carcasses in CenturyPly 18mm BWP.',
-      'Chasing wall conduits in Living Room for Lutron lighting keypads and CAT6 cables.'
-    ],
-    plannedTomorrow: [
-      'Apply 2nd coat Dr. Fixit Fastflex in Powder Room and Kitchen wet area.',
-      'Delivery of Italian marble slabs from quarry warehouse for living room dry lay.',
-      'False ceiling perimeter channel marking with laser level.'
-    ],
-    issuesDelays: [
-      'Freight lift maintenance downtime by society between 1:00 PM - 2:30 PM (No work stoppage, shifted to joinery assembly).'
-    ],
-    sitePhotographs: [
-      { caption: 'Ponding test level marker check', stage: 'Waterproofing', time: '10:30 AM' },
-      { caption: 'Master wardrobe carcass plumb verification', stage: 'Carpentry', time: '02:45 PM' }
-    ],
-    pettyExpensesToday: 2450,
-    siteEngineer: 'Site Eng. Rajesh Sharma'
-  },
-  {
-    id: 'DPR-002',
-    dprCode: 'DPR-2026-03-11',
-    date: '2026-03-11',
-    weatherCondition: 'Sunny / 32°C Clear',
-    milestonePhase: 'Phase 3: Civil Waterproofing & Joinery Framing',
-    overallProgressPercent: 45,
-    labourCountOnSite: {
-      masons: 4,
-      carpenters: 5,
-      electricians: 2,
-      plumbers: 2,
-      helpers: 7
-    },
-    activitiesExecuted: [
-      'Brick partition wall hacking debris bagging and tractor disposal (4 trips).',
-      'Surface priming with Dr. Fixit Primeseal over bathroom screed.'
-    ],
-    plannedTomorrow: [
-      'Sunken ponding water filling up to 100mm mark.'
-    ],
-    issuesDelays: [],
-    sitePhotographs: [
-      { caption: 'Dining area partition wall dismantled cleanly', stage: 'Demolition', time: '11:15 AM' }
-    ],
-    pettyExpensesToday: 4800,
-    siteEngineer: 'Site Eng. Rajesh Sharma'
-  }
-];
+const INITIAL_DPRS: DPRRecordExtended[] = VILLA253_DPRS;
 
-const INITIAL_WBS: WBSMilestoneTask[] = [
-  { id: 'WBS-01', wbsCode: '1.0', taskTitle: 'Demolition & Debris Disposal', trade: 'Civil', durationDays: 10, startDate: '2026-02-15', endDate: '2026-02-25', completionPercent: 100, criticalPath: true, status: 'COMPLETED', varianceDays: 0 },
-  { id: 'WBS-02', wbsCode: '2.0', taskTitle: 'Wet Area Waterproofing & Ponding Test', trade: 'Waterproofing', durationDays: 14, startDate: '2026-02-26', endDate: '2026-03-12', completionPercent: 100, criticalPath: true, status: 'COMPLETED', varianceDays: 0 },
-  { id: 'WBS-03', wbsCode: '3.0', taskTitle: 'Wardrobe & Kitchen Carcass Joinery Framing', trade: 'Carpentry', durationDays: 20, startDate: '2026-03-08', endDate: '2026-03-28', completionPercent: 45, criticalPath: false, status: 'IN_PROGRESS', varianceDays: 0 },
-  { id: 'WBS-04', wbsCode: '4.0', taskTitle: 'Electrical Conduit Chasing & Automation Cabling', trade: 'Electrical', durationDays: 18, startDate: '2026-03-10', endDate: '2026-03-28', completionPercent: 35, criticalPath: true, status: 'IN_PROGRESS', varianceDays: 0 },
-  { id: 'WBS-05', wbsCode: '5.0', taskTitle: 'Italian Botticino Marble Laying & Crystallization', trade: 'Flooring', durationDays: 25, startDate: '2026-03-24', endDate: '2026-04-18', completionPercent: 0, criticalPath: true, status: 'UPCOMING', varianceDays: 0 },
-  { id: 'WBS-06', wbsCode: '6.0', taskTitle: 'Gypsum False Ceiling Framing & Cove Lighting', trade: 'Ceilings', durationDays: 15, startDate: '2026-04-05', endDate: '2026-04-20', completionPercent: 0, criticalPath: false, status: 'UPCOMING', varianceDays: 0 },
-  { id: 'WBS-07', wbsCode: '7.0', taskTitle: 'Veneer Paneling & PU Polish Finishing', trade: 'Polishing', durationDays: 20, startDate: '2026-04-15', endDate: '2026-05-05', completionPercent: 0, criticalPath: true, status: 'UPCOMING', varianceDays: 0 },
-  { id: 'WBS-08', wbsCode: '8.0', taskTitle: 'Snagging, Deep Cleaning & Client Handover', trade: 'PMC Handover', durationDays: 10, startDate: '2026-05-06', endDate: '2026-05-16', completionPercent: 0, criticalPath: true, status: 'UPCOMING', varianceDays: 0 }
-];
+const INITIAL_WBS: WBSMilestoneTask[] = VILLA253_WBS;
 
 export const SiteExecutionAndDPRView: React.FC<SiteExecutionAndDPRViewProps> = ({
   project,

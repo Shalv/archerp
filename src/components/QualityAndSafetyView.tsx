@@ -23,6 +23,7 @@ import {
   UserCheck
 } from 'lucide-react';
 import { ProjectRecord, UserSession, QualityNCRRecord, SafetyPermitToWork } from '../types/erp';
+import { VILLA253_NCRS, VILLA253_PTWS, VILLA253_TESTS } from '../data/villa253DemoSeeds';
 
 interface QualityAndSafetyViewProps {
   project: ProjectRecord;
@@ -44,109 +45,11 @@ interface MaterialTestReport {
   remarks: string;
 }
 
-const INITIAL_NCRS: QualityNCRRecord[] = [
-  {
-    id: 'NCR-001',
-    projectId: 'PROJ-SKYLINE-1402',
-    ncrCode: 'NCR-2026-004',
-    dateRaised: '2026-03-08',
-    roomZone: 'Living Room Partition Wall',
-    trade: 'CIVIL_MASONRY',
-    severity: 'MINOR',
-    description: 'Chipping at bottom edge of non-load bearing lintel left exposed aggregate.',
-    rootCause: 'Manual breaker tool operated at excessive angle by junior mason.',
-    correctiveActionPlan: 'Apply non-shrink epoxy repair mortar (Sika Monotop) and re-cure for 48 hours.',
-    assignedContractorOrTeam: 'Omkar Civil Specialists',
-    reworkCostINR: 4200,
-    targetClosureDate: '2026-03-12',
-    closureDate: '2026-03-11',
-    status: 'CLOSED_VERIFIED',
-    inspectedBy: 'QA Lead K. R. Nair'
-  },
-  {
-    id: 'NCR-002',
-    projectId: 'PROJ-SKYLINE-1402',
-    ncrCode: 'NCR-2026-005',
-    dateRaised: '2026-03-10',
-    roomZone: 'Master Bathroom Dado',
-    trade: 'WATERPROOFING',
-    severity: 'MAJOR',
-    description: 'Corner fillet radius was less than 50mm before applying 2nd elastomeric coat.',
-    rootCause: 'Mason hurried plaster screed fillet without checking gauge template.',
-    correctiveActionPlan: 'Grind corner, recast 50mm chamfer fillet with polymer modified mortar, reapply Fastflex with fiber mesh.',
-    assignedContractorOrTeam: 'Omkar Civil Specialists',
-    reworkCostINR: 8500,
-    targetClosureDate: '2026-03-14',
-    status: 'IN_PROGRESS',
-    inspectedBy: 'QA Lead K. R. Nair'
-  }
-];
+const INITIAL_NCRS: QualityNCRRecord[] = VILLA253_NCRS;
 
-const INITIAL_PTWS: SafetyPermitToWork[] = [
-  {
-    id: 'PTW-001',
-    projectId: 'PROJ-SKYLINE-1402',
-    ptwNumber: 'PTW-2026-034',
-    permitType: 'HOT_WORK',
-    locationArea: 'Living Room Balcony Area',
-    contractorOrCrew: 'Precision Metal Fabricators',
-    hazardsIdentified: ['Fire hazard from sparks', 'Adjacent combustible packaging', 'Hot slag falling to lower floor'],
-    mandatoryPrecautions: ['10kg ABC Dry Powder Fire Extinguisher at site', 'Fire blanket shielding balcony glass', 'Fire watch personnel stationed on floor 13'],
-    ppeEquipmentsVerified: ['Welding Helmet', 'Leather Apron', 'Insulated Gloves', 'Safety Goggles'],
-    issuedByOfficer: 'Safety Officer Arun Pillai',
-    receivedBySupervisor: 'Foreman R. Qureshi',
-    validFrom: '2026-03-12 09:00',
-    validUntil: '2026-03-12 18:00',
-    emergencyContact: '+91 98200 99112',
-    status: 'ACTIVE_PERMIT'
-  },
-  {
-    id: 'PTW-002',
-    projectId: 'PROJ-SKYLINE-1402',
-    ptwNumber: 'PTW-2026-035',
-    permitType: 'WORKING_AT_HEIGHT',
-    locationArea: 'Balcony Façade Outer Railing',
-    contractorOrCrew: 'Sky Glass & Glazing Crew',
-    hazardsIdentified: ['Fall from height (14th floor)', 'Wind gusts', 'Drop hazards onto ground podium'],
-    mandatoryPrecautions: ['Double lanyard safety harness hooked to certified lifeline', 'Safety net rigged at 13th floor level', 'Barricading podium zone below'],
-    ppeEquipmentsVerified: ['Full Body Harness with Shock Absorber', 'Chin-strap Helmet', 'Non-slip Boots'],
-    issuedByOfficer: 'Safety Officer Arun Pillai',
-    receivedBySupervisor: 'Supervisor Naresh',
-    validFrom: '2026-03-13 10:00',
-    validUntil: '2026-03-13 17:00',
-    emergencyContact: '+91 98200 99112',
-    status: 'ACTIVE_PERMIT'
-  }
-];
+const INITIAL_PTWS: SafetyPermitToWork[] = VILLA253_PTWS;
 
-const INITIAL_TESTS: MaterialTestReport[] = [
-  {
-    id: 'TR-01',
-    testCode: 'TEST-WTR-01',
-    testType: 'WATERPROOFING_PONDING',
-    componentTested: 'Master Bathroom Sunken Slab Ponding (72 Hours)',
-    sampleDate: '2026-03-09',
-    testDate: '2026-03-12',
-    labAgency: 'On-site PMC Joint Certification',
-    requiredValue: '0 mm water drop over 72 hrs (excluding evaporation)',
-    obtainedValue: '0 mm loss (Level Marker intact)',
-    status: 'PASSED',
-    remarks: 'Underside of 13th floor slab completely dry, thermal scanner confirmed no damp spots.'
-  },
-  {
-    id: 'TR-02',
-    testCode: 'TEST-PLY-02',
-    testType: 'WOOD_SEASONING_CHECK',
-    componentTested: 'CenturyPly 18mm Marine Plywood Batch #CT-88',
-    sampleDate: '2026-03-11',
-    testDate: '2026-03-11',
-    labAgency: 'Delmhorst J-2000 Pin Moisture Meter',
-    requiredValue: 'Moisture content < 12%',
-    obtainedValue: '8.4% Moisture Content',
-    status: 'PASSED',
-    remarks: 'Optimal moisture content for zero post-installation warping or delamination.'
-  }
-];
+const INITIAL_TESTS: MaterialTestReport[] = VILLA253_TESTS;
 
 export const QualityAndSafetyView: React.FC<QualityAndSafetyViewProps> = ({
   project,

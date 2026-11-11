@@ -39,6 +39,8 @@ import {
   CompanyFinanceSetupMaster
 } from '../types/erp';
 import { TwoStepSpatialDesignSession } from '../types/floorplanSpatial';
+import { DesignStudioSession } from '../types/designStudio';
+import { DesignTwin } from '../types/designTwin';
 import { INITIAL_2BHK_SPATIAL_SESSION } from '../data/floorplanSpatialData';
 import { VILLA_253_SPATIAL_SESSION } from '../data/villa253BlueprintData';
 import { DEFAULT_COMPANY_FINANCE_SETUP } from '../data/defaultCompanySetup';
@@ -51,7 +53,11 @@ import {
   DEFAULT_UOMS, 
   DEFAULT_TAX_RULES 
 } from './mockFoundationData';
-import { getSyntheticDemoProject, getAlternativePackages, getValueEngineeringOptions } from './syntheticDemo';
+import { getAlternativePackages, getValueEngineeringOptions } from './syntheticDemo';
+import { getVilla253DemoProject } from '../data/villa253DemoProject';
+import { VILLA253_OPERATIONS } from '../data/villa253Registers';
+import { VILLA253_DESIGN_STUDIO_SESSION } from '../data/villa253DesignStudio';
+import { VILLA253_DESIGN_TWIN } from '../data/villa253DesignTwin';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'buildstorys_db.json');
@@ -59,6 +65,8 @@ const DB_FILE = path.join(DATA_DIR, 'buildstorys_db.json');
 export interface ERPDatabase {
   operations?: Record<string, any[]>;
   spatialSessions?: Record<string, TwoStepSpatialDesignSession>;
+  designStudioSessions?: Record<string, DesignStudioSession>;
+  designTwins?: Record<string, DesignTwin>;
   version: string;
   users: UserSession[];
   masterRates: MasterRateItem[];
@@ -86,7 +94,7 @@ export const DEMO_USERS: UserSession[] = [
     department: 'Architecture & Design Studio',
     status: 'ACTIVE',
     avatar: 'SD',
-    assignedProjectIds: ['PROJ-SKYLINE-1402'],
+    assignedProjectIds: ['PROJ-VILLA-253'],
     allowedModuleIds: [], // All modules authorized
     createdAt: '2026-01-10T09:00:00Z',
     lastLoginAt: '2026-09-14T03:00:00Z',
@@ -105,7 +113,7 @@ export const DEMO_USERS: UserSession[] = [
     department: 'Executive Management',
     status: 'ACTIVE',
     avatar: 'AS',
-    assignedProjectIds: ['PROJ-SKYLINE-1402'],
+    assignedProjectIds: ['PROJ-VILLA-253'],
     allowedModuleIds: [], // All modules authorized
     createdAt: '2026-01-15T09:00:00Z',
     lastLoginAt: '2026-09-11T10:00:00Z',
@@ -124,7 +132,7 @@ export const DEMO_USERS: UserSession[] = [
     department: 'Estimating & Commercial',
     status: 'ACTIVE',
     avatar: 'RS',
-    assignedProjectIds: ['PROJ-SKYLINE-1402'],
+    assignedProjectIds: ['PROJ-VILLA-253'],
     allowedModuleIds: ['M01', 'M02', 'M03', 'M04', 'M05', 'M06', 'M07', 'M08', 'M10', 'M12', 'M13', 'M16', 'M17', 'M25', 'M26'],
     createdAt: '2026-01-20T10:30:00Z',
     lastLoginAt: '2026-09-11T09:45:00Z',
@@ -143,7 +151,7 @@ export const DEMO_USERS: UserSession[] = [
     department: 'Project Operations',
     status: 'ACTIVE',
     avatar: 'KN',
-    assignedProjectIds: ['PROJ-SKYLINE-1402'],
+    assignedProjectIds: ['PROJ-VILLA-253'],
     allowedModuleIds: ['M01', 'M02', 'M03', 'M04', 'M08', 'M09', 'M10', 'M11', 'M12', 'M13', 'M14', 'M15', 'M17', 'M18', 'M19', 'M20', 'M22', 'M24', 'M25'],
     createdAt: '2026-02-01T11:00:00Z',
     lastLoginAt: '2026-09-10T16:20:00Z',
@@ -162,7 +170,7 @@ export const DEMO_USERS: UserSession[] = [
     department: 'Field Operations',
     status: 'ACTIVE',
     avatar: 'RV',
-    assignedProjectIds: ['PROJ-SKYLINE-1402'],
+    assignedProjectIds: ['PROJ-VILLA-253'],
     allowedModuleIds: ['M02', 'M03', 'M04', 'M05', 'M11', 'M14', 'M18', 'M19', 'M20', 'M23', 'M24'],
     createdAt: '2026-02-15T08:30:00Z',
     lastLoginAt: '2026-09-11T08:10:00Z',
@@ -171,22 +179,98 @@ export const DEMO_USERS: UserSession[] = [
   },
   {
     id: 'USR-CLIENT-01',
-    username: 'vikram.client',
-    name: 'Vikram & Ananya Malhotra',
-    email: 'vikram.malhotra@skyline.org',
+    username: 'aditya.client',
+    name: 'Aditya & Sneha Kulkarni',
+    email: 'aditya.kulkarni@kptools.in',
     password: 'Client@123',
     phone: '+91 99505 66778',
     role: 'CLIENT',
-    roleTitle: 'Property Owner (Unit 1402)',
+    roleTitle: 'Property Owner - Villa 253',
     department: 'Customer Accounts',
     status: 'ACTIVE',
-    avatar: 'VM',
-    assignedProjectIds: ['PROJ-SKYLINE-1402'],
+    avatar: 'AK',
+    assignedProjectIds: ['PROJ-VILLA-253'],
     allowedModuleIds: ['M02', 'M04', 'M05', 'M08', 'M20', 'M21'],
     createdAt: '2026-03-01T09:00:00Z',
     lastLoginAt: '2026-09-11T10:15:00Z',
     notes: 'External client account for reviewing approved quotations and milestone schedules.',
     permissions: ROLE_DEFAULT_PERMISSIONS.CLIENT
+  },
+  {
+    id: 'USR-DES-01',
+    username: 'meera.design',
+    name: 'Meera Rao',
+    email: 'meera.rao@buildstorys.com',
+    password: 'Design@123',
+    phone: '+91 98670 11209',
+    role: 'PROJECT_MANAGER',
+    roleTitle: 'Lead Interior Designer',
+    department: 'Architecture & Design Studio',
+    status: 'ACTIVE',
+    avatar: 'MR',
+    assignedProjectIds: ['PROJ-VILLA-253'],
+    allowedModuleIds: ['M03', 'M04', 'M05', 'M07', 'M12', 'M13', 'M18', 'M19'],
+    createdAt: '2026-02-10T10:00:00Z',
+    lastLoginAt: '2026-11-10T10:05:00Z',
+    notes: 'Joinery detailing, material palette and site coordination for Villa 253.',
+    permissions: ROLE_DEFAULT_PERMISSIONS.PROJECT_MANAGER
+  },
+  {
+    id: 'USR-MEP-01',
+    username: 'farhan.mep',
+    name: 'Farhan Qureshi',
+    email: 'farhan.mep@buildstorys.com',
+    password: 'Mep@123',
+    phone: '+91 98201 55644',
+    role: 'SITE_ENGINEER',
+    roleTitle: 'MEP & Automation Engineer',
+    department: 'MEP',
+    status: 'ACTIVE',
+    avatar: 'FQ',
+    assignedProjectIds: ['PROJ-VILLA-253'],
+    allowedModuleIds: ['M04', 'M13', 'M14', 'M15', 'M16', 'M18', 'M24'],
+    createdAt: '2026-02-12T10:00:00Z',
+    lastLoginAt: '2026-11-10T14:20:00Z',
+    notes: 'Electrical SLD, KNX programming, VRF commissioning and MEP quality checks.',
+    permissions: ROLE_DEFAULT_PERMISSIONS.SITE_ENGINEER
+  },
+  {
+    id: 'USR-QA-01',
+    username: 'kr.nair',
+    name: 'K. R. Nair',
+    email: 'kr.nair@buildstorys.com',
+    password: 'Quality@123',
+    phone: '+91 98330 44172',
+    role: 'SITE_ENGINEER',
+    roleTitle: 'QA / QC Engineer',
+    department: 'Quality & Safety',
+    status: 'ACTIVE',
+    avatar: 'KN',
+    assignedProjectIds: ['PROJ-VILLA-253'],
+    allowedModuleIds: ['M03', 'M14', 'M18', 'M19', 'M20', 'M24'],
+    createdAt: '2026-02-14T10:00:00Z',
+    lastLoginAt: '2026-11-10T11:10:00Z',
+    notes: 'Ponding certification, material testing, snag register and NCR closure.',
+    permissions: ROLE_DEFAULT_PERMISSIONS.SITE_ENGINEER
+  },
+  {
+    id: 'USR-SAF-01',
+    username: 'arun.safety',
+    name: 'Arun Pillai',
+    email: 'arun.safety@buildstorys.com',
+    password: 'Safety@123',
+    phone: '+91 98200 99112',
+    role: 'SITE_ENGINEER',
+    roleTitle: 'Safety Officer',
+    department: 'Quality & Safety',
+    status: 'ACTIVE',
+    avatar: 'AP',
+    assignedProjectIds: ['PROJ-VILLA-253'],
+    allowedModuleIds: ['M03', 'M14', 'M24'],
+    createdAt: '2026-02-14T10:15:00Z',
+    lastLoginAt: '2026-11-11T09:00:00Z',
+    notes: 'Permit to work, toolbox talks and work-at-height audits for the gazebo and staircase works.',
+    permissions: ROLE_DEFAULT_PERMISSIONS.SITE_ENGINEER
   }
 ];
 
@@ -203,6 +287,32 @@ class DatabaseService {
   }
   public getOperations(projectId: string, moduleId: string) { return this.db.operations?.[projectId+':'+moduleId] || []; }
   public saveOperations(projectId: string, moduleId: string, records: any[]) { this.db.operations ||= {}; this.db.operations[projectId+':'+moduleId] = structuredClone(records); this.persist(); }
+  // --- AI Design Studio (floor plan -> concepts -> approval -> BOQ) ---
+  public getDesignStudioSession(projectId: string): DesignStudioSession | undefined {
+    const existing = this.db.designStudioSessions?.[projectId];
+    return existing ? structuredClone(existing) : undefined;
+  }
+
+  public saveDesignStudioSession(session: DesignStudioSession): DesignStudioSession {
+    this.db.designStudioSessions ||= {};
+    this.db.designStudioSessions[session.projectId] = structuredClone({ ...session, updatedAt: new Date().toISOString() });
+    this.persist();
+    return this.db.designStudioSessions[session.projectId];
+  }
+
+  // --- Project Design Digital Twin (rooms, elements, assets, revisions) ---
+  public getDesignTwin(projectId: string): DesignTwin | undefined {
+    const existing = this.db.designTwins?.[projectId];
+    return existing ? structuredClone(existing) : undefined;
+  }
+
+  public saveDesignTwin(twin: DesignTwin): DesignTwin {
+    this.db.designTwins ||= {};
+    this.db.designTwins[twin.projectId] = structuredClone({ ...twin, updatedAt: new Date().toISOString() });
+    this.persist();
+    return this.db.designTwins[twin.projectId];
+  }
+
   public snapshot(): ERPDatabase { return structuredClone(this.db); }
 
   public hydrateFromRemote(remoteData: Partial<ERPDatabase>): void {
@@ -264,7 +374,7 @@ class DatabaseService {
                 department: u.department || (u.role === 'ADMIN' ? 'Executive Management' : u.role === 'ESTIMATOR' ? 'Estimating & Commercial' : u.role === 'PROJECT_MANAGER' ? 'Project Operations' : u.role === 'SITE_ENGINEER' ? 'Field Operations' : 'Customer Accounts'),
                 status: u.status || 'ACTIVE',
                 avatar: u.avatar || initials,
-                assignedProjectIds: u.assignedProjectIds || ['PROJ-SKYLINE-1402'],
+                assignedProjectIds: u.assignedProjectIds || ['PROJ-VILLA-253'],
                 createdAt: u.createdAt || '2026-01-15T09:00:00Z',
                 lastLoginAt: u.lastLoginAt || new Date().toISOString(),
                 permissions: {
@@ -296,40 +406,120 @@ class DatabaseService {
       uomList: [...DEFAULT_UOMS],
       taxRules: [...DEFAULT_TAX_RULES],
       companySetup: JSON.parse(JSON.stringify(DEFAULT_COMPANY_FINANCE_SETUP)),
-      projects: [getSyntheticDemoProject()],
+      operations: JSON.parse(JSON.stringify(VILLA253_OPERATIONS)),
+      designStudioSessions: JSON.parse(JSON.stringify({ [VILLA253_DESIGN_STUDIO_SESSION.projectId]: VILLA253_DESIGN_STUDIO_SESSION })),
+      designTwins: JSON.parse(JSON.stringify({ [VILLA253_DESIGN_TWIN.projectId]: VILLA253_DESIGN_TWIN })),
+      projects: [getVilla253DemoProject()],
       auditLogs: [
         {
           id: 'LOG-001',
-          timestamp: '2026-03-01T09:00:00Z',
-          userId: 'USR-EST-01',
-          userName: 'Rajesh Sharma',
-          userRole: 'ESTIMATOR',
-          action: 'CREATE_PROJECT',
-          entityType: 'PROJECT',
-          entityId: 'PROJ-SKYLINE-1402',
-          details: 'Initialized Skyline Residences Unit 1402 turnkey interior project.'
+          timestamp: '2026-05-18T09:30:00Z',
+          userId: 'USR-PM-01',
+          userName: 'Neha Kulkarni',
+          userRole: 'PROJECT_MANAGER',
+          action: 'CREATE_LEAD',
+          entityType: 'CRM_LEAD',
+          entityId: 'LEAD-V253-001',
+          details: 'Lead LD-V253 captured for Aditya & Sneha Kulkarni - Villa 253, Karjat (architect referral).'
         },
         {
           id: 'LOG-002',
-          timestamp: '2026-03-01T10:15:00Z',
+          timestamp: '2026-05-30T18:40:00Z',
+          userId: 'USR-EST-01',
+          userName: 'Rajesh Sharma',
+          userRole: 'ESTIMATOR',
+          action: 'SITE_SURVEY',
+          entityType: 'PROJECT',
+          entityId: 'PROJ-VILLA-253',
+          details: 'Bare-shell survey of Villa 253 completed against VILLA_253_WALL_MARKING_10_10_24_REV0.pdf; all 7 spaces matched within 12mm.'
+        },
+        {
+          id: 'LOG-003',
+          timestamp: '2026-06-15T10:20:00Z',
           userId: 'USR-EST-01',
           userName: 'Rajesh Sharma',
           userRole: 'ESTIMATOR',
           action: 'AI_BOQ_GENERATION',
           entityType: 'BOQ_REVISION',
-          entityId: 'REV-0-AI-DRAFT',
-          details: 'Generated Rev 0 AI Draft Takeoff (15 items) from Floor Plan Rev B and Survey Notes.'
+          entityId: 'REV-V253-0-AI-DRAFT',
+          details: 'Generated Rev 0 AI draft takeoff (20 items, 3 missing-dimension alerts) from the R0 drawing and survey notes.'
         },
         {
-          id: 'LOG-003',
-          timestamp: '2026-03-02T18:00:00Z',
+          id: 'LOG-004',
+          timestamp: '2026-06-19T18:10:00Z',
+          userId: 'USR-DIR-01',
+          userName: 'Aarav Singhania',
+          userRole: 'ADMIN',
+          action: 'APPROVE_BASELINE',
+          entityType: 'BOQ_REVISION',
+          entityId: 'REV-V253-1-ESTIMATOR-APPROVED',
+          details: 'Rev 1 baseline frozen at ₹84,36,188.20 ex-GST after quantity reconciliation and rate verification.'
+        },
+        {
+          id: 'LOG-005',
+          timestamp: '2026-06-27T12:15:00Z',
+          userId: 'USR-PM-01',
+          userName: 'Neha Kulkarni',
+          userRole: 'PROJECT_MANAGER',
+          action: 'QUOTATION_ACCEPTED',
+          entityType: 'QUOTATION',
+          entityId: 'QUOTE-V253-2026-001',
+          details: 'Quotation BS-QT-2026-0253 accepted - ₹99,54,702.08 including 18% GST; programme locked to 18-12-2026 handover.'
+        },
+        {
+          id: 'LOG-006',
+          timestamp: '2026-07-06T09:00:00Z',
           userId: 'USR-EST-01',
           userName: 'Rajesh Sharma',
           userRole: 'ESTIMATOR',
-          action: 'APPROVE_BASELINE',
-          entityType: 'BOQ_REVISION',
-          entityId: 'REV-1-ESTIMATOR-APPROVED',
-          details: 'Approved Rev 1 baseline after site dimension reconciliation and rate verification.'
+          action: 'MOBILISE_SITE',
+          entityType: 'PROJECT',
+          entityId: 'PROJ-VILLA-253',
+          details: 'Site mobilised; 10% mobilisation milestone MS-V253-1 (₹9,95,470.21) received and receipted.'
+        },
+        {
+          id: 'LOG-007',
+          timestamp: '2026-08-18T17:30:00Z',
+          userId: 'USR-SITE-01',
+          userName: 'Rajesh Sharma (Site)',
+          userRole: 'SITE_ENGINEER',
+          action: 'PONDING_TEST_CERTIFIED',
+          entityType: 'QUALITY_TEST',
+          entityId: 'TR-V253-01',
+          details: '72-hour ponding test passed in Toilet 1, Toilet 2 and Toilet 3 - zero loss; milestone MS-V253-2 released.'
+        },
+        {
+          id: 'LOG-008',
+          timestamp: '2026-10-30T18:00:00Z',
+          userId: 'USR-EST-01',
+          userName: 'Rajesh Sharma',
+          userRole: 'ESTIMATOR',
+          action: 'MB_CERTIFIED',
+          entityType: 'MEASUREMENT_BOOK',
+          entityId: 'MB-V253-PAGE-018',
+          details: 'Botticino marble 671.8 sq.ft certified at ₹96/sq.ft (₹64,492.80) after crystallisation and protection.'
+        },
+        {
+          id: 'LOG-009',
+          timestamp: '2026-11-06T16:20:00Z',
+          userId: 'USR-SITE-01',
+          userName: 'Rajesh Sharma (Site)',
+          userRole: 'SITE_ENGINEER',
+          action: 'RAISE_NCR',
+          entityType: 'QUALITY_NCR',
+          entityId: 'NCR-2026-V253-011',
+          details: 'NCR raised for 4mm kitchen shutter gaps against a 2.5mm specification; closure target 13-11-2026.'
+        },
+        {
+          id: 'LOG-010',
+          timestamp: '2026-11-10T19:15:00Z',
+          userId: 'USR-EST-01',
+          userName: 'Rajesh Sharma',
+          userRole: 'ESTIMATOR',
+          action: 'DPR_SUBMITTED',
+          entityType: 'DAILY_PROGRESS_REPORT',
+          entityId: 'DPR-V253-2026-11-10',
+          details: 'DPR logged at 68% overall progress; gazebo pergola flagged 4 days behind on teak rafter delivery.'
         }
       ]
     };
@@ -505,7 +695,7 @@ class DatabaseService {
         status: userData.status || existing.status || 'ACTIVE',
         notes: userData.notes !== undefined ? userData.notes : existing.notes,
         bio: userData.bio !== undefined ? userData.bio : existing.bio,
-        assignedProjectIds: userData.assignedProjectIds !== undefined ? userData.assignedProjectIds : (existing.assignedProjectIds || ['PROJ-SKYLINE-1402']),
+        assignedProjectIds: userData.assignedProjectIds !== undefined ? userData.assignedProjectIds : (existing.assignedProjectIds || ['PROJ-VILLA-253']),
         allowedModuleIds: userData.allowedModuleIds !== undefined ? userData.allowedModuleIds : existing.allowedModuleIds,
         avatar: userData.avatar !== undefined ? userData.avatar : (existing.avatar || initials),
         permissions: {
@@ -541,7 +731,7 @@ class DatabaseService {
         department: userData.department || 'Operations',
         status: userData.status || 'ACTIVE',
         avatar: userData.avatar || initials,
-        assignedProjectIds: userData.assignedProjectIds || ['PROJ-SKYLINE-1402'],
+        assignedProjectIds: userData.assignedProjectIds || ['PROJ-VILLA-253'],
         allowedModuleIds: userData.allowedModuleIds || [],
         createdAt: new Date().toISOString(),
         lastLoginAt: new Date().toISOString(),
@@ -882,6 +1072,27 @@ class DatabaseService {
     return project;
   }
 
+  /**
+   * Appends a BOQ revision produced by the AI Design Studio to a project,
+   * keeping the project/room references intact and logging the action.
+   */
+  public appendBOQRevision(user: UserSession, projectId: string, revision: BOQRevision): ProjectRecord {
+    const project = this.db.projects.find(p => p.id === projectId);
+    if (!project) throw Object.assign(new Error('Project not found.'), { status: 404 });
+    const exists = project.revisions.some(r => r.id === revision.id);
+    if (!exists) project.revisions.push(revision);
+    project.updatedAt = new Date().toISOString();
+    this.logAudit(
+      user,
+      'DESIGN_STUDIO_BOQ_GENERATED',
+      'BOQ_REVISION',
+      revision.id,
+      `${revision.revisionLabel}: ${revision.items.length} room-wise lines, ₹${revision.items.reduce((sum, i) => sum + i.sellingAmount, 0).toLocaleString('en-IN')} before GST.`
+    );
+    this.persist();
+    return project;
+  }
+
   // --- Deterministic Cost & Budget Engine ---
   public calculateDeterministicTotals(items: BOQItem[]): CostBudgetSummary {
     let directMaterialCost = 0;
@@ -1006,7 +1217,10 @@ class DatabaseService {
       uomList: [...DEFAULT_UOMS],
       taxRules: [...DEFAULT_TAX_RULES],
       companySetup: JSON.parse(JSON.stringify(DEFAULT_COMPANY_FINANCE_SETUP)),
-      projects: [getSyntheticDemoProject()],
+      operations: JSON.parse(JSON.stringify(VILLA253_OPERATIONS)),
+      designStudioSessions: JSON.parse(JSON.stringify({ [VILLA253_DESIGN_STUDIO_SESSION.projectId]: VILLA253_DESIGN_STUDIO_SESSION })),
+      designTwins: JSON.parse(JSON.stringify({ [VILLA253_DESIGN_TWIN.projectId]: VILLA253_DESIGN_TWIN })),
+      projects: [getVilla253DemoProject()],
       auditLogs: [
         {
           id: `LOG-RESET-${Date.now()}`,

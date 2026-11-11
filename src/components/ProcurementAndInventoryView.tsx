@@ -29,6 +29,7 @@ import {
   QrCode
 } from 'lucide-react';
 import { ProjectRecord, UserSession, PurchaseOrderRecord, GoodsReceiptNote, ProcurementRFQ } from '../types/erp';
+import { VILLA253_REQUISITIONS, VILLA253_RFQS, VILLA253_POS, VILLA253_GRNS, VILLA253_STOCK } from '../data/villa253DemoSeeds';
 
 interface ProcurementAndInventoryViewProps {
   project: ProjectRecord;
@@ -64,203 +65,15 @@ interface WarehouseStockItem {
   status: 'IN_STOCK' | 'LOW_STOCK' | 'REORDER_TRIGGERED';
 }
 
-const INITIAL_REQUISITIONS: SiteRequisition[] = [
-  {
-    id: 'PR-001',
-    prNumber: 'PR-2026-081',
-    requestedBy: 'Site Eng. Rajesh Sharma',
-    trade: 'WATERPROOFING',
-    itemName: 'Dr. Fixit Fastflex 2-Component Elastomeric Membrane (24kg kit)',
-    requestedQuantity: 8,
-    unit: 'nos',
-    requiredByDate: '2026-03-18',
-    urgency: 'HIGH',
-    purpose: 'For sunken slab ponding test in Master Bathroom and Powder Room',
-    approvalStatus: 'APPROVED_FOR_PO'
-  },
-  {
-    id: 'PR-002',
-    prNumber: 'PR-2026-082',
-    requestedBy: 'Senior Carpenter Jagdish',
-    trade: 'CARPENTRY_JOINERY',
-    itemName: 'CenturyPly Club Prime BWP 710 Marine Grade Plywood 18mm (8x4)',
-    requestedQuantity: 35,
-    unit: 'sheets',
-    requiredByDate: '2026-03-22',
-    urgency: 'MEDIUM',
-    purpose: 'Wardrobe carcasses and kitchen island framework',
-    approvalStatus: 'APPROVED_FOR_PO'
-  },
-  {
-    id: 'PR-003',
-    prNumber: 'PR-2026-083',
-    requestedBy: 'Electrician Sunil',
-    trade: 'ELECTRICAL_AUTOMATION',
-    itemName: 'Polycab FRLS-H Copper Wire 2.5 sq.mm Red/Black/Green (90m rolls)',
-    requestedQuantity: 12,
-    unit: 'nos',
-    requiredByDate: '2026-03-25',
-    urgency: 'LOW',
-    purpose: 'Living room primary power circuit looping',
-    approvalStatus: 'PENDING_APPROVAL'
-  }
-];
+const INITIAL_REQUISITIONS: SiteRequisition[] = VILLA253_REQUISITIONS;
 
-const INITIAL_RFQS: ProcurementRFQ[] = [
-  {
-    id: 'RFQ-001',
-    projectId: 'PROJ-SKYLINE-1402',
-    rfqNumber: 'RFQ-2026-041',
-    materialRequisitionId: 'PR-002',
-    itemDescription: 'CenturyPly Club Prime BWP 710 Marine Grade Plywood 18mm (8x4 sheets)',
-    trade: 'CARPENTRY_JOINERY',
-    requiredQuantity: 35,
-    unit: 'nos',
-    requiredByDate: '2026-03-22',
-    deliverySiteAddress: 'Skyline Towers, Flat 1402, Worli Seaface, Mumbai',
-    vendorQuotations: [
-      {
-        vendorId: 'VEND-01',
-        vendorName: 'Continental Timber & Veneers Pvt Ltd',
-        unitRateINR: 3250,
-        taxPercent: 18,
-        totalAmountINR: 134225,
-        deliveryLeadTimeDays: 2,
-        paymentTerms: '100% on 30-day credit',
-        vendorRating: 4.8,
-        isRecommended: true
-      },
-      {
-        vendorId: 'VEND-02',
-        vendorName: 'Mahalaxmi Plywood & Hardware Stores',
-        unitRateINR: 3380,
-        taxPercent: 18,
-        totalAmountINR: 139594,
-        deliveryLeadTimeDays: 4,
-        paymentTerms: '50% Advance, balance against delivery',
-        vendorRating: 4.2,
-        isRecommended: false
-      },
-      {
-        vendorId: 'VEND-03',
-        vendorName: 'Shree Krishna Building Materials',
-        unitRateINR: 3410,
-        taxPercent: 18,
-        totalAmountINR: 140833,
-        deliveryLeadTimeDays: 1,
-        paymentTerms: 'Immediate RTGS before dispatch',
-        vendorRating: 4.5,
-        isRecommended: false
-      }
-    ],
-    selectedVendorId: 'VEND-01',
-    status: 'COMPARISON_READY'
-  }
-];
+const INITIAL_RFQS: ProcurementRFQ[] = VILLA253_RFQS;
 
-const INITIAL_POS: PurchaseOrderRecord[] = [
-  {
-    id: 'PO-001',
-    poNumber: 'PO-2026-018',
-    vendorId: 'VEND-01',
-    vendorName: 'Continental Timber & Veneers Pvt Ltd',
-    trade: 'CARPENTRY_JOINERY',
-    itemsCount: 2,
-    totalAmount: 285400,
-    issueDate: '2026-03-05',
-    deliveryDateExpected: '2026-03-12',
-    status: 'DELIVERED_CLOSED',
-    paymentTerms: '30 Days Net Credit'
-  },
-  {
-    id: 'PO-002',
-    poNumber: 'PO-2026-019',
-    vendorId: 'VEND-04',
-    vendorName: 'Classic Marble Company (CMC India)',
-    trade: 'FLOORING_TILING',
-    itemsCount: 1,
-    totalAmount: 1845000,
-    issueDate: '2026-03-08',
-    deliveryDateExpected: '2026-03-24',
-    status: 'ISSUED',
-    paymentTerms: '20% Mobilization Advance, 80% on dry-lay inspection'
-  }
-];
+const INITIAL_POS: PurchaseOrderRecord[] = VILLA253_POS;
 
-const INITIAL_GRNS: GoodsReceiptNote[] = [
-  {
-    id: 'GRN-001',
-    projectId: 'PROJ-SKYLINE-1402',
-    grnNumber: 'GRN-2026-012',
-    poNumber: 'PO-2026-018',
-    vendorName: 'Continental Timber & Veneers Pvt Ltd',
-    receivedDate: '2026-03-11',
-    challanInvoiceNumber: 'DC-8841 / INV-4491',
-    itemsReceived: [
-      { itemCode: 'PLY-18-BWP', description: 'CenturyPly 18mm BWP Club Prime (8x4)', orderedQty: 40, receivedQty: 40, acceptedQty: 39, rejectedQty: 1, rejectionReason: 'Corner edge delamination during transit', unit: 'sheets' },
-      { itemCode: 'FVI-SYN-01', description: 'Fevicol Marine Grade Synthetic Resin (50kg Drum)', orderedQty: 4, receivedQty: 4, acceptedQty: 4, rejectedQty: 0, unit: 'drums' }
-    ],
-    qualityInspectionStatus: 'CONDITIONALLY_ACCEPTED',
-    inspectorName: 'Site QA Eng. K. R. Nair',
-    warehouseStorageLocation: 'Worli Flat 1402 Site Store - Dry Chamber',
-    notes: 'Debit note generated for 1 damaged sheet. 39 sheets safely stacked on batten supports.'
-  }
-];
+const INITIAL_GRNS: GoodsReceiptNote[] = VILLA253_GRNS;
 
-const INITIAL_STOCK: WarehouseStockItem[] = [
-  {
-    id: 'STK-001',
-    itemCode: 'PLY-18-BWP',
-    itemName: 'CenturyPly 18mm Club Prime BWP 710',
-    category: 'Plywood & Boards',
-    warehouseLocation: 'Worli Flat 1402 Site Store',
-    currentStock: 39,
-    minimumThreshold: 15,
-    unit: 'sheets',
-    unitCostINR: 3250,
-    totalValueINR: 126750,
-    status: 'IN_STOCK'
-  },
-  {
-    id: 'STK-002',
-    itemCode: 'FIX-FAST-24',
-    itemName: 'Dr. Fixit Fastflex 2-Comp Waterproofing Kit',
-    category: 'Chemicals & Adhesives',
-    warehouseLocation: 'Worli Flat 1402 Site Store',
-    currentStock: 4,
-    minimumThreshold: 8,
-    unit: 'kits',
-    unitCostINR: 2850,
-    totalValueINR: 11400,
-    status: 'LOW_STOCK'
-  },
-  {
-    id: 'STK-003',
-    itemCode: 'POLY-WIRE-2.5',
-    itemName: 'Polycab FRLS-H Copper Wire 2.5 sq.mm Red',
-    category: 'Electrical',
-    warehouseLocation: 'Bhiwandi Central Depot',
-    currentStock: 45,
-    minimumThreshold: 20,
-    unit: 'rolls',
-    unitCostINR: 2150,
-    totalValueINR: 96750,
-    status: 'IN_STOCK'
-  },
-  {
-    id: 'STK-004',
-    itemCode: 'BLUM-SOFT-RUNNER',
-    itemName: 'Blum Tandembox Antaro 500mm Soft Close Drawer',
-    category: 'Hardware & Fittings',
-    warehouseLocation: 'Worli Flat 1402 Site Store',
-    currentStock: 2,
-    minimumThreshold: 6,
-    unit: 'sets',
-    unitCostINR: 4200,
-    totalValueINR: 8400,
-    status: 'REORDER_TRIGGERED'
-  }
-];
+const INITIAL_STOCK: WarehouseStockItem[] = VILLA253_STOCK;
 
 export const ProcurementAndInventoryView: React.FC<ProcurementAndInventoryViewProps> = ({
   project,

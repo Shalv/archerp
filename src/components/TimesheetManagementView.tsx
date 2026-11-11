@@ -72,7 +72,7 @@ export const TimesheetManagementView: React.FC<TimesheetManagementViewProps> = (
   const [timerActive, setTimerActive] = useState<boolean>(false);
   const [timerSeconds, setTimerSeconds] = useState<number>(0);
   const [timerTaskTitle, setTimerTaskTitle] = useState<string>('3D Living Room Perspectives');
-  const [timerProjectId, setTimerProjectId] = useState<string>(project?.id || 'PROJ-SKYLINE-1402');
+  const [timerProjectId, setTimerProjectId] = useState<string>(project?.id || 'PROJ-VILLA-253');
   const [timerCategory, setTimerCategory] = useState<TimesheetEntry['category']>('Design');
 
   const loadData = async () => {
@@ -126,7 +126,7 @@ export const TimesheetManagementView: React.FC<TimesheetManagementViewProps> = (
     await timesheetService.saveTimesheet({
       projectId: timerProjectId,
       projectCode: targetProject?.projectCode || 'PRJ-SKYLINE-1402',
-      projectName: targetProject?.title || 'Skyline Residences Unit 1402',
+      projectName: targetProject?.title || 'Villa 253 (Karjat)',
       employeeId: matchedEmployee.id,
       employeeName: matchedEmployee.name,
       employeeRole: matchedEmployee.roleOrCategory,
@@ -211,9 +211,9 @@ export const TimesheetManagementView: React.FC<TimesheetManagementViewProps> = (
 
     setEditingEntry({
       id: '',
-      projectId: project?.id || 'PROJ-SKYLINE-1402',
+      projectId: project?.id || 'PROJ-VILLA-253',
       projectCode: project?.projectCode || 'PRJ-SKYLINE-1402',
-      projectName: project?.title || 'Skyline Residences Unit 1402',
+      projectName: project?.title || 'Villa 253 (Karjat)',
       employeeId: defaultEmp.id,
       employeeName: defaultEmp.name,
       employeeRole: defaultEmp.roleOrCategory,
@@ -505,7 +505,7 @@ export const TimesheetManagementView: React.FC<TimesheetManagementViewProps> = (
                 onChange={e => setTimerProjectId(e.target.value)}
                 className="w-full bg-purple-950/80 border border-purple-700 rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-purple-400"
               >
-                <option value="PROJ-SKYLINE-1402">Skyline Residences Unit 1402 (Turnkey)</option>
+                <option value="PROJ-VILLA-253">Villa 253 (Karjat) (Turnkey)</option>
                 {projects.map(p => (
                   <option key={p.id} value={p.id}>{p.title} ({p.projectCode})</option>
                 ))}
@@ -575,7 +575,7 @@ export const TimesheetManagementView: React.FC<TimesheetManagementViewProps> = (
               className="border border-[#EDEBE9] rounded px-2.5 py-1 bg-white focus:ring-1 focus:ring-[#0F6CBD] text-xs max-w-44"
             >
               <option value="ALL">All Projects</option>
-              <option value="PROJ-SKYLINE-1402">Skyline Residences Unit 1402</option>
+              <option value="PROJ-VILLA-253">Villa 253 (Karjat)</option>
               {projects.map(p => (
                 <option key={p.id} value={p.id}>{p.title}</option>
               ))}
@@ -1006,13 +1006,13 @@ export const TimesheetManagementView: React.FC<TimesheetManagementViewProps> = (
                         ...editingEntry,
                         projectId: e.target.value,
                         projectCode: p?.projectCode || 'PRJ-SKYLINE-1402',
-                        projectName: p?.title || 'Skyline Residences Unit 1402'
+                        projectName: p?.title || 'Villa 253 (Karjat)'
                       });
                     }}
                     className="w-full border border-[#EDEBE9] rounded p-2 focus:ring-1 focus:ring-[#0F6CBD] bg-white font-medium"
                     required
                   >
-                    <option value="PROJ-SKYLINE-1402">Skyline Residences Unit 1402</option>
+                    <option value="PROJ-VILLA-253">Villa 253 (Karjat)</option>
                     {projects.map(p => (
                       <option key={p.id} value={p.id}>{p.title}</option>
                     ))}

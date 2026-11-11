@@ -25,6 +25,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { ProjectRecord, UserSession, WarrantyMaintenanceTicket } from '../types/erp';
+import { VILLA253_SNAGS, VILLA253_WARRANTY_TICKETS } from '../data/villa253DemoSeeds';
 
 interface HandoverAndWarrantyViewProps {
   project: ProjectRecord;
@@ -46,69 +47,9 @@ interface SnagItem {
   clientSignOff: boolean;
 }
 
-const INITIAL_SNAGS: SnagItem[] = [
-  {
-    id: 'SNAG-01',
-    snagNumber: 'SNAG-1402-01',
-    roomLocation: 'Master Bedroom Wardrobe',
-    trade: 'Carpentry',
-    description: 'Bottom soft-close drawer runner sticking slightly on left side.',
-    severity: 'FUNCTIONAL',
-    assignedContractor: 'Royal Heritage Carpentry',
-    dateLogged: '2026-03-10',
-    targetResolutionDate: '2026-03-13',
-    status: 'RECTIFIED',
-    clientSignOff: true
-  },
-  {
-    id: 'SNAG-02',
-    snagNumber: 'SNAG-1402-02',
-    roomLocation: 'Powder Room',
-    trade: 'Plumbing & Sanitary',
-    description: 'Kohler sensor faucet aerator requires minor descaling for smooth laminar flow.',
-    severity: 'COSMETIC',
-    assignedContractor: 'Precision MEP Solutions',
-    dateLogged: '2026-03-11',
-    targetResolutionDate: '2026-03-14',
-    status: 'OPEN',
-    clientSignOff: false
-  },
-  {
-    id: 'SNAG-03',
-    snagNumber: 'SNAG-1402-03',
-    roomLocation: 'Balcony Glass Railing',
-    trade: 'Metal & Glass',
-    description: 'Protective blue peel-off tape left on stainless steel top-rail edge.',
-    severity: 'COSMETIC',
-    assignedContractor: 'Sky Glass Crew',
-    dateLogged: '2026-03-12',
-    targetResolutionDate: '2026-03-13',
-    status: 'RECTIFIED',
-    clientSignOff: false
-  }
-];
+const INITIAL_SNAGS: SnagItem[] = VILLA253_SNAGS;
 
-const INITIAL_TICKETS: WarrantyMaintenanceTicket[] = [
-  {
-    id: 'TKT-001',
-    projectId: 'PROJ-SKYLINE-1402',
-    projectCode: 'PROJ-SKYLINE-1402',
-    ticketNumber: 'DLP-TKT-2026-01',
-    clientName: 'Dr. Vikramaditya Singhania',
-    componentAffected: 'Lutron dimming scene #2 in dining room',
-    issueCategory: 'ELECTRICAL',
-    complaintDescription: 'Lutron dimming scene #2 in dining room occasionally flickers under heavy air conditioning load.',
-    slaTargetHours: 24,
-    reportedDate: '2026-03-11',
-    assignedTechnician: 'Sr. Automation Eng. Farhan',
-    technicianPhone: '+91 98201 55644',
-    resolutionStatus: 'TECHNICIAN_DISPATCHED',
-    sparesConsumed: 'Firmware update required on Lutron QS processor; scheduled technician visit for Saturday 11:00 AM.',
-    warrantyCovered: true,
-    costIncurredINR: 0,
-    clientRating: 5
-  }
-];
+const INITIAL_TICKETS: WarrantyMaintenanceTicket[] = VILLA253_WARRANTY_TICKETS;
 
 export const HandoverAndWarrantyView: React.FC<HandoverAndWarrantyViewProps> = ({
   project,

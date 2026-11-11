@@ -120,9 +120,9 @@ export const ResourceDeploymentView: React.FC<ResourceDeploymentViewProps> = ({
       resourceType: firstRes?.type || 'EMPLOYEE',
       roleOrCategory: firstRes?.roleOrCategory || 'Team Leader',
       avatar: firstRes?.avatar || '',
-      projectId: project?.id || 'PROJ-SKYLINE-1402',
+      projectId: project?.id || 'PROJ-VILLA-253',
       projectCode: project?.projectCode || 'PRJ-SKYLINE-1402',
-      projectTitle: project?.title || 'Skyline Residences Unit 1402',
+      projectTitle: project?.title || 'Villa 253 (Karjat)',
       taskName: 'Site Execution Oversight',
       date: '2024-11-18',
       startTime: '08:00 AM',
@@ -284,7 +284,7 @@ export const ResourceDeploymentView: React.FC<ResourceDeploymentViewProps> = ({
               className="border border-[#EDEBE9] rounded px-2.5 py-1 bg-white focus:ring-1 focus:ring-[#0F6CBD] text-xs font-medium max-w-56"
             >
               <option value="ALL">All Active Projects</option>
-              <option value="PROJ-SKYLINE-1402">Skyline Residences Unit 1402</option>
+              <option value="PROJ-VILLA-253">Villa 253 (Karjat)</option>
               {projects.map(p => (
                 <option key={p.id} value={p.id}>{p.title}</option>
               ))}
@@ -645,13 +645,13 @@ export const ResourceDeploymentView: React.FC<ResourceDeploymentViewProps> = ({
                         ...editingDep,
                         projectId: e.target.value,
                         projectCode: p?.projectCode || 'PRJ-SKYLINE-1402',
-                        projectTitle: p?.title || 'Skyline Residences Unit 1402'
+                        projectTitle: p?.title || 'Villa 253 (Karjat)'
                       });
                     }}
                     className="w-full border border-[#EDEBE9] rounded p-2 focus:ring-1 focus:ring-[#107C41] bg-white font-medium"
                     required
                   >
-                    <option value="PROJ-SKYLINE-1402">Skyline Residences Unit 1402</option>
+                    <option value="PROJ-VILLA-253">Villa 253 (Karjat)</option>
                     {projects.map(p => (
                       <option key={p.id} value={p.id}>{p.title}</option>
                     ))}

@@ -48,6 +48,7 @@ import { CustomerDiscoveryFormView } from './discovery/CustomerDiscoveryFormView
 import { CategoryVisualSampleHeadsView } from './discovery/CategoryVisualSampleHeadsView';
 import { VisualInformationPackView } from './discovery/VisualInformationPackView';
 import { TwoStepSpatialDesignStudio } from './floorplan/TwoStepSpatialDesignStudio';
+import { VILLA253_DRAWINGS } from '../data/villa253DemoSeeds';
 
 interface DesignAndDrawingsManagementViewProps {
   project: ProjectRecord;
@@ -73,80 +74,13 @@ interface DrawingRecord {
   clientCommentsCount: number;
 }
 
-const INITIAL_DRAWINGS: DrawingRecord[] = [
-  {
-    id: 'DWG-001',
-    drawingCode: 'SKY-ARC-A-101',
-    discipline: 'ARCHITECTURAL',
-    title: 'Overall Architectural Floor Plan & Room Demarcation Layout',
-    revision: 'Rev C',
-    status: 'GFC_ISSUED',
-    sheetSize: 'A1',
-    scale: '1:100',
-    author: 'Ar. Aniket Joshi',
-    checker: 'Ar. Sanjay Puri (Principal)',
-    releaseDate: '2026-03-02',
-    fileSizeMb: 14.2,
-    imageThumbnail: '/assets/images/villa253_facade_exterior_1790833735467.jpg',
-    gfcStampDate: '2026-03-03',
-    clientCommentsCount: 2
-  },
-  {
-    id: 'DWG-002',
-    drawingCode: 'SKY-INT-L-105',
-    discipline: 'INTERIOR_LAYOUT',
-    title: 'Living & Dining Forum - Joinery & Millwork Working Details',
-    revision: 'Rev B',
-    status: 'CLIENT_APPROVED',
-    sheetSize: 'A1',
-    scale: '1:50',
-    author: 'Meera Rao (Lead Interior)',
-    checker: 'Project Lead',
-    releaseDate: '2026-02-28',
-    fileSizeMb: 19.4,
-    imageThumbnail: '/assets/images/villa253_living_modern_1790830799942.jpg',
-    clientCommentsCount: 3
-  },
-  {
-    id: 'DWG-003',
-    drawingCode: 'SKY-INT-3D-202',
-    discipline: '3D_RENDERS',
-    title: 'Master Bedroom Ensuite - Italian Botticino Concept Render',
-    revision: 'Rev B',
-    status: 'CLIENT_APPROVED',
-    sheetSize: 'A2',
-    scale: 'NTS',
-    author: 'Meera Rao',
-    checker: 'Ar. Aniket Joshi',
-    releaseDate: '2026-02-26',
-    fileSizeMb: 24.1,
-    imageThumbnail: '/assets/images/villa253_guest_suite_1790833711200.jpg',
-    clientCommentsCount: 1
-  },
-  {
-    id: 'DWG-004',
-    drawingCode: 'SKY-MEP-E-301',
-    discipline: 'ELECTRICAL_MEP',
-    title: 'Electrical Single Line Diagram (SLD), Automation & HVAC Layout',
-    revision: 'Rev B',
-    status: 'GFC_ISSUED',
-    sheetSize: 'A1',
-    scale: '1:50',
-    author: 'Eng. K. N. Rao (MEP)',
-    checker: 'Project Lead',
-    releaseDate: '2026-03-04',
-    fileSizeMb: 18.7,
-    imageThumbnail: '/assets/images/villa253_roof_gazebo_1790830815235.jpg',
-    gfcStampDate: '2026-03-05',
-    clientCommentsCount: 0
-  }
-];
+const INITIAL_DRAWINGS: DrawingRecord[] = VILLA253_DRAWINGS;
 
 // 5 Complete AI Design Concepts (Modern Luxury, Neo-Classical, Premium Industrial, Tropical Eco, Traditional Indian)
 const INITIAL_AI_OPTIONS: AIDesignOption[] = [
   {
     id: 'AI-OPT-01',
-    projectId: 'PROJ-SKYLINE-1402',
+    projectId: 'PROJ-VILLA-253',
     optionCode: 'OPTION-1',
     optionName: 'Modern Luxury Biophilic with Italian Marble & Warm Teak',
     architecturalStyle: 'Contemporary Biophilic Luxury',
@@ -197,7 +131,7 @@ const INITIAL_AI_OPTIONS: AIDesignOption[] = [
   },
   {
     id: 'AI-OPT-02',
-    projectId: 'PROJ-SKYLINE-1402',
+    projectId: 'PROJ-VILLA-253',
     optionCode: 'OPTION-2',
     optionName: 'Neo-Classical Haussmann Elegance with Brass Trims & Oak Parquet',
     architecturalStyle: 'Modern Parisian Haussmann / Neo-Classical',
@@ -246,7 +180,7 @@ const INITIAL_AI_OPTIONS: AIDesignOption[] = [
   },
   {
     id: 'AI-OPT-03',
-    projectId: 'PROJ-SKYLINE-1402',
+    projectId: 'PROJ-VILLA-253',
     optionCode: 'OPTION-3',
     optionName: 'Premium Industrial Minimalist Loft with Microtopping & Matte Black Metals',
     architecturalStyle: 'Urban Industrial Loft / Japandi Fusion',
@@ -292,7 +226,7 @@ const INITIAL_AI_OPTIONS: AIDesignOption[] = [
   },
   {
     id: 'AI-OPT-04',
-    projectId: 'PROJ-SKYLINE-1402',
+    projectId: 'PROJ-VILLA-253',
     optionCode: 'OPTION-4',
     optionName: 'Sustainable Tropical Eco-Villa Fitout with Natural Rattan & Lime Plaster',
     architecturalStyle: 'Biophilic Tropical Sustainable',
@@ -338,7 +272,7 @@ const INITIAL_AI_OPTIONS: AIDesignOption[] = [
   },
   {
     id: 'AI-OPT-05',
-    projectId: 'PROJ-SKYLINE-1402',
+    projectId: 'PROJ-VILLA-253',
     optionCode: 'OPTION-5',
     optionName: 'Traditional Indian Contemporary Heritage with Makrana Marble & Teak Jaali',
     architecturalStyle: 'Indian Ethnic / Warm Contemporary',

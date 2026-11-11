@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { CustomerRequirement, RoomSpace, ProjectRecord, UserSession, VastuLayoutOption } from '../types/erp';
 import { AIVastuLayoutSuggesterModal } from './AIVastuLayoutSuggesterModal';
+import { VILLA253_ROOMS } from '../data/villa253DemoProject';
 
 interface SiteSurveyWorkspaceProps {
   project: ProjectRecord;
@@ -32,27 +33,21 @@ interface SiteSurveyWorkspaceProps {
 }
 
 const DEFAULT_CONSTRAINTS = {
-  freightElevatorAvailable: true,
-  elevatorDimensions: '8.5 ft H × 4.5 ft W × 7.0 ft D (800 kg capacity)',
-  workingHours: '09:00 AM - 06:00 PM (Monday to Saturday, strictly no noisy work on Sundays)',
-  noiseRestrictions: 'No core cutting or demolition after 01:00 PM or before 10:00 AM',
-  materialUnloadingRules: 'Unloading allowed only in Basement 2 loading dock between 10:00 AM and 04:00 PM',
-  debrisDisposalMethod: 'Debris must be bagged in heavy-duty HDPE sacks and carted down via freight lift'
+  freightElevatorAvailable: false,
+  elevatorDimensions: 'No lift in Villa 253 - first floor material moved via the 7\'-6" dogleg staircase (3\'-6" waist)',
+  workingHours: '09:00 AM - 06:00 PM (Monday to Saturday); community gate closes at 06:00 PM',
+  noiseRestrictions: 'No cutting or drilling before 09:30 AM; silent hours for the community after 06:00 PM',
+  materialUnloadingRules: 'Unloading only at the villa front deck; no heavy vehicle movement on Sundays',
+  debrisDisposalMethod: 'Debris bagged in HDPE sacks and carted by tractor to the Raigad municipal yard'
 };
 
 const DEFAULT_ATTACHMENTS = [
-  { id: 'ATT-01', fileName: 'The_Skyline_Unit_1402_Architectural_Floorplan_RevB.pdf', fileType: 'pdf', uploadedAt: '2026-03-01T10:30:00Z', sizeKb: 3420, parsedSummary: '3BHK + Servant unit layout, 1,650 sq.ft carpet, 3 balconies.' },
-  { id: 'ATT-02', fileName: 'Laser_Survey_GLM50_Cloud_Export_20260301.dwg', fileType: 'dwg', uploadedAt: '2026-03-01T11:45:00Z', sizeKb: 5120, parsedSummary: 'Laser distance meter measurement point cloud.' }
+  { id: 'ATT-01', fileName: 'VILLA_253_WALL_MARKING_10_10_24_REV0.pdf', fileType: 'pdf', uploadedAt: '2026-05-30T10:30:00Z', sizeKb: 1840, parsedSummary: 'Wall marking drawing R0: 7 spaces, 2,205 sq.ft carpet, decks and roof gazebo.' },
+  { id: 'ATT-02', fileName: 'Villa253_FloorPlan_Editable_R0.dxf', fileType: 'dxf', uploadedAt: '2026-05-30T10:42:00Z', sizeKb: 640, parsedSummary: 'Editable 8-layer CAD reconstruction (A-WALL, A-DOOR, A-WIND, A-STRS, A-DECK, A-DIMS, A-TEXT, A-NOTE).' },
+  { id: 'ATT-03', fileName: 'Laser_Survey_GLM150_Cloud_Export_20260530.dwg', fileType: 'dwg', uploadedAt: '2026-05-30T11:45:00Z', sizeKb: 5120, parsedSummary: 'Bosch GLM 150-27 laser measurement points for all 7 rooms - matched R0 within 12mm.' }
 ];
 
-const DEFAULT_ROOMS: RoomSpace[] = [
-  { id: 'RM-01', name: 'Living & Dining Room', zone: 'Public Zone', floor: '14th Floor', lengthFt: 24, widthFt: 14.5, heightFt: 10.5, carpetAreaSqFt: 348, perimeterFt: 77, wallAreaSqFt: 808.5, ceilingAreaSqFt: 348, existingCondition: 'Bare shell screed floor', demolitionRequired: false },
-  { id: 'RM-02', name: 'Master Bedroom', zone: 'Private Zone', floor: '14th Floor', lengthFt: 17.5, widthFt: 16, heightFt: 10.5, carpetAreaSqFt: 280, perimeterFt: 67, wallAreaSqFt: 703.5, ceilingAreaSqFt: 280, existingCondition: 'Builder finish tile', demolitionRequired: true },
-  { id: 'RM-03', name: 'Modular Kitchen & Utility', zone: 'Service Zone', floor: '14th Floor', lengthFt: 14, widthFt: 10, heightFt: 10.5, carpetAreaSqFt: 140, perimeterFt: 48, wallAreaSqFt: 504, ceilingAreaSqFt: 140, existingCondition: 'Standard granite slab counter', demolitionRequired: true },
-  { id: 'RM-04', name: 'Guest Bedroom (Bed 2)', zone: 'Private Zone', floor: '14th Floor', lengthFt: 15, widthFt: 12, heightFt: 10.5, carpetAreaSqFt: 180, perimeterFt: 54, wallAreaSqFt: 567, ceilingAreaSqFt: 180, existingCondition: 'Bare shell plaster wall', demolitionRequired: false },
-  { id: 'RM-05', name: 'Kids / Study Room (Bed 3)', zone: 'Private Zone', floor: '14th Floor', lengthFt: 16, widthFt: 10, heightFt: 10.5, carpetAreaSqFt: 160, perimeterFt: 52, wallAreaSqFt: 546, ceilingAreaSqFt: 160, existingCondition: 'Bare shell', demolitionRequired: false },
-  { id: 'RM-06', name: 'Master & Common Bathrooms', zone: 'Wet Zone', floor: '14th Floor', lengthFt: 15, widthFt: 8, heightFt: 9.5, carpetAreaSqFt: 120, perimeterFt: 46, wallAreaSqFt: 437, ceilingAreaSqFt: 120, existingCondition: 'Plumbing core intact', demolitionRequired: true }
-];
+const DEFAULT_ROOMS: RoomSpace[] = VILLA253_ROOMS;
 
 export const SiteSurveyWorkspace: React.FC<SiteSurveyWorkspaceProps> = ({
   project,

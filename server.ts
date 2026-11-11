@@ -13,6 +13,26 @@ import dotenv from 'dotenv';
 import { createServer as createViteServer } from 'vite';
 
 import { dbService, DEMO_USERS } from './src/server/db';
+import {
+  applyConceptRevision,
+  buildFloorPlanModel,
+  generateBOQFromConcept,
+  generateConcepts,
+  logPrompt,
+  newSession
+} from './src/server/designStudioEngine';
+import { DesignStudioSession } from './src/types/designStudio';
+import {
+  applyElementChange,
+  approveElementRevision,
+  approvePackage,
+  attachAsset,
+  buildDesignTwin,
+  publishDesignPackage,
+  reissuePackage,
+  validateDesignPackage
+} from './src/server/designTwinEngine';
+import { VILLA253_FINISH_LIBRARY } from './src/data/villa253DesignTwin';
 import { mongoDBService } from './src/server/mongoService';
 import { 
   analyzeCustomerRequirementBrief, 
@@ -894,6 +914,673 @@ export async function createApp(isServerless: boolean = false) {
       res.json({ success: true, ...result });
     } catch (err: any) {
       res.status(500).json({ error: err.message || 'Failed to link concept to BOQ.' });
+    }
+  });
+
+  // ==========================================================================
+  // AI FLOOR PLAN-TO-INTERIOR DESIGN STUDIO
+  // Upload floor plan -> structured model -> preferences -> 3-5 concepts ->
+  // revisions -> approval -> room-wise BOQ. Geometry is never re-invented.
+  // ==========================================================================
+  const loadStudio = (projectId: string) =>
+    dbService.getDesignStudioSession(projectId) || newSession(projectId);
+
+  app.get('/api/design-studio/:projectId', (req: Request, res: Response) => {
+    try {
+      res.json(loadStudio(req.params.projectId));
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Failed to load the design studio session.' });
+    }
+  });
+
+  // Step 1 + 2: intake the floor plan and return the analysed model
+  app.post('/api/design-studio/:projectId/floor-plan', (req: Request, res: Response) => {
+    try {
+      const user = resolveUser(req);
+      const { kind, fileName, sizeKb, rooms, scaleRatio, previewUrl, cadDownloadUrl, columnsDetected, analysisNotes, aiExtraction } = req.body || {};
+      if (!kind) return res.status(400).json({ error: 'Floor plan source kind (PDF, JPG, PNG, DWG, DXF or MANUAL_DIMENSIONS) is required.' });
+      if (!Array.isArray(rooms) || rooms.length === 0) {
+        return res.status(400).json({ error: 'At least one room (with dimensions or area) is required to build the floor plan model.' });
+      }
+      const session = loadStudio(req.params.projectId);
+      const model = buildFloorPlanModel({
+        kind,
+        fileName,
+        sizeKb,
+        scaleRatio,
+        previewUrl,
+        cadDownloadUrl,
+        columnsDetected,
+        analysisNotes,
+        rooms,
+        uploadedAt: new Date().toISOString(),
+        uploadedBy: user ? `${user.name} (${user.roleTitle || user.role})` : 'Design Studio user'
+      });
+      if (aiExtraction && typeof aiExtraction === 'object') {
+        model.aiExtraction = {
+          engine: String(aiExtraction.engine || 'Puter.js'),
+          model: aiExtraction.model ? String(aiExtraction.model) : undefined,
+          ocrCharacters: Number(aiExtraction.ocrCharacters) || 0,
+          confidenceNotes: Array.isArray(aiExtraction.confidenceNotes) ? aiExtraction.confidenceNotes.map(String) : [],
+          extractedAt: new Date().toISOString(),
+          extractedBy: user ? user.name : undefined
+        };
+        if (model.aiExtraction.confidenceNotes.length) {
+          model.uncertainItems = [...model.uncertainItems, ...model.aiExtraction.confidenceNotes];
+        }
+        model.analysisNotes = [
+          ...model.analysisNotes,
+          `Read by ${model.aiExtraction.engine}${model.aiExtraction.model ? ` (${model.aiExtraction.model})` : ''} from ${model.aiExtraction.ocrCharacters} characters of OCR text. Every dimension below must be confirmed before pricing.`
+        ];
+      }
+      let updated: DesignStudioSession = {
+        ...session,
+        model,
+        stage: 'ANALYSIS_REVIEW',
+        preferences: session.preferences
+          ? { ...session.preferences, carpetAreaSqFt: model.totalCarpetSqFt }
+          : session.preferences
+      };
+      updated = logPrompt(
+        updated,
+        user ? user.name : 'Design Studio user',
+        'FLOOR_PLAN_ANALYSED',
+        `Read ${kind} plan ${fileName || '(dimensions entered manually)'} and detect rooms, walls, openings and circulation.`,
+        `${model.rooms.length} rooms, ${model.doorsDetected} doors, ${model.windowsDetected} windows/sliders, ${model.totalCarpetSqFt} sq.ft carpet, ${model.uncertainItems.length} item(s) flagged for confirmation.`
+      );
+      res.json(dbService.saveDesignStudioSession(updated));
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to analyse the floor plan.' });
+    }
+  });
+
+  // Confirm or correct the analysed model (dimension verification gate)
+  app.put('/api/design-studio/:projectId/model', (req: Request, res: Response) => {
+    try {
+      const user = resolveUser(req);
+      const session = loadStudio(req.params.projectId);
+      if (!session.model) return res.status(400).json({ error: 'Analyse a floor plan before confirming the model.' });
+      const { rooms, uncertainItems } = req.body || {};
+      const model = { ...session.model };
+      if (Array.isArray(rooms)) {
+        model.rooms = model.rooms.map(existing => {
+          const patch = rooms.find((r: any) => r.id === existing.id);
+          if (!patch) return existing;
+          const lengthFt = Number(patch.lengthFt) || existing.lengthFt;
+          const widthFt = Number(patch.widthFt) || existing.widthFt;
+          const ceilingHeightFt = Number(patch.ceilingHeightFt) || existing.ceilingHeightFt;
+          const areaSqFt = Math.round(lengthFt * widthFt * 100) / 100;
+          return {
+            ...existing,
+            lengthFt,
+            widthFt,
+            ceilingHeightFt,
+            areaSqFt,
+            perimeterFt: Math.round(2 * (lengthFt + widthFt) * 100) / 100,
+            wallAreaSqFt: Math.max(0, Math.round((2 * (lengthFt + widthFt) * ceilingHeightFt - existing.openings.reduce((sum: number, o: any) => sum + (o.widthFt || 0) * (o.heightFt || 7), 0)) * 100) / 100),
+            confidence: 'USER_VERIFIED' as const,
+            flags: existing.flags.filter(f => f !== 'VERIFY_DIMENSIONS')
+          };
+        });
+        model.totalCarpetSqFt = Math.round(model.rooms.reduce((sum, r) => sum + r.areaSqFt, 0) * 100) / 100;
+        model.circulationSqFt = Math.round(model.totalCarpetSqFt * 0.08 * 100) / 100;
+      }
+      model.uncertainItems = Array.isArray(uncertainItems) ? uncertainItems : [];
+      model.confirmedAt = new Date().toISOString();
+      model.confirmedBy = user ? user.name : 'Design Studio user';
+      const updated = dbService.saveDesignStudioSession({
+        ...session,
+        model,
+        stage: 'PREFERENCES',
+        preferences: session.preferences
+          ? { ...session.preferences, carpetAreaSqFt: model.totalCarpetSqFt }
+          : session.preferences
+      });
+      res.json(updated);
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to confirm the floor plan model.' });
+    }
+  });
+
+  // Step 3: customer preference form
+  app.put('/api/design-studio/:projectId/preferences', (req: Request, res: Response) => {
+    try {
+      const user = resolveUser(req);
+      const session = loadStudio(req.params.projectId);
+      const prefs = req.body || {};
+      const required = ['propertyType', 'style', 'budgetBand', 'palette', 'flooring', 'furniture', 'kitchenLayout', 'storage'];
+      const missing = required.filter(k => !prefs[k]);
+      if (missing.length) return res.status(400).json({ error: `Missing preference fields: ${missing.join(', ')}` });
+      if (!Array.isArray(prefs.lighting) || prefs.lighting.length === 0) {
+        return res.status(400).json({ error: 'Select at least one lighting requirement (ambient, task, accent or decorative).' });
+      }
+      const updated = dbService.saveDesignStudioSession({
+        ...session,
+        stage: session.stage === 'CONCEPTS_GENERATED' || session.stage === 'CUSTOMER_REVIEW' ? session.stage : 'PREFERENCES',
+        preferences: {
+          ...prefs,
+          carpetAreaSqFt: prefs.carpetAreaSqFt || session.model?.totalCarpetSqFt || 0,
+          specialRequirements: prefs.specialRequirements || [],
+          roomInstructions: prefs.roomInstructions || [],
+          updatedAt: new Date().toISOString(),
+          updatedBy: user ? user.name : 'Design Studio user'
+        }
+      });
+      res.json(updated);
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to save design preferences.' });
+    }
+  });
+
+  // Step 4: generate 3-5 concepts from the SAME model
+  app.post('/api/design-studio/:projectId/generate', (req: Request, res: Response) => {
+    try {
+      const user = resolveUser(req);
+      const session = loadStudio(req.params.projectId);
+      if (!session.model) return res.status(400).json({ error: 'Analyse and confirm a floor plan before generating concepts.' });
+      if (!session.preferences) return res.status(400).json({ error: 'Capture the customer preferences before generating concepts.' });
+      const count = Math.min(Math.max(Number(req.body?.count) || 4, 3), 5);
+      const concepts = generateConcepts(req.params.projectId, session.model, session.preferences, count);
+      let updated: DesignStudioSession = {
+        ...session,
+        concepts,
+        selectedConceptId: undefined,
+        approvedConceptId: undefined,
+        boqDraft: undefined,
+        stage: 'CUSTOMER_REVIEW'
+      };
+      updated = logPrompt(
+        updated,
+        user ? user.name : 'Design Studio user',
+        'CONCEPTS_GENERATED',
+        `Generate ${count} concepts for ${session.model.rooms.length} measured rooms using style=${session.preferences.style}, budget=${session.preferences.budgetBand}, palette=${session.preferences.palette}, flooring=${session.preferences.flooring}.`,
+        `${concepts.length} concepts generated room-wise: ${concepts.map(c => `${c.name} (₹${Math.round(c.estimatedCostMinINR / 100000)}-${Math.round(c.estimatedCostMaxINR / 100000)} L)`).join('; ')}.`
+      );
+      res.json(dbService.saveDesignStudioSession(updated));
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to generate design concepts.' });
+    }
+  });
+
+  // Step 5: revisions (whole concept or one room)
+  app.post('/api/design-studio/:projectId/concepts/:conceptId/revision', (req: Request, res: Response) => {
+    try {
+      const user = resolveUser(req);
+      const session = loadStudio(req.params.projectId);
+      const concept = session.concepts.find(c => c.id === req.params.conceptId);
+      if (!concept) return res.status(404).json({ error: 'Concept not found in this project.' });
+      const { instruction, scope, roomId, changeType } = req.body || {};
+      if (!instruction || String(instruction).trim().length < 5) {
+        return res.status(400).json({ error: 'Describe the revision (at least 5 characters) so the change can be applied and logged.' });
+      }
+      if (concept.status === 'APPROVED' && !req.body?.forceUnlock) {
+        return res.status(409).json({ error: 'This concept is approved and locked. Reopen it before requesting a change.' });
+      }
+      const revised = applyConceptRevision(
+        concept,
+        {
+          id: `REV-${Date.now()}`,
+          requestedAt: new Date().toISOString(),
+          requestedBy: user ? user.name : 'Client',
+          scope: scope === 'ROOM' ? 'ROOM' : 'WHOLE_CONCEPT',
+          roomId,
+          changeType: changeType || 'OTHER',
+          instruction: String(instruction).trim()
+        },
+        user ? user.name : 'Client'
+      );
+      let updated: DesignStudioSession = {
+        ...session,
+        concepts: session.concepts.map(c => (c.id === revised.id ? revised : c)),
+        boqDraft: session.boqDraft && session.boqDraft.generatedFromConceptId === revised.id ? undefined : session.boqDraft
+      };
+      updated = logPrompt(
+        updated,
+        user ? user.name : 'Client',
+        'CONCEPT_REVISED',
+        `${changeType || 'OTHER'} on ${scope === 'ROOM' ? (session.model?.rooms.find(r => r.id === roomId)?.name || roomId) : 'whole concept'}: ${instruction}`,
+        revised.revisions[revised.revisions.length - 1]?.resultSummary || 'Revision applied.'
+      );
+      res.json(dbService.saveDesignStudioSession(updated));
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to apply the revision.' });
+    }
+  });
+
+  /**
+   * Persists AI output produced in the browser by Puter.js against a concept.
+   * The browser does the model calls (keyless, user-pays); the server only
+   * validates and stores the result so it is auditable and shared.
+   * Numbers are NEVER accepted here - only prose and image references.
+   */
+  app.post('/api/design-studio/:projectId/concepts/:conceptId/ai-enrich', (req: Request, res: Response) => {
+    try {
+      const user = resolveUser(req);
+      const session = loadStudio(req.params.projectId);
+      const concept = session.concepts.find(c => c.id === req.params.conceptId);
+      if (!concept) return res.status(404).json({ error: 'Concept not found in this project.' });
+      if (concept.status === 'APPROVED') {
+        return res.status(409).json({ error: 'Approved concepts are locked. Reopen the concept before regenerating its narrative or renders.' });
+      }
+
+      const { narrative, roomImages, engine, narrativeModel, imageModel, failures } = req.body || {};
+      const cleanNarrative = typeof narrative === 'string' ? narrative.trim().slice(0, 4000) : '';
+      const images: { roomId: string; imageUrl: string }[] = Array.isArray(roomImages)
+        ? roomImages
+            .filter((r: any) => r && typeof r.roomId === 'string' && typeof r.imageUrl === 'string' && r.imageUrl.length > 8)
+            .map((r: any) => ({ roomId: r.roomId, imageUrl: r.imageUrl }))
+        : [];
+
+      if (!cleanNarrative && images.length === 0) {
+        return res.status(400).json({ error: 'Send a narrative or at least one room image to save.' });
+      }
+
+      const roomIds = new Set(concept.roomSchemes.map(r => r.roomId));
+      const unknownRoom = images.find(img => !roomIds.has(img.roomId));
+      if (unknownRoom) {
+        return res.status(400).json({ error: `Room ${unknownRoom.roomId} is not part of this concept.` });
+      }
+
+      const updatedConcept = {
+        ...concept,
+        narrative: cleanNarrative || concept.narrative,
+        roomSchemes: concept.roomSchemes.map(room => {
+          const match = images.find(img => img.roomId === room.roomId);
+          return match ? { ...room, renderImageUrl: match.imageUrl } : room;
+        }),
+        aiGeneration: {
+          engine: String(engine || 'Puter.js'),
+          narrativeModel: narrativeModel ? String(narrativeModel) : concept.aiGeneration?.narrativeModel,
+          imageModel: imageModel ? String(imageModel) : concept.aiGeneration?.imageModel,
+          narrativeGeneratedAt: cleanNarrative ? new Date().toISOString() : concept.aiGeneration?.narrativeGeneratedAt,
+          rendersGeneratedAt: images.length ? new Date().toISOString() : concept.aiGeneration?.rendersGeneratedAt,
+          rendersRequested: images.length + (Array.isArray(failures) ? failures.length : 0),
+          rendersSucceeded: images.length,
+          failures: Array.isArray(failures) ? failures.map(String).slice(0, 20) : []
+        }
+      };
+
+      let updated: DesignStudioSession = {
+        ...session,
+        concepts: session.concepts.map(c => (c.id === updatedConcept.id ? updatedConcept : c)),
+        boqDraft:
+          session.boqDraft && session.boqDraft.generatedFromConceptId === updatedConcept.id
+            ? undefined
+            : session.boqDraft
+      };
+
+      updated = logPrompt(
+        updated,
+        user ? user.name : 'Design Studio user',
+        'AI_CONTENT_SAVED',
+        `${String(engine || 'Puter.js')}: ${cleanNarrative ? 'narrative' : 'no narrative'}; ${images.length} room render(s)${imageModel ? ` via ${imageModel}` : ''}.`,
+        `Concept ${concept.code} updated: narrative ${cleanNarrative ? `rewritten (${cleanNarrative.split(/\s+/).length} words)` : 'unchanged'}, ${images.length} render(s) stored. Quantities and rates untouched.`
+      );
+
+      if (user) {
+        dbService.logAudit(
+          user,
+          'AI_DESIGN_ENRICHED',
+          'DESIGN_CONCEPT',
+          concept.id,
+          `AI narrative and ${images.length} render(s) generated by ${String(engine || 'Puter.js')} for ${concept.code} v${concept.version}.`
+        );
+      }
+
+      res.json(dbService.saveDesignStudioSession(updated));
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to save the AI output.' });
+    }
+  });
+
+  app.post('/api/design-studio/:projectId/concepts/:conceptId/select', (req: Request, res: Response) => {
+    try {
+      const session = loadStudio(req.params.projectId);
+      const concept = session.concepts.find(c => c.id === req.params.conceptId);
+      if (!concept) return res.status(404).json({ error: 'Concept not found in this project.' });
+      res.json(
+        dbService.saveDesignStudioSession({
+          ...session,
+          selectedConceptId: concept.id,
+          concepts: session.concepts.map(c => ({
+            ...c,
+            status: c.id === concept.id ? 'SELECTED' : c.status === 'SELECTED' ? 'PRESENTED' : c.status,
+            selectedAt: c.id === concept.id ? new Date().toISOString() : c.selectedAt
+          }))
+        })
+      );
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to select the concept.' });
+    }
+  });
+
+  // Step 6: approval locks every room scheme
+  app.post('/api/design-studio/:projectId/concepts/:conceptId/approve', (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const session = loadStudio(req.params.projectId);
+      const concept = session.concepts.find(c => c.id === req.params.conceptId);
+      if (!concept) return res.status(404).json({ error: 'Concept not found in this project.' });
+      if (!session.model?.confirmedAt) {
+        return res.status(400).json({ error: 'Confirm the floor plan model before approving a design - BOQ quantities depend on it.' });
+      }
+      const approvedAt = new Date().toISOString();
+      const approved = {
+        ...concept,
+        status: 'APPROVED' as const,
+        approvedAt,
+        approvedBy: user.name,
+        selectedAt: concept.selectedAt || approvedAt,
+        roomSchemes: concept.roomSchemes.map(room => ({ ...room, locked: true }))
+      };
+      let updated: DesignStudioSession = {
+        ...session,
+        stage: 'APPROVED',
+        selectedConceptId: approved.id,
+        approvedConceptId: approved.id,
+        concepts: session.concepts.map(c =>
+          c.id === approved.id ? approved : c.status === 'APPROVED' ? { ...c, status: 'PRESENTED' } : c
+        )
+      };
+      updated = logPrompt(updated, user.name, 'CONCEPT_APPROVED', `Approve ${approved.name} v${approved.version} (${approved.roomSchemes.length} room schemes).`, 'All room schemes locked; detailed design and BOQ generation unlocked.');
+      dbService.logAudit(user, 'APPROVE_DESIGN_CONCEPT', 'DESIGN_CONCEPT', req.params.projectId, `Approved ${approved.code} ${approved.name} v${approved.version} - ${approved.roomSchemes.length} rooms locked.`);
+      res.json(dbService.saveDesignStudioSession(updated));
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to approve the concept.' });
+    }
+  });
+
+  app.post('/api/design-studio/:projectId/concepts/:conceptId/reject', (req: Request, res: Response) => {
+    try {
+      const session = loadStudio(req.params.projectId);
+      res.json(
+        dbService.saveDesignStudioSession({
+          ...session,
+          concepts: session.concepts.map(c => (c.id === req.params.conceptId ? { ...c, status: 'REJECTED' } : c))
+        })
+      );
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to reject the concept.' });
+    }
+  });
+
+  // Step 6: approved concept -> room-wise BOQ (master-rate matched)
+  app.post('/api/design-studio/:projectId/generate-boq', (req: Request, res: Response) => {
+    try {
+      const user = resolveUser(req);
+      const session = loadStudio(req.params.projectId);
+      const conceptId = req.body?.conceptId || session.approvedConceptId;
+      const concept = session.concepts.find(c => c.id === conceptId);
+      if (!concept) return res.status(404).json({ error: 'Approved concept not found. Approve a design before generating the BOQ.' });
+      if (concept.status !== 'APPROVED' && !req.body?.allowUnapproved) {
+        return res.status(409).json({ error: 'Only an approved concept can be converted into a BOQ.' });
+      }
+      const revisionId = `REV-DS-${Date.now()}`;
+      const revisionLabel = `Rev 0 - AI Design Studio (${concept.name} v${concept.version})`;
+      const boq = generateBOQFromConcept(session, concept, dbService.getMasterRates(), revisionId, revisionLabel);
+      let updated: DesignStudioSession = {
+        ...session,
+        stage: 'BOQ_GENERATED',
+        boqDraft: {
+          revisionId,
+          revisionLabel,
+          items: boq.items,
+          subtotalSelling: boq.subtotalSelling,
+          generatedAt: new Date().toISOString(),
+          generatedFromConceptId: concept.id
+        }
+      };
+      updated = logPrompt(
+        updated,
+        user ? user.name : 'Design Studio user',
+        'BOQ_GENERATED',
+        `Convert ${concept.name} v${concept.version} into a room-wise BOQ using the confirmed model and the Master Schedule of Rates.`,
+        `${boq.items.length} lines across ${session.model?.rooms.length || 0} rooms; subtotal ₹${boq.subtotalSelling.toLocaleString('en-IN')} before GST.`
+      );
+      if (req.body?.applyToProject && user) {
+        dbService.appendBOQRevision(user, req.params.projectId, {
+          id: revisionId,
+          projectId: req.params.projectId,
+          revisionNumber: 2,
+          revisionLabel,
+          status: 'ESTIMATOR_REVIEW',
+          items: boq.items,
+          createdAt: new Date().toISOString(),
+          createdBy: `AI Design Studio (${concept.code} v${concept.version})`,
+          missingDimensionAlerts: (session.model?.uncertainItems || []),
+          missingRateAlerts: boq.items.filter(i => i.rateStatus === 'PROVISIONAL').map(i => `${i.itemCode} (${i.roomZone}) uses an indicative rate - confirm with a vendor quote.`),
+          notes: `Generated from approved design concept ${concept.code} (${concept.name} v${concept.version}).`
+        });
+      }
+      res.json(dbService.saveDesignStudioSession(updated));
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to generate the BOQ from the approved concept.' });
+    }
+  });
+
+  // Presentation pack (design images + specs + prompt history) for the client
+  // ==========================================================================
+  // PROJECT DESIGN DIGITAL TWIN - strict design-to-drawing traceability
+  // Every asset belongs to a room + element + design revision and names the
+  // material IDs it depicts. Nothing here accepts a free-floating image.
+  // ==========================================================================
+  const loadTwin = (projectId: string) => dbService.getDesignTwin(projectId);
+
+  app.get('/api/design-twin/:projectId', (req: Request, res: Response) => {
+    const twin = loadTwin(req.params.projectId);
+    if (!twin) {
+      return res.status(404).json({
+        error: 'No design twin exists for this project yet. Build it from an approved design concept first.',
+        code: 'TWIN_NOT_BUILT'
+      });
+    }
+    res.json(twin);
+  });
+
+  app.get('/api/design-twin/:projectId/materials', (req: Request, res: Response) => {
+    const twin = loadTwin(req.params.projectId);
+    const projectMaterials = twin?.materials || [];
+    res.json({
+      project: projectMaterials,
+      library: VILLA253_FINISH_LIBRARY.map(m => ({ ...m, projectId: req.params.projectId }))
+    });
+  });
+
+  app.post('/api/design-twin/:projectId/build', (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const existing = loadTwin(req.params.projectId);
+      if (existing && !req.body?.force) {
+        return res.status(409).json({
+          error: `A design twin already exists at ${existing.designVersion}. Pass force: true to rebuild from the approved concept (revision history will be replaced).`,
+          code: 'TWIN_EXISTS'
+        });
+      }
+      const session = dbService.getDesignStudioSession(req.params.projectId);
+      if (!session?.model?.confirmedAt) {
+        return res.status(400).json({ error: 'Confirm the floor plan model in the AI Design Studio before building the design twin.' });
+      }
+      const concept = session.concepts.find(c => c.id === session.approvedConceptId);
+      if (!concept || concept.status !== 'APPROVED') {
+        return res.status(400).json({ error: 'Approve a design concept in the AI Design Studio before building the design twin.' });
+      }
+      const project = dbService.getProjectById ? dbService.getProjectById(req.params.projectId) : undefined;
+      const boqItems = project?.revisions?.find(r => r.id === project.activeRevisionId)?.items
+        || session.boqDraft?.items
+        || [];
+      if (!boqItems.length) {
+        return res.status(400).json({ error: 'Generate the room-wise BOQ from the approved concept before building the design twin - every element needs a BOQ line.' });
+      }
+      const twin = buildDesignTwin({
+        projectId: req.params.projectId,
+        model: session.model,
+        concept,
+        boqItems,
+        boqRevisionId: session.boqDraft?.revisionId,
+        actor: user.name,
+        requirements: project?.requirement
+          ? [{ id: project.requirement.id, text: `${project.requirement.customerName} brief` }]
+          : []
+      });
+      twin.materials = [...twin.materials, ...VILLA253_FINISH_LIBRARY.map(m => ({ ...m, projectId: req.params.projectId }))];
+      const saved = dbService.saveDesignTwin(twin);
+      dbService.logAudit(user, 'DESIGN_TWIN_BUILT', 'DESIGN_TWIN', req.params.projectId,
+        `Built design twin ${saved.designVersion}: ${saved.rooms.length} rooms, ${saved.assets.length} assets from ${concept.code} v${concept.version}.`);
+      res.json(saved);
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to build the design twin.' });
+    }
+  });
+
+  app.post('/api/design-twin/:projectId/validate', (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const twin = loadTwin(req.params.projectId);
+      if (!twin) return res.status(404).json({ error: 'No design twin exists for this project yet.', code: 'TWIN_NOT_BUILT' });
+      const report = validateDesignPackage(twin, user.name);
+      const saved = dbService.saveDesignTwin({ ...twin, validation: report });
+      dbService.logAudit(user, 'DESIGN_TWIN_VALIDATED', 'DESIGN_TWIN', req.params.projectId,
+        `Validation ${report.passedCount}/${report.totalCount} at ${report.designVersion}${report.passed ? '' : ' - package blocked'}.`);
+      res.json(saved);
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to validate the design package.' });
+    }
+  });
+
+  app.put('/api/design-twin/:projectId/elements/:elementId/change', (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const twin = loadTwin(req.params.projectId);
+      if (!twin) return res.status(404).json({ error: 'No design twin exists for this project yet.', code: 'TWIN_NOT_BUILT' });
+      const { field, toMaterialId, toText, toRate, reason } = req.body || {};
+      if (!field) return res.status(400).json({ error: 'A change field (MATERIAL, COLOUR or SPECIFICATION) is required.' });
+      if (!reason || String(reason).trim().length < 8) {
+        return res.status(400).json({ error: 'Record why the element is changing (at least 8 characters) - it goes into the revision history.' });
+      }
+      const result = applyElementChange(twin, {
+        elementId: req.params.elementId,
+        field,
+        toMaterialId,
+        toText,
+        toRate: toRate ? Number(toRate) : undefined,
+        reason: String(reason).trim(),
+        actor: user.name
+      });
+      const saved = dbService.saveDesignTwin(result.twin);
+      dbService.logAudit(user, 'DESIGN_ELEMENT_REVISED', 'DESIGN_ELEMENT', req.params.elementId,
+        `${result.revision.id}: ${result.revision.change.from} -> ${result.revision.change.to}; BOQ delta ₹${result.revision.boqImpact.delta.toLocaleString('en-IN')}; ${result.revision.dependentsFlagged.length} dependent element(s) flagged.`);
+      res.json({ twin: saved, revision: result.revision });
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to apply the element change.' });
+    }
+  });
+
+  app.post('/api/design-twin/:projectId/elements/:elementId/approve', (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const twin = loadTwin(req.params.projectId);
+      if (!twin) return res.status(404).json({ error: 'No design twin exists for this project yet.', code: 'TWIN_NOT_BUILT' });
+      const saved = dbService.saveDesignTwin(approveElementRevision(twin, req.params.elementId, user.name));
+      dbService.logAudit(user, 'DESIGN_ELEMENT_APPROVED', 'DESIGN_ELEMENT', req.params.elementId,
+        `Re-approved regenerated assets at ${saved.designVersion}.`);
+      res.json(saved);
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to approve the element revision.' });
+    }
+  });
+
+  app.post('/api/design-twin/:projectId/reissue', (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const twin = loadTwin(req.params.projectId);
+      if (!twin) return res.status(404).json({ error: 'No design twin exists for this project yet.', code: 'TWIN_NOT_BUILT' });
+      const saved = dbService.saveDesignTwin(reissuePackage(twin, user.name));
+      dbService.logAudit(user, 'DESIGN_PACKAGE_REISSUED', 'DESIGN_TWIN', req.params.projectId,
+        `Package re-issued at ${saved.designVersion}.`);
+      res.json(saved);
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to re-issue the package.' });
+    }
+  });
+
+  app.post('/api/design-twin/:projectId/approve-package', (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const twin = loadTwin(req.params.projectId);
+      if (!twin) return res.status(404).json({ error: 'No design twin exists for this project yet.', code: 'TWIN_NOT_BUILT' });
+      const saved = dbService.saveDesignTwin(approvePackage(twin, user.name));
+      dbService.logAudit(user, 'DESIGN_PACKAGE_APPROVED', 'DESIGN_TWIN', req.params.projectId,
+        `Package approved for execution at ${saved.designVersion}.`);
+      res.json(saved);
+    } catch (err: any) {
+      res.status(409).json({ error: err.message || 'Package approval blocked.' });
+    }
+  });
+
+  app.post('/api/design-twin/:projectId/publish', (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const twin = loadTwin(req.params.projectId);
+      if (!twin) return res.status(404).json({ error: 'No design twin exists for this project yet.', code: 'TWIN_NOT_BUILT' });
+      const result = publishDesignPackage(twin, user.name);
+      dbService.logAudit(user, result.ok ? 'DESIGN_PACKAGE_PUBLISHED' : 'DESIGN_PACKAGE_PUBLISH_BLOCKED', 'DESIGN_TWIN', req.params.projectId,
+        result.ok ? `Drawing package released at ${twin.designVersion}.` : `Release blocked: ${result.reasons[0]}`);
+      res.status(result.ok ? 200 : 409).json(result);
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to publish the design package.' });
+    }
+  });
+
+  app.post('/api/design-twin/:projectId/assets', (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const twin = loadTwin(req.params.projectId);
+      if (!twin) return res.status(404).json({ error: 'No design twin exists for this project yet.', code: 'TWIN_NOT_BUILT' });
+      const { elementId, assetType, url, source, materialRefs, drawingRef, promptRef, provenance, notes } = req.body || {};
+      if (!elementId || !assetType || !url || !source) {
+        return res.status(400).json({ error: 'elementId, assetType, url and source are required.' });
+      }
+      if (!provenance?.origin || !provenance?.method) {
+        return res.status(400).json({ error: 'Every asset needs provenance: where it came from and how it was produced.' });
+      }
+      const result = attachAsset(twin, {
+        elementId,
+        assetType,
+        url,
+        source,
+        materialRefs,
+        drawingRef,
+        promptRef,
+        provenance,
+        notes,
+        actor: user.name
+      });
+      const saved = dbService.saveDesignTwin(result.twin);
+      dbService.logAudit(user, 'DESIGN_ASSET_ATTACHED', 'DESIGN_ASSET', result.asset.id,
+        `${assetType} attached to ${elementId} from ${source}.`);
+      res.json({ twin: saved, asset: result.asset });
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Failed to attach the asset.' });
+    }
+  });
+
+  app.get('/api/design-studio/:projectId/presentation', (req: Request, res: Response) => {
+    try {
+      const session = loadStudio(req.params.projectId);
+      const concept = session.concepts.find(c => c.id === (session.approvedConceptId || session.selectedConceptId)) || session.concepts[0];
+      if (!concept) return res.status(404).json({ error: 'Generate concepts before requesting a presentation pack.' });
+      res.json({
+        projectId: session.projectId,
+        generatedAt: new Date().toISOString(),
+        floorPlan: session.model,
+        preferences: session.preferences,
+        concept,
+        alternatives: session.concepts.filter(c => c.id !== concept.id).map(c => ({ code: c.code, name: c.name, tagline: c.tagline, palette: c.palette, estimateMin: c.estimatedCostMinINR, estimateMax: c.estimatedCostMaxINR, status: c.status })),
+        boq: session.boqDraft ? { revisionLabel: session.boqDraft.revisionLabel, items: session.boqDraft.items.length, subtotalSelling: session.boqDraft.subtotalSelling } : null,
+        promptHistory: session.promptHistory
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Failed to build the presentation pack.' });
     }
   });
 

@@ -239,12 +239,12 @@ export const UserProfileEditModal: React.FC<UserProfileEditModalProps> = ({
   // Resolve assigned projects
   const assignedProjectsList = (currentUser.assignedProjectIds && currentUser.assignedProjectIds.length > 0)
     ? currentUser.assignedProjectIds
-    : ['PROJ-SKYLINE-1402'];
+    : ['PROJ-VILLA-253'];
 
   const matchedProjects = projects.filter(p => assignedProjectsList.includes(p.id));
   const displayProjects = matchedProjects.length > 0 ? matchedProjects : [
     {
-      id: 'PROJ-SKYLINE-1402',
+      id: 'PROJ-VILLA-253',
       projectCode: 'PRJ-SKYLINE-1402',
       title: 'Skyline Residences Penthouse Fit-out',
       clientName: 'Vikram Malhotra',

@@ -48,6 +48,8 @@ import { CostTraceabilityMatrixView } from './components/CostTraceabilityMatrixV
 import { AgenticAIActionCenter } from './components/AgenticAIActionCenter';
 import { TwoStepSpatialDesignStudio } from './components/floorplan/TwoStepSpatialDesignStudio';
 import { FullJourneyModulesView } from './components/FullJourneyModulesView';
+import { AIDesignStudioView } from './components/designStudio/AIDesignStudioView';
+import { DesignTwinView } from './components/designTwin/DesignTwinView';
 import { MandatoryReportsHubView } from './components/MandatoryReportsHubView';
 import { TimesheetManagementView } from './components/TimesheetManagementView';
 import { ResourceDeploymentView } from './components/ResourceDeploymentView';
@@ -70,7 +72,7 @@ export default function App() {
   });
 
   const [projects, setProjects] = useState<ProjectRecord[]>(() => [getSyntheticDemoProject()]);
-  const [activeProjectId, setActiveProjectId] = useState<string>('PROJ-SKYLINE-1402');
+  const [activeProjectId, setActiveProjectId] = useState<string>('PROJ-VILLA-253');
   const [activeProject, setActiveProject] = useState<ProjectRecord | null>(() => getSyntheticDemoProject());
   const [masterRates, setMasterRates] = useState<MasterRateItem[]>(() => DEFAULT_MASTER_RATES);
   const [budgetSummary, setBudgetSummary] = useState<CostBudgetSummary | null>(null);
@@ -849,6 +851,18 @@ export default function App() {
               onClose={() => setActiveTab('general')}
               onNavigateToTab={(tab) => setActiveTab(tab)}
             />
+          ) : activeTab === 'design_twin' && activeProject ? (
+            <DesignTwinView
+              project={activeProject}
+              currentUser={currentUser}
+              onNavigateTab={(tab) => setActiveTab(tab)}
+            />
+          ) : activeTab === 'design_studio' && activeProject ? (
+            <AIDesignStudioView
+              project={activeProject}
+              currentUser={currentUser}
+              onNavigateTab={(tab) => setActiveTab(tab)}
+            />
           ) : (activeTab === 'spatial_ai' || activeTab === 'floorplan') && activeProject ? (
             <TwoStepSpatialDesignStudio
               project={activeProject}
@@ -1095,6 +1109,16 @@ export default function App() {
           >
             Capabilities &amp; Architecture
           </button>
+          <span>•</span>
+          <a
+            href="https://developer.puter.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-violet-700 hover:underline"
+            title="Browser AI for the Design Studio (keyless, user-pays)"
+          >
+            Powered by Puter
+          </a>
         </div>
       </footer>
     </div>

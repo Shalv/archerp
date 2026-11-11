@@ -73,9 +73,9 @@ export const ProjectManagementHubView: React.FC<ProjectManagementHubViewProps> =
   const handleOpenTaskModal = (defaults?: Partial<ProjectTask>) => {
     setEditingTask({
       id: '',
-      projectId: project?.id || 'PROJ-SKYLINE-1402',
-      projectCode: project?.projectCode || 'PRJ-SKYLINE-1402',
-      projectName: project?.title || 'Skyline Residences Unit 1402',
+      projectId: project?.id || 'PROJ-VILLA-253',
+      projectCode: project?.projectCode || 'BS-2026-V253',
+      projectName: project?.title || 'Villa 253 (Karjat)',
       clientName: project?.clientName || 'Vikram Malhotra',
       title: 'Detailed Electrical Layout',
       stage: 'Ongoing',
@@ -133,17 +133,17 @@ export const ProjectManagementHubView: React.FC<ProjectManagementHubViewProps> =
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[11px] font-mono text-[#0F6CBD] bg-[#EFF6FC] px-2 py-0.5 rounded border border-[#C7E0F4]">
-                  {project?.projectCode || 'PRJ-SKYLINE-1402'}
+                  {project?.projectCode || 'BS-2026-V253'}
                 </span>
                 <span className="text-xs text-[#107C41] font-semibold bg-[#DFF6DD] px-2 py-0.5 rounded border border-[#8AD68A]">
                   Active Execution
                 </span>
               </div>
               <h1 className="text-lg font-bold text-[#201F1E] mt-0.5">
-                {project?.title || 'Skyline Residences Unit 1402'} — Project Management Hub
+                {project?.title || 'Villa 253 (Karjat)'} — Project Management Hub
               </h1>
               <p className="text-xs text-[#605E5C]">
-                Client: <span className="font-semibold text-[#201F1E]">{project?.clientName || 'Vikram Malhotra'}</span> • Location: Skyline Heights Tower B, Worli
+                Client: <span className="font-semibold text-[#201F1E]">{project?.clientName || 'Aditya & Sneha Kulkarni'}</span> • Location: Villa 253, The Meadows, Karjat
               </p>
             </div>
           </div>

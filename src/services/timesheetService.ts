@@ -7,10 +7,10 @@ import {
   ResourceMasterItem 
 } from '../data/timesheetAndResourceSeed';
 
-const TS_STORAGE_KEY = 'buildstorys_timesheets_v1';
-const DEP_STORAGE_KEY = 'buildstorys_deployments_v1';
-const TASK_STORAGE_KEY = 'buildstorys_project_tasks_v1';
-const RES_STORAGE_KEY = 'buildstorys_resources_v1';
+const TS_STORAGE_KEY = 'buildstorys_timesheets_v2';
+const DEP_STORAGE_KEY = 'buildstorys_deployments_v2';
+const TASK_STORAGE_KEY = 'buildstorys_project_tasks_v2';
+const RES_STORAGE_KEY = 'buildstorys_resources_v2';
 
 class TimesheetService {
   private getStored<T>(key: string, defaultVal: T[]): T[] {
@@ -65,9 +65,9 @@ class TimesheetService {
 
     const fullEntry: TimesheetEntry = {
       id: entry.id || `TS-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-      projectId: entry.projectId || 'PROJ-SKYLINE-1402',
+      projectId: entry.projectId || 'PROJ-VILLA-253',
       projectCode: entry.projectCode || 'PRJ-SKYLINE-1402',
-      projectName: entry.projectName || 'Skyline Residences Unit 1402',
+      projectName: entry.projectName || 'Villa 253 (Karjat)',
       employeeId: entry.employeeId || 'RES-01',
       employeeName: entry.employeeName || 'Ronnie Hart',
       employeeRole: entry.employeeRole || 'Team Leader',
@@ -197,9 +197,9 @@ class TimesheetService {
       resourceType: dep.resourceType || 'EMPLOYEE',
       roleOrCategory: dep.roleOrCategory || 'Team Leader',
       avatar: dep.avatar || '',
-      projectId: dep.projectId || 'PROJ-SKYLINE-1402',
+      projectId: dep.projectId || 'PROJ-VILLA-253',
       projectCode: dep.projectCode || 'PRJ-SKYLINE-1402',
-      projectTitle: dep.projectTitle || 'Skyline Residences Unit 1402',
+      projectTitle: dep.projectTitle || 'Villa 253 (Karjat)',
       taskName: dep.taskName || 'Project Execution Support',
       date: dep.date || '2024-11-18',
       startTime: dep.startTime || '08:00 AM',
@@ -281,9 +281,9 @@ class TimesheetService {
 
     const fullTask: ProjectTask = {
       id: task.id || `TASK-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-      projectId: task.projectId || 'PROJ-SKYLINE-1402',
+      projectId: task.projectId || 'PROJ-VILLA-253',
       projectCode: task.projectCode || 'PRJ-SKYLINE-1402',
-      projectName: task.projectName || 'Skyline Residences Unit 1402',
+      projectName: task.projectName || 'Villa 253 (Karjat)',
       clientName: task.clientName || 'Vikram Malhotra',
       title: task.title || 'Untitled Architectural Task',
       stage: task.stage || 'New',

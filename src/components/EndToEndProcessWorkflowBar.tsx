@@ -229,7 +229,7 @@ interface EndToEndProcessWorkflowBarProps {
 export const EndToEndProcessWorkflowBar: React.FC<EndToEndProcessWorkflowBarProps> = ({
   activeTab,
   onNavigateTab,
-  projectCode = 'PROJ-SKYLINE-1402'
+  projectCode = 'PROJ-VILLA-253'
 }) => {
   const [selectedStep, setSelectedStep] = useState<ProcessLifecycleStepMeta | null>(null);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);

@@ -25,6 +25,7 @@ import {
   Star
 } from 'lucide-react';
 import { ProjectRecord, UserSession, SubcontractWorkOrder, MeasurementBookEntry } from '../types/erp';
+import { VILLA253_SUBCONTRACTORS, VILLA253_WORK_ORDERS, VILLA253_MB_ENTRIES } from '../data/villa253DemoSeeds';
 
 interface SubcontractorAndMeasurementBookViewProps {
   project: ProjectRecord;
@@ -48,161 +49,11 @@ interface SubcontractorPartner {
   retentionAccumulatedINR: number;
 }
 
-const INITIAL_SUBCONTRACTORS: SubcontractorPartner[] = [
-  {
-    id: 'SC-01',
-    vendorNo: 'SC-301',
-    name: 'Omkar Civil & Waterproofing Specialists',
-    trade: 'CIVIL_MASONRY & WATERPROOFING',
-    contactPerson: 'Mukesh Sharma (Foreman)',
-    phone: '+91 98214 77810',
-    crewStrength: 14,
-    gstin: '27AAKFO9981D1ZX',
-    rating: 4.8,
-    safetyCompliance: 'VERIFIED_OK',
-    activeProjects: 2,
-    totalCertifiedAmountINR: 485000,
-    retentionAccumulatedINR: 24250
-  },
-  {
-    id: 'SC-02',
-    vendorNo: 'SC-302',
-    name: 'Royal Heritage Carpentry & Millwork Works',
-    trade: 'CARPENTRY_JOINERY',
-    contactPerson: 'Ustad Ramji Mistry',
-    phone: '+91 98190 23412',
-    crewStrength: 18,
-    gstin: '27AAMPR4412B1Z8',
-    rating: 4.9,
-    safetyCompliance: 'VERIFIED_OK',
-    activeProjects: 3,
-    totalCertifiedAmountINR: 1240000,
-    retentionAccumulatedINR: 62000
-  },
-  {
-    id: 'SC-03',
-    vendorNo: 'SC-303',
-    name: 'Precision MEP & Smart Automation Solutions',
-    trade: 'ELECTRICAL_AUTOMATION & HVAC',
-    contactPerson: 'Imran Siddiqui',
-    phone: '+91 99201 88345',
-    crewStrength: 8,
-    gstin: '27AAACI7721K1ZM',
-    rating: 4.6,
-    safetyCompliance: 'VERIFIED_OK',
-    activeProjects: 1,
-    totalCertifiedAmountINR: 320000,
-    retentionAccumulatedINR: 16000
-  }
-];
+const INITIAL_SUBCONTRACTORS: SubcontractorPartner[] = VILLA253_SUBCONTRACTORS;
 
-const INITIAL_WORK_ORDERS: SubcontractWorkOrder[] = [
-  {
-    id: 'WO-01',
-    woNumber: 'SCWO-2026-01',
-    contractorName: 'Omkar Civil & Waterproofing Specialists',
-    trade: 'CIVIL_MASONRY',
-    agreedLabourRatePerUnit: 'Demolition ₹22/sq.ft, Waterproofing ₹45/sq.ft',
-    contractValue: 485000,
-    certifiedWorkDoneValue: 340000,
-    retentionWithheld: 17000, // 5%
-    amountPaid: 285000,
-    status: 'ACTIVE_EXECUTION'
-  },
-  {
-    id: 'WO-02',
-    woNumber: 'SCWO-2026-02',
-    contractorName: 'Royal Heritage Carpentry & Millwork Works',
-    trade: 'CARPENTRY_JOINERY',
-    agreedLabourRatePerUnit: 'Wardrobe Joinery ₹280/sq.ft, Modular carcass ₹320/sq.ft',
-    contractValue: 1240000,
-    certifiedWorkDoneValue: 560000,
-    retentionWithheld: 28000, // 5%
-    amountPaid: 450000,
-    status: 'ACTIVE_EXECUTION'
-  }
-];
+const INITIAL_WORK_ORDERS: SubcontractWorkOrder[] = VILLA253_WORK_ORDERS;
 
-const INITIAL_MB_ENTRIES: MeasurementBookEntry[] = [
-  {
-    id: 'MB-001',
-    projectId: 'PROJ-SKYLINE-1402',
-    mbNumber: 'MB-PAGE-14',
-    workOrderId: 'WO-01',
-    contractorName: 'Omkar Civil & Waterproofing Specialists',
-    itemCode: 'DEM-01',
-    trade: 'DEMOLITION_DISPOSAL',
-    description: 'Dismantling non-load-bearing brick partition wall between dining & study including bagging and disposal.',
-    locationRoom: '14th Floor - Dining & Study',
-    measurementFormula: 'L: 12.0 ft * H: 9.5 ft = 114.0 sq.ft',
-    unit: 'sq.ft',
-    contractRate: 22,
-    previousQuantity: 0,
-    currentQuantity: 114,
-    cumulativeQuantity: 114,
-    totalCertifiedAmount: 2508,
-    cumulativeCertifiedAmount: 2508,
-    siteEngineerVerification: true,
-    siteEngineerName: 'Site Eng. Rajesh Sharma',
-    consultantApproval: true,
-    consultantName: 'PMC Consultant K. N. Rao',
-    certifiedDate: '2026-03-02',
-    status: 'APPROVED_FOR_BILLING',
-    notes: 'Joint measurement verified with digital disto meter. Debris cleared via freight elevator.'
-  },
-  {
-    id: 'MB-002',
-    projectId: 'PROJ-SKYLINE-1402',
-    mbNumber: 'MB-PAGE-15',
-    workOrderId: 'WO-01',
-    contractorName: 'Omkar Civil & Waterproofing Specialists',
-    itemCode: 'WTR-01',
-    trade: 'WATERPROOFING',
-    description: 'Dr. Fixit Fastflex 2 coats acrylic elastomeric waterproofing on toilet sunken slab with 72-hr ponding test.',
-    locationRoom: 'Master Ensuite Bathroom',
-    measurementFormula: 'Floor: 8ft * 6.5ft = 52 sq.ft; Dado: 2*(8+6.5)*7ft = 203 sq.ft',
-    unit: 'sq.ft',
-    contractRate: 45,
-    previousQuantity: 0,
-    currentQuantity: 255,
-    cumulativeQuantity: 255,
-    totalCertifiedAmount: 11475,
-    cumulativeCertifiedAmount: 11475,
-    siteEngineerVerification: true,
-    siteEngineerName: 'Site Eng. Rajesh Sharma',
-    consultantApproval: true,
-    consultantName: 'PMC Consultant K. N. Rao',
-    certifiedDate: '2026-03-05',
-    status: 'APPROVED_FOR_BILLING',
-    notes: 'Ponding test certified for 72 hours with 0mm seepage on 13th-floor ceiling below.'
-  },
-  {
-    id: 'MB-003',
-    projectId: 'PROJ-SKYLINE-1402',
-    mbNumber: 'MB-PAGE-16',
-    workOrderId: 'WO-02',
-    contractorName: 'Royal Heritage Carpentry & Millwork Works',
-    itemCode: 'CARP-01',
-    trade: 'CARPENTRY_JOINERY',
-    description: 'CenturyPly 18mm BWP marine ply wardrobe carcass fabrication with Blum hardware fittings.',
-    locationRoom: 'Master Bedroom Wardrobe Zone',
-    measurementFormula: 'Wardrobe A: 9ft * 9.5ft = 85.5 sq.ft; Dresser: 4ft * 7ft = 28 sq.ft',
-    unit: 'sq.ft',
-    contractRate: 280,
-    previousQuantity: 0,
-    currentQuantity: 113.5,
-    cumulativeQuantity: 113.5,
-    totalCertifiedAmount: 31780,
-    cumulativeCertifiedAmount: 31780,
-    siteEngineerVerification: true,
-    siteEngineerName: 'Site Eng. Rajesh Sharma',
-    consultantApproval: false,
-    consultantName: 'PMC Consultant K. N. Rao',
-    certifiedDate: '2026-03-12',
-    status: 'ENGINEER_VERIFIED',
-    notes: 'Plumb and square alignment verified with laser cross-line level.'
-  }
-];
+const INITIAL_MB_ENTRIES: MeasurementBookEntry[] = VILLA253_MB_ENTRIES;
 
 export const SubcontractorAndMeasurementBookView: React.FC<SubcontractorAndMeasurementBookViewProps> = ({
   project,
