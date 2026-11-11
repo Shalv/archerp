@@ -69,6 +69,9 @@ import { SubcontractorAndMeasurementBookView } from './SubcontractorAndMeasureme
 import { SiteExecutionAndDPRView } from './SiteExecutionAndDPRView';
 import { QualityAndSafetyView } from './QualityAndSafetyView';
 import { HandoverAndWarrantyView } from './HandoverAndWarrantyView';
+import { AIDrawingDocumentationView } from './AIDrawingDocumentationView';
+import { ProductionAndCustomFurnitureView } from './ProductionAndCustomFurnitureView';
+import { ClientApprovalAndRevisionView } from './ClientApprovalAndRevisionView';
 import { INITIAL_ERP_USERS } from '../data/defaultUsers';
 
 interface FullJourneyModulesViewProps {
@@ -186,6 +189,24 @@ export const FullJourneyModulesView: React.FC<FullJourneyModulesViewProps> = ({
       {/* Dynamic Module Component Rendering */}
       {activeModuleTab === 'crm' || activeModuleTab === 'contacts' ? (
         <CRMAndLeadView
+          project={project}
+          currentUser={currentUser}
+          onNavigateTab={onNavigateToCoreTab}
+        />
+      ) : activeModuleTab === 'ai_drawings' ? (
+        <AIDrawingDocumentationView
+          project={project}
+          currentUser={currentUser}
+          onNavigateTab={onNavigateToCoreTab}
+        />
+      ) : activeModuleTab === 'production' ? (
+        <ProductionAndCustomFurnitureView
+          project={project}
+          currentUser={currentUser}
+          onNavigateTab={onNavigateToCoreTab}
+        />
+      ) : activeModuleTab === 'client_approvals' ? (
+        <ClientApprovalAndRevisionView
           project={project}
           currentUser={currentUser}
           onNavigateTab={onNavigateToCoreTab}

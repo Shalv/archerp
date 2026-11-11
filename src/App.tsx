@@ -49,6 +49,9 @@ import { AgenticAIActionCenter } from './components/AgenticAIActionCenter';
 import { TwoStepSpatialDesignStudio } from './components/floorplan/TwoStepSpatialDesignStudio';
 import { FullJourneyModulesView } from './components/FullJourneyModulesView';
 import { AIDesignStudioView } from './components/designStudio/AIDesignStudioView';
+import { AIDrawingDocumentationView } from './components/AIDrawingDocumentationView';
+import { ProductionAndCustomFurnitureView } from './components/ProductionAndCustomFurnitureView';
+import { ClientApprovalAndRevisionView } from './components/ClientApprovalAndRevisionView';
 import { DesignTwinView } from './components/designTwin/DesignTwinView';
 import { MandatoryReportsHubView } from './components/MandatoryReportsHubView';
 import { TimesheetManagementView } from './components/TimesheetManagementView';
@@ -859,6 +862,25 @@ export default function App() {
             />
           ) : activeTab === 'design_studio' && activeProject ? (
             <AIDesignStudioView
+              project={activeProject}
+              currentUser={currentUser}
+              onNavigateTab={(tab) => setActiveTab(tab)}
+            />
+          ) : (activeTab === 'ai_drawings' || activeTab === 'drawings') && activeProject ? (
+            <AIDrawingDocumentationView
+              project={activeProject}
+              currentUser={currentUser}
+              onNavigateTab={(tab) => setActiveTab(tab)}
+              onOpenInspectData={() => setIsInspectOpen(true)}
+            />
+          ) : activeTab === 'production' && activeProject ? (
+            <ProductionAndCustomFurnitureView
+              project={activeProject}
+              currentUser={currentUser}
+              onNavigateTab={(tab) => setActiveTab(tab)}
+            />
+          ) : activeTab === 'client_approvals' && activeProject ? (
+            <ClientApprovalAndRevisionView
               project={activeProject}
               currentUser={currentUser}
               onNavigateTab={(tab) => setActiveTab(tab)}

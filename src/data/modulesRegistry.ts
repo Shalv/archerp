@@ -11,6 +11,161 @@ import {
   WarrantyRecord 
 } from '../types/erp';
 
+export interface IntegratedERPModule {
+  id: number;
+  number: number;
+  code: string;
+  name: string;
+  subtitle: string;
+  tabKey: string;
+  isHeartModule?: boolean;
+  heartLabel?: 'Creative Intelligence' | 'Technical Intelligence' | 'Commercial Intelligence';
+  description: string;
+  iconName: string;
+  keyOutputs: string[];
+}
+
+export const INTEGRATED_12_MODULES: IntegratedERPModule[] = [
+  {
+    id: 1,
+    number: 1,
+    code: 'M01-AI-DESIGN',
+    name: 'AI Design Studio',
+    subtitle: 'Creative Intelligence (Floor plan, concepts, mood boards, 3D renders, alternatives)',
+    tabKey: 'design_studio',
+    isHeartModule: true,
+    heartLabel: 'Creative Intelligence',
+    description: 'Floor plan analysis, space planning, concepts generation, mood boards, 3D renders, wall-wise designs, and design alternatives within budget.',
+    iconName: 'Sparkles',
+    keyOutputs: ['Extracted Measured Rooms', '3-5 Design Concepts', 'Mood Boards', 'Photorealistic Renders', 'Alternative Budget Tiers']
+  },
+  {
+    id: 2,
+    number: 2,
+    code: 'M02-AI-DRAWINGS',
+    name: 'AI Drawing & Documentation',
+    subtitle: 'Technical Intelligence (2D plans, wall elevations, joinery & services drawings)',
+    tabKey: 'ai_drawings',
+    isHeartModule: true,
+    heartLabel: 'Technical Intelligence',
+    description: 'Generates complete technical drawing package: Floor plans, Wall A-D elevations, Furniture & Joinery (wardrobes, bed walls), MEP Services, and Material Schedules.',
+    iconName: 'Layers',
+    keyOutputs: ['Package A: Floor Plans', 'Package B: Wall Elevations (A-D)', 'Package C: Joinery Details', 'Package D: Services MEP', 'Package E: Material Schedule']
+  },
+  {
+    id: 3,
+    number: 3,
+    code: 'M03-MATERIALS',
+    name: 'Material & Specification Management',
+    subtitle: 'Material library, brands, finishes, colors, hardware & approved samples',
+    tabKey: 'materials',
+    description: 'Approved corporate material catalog, vendor finishes, physical sample tracking, and digital swatch sign-offs.',
+    iconName: 'Palette',
+    keyOutputs: ['Approved Finish Library', 'Physical Swatch Register', 'Brand Specs', 'Sample Sign-Offs']
+  },
+  {
+    id: 4,
+    number: 4,
+    code: 'M04-AI-BOQ',
+    name: 'AI BOQ & Estimation',
+    subtitle: 'Commercial Intelligence (Quantity takeoff, costing, labour, wastage & margins)',
+    tabKey: 'boq',
+    isHeartModule: true,
+    heartLabel: 'Commercial Intelligence',
+    description: 'Automatic quantity extraction from parametric drawings, deterministic costing arithmetic, labour schedules, wastage factors, and frozen baselines.',
+    iconName: 'FileSpreadsheet',
+    keyOutputs: ['Job Planning Lines', 'Deterministic Cost Totals', 'Quantity Takeoff', 'Frozen Rev Baseline', 'Cost-to-Complete']
+  },
+  {
+    id: 5,
+    number: 5,
+    code: 'M05-PROCUREMENT',
+    name: 'Procurement & Vendor Management',
+    subtitle: 'RFQ, vendor comparison, purchase orders, material tracking & GRN',
+    tabKey: 'procurement',
+    description: 'Request for Quotation (RFQ), commercial vendor comparison, automated Purchase Order issuance against BOQ lines, and site delivery tracking.',
+    iconName: 'ShoppingBag',
+    keyOutputs: ['Vendor RFQs', 'Purchase Orders (PO)', 'Delivery Schedules', 'Vendor Ratings']
+  },
+  {
+    id: 6,
+    number: 6,
+    code: 'M06-PRODUCTION',
+    name: 'Production & Custom Furniture',
+    subtitle: 'Cutting lists, carcass details, edge banding, manufacturing & assembly',
+    tabKey: 'production',
+    description: 'Factory production engineering: CNC cutting lists, carcass engineering (18mm BWP Marine), edge banding (2mm PVC), hardware allocation, and assembly instructions.',
+    iconName: 'Wrench',
+    keyOutputs: ['CNC Cutting Lists', 'Carcass Specifications', 'Edge Banding Schedule', 'Hardware Assembly Sheets']
+  },
+  {
+    id: 7,
+    number: 7,
+    code: 'M07-SITE-EXECUTION',
+    name: 'Site Execution Management',
+    subtitle: 'Tasks, labour, work orders, installation schedules, progress & site DPRs',
+    tabKey: 'site_execution',
+    description: 'Master Work Breakdown Structure (WBS), trade-wise manpower allocation (carpenters, masons, MEP), site attendance, and Daily Progress Reports (DPR).',
+    iconName: 'ClipboardCheck',
+    keyOutputs: ['Daily Progress Reports (DPR)', 'Labour Headcounts', 'Activity Logs', 'Site Photo Records']
+  },
+  {
+    id: 8,
+    number: 8,
+    code: 'M08-QUALITY-INSPECTION',
+    name: 'Quality & Inspection',
+    subtitle: 'Drawing-based inspections, tolerances, snag lists, photo evidence & sign-off',
+    tabKey: 'quality_inspection',
+    description: 'Drawing-based quality tolerance checks, 72-hour pond testing for waterproofing, photographic snag list logging, contractor assignment, and verification.',
+    iconName: 'AlertCircle',
+    keyOutputs: ['Dimensional Inspections', 'Room-by-Room Snag List', 'Photo Evidence', 'Rectification Sign-Offs']
+  },
+  {
+    id: 9,
+    number: 9,
+    code: 'M09-CLIENT-APPROVALS',
+    name: 'Client Approval & Revision Management',
+    subtitle: 'Concept approval, material selection, drawing sign-off & change requests',
+    tabKey: 'client_approvals',
+    description: 'Client sign-off workflow: 3D concept sign-off, swatch approval, technical drawing stamp, revision history (R01, R02), and Variation Order (VO) cost impact analysis.',
+    iconName: 'FileCheck2',
+    keyOutputs: ['Digital Drawing Stamp', 'Client Approval Trail', 'Revision History', 'Variation Orders (VO)']
+  },
+  {
+    id: 10,
+    number: 10,
+    code: 'M10-PROJECT-RESOURCES',
+    name: 'Project & Resource Management',
+    subtitle: 'Project milestones, dependencies, resources, budgets & scheduling',
+    tabKey: 'project_hub',
+    description: 'Interactive project task hub: Gantt milestone dependencies, staff timesheet tracking, equipment & shift scheduling, and critical path monitoring.',
+    iconName: 'FolderKanban',
+    keyOutputs: ['Milestone Dependency Map', 'Resource Deployment Matrix', 'Timesheet Tracker', 'Shift Schedule']
+  },
+  {
+    id: 11,
+    number: 11,
+    code: 'M11-FINANCE-COMMERCIAL',
+    name: 'Finance & Commercial Management',
+    subtitle: 'Client quotations, invoices, RA bills, vendor payments & cash flow',
+    tabKey: 'quotation',
+    description: 'Commercial sales quotations (Economy, Standard, Premium), Running Account (RA) client bills, vendor payment certifications, GST compliance, and profitability ledgers.',
+    iconName: 'DollarSign',
+    keyOutputs: ['Customer Quotations', 'Milestone Invoices', 'Running Account (RA) Bills', 'Cash Flow Ledger']
+  },
+  {
+    id: 12,
+    number: 12,
+    code: 'M12-HANDOVER-AMC',
+    name: 'Handover & AMC',
+    subtitle: 'Final documentation, warranties, snag closure, handover & maintenance contracts',
+    tabKey: 'handover',
+    description: 'Formal completion certification, manufacturer OEM warranty certificates (plywood, laminates, hardware), key handover, and Annual Maintenance Contracts (AMC).',
+    iconName: 'Key',
+    keyOutputs: ['Handover Certificate', 'OEM Warranty Vault', 'Defect Liability Tracker', 'AMC Service Schedule']
+  }
+];
+
 export const ERP_MODULES_REGISTRY: ERPModuleMeta[] = [
   // Stage 1: Enquiry & Sales
   {

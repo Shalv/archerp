@@ -41,6 +41,7 @@ import {
 import { ProjectRecord, UserSession } from '../../types/erp';
 import { apiJson, ApiUnavailableError, isApiUnavailable } from '../../utils/apiClient';
 import { VILLA253_MEDIA_LIBRARY } from '../../data/villa253MediaLibrary';
+import { AISubmodulesTray } from './AISubmodulesTray';
 
 import {
   BudgetBand,
@@ -524,6 +525,15 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
           })}
         </div>
       </div>
+
+      {/* 11 Integrated AI Submodules Tray */}
+      <AISubmodulesTray
+        project={project}
+        currentUser={currentUser}
+        activeConcept={focusConcept || null}
+        onNavigateToDrawings={() => onNavigateTab?.('ai_drawings')}
+        onNavigateToBOQ={() => onNavigateTab?.('boq')}
+      />
 
       {error && (
         <div className="bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded p-3">

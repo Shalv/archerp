@@ -182,44 +182,44 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
       description: 'Laser survey, room dimensions, CAD & finishes',
       modules: [
         {
-          id: 'survey',
-          tabKey: 'survey',
-          name: 'Site Survey & Laser Scan Hub',
-          shortDesc: 'Room measurements & constraints',
-          icon: Compass,
-          code: 'M03',
-          badge: 'GLM 50',
-          badgeColor: 'bg-blue-50 text-blue-700 border border-blue-200'
-        },
-        {
-          id: 'drawings',
-          tabKey: 'drawings',
-          name: 'Architectural Drawings & 3D',
-          shortDesc: 'CAD plans, 3D renders & GFC sets',
-          icon: Layers,
-          code: 'M04',
-          badge: 'Rev B',
-          badgeColor: 'bg-indigo-50 text-indigo-700 border border-indigo-200'
-        },
-        {
-          id: 'spatial_ai',
-          tabKey: 'spatial_ai',
-          name: '2-Step Spatial AI Studio',
-          shortDesc: 'Floor plan reading -> 2D layouts -> visual concept & BOQ',
+          id: 'design_studio',
+          tabKey: 'design_studio',
+          name: 'AI Design Studio (Heart Module)',
+          shortDesc: 'Floor plan, concepts, mood boards, 3D renders & alternatives',
           icon: Sparkles,
-          code: 'M04-B',
-          badge: '2-Step AI',
+          code: 'M01',
+          badge: 'Creative AI',
+          badgeColor: 'bg-purple-100 text-purple-900 font-bold border border-purple-300'
+        },
+        {
+          id: 'ai_drawings',
+          tabKey: 'ai_drawings',
+          name: 'AI Drawing & Documentation (Heart Module)',
+          shortDesc: '2D plans, wall elevations (A-D), joinery CAD & services',
+          icon: Layers,
+          code: 'M02',
+          badge: 'Technical CAD',
+          badgeColor: 'bg-blue-100 text-blue-900 font-bold border border-blue-300'
+        },
+        {
+          id: 'materials',
+          tabKey: 'materials',
+          name: 'Material & Specification Management',
+          shortDesc: 'Approved library, brands, finishes & sample sign-off',
+          icon: Palette,
+          code: 'M03',
+          badge: 'Samples',
           badgeColor: 'bg-purple-50 text-purple-700 border border-purple-200'
         },
         {
-          id: 'design_studio',
-          tabKey: 'design_studio',
-          name: 'AI Floor Plan-to-Design Studio',
-          shortDesc: 'Upload plan -> concepts -> approval -> BOQ',
-          icon: Sparkles,
-          code: 'M04-C',
-          badge: 'New',
-          badgeColor: 'bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold'
+          id: 'survey',
+          tabKey: 'survey',
+          name: 'Site Survey & Laser Scan Hub',
+          shortDesc: 'Room measurements & civil constraints',
+          icon: Compass,
+          code: 'M03-S',
+          badge: 'GLM 50',
+          badgeColor: 'bg-blue-50 text-blue-700 border border-blue-200'
         },
         {
           id: 'design_twin',
@@ -230,16 +230,6 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
           code: 'M04-D',
           badge: 'Registry',
           badgeColor: 'bg-slate-100 text-slate-700 border border-slate-300 font-semibold'
-        },
-        {
-          id: 'materials',
-          tabKey: 'materials',
-          name: 'Material & Sample Approvals',
-          shortDesc: 'Swatches, specifications & sign-off',
-          icon: Palette,
-          code: 'M05',
-          badge: 'Samples',
-          badgeColor: 'bg-purple-50 text-purple-700 border border-purple-200'
         }
       ]
     },
@@ -322,6 +312,16 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
           badgeColor: 'bg-slate-100 text-slate-700'
         },
         {
+          id: 'client_approvals',
+          tabKey: 'client_approvals',
+          name: 'Client Approval & Revision (M09)',
+          shortDesc: 'Concept approvals, finishes sign-off, revision trails & GFC stamps',
+          icon: FileSignature,
+          code: 'M09',
+          badge: 'Client Sign-off',
+          badgeColor: 'bg-emerald-100 text-emerald-900 font-bold border border-emerald-300'
+        },
+        {
           id: 'variations',
           tabKey: 'variations',
           name: 'Variation Orders & Scope Changes',
@@ -390,6 +390,16 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
           code: 'M16',
           badge: 'GRN',
           badgeColor: 'bg-slate-100 text-slate-700'
+        },
+        {
+          id: 'production',
+          tabKey: 'production',
+          name: 'Production & Custom Furniture (M06)',
+          shortDesc: 'CNC cutting lists, carcass details, edge banding & hardware kits',
+          icon: Wrench,
+          code: 'M06',
+          badge: 'Factory / CNC',
+          badgeColor: 'bg-amber-100 text-amber-900 font-bold border border-amber-300'
         },
         {
           id: 'contractors',
