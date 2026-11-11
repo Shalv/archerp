@@ -40,7 +40,6 @@ import {
 } from 'lucide-react';
 import { ProjectRecord, UserSession } from '../../types/erp';
 import { apiJson, ApiUnavailableError, isApiUnavailable } from '../../utils/apiClient';
-import { VILLA253_MEDIA_LIBRARY } from '../../data/villa253MediaLibrary';
 import { AISubmodulesTray } from './AISubmodulesTray';
 import { ImageToCadPlanGeneratorModal } from '../floorplan/ImageToCadPlanGeneratorModal';
 
@@ -584,38 +583,67 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
       {/* ------------------------------------------------------- STEP 1 */}
       {step === 'upload' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-          <div className="lg:col-span-3 bg-white border border-slate-200 rounded p-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                <Layers className="w-4 h-4 text-[#0F6CBD]" /> Project drawings &amp; images ({VILLA253_MEDIA_LIBRARY.length})
-              </h3>
-              <p className="text-[11px] text-slate-500">
-                Every visual the studio is allowed to use. Nothing is stock - each item is the project's own drawing or render.
-              </p>
-            </div>
-            <div className="mt-2 grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-8 gap-2">
-              {VILLA253_MEDIA_LIBRARY.map(media => (
-                <a
-                  key={media.id}
-                  href={media.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group border border-slate-200 rounded overflow-hidden hover:border-[#0F6CBD]"
-                  title={`${media.title} — ${media.description}`}
+          {/* ARCHITECTURAL DESIGN & CAD WORKFLOW PIPELINE */}
+          <div className="lg:col-span-3 bg-gradient-to-r from-slate-900 via-[#002050] to-slate-900 border border-slate-800 rounded-lg p-3.5 text-white shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-2 pb-2 border-b border-white/10">
+              <div className="flex items-center gap-2">
+                <span className="bg-amber-400 text-slate-950 font-black text-[10px] uppercase px-2 py-0.5 rounded shadow-xs">
+                  CAD Flow Engine
+                </span>
+                <h3 className="text-xs font-bold text-white tracking-wide uppercase">
+                  Connected Architectural Design &amp; CAD Engineering Pipeline
+                </h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsImageToCadOpen(true)}
+                  className="px-2.5 py-1 rounded bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black shadow-xs flex items-center gap-1.5 transition"
                 >
-                  <div className="h-16 bg-slate-50 flex items-center justify-center overflow-hidden">
-                    {media.kind === 'CAD_DRAWING' && media.url.endsWith('.pdf') ? (
-                      <FileText className="w-5 h-5 text-slate-400" />
-                    ) : (
-                      <img src={media.url} alt={media.title} className="w-full h-full object-cover" />
-                    )}
-                  </div>
-                  <div className="p-1">
-                    <div className="text-[8px] uppercase tracking-wide text-slate-400">{media.kind.replace('_', ' ')}</div>
-                    <div className="text-[9px] text-slate-700 leading-tight line-clamp-2">{media.title}</div>
-                  </div>
-                </a>
-              ))}
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Convert Customer 3D Render to 2D CAD Plan (Image 1 → 2)</span>
+                </button>
+                <button
+                  onClick={() => onNavigateTab?.('ai_drawings')}
+                  className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1 transition"
+                >
+                  <span>Open Module 2 CAD</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
+
+            {/* 6 Connected Process Stages */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-[11px] pt-1">
+              <div className="bg-white/10 p-2 rounded border border-white/10">
+                <div className="text-amber-400 font-mono text-[9px] font-bold">STAGE 01</div>
+                <div className="font-bold text-white">Floor Plan Scan</div>
+                <div className="text-[10px] text-slate-300">OCR &amp; CAD layers</div>
+              </div>
+              <div className="bg-white/10 p-2 rounded border border-white/10">
+                <div className="text-amber-400 font-mono text-[9px] font-bold">STAGE 02</div>
+                <div className="font-bold text-white">Measured Model</div>
+                <div className="text-[10px] text-slate-300">Locked dimensions</div>
+              </div>
+              <div className="bg-white/10 p-2 rounded border border-white/10">
+                <div className="text-amber-400 font-mono text-[9px] font-bold">STAGE 03</div>
+                <div className="font-bold text-white">Design Rules</div>
+                <div className="text-[10px] text-slate-300">Budgets &amp; materials</div>
+              </div>
+              <div className="bg-white/10 p-2 rounded border border-white/10">
+                <div className="text-amber-400 font-mono text-[9px] font-bold">STAGE 04</div>
+                <div className="font-bold text-white">Concept Schemes</div>
+                <div className="text-[10px] text-slate-300">A/B/C packages</div>
+              </div>
+              <div className="bg-white/10 p-2 rounded border border-white/10">
+                <div className="text-amber-400 font-mono text-[9px] font-bold">STAGE 05</div>
+                <div className="font-bold text-white">Client Approval</div>
+                <div className="text-[10px] text-slate-300">GFC freeze &amp; sign-off</div>
+              </div>
+              <div className="bg-white/10 p-2 rounded border border-white/10">
+                <div className="text-emerald-400 font-mono text-[9px] font-bold">STAGE 06</div>
+                <div className="font-bold text-white">CAD &amp; BOQ Handoff</div>
+                <div className="text-[10px] text-slate-300">CNC, BOQ &amp; Drawings</div>
+              </div>
             </div>
           </div>
           <div className="lg:col-span-2 bg-white border border-slate-200 rounded p-4 space-y-3">
@@ -1034,58 +1062,132 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-[#0F6CBD]" /> {concepts.length} concepts from the same floor plan
+              <Sparkles className="w-4 h-4 text-[#0F6CBD]" /> {concepts.length} Architectural Concepts from the Same Floor Plan
             </h2>
             <button onClick={() => setStep('preferences')} className="text-[11px] text-[#0F6CBD] font-semibold">Change preferences</button>
           </div>
+
+          {/* Connected Flow Banner */}
+          <div className="bg-blue-50 border border-blue-200 rounded p-2.5 px-3 flex flex-wrap items-center justify-between gap-2 text-xs text-blue-900">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+              <span><b>Connected Flow:</b> Every concept is mathematically locked to the confirmed floor plan geometry. Compare, revise, or convert visual references directly into technical 2D CAD construction drawings.</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsImageToCadOpen(true)}
+                className="px-2.5 py-1 rounded bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-xs flex items-center gap-1 transition"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Launch Image-to-CAD Studio (Image 1 → 2)</span>
+              </button>
+              <button
+                onClick={() => onNavigateTab?.('ai_drawings')}
+                className="text-blue-700 hover:underline font-bold text-[11px] flex items-center gap-1"
+              >
+                <span>View Module 2 Technical CAD Drawings</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
-            {concepts.map(c => (
-              <div key={c.id} className="bg-white border border-slate-200 rounded overflow-hidden flex flex-col">
-                <div className="relative">
-                  <img src={c.roomSchemes[0]?.renderImageUrl || c.moodBoard[0]?.imageUrl} alt={c.name} className="w-full h-32 object-cover" />
-                  <span className={`absolute top-2 left-2 text-[10px] px-1.5 py-0.5 rounded border bg-white/95 ${statusChip(c.status)}`}>
-                    {c.status.replace('_', ' ')}
-                  </span>
-                  <span className="absolute top-2 right-2 text-[10px] px-1.5 py-0.5 rounded bg-slate-900/80 text-white">v{c.version}</span>
-                </div>
-                <div className="p-2.5 space-y-1.5 flex-1 flex flex-col">
-                  <div>
-                    <div className="text-[10px] font-mono text-slate-500">{c.code}</div>
-                    <div className="text-sm font-bold text-slate-900">{c.name}</div>
-                    <div className="text-[11px] text-slate-500">{c.tagline}</div>
+            {concepts.map(c => {
+              const hasVerifiedRender = Boolean(c.roomSchemes[0]?.renderImageUrl);
+              return (
+                <div key={c.id} className="bg-white border border-slate-200 rounded overflow-hidden flex flex-col shadow-xs hover:border-[#0F6CBD] transition">
+                  <div className="relative bg-slate-900 text-white">
+                    {hasVerifiedRender ? (
+                      <img
+                        src={c.roomSchemes[0]?.renderImageUrl}
+                        alt={c.name}
+                        className="w-full h-32 object-cover opacity-90 hover:opacity-100 transition"
+                      />
+                    ) : (
+                      <div className="w-full h-32 bg-gradient-to-br from-slate-900 via-[#002050] to-slate-950 p-3 flex flex-col justify-between border-b border-slate-800">
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono text-[9px] text-amber-400 font-bold tracking-wider uppercase">
+                            ARCHITECTURAL SCHEME
+                          </span>
+                          <span className="text-[10px] font-mono text-slate-400">
+                            {c.code}
+                          </span>
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-white line-clamp-1">{c.name}</div>
+                          <div className="text-[10px] text-slate-300 line-clamp-1">{c.tagline}</div>
+                        </div>
+                        <div className="flex items-center gap-1.5 pt-1">
+                          {c.palette.slice(0, 4).map((hex, i) => (
+                            <span
+                              key={i}
+                              className="w-3.5 h-3.5 rounded-full border border-white/30 shadow-xs"
+                              style={{ background: hex.split(' ')[0] }}
+                              title={hex}
+                            />
+                          ))}
+                          <span className="text-[9px] text-slate-400 font-mono ml-auto">
+                            {c.roomSchemes.length} Rooms Linked
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    <span className={`absolute top-2 left-2 text-[10px] px-1.5 py-0.5 rounded border bg-white/95 ${statusChip(c.status)}`}>
+                      {c.status.replace('_', ' ')}
+                    </span>
+                    <span className="absolute top-2 right-2 text-[10px] px-1.5 py-0.5 rounded bg-slate-900/80 text-white font-mono">v{c.version}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    {c.palette.slice(0, 4).map((hex, i) => (
-                      <span key={i} className="w-3.5 h-3.5 rounded-full border border-white shadow" style={{ background: hex.split(' ')[0] }} title={hex} />
-                    ))}
-                  </div>
-                  <div className="text-[11px] text-slate-700">
-                    <b>{inr(c.estimatedCostMinINR)} – {inr(c.estimatedCostMaxINR)}</b>
-                    <span className="text-slate-400"> · ₹{c.ratePerSqFt.toLocaleString('en-IN')}/sq.ft</span>
-                  </div>
-                  <div className="text-[10px] text-slate-500">{c.roomSchemes.length} rooms · {c.budgetBand.toLowerCase()} band</div>
-                  <div className="mt-auto flex items-center gap-1 pt-1">
-                    <button onClick={() => { setSelectedConceptId(c.id); setStep('review'); }} className="flex-1 text-[11px] border border-slate-300 rounded px-2 py-1 hover:bg-slate-50">
-                      Compare
-                    </button>
+
+                  <div className="p-2.5 space-y-1.5 flex-1 flex flex-col">
+                    <div>
+                      <div className="text-[10px] font-mono text-slate-500">{c.code}</div>
+                      <div className="text-sm font-bold text-slate-900">{c.name}</div>
+                      <div className="text-[11px] text-slate-500">{c.tagline}</div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {c.palette.slice(0, 4).map((hex, i) => (
+                        <span key={i} className="w-3.5 h-3.5 rounded-full border border-white shadow-xs" style={{ background: hex.split(' ')[0] }} title={hex} />
+                      ))}
+                    </div>
+                    <div className="text-[11px] text-slate-700">
+                      <b>{inr(c.estimatedCostMinINR)} – {inr(c.estimatedCostMaxINR)}</b>
+                      <span className="text-slate-400"> · ₹{c.ratePerSqFt.toLocaleString('en-IN')}/sq.ft</span>
+                    </div>
+                    <div className="text-[10px] text-slate-500">{c.roomSchemes.length} rooms · {c.budgetBand.toLowerCase()} band</div>
+
+                    {/* Direct Image-to-CAD Synthesis CTA */}
                     <button
-                      onClick={() => { setRevisionTarget(c); setRevisionForm({ ...revisionForm, roomId: c.roomSchemes[0]?.roomId || '' }); }}
-                      className="text-[11px] border border-slate-300 rounded px-2 py-1 hover:bg-slate-50 inline-flex items-center gap-1"
+                      onClick={() => setIsImageToCadOpen(true)}
+                      className="w-full mt-1 text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded px-2 py-1 font-bold flex items-center justify-center gap-1 transition"
+                      title="Synthesize 2D CAD Plan from 3D Concept (Image 1 → 2)"
                     >
-                      <MessageSquare className="w-3 h-3" /> Revise
+                      <Sparkles className="w-3 h-3 text-amber-600" />
+                      <span>Synthesize 2D CAD Plan (Image 1 → 2)</span>
                     </button>
-                    <button
-                      onClick={() => setAiConfirm(c)}
-                      disabled={!aiStatus?.configured || c.status === 'APPROVED' || busy === 'ai-generate'}
-                      title={c.status === 'APPROVED' ? 'Approved concepts are locked' : 'Generate renders and a narrative with Gemini'}
-                      className="text-[11px] bg-[#0F6CBD] text-white rounded px-2 py-1 disabled:opacity-40 inline-flex items-center gap-1"
-                    >
-                      <Sparkles className="w-3 h-3" /> AI
-                    </button>
+
+                    <div className="mt-auto flex items-center gap-1 pt-1">
+                      <button onClick={() => { setSelectedConceptId(c.id); setStep('review'); }} className="flex-1 text-[11px] border border-slate-300 rounded px-2 py-1 hover:bg-slate-50">
+                        Compare
+                      </button>
+                      <button
+                        onClick={() => { setRevisionTarget(c); setRevisionForm({ ...revisionForm, roomId: c.roomSchemes[0]?.roomId || '' }); }}
+                        className="text-[11px] border border-slate-300 rounded px-2 py-1 hover:bg-slate-50 inline-flex items-center gap-1"
+                      >
+                        <MessageSquare className="w-3 h-3" /> Revise
+                      </button>
+                      <button
+                        onClick={() => setAiConfirm(c)}
+                        disabled={!aiStatus?.configured || c.status === 'APPROVED' || busy === 'ai-generate'}
+                        title={c.status === 'APPROVED' ? 'Approved concepts are locked' : 'Generate renders and a narrative with Gemini'}
+                        className="text-[11px] bg-[#0F6CBD] text-white rounded px-2 py-1 disabled:opacity-40 inline-flex items-center gap-1"
+                      >
+                        <Sparkles className="w-3 h-3" /> AI
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

@@ -78,7 +78,10 @@ export const ImageToCadPlanGeneratorModal: React.FC<ImageToCadPlanGeneratorModal
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationStep, setGenerationStep] = useState<number>(3); // Default generated for instant display
   const [conversionCompleted, setConversionCompleted] = useState<boolean>(true);
-  const [outputTab, setOutputTab] = useState<'sheet' | 'vector' | 'specs' | 'boq' | 'cnc'>('sheet');
+  const [outputTab, setOutputTab] = useState<'sheet' | 'vector' | 'gfc' | 'specs' | 'cnc' | 'boq'>('sheet');
+  const [gfcStampActive, setGfcStampActive] = useState<boolean>(true);
+  const [gfcTransmittedToSite, setGfcTransmittedToSite] = useState<boolean>(false);
+  const [gfcTransmittedToFactory, setGfcTransmittedToFactory] = useState<boolean>(false);
 
   // Vector viewer states
   const [zoomLevel, setZoomLevel] = useState<number>(100);
@@ -176,6 +179,10 @@ export const ImageToCadPlanGeneratorModal: React.FC<ImageToCadPlanGeneratorModal
                 </h2>
                 <span className="bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 text-[10px] font-black uppercase px-2 py-0.5 rounded-full shadow-xs">
                   Vision → CAD
+                </span>
+                <span className="bg-red-600/90 border border-red-400 text-white text-[10px] font-mono font-black px-2 py-0.5 rounded flex items-center gap-1 shadow-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                  <span>GFC RELEASED (GOOD FOR CONSTRUCTION)</span>
                 </span>
                 <span className="bg-purple-900/60 border border-purple-500/40 text-purple-300 text-[10px] font-mono px-2 py-0.5 rounded">
                   DRW-MBR-005 • Rev R02
@@ -410,6 +417,17 @@ export const ImageToCadPlanGeneratorModal: React.FC<ImageToCadPlanGeneratorModal
                     Vector CAD
                   </button>
                   <button
+                    onClick={() => setOutputTab('gfc')}
+                    className={`px-2.5 py-1 rounded transition font-semibold flex items-center gap-1.5 ${
+                      outputTab === 'gfc'
+                        ? 'bg-red-600 text-white shadow-xs font-bold'
+                        : 'text-red-400 hover:text-red-300'
+                    }`}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+                    <span>GFC Transmittal</span>
+                  </button>
+                  <button
                     onClick={() => setOutputTab('specs')}
                     className={`px-2.5 py-1 rounded transition font-semibold ${
                       outputTab === 'specs'
@@ -442,49 +460,123 @@ export const ImageToCadPlanGeneratorModal: React.FC<ImageToCadPlanGeneratorModal
                 </div>
               </div>
 
-              {/* TAB CONTENT 1: HIGH-RES DRAWING SHEET (IMAGE 2) */}
+              {/* TAB CONTENT 1: HIGH-RES DRAWING SHEET (IMAGE 2 WITH OFFICIAL GFC STAMP & TITLE BLOCK) */}
               {outputTab === 'sheet' && (
                 <div className="flex-1 flex flex-col gap-2">
                   <div className="relative border border-slate-800 rounded bg-white overflow-hidden shadow-inner flex items-center justify-center min-h-[460px]">
                     <img
                       src={cadPlanImage2Url}
-                      alt="Synthesized Technical CAD Plan Sheet"
+                      alt="Synthesized Technical CAD Plan Sheet with GFC Approval"
                       className="w-full h-auto max-h-[520px] object-contain"
                     />
 
                     {/* OVERLAY QUICK INSPECTOR BADGES */}
-                    <div className="absolute top-3 left-3 bg-slate-950/85 backdrop-blur-xs text-white text-[10px] font-mono px-2 py-1 rounded border border-slate-700 space-y-0.5">
+                    <div className="absolute top-3 left-3 bg-slate-950/90 backdrop-blur-xs text-white text-[10px] font-mono px-2.5 py-1.5 rounded border border-slate-700 space-y-0.5 shadow-lg">
                       <div className="text-amber-400 font-bold">DRAWING: DRW-MBR-005 (REV 02)</div>
-                      <div>SPAN: 2700mm • HEIGHT: 2900mm</div>
-                      <div>BAYS: 900mm | 900mm | 900mm</div>
+                      <div>SPAN: 2700mm (900+900+900) • HEIGHT: 2900mm</div>
+                      <div className="text-emerald-400 font-bold">STATUS: GFC - GOOD FOR CONSTRUCTION</div>
                     </div>
 
-                    <div className="absolute bottom-3 right-3 bg-slate-950/85 backdrop-blur-xs text-white text-[10px] font-mono px-2 py-1 rounded border border-slate-700">
-                      DESIGNER: APARANJI DIVYA • PAGE NO: 5
+                    {/* OFFICIAL ARCHITECTURAL GFC STAMP OVERLAY (FROM ATTACHED SHEET) */}
+                    <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-xs border-2 border-red-600 rounded p-2 text-red-700 shadow-2xl font-mono text-[9px] pointer-events-auto max-w-[280px]">
+                      <div className="border border-red-600 p-1.5 space-y-1">
+                        <div className="flex items-center justify-between border-b border-red-500 pb-1">
+                          <div className="font-black text-[10.5px] tracking-wider text-red-700 flex items-center gap-1">
+                            <span>★</span>
+                            <span>GOOD FOR CONSTRUCTION</span>
+                            <span>★</span>
+                          </div>
+                          <span className="bg-red-600 text-white font-black text-[8px] px-1 py-0.2 rounded">
+                            GFC
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[8.5px] text-slate-800">
+                          <div><span className="text-slate-500">ROOM:</span> <b>MBR WARDROBE</b></div>
+                          <div><span className="text-slate-500">REV:</span> <b>No : - 02 (GFC)</b></div>
+                          <div><span className="text-slate-500">DESIGNER:</span> <b>APARANJI DIVYA</b></div>
+                          <div><span className="text-slate-500">SCALE:</span> <b>1:25 (MM)</b></div>
+                          <div><span className="text-slate-500">DATE:</span> <b>SEPTEMBER 2026</b></div>
+                          <div><span className="text-slate-500">PAGE NO:</span> <b>5 OF 12</b></div>
+                        </div>
+                        <div className="pt-1 border-t border-red-400 text-[8px] text-slate-600 flex items-center justify-between">
+                          <span>APPROVED FOR SITE &amp; CNC MILLING</span>
+                          <span className="font-bold text-red-700">IS 5533:2018</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* BOTTOM RIGHT SHEET STAMP */}
+                    <div className="absolute bottom-3 right-3 bg-slate-950/90 backdrop-blur-xs text-white text-[10px] font-mono px-2.5 py-1 rounded border border-slate-700 flex items-center gap-2">
+                      <span className="text-slate-400">DESIGNER: <b className="text-emerald-400">APARANJI DIVYA</b></span>
+                      <span className="text-slate-600">|</span>
+                      <span className="text-amber-400 font-bold">PAGE NO : 5</span>
                     </div>
                   </div>
 
-                  {/* CALLOUT HIGHLIGHTS CARDS */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-[11px]">
+                  {/* ATTACHED DRAWING TITLE BLOCK & DETAILS BAR */}
+                  <div className="bg-slate-900 border border-slate-800 rounded p-2 text-[11px]">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 font-mono text-[10px]">
+                      <div className="border-r border-slate-800 pr-1">
+                        <span className="text-slate-500 block text-[9px] uppercase">CLIENT NAME</span>
+                        <span className="font-bold text-white truncate block">{project.clientName || 'Build Storys Client'}</span>
+                      </div>
+                      <div className="border-r border-slate-800 pr-1">
+                        <span className="text-slate-500 block text-[9px] uppercase">CLIENT ID</span>
+                        <span className="font-bold text-slate-300">{project.projectCode || 'CLI-2026-088'}</span>
+                      </div>
+                      <div className="border-r border-slate-800 pr-1">
+                        <span className="text-slate-500 block text-[9px] uppercase">ROOM NAME</span>
+                        <span className="font-bold text-amber-400">MBR WARDROBE</span>
+                      </div>
+                      <div className="border-r border-slate-800 pr-1">
+                        <span className="text-slate-500 block text-[9px] uppercase">DESIGNER</span>
+                        <span className="font-bold text-emerald-400">APARANJI DIVYA</span>
+                      </div>
+                      <div className="border-r border-slate-800 pr-1">
+                        <span className="text-slate-500 block text-[9px] uppercase">REVISION</span>
+                        <span className="font-bold text-red-400 bg-red-950/80 px-1 py-0.5 rounded border border-red-700/50">No : - 02 (GFC)</span>
+                      </div>
+                      <div className="border-r border-slate-800 pr-1">
+                        <span className="text-slate-500 block text-[9px] uppercase">DATE</span>
+                        <span className="font-bold text-slate-300">September 2026</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block text-[9px] uppercase">PAGE NO</span>
+                        <span className="font-bold text-amber-400">PAGE NO : 5</span>
+                      </div>
+                    </div>
+                    <div className="mt-1 pt-1 border-t border-slate-800/80 flex items-center justify-between text-[9.5px] text-slate-400 font-mono">
+                      <span className="text-amber-400 font-bold">NOTE : All Dimensions are in MM</span>
+                      <span className="text-slate-500">ROYALWOOD.STUDIO • ARCHITECTURAL JOINERY GFC PACKAGE</span>
+                    </div>
+                  </div>
+
+                  {/* 5 KEY CALLOUTS MATCHING ATTACHMENT */}
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 pt-0.5 text-[11px]">
                     <div className="p-2 rounded bg-slate-900 border border-slate-800">
-                      <div className="text-slate-400 text-[10px]">Countertop Level</div>
+                      <div className="text-slate-400 text-[9.5px]">Countertop Level</div>
                       <div className="text-white font-mono font-bold">+715 mm FFL</div>
-                      <div className="text-slate-400 text-[9.5px]">20mm Solid Quartz/PU</div>
+                      <div className="text-slate-400 text-[9px]">20mm Solid Quartz</div>
                     </div>
                     <div className="p-2 rounded bg-slate-900 border border-slate-800">
-                      <div className="text-slate-400 text-[10px]">Drawer Fascia</div>
+                      <div className="text-slate-400 text-[9.5px]">Drawer Fascia</div>
                       <div className="text-white font-mono font-bold">130 mm Ht</div>
-                      <div className="text-slate-400 text-[9.5px]">Dual Blum soft-close</div>
+                      <div className="text-slate-400 text-[9px]">Blum soft-close</div>
                     </div>
                     <div className="p-2 rounded bg-slate-900 border border-slate-800">
-                      <div className="text-slate-400 text-[10px]">Knee Clearance</div>
+                      <div className="text-slate-400 text-[9.5px]">Knee Clearance</div>
                       <div className="text-white font-mono font-bold">600 mm Ht</div>
-                      <div className="text-slate-400 text-[9.5px]">Ergonomic study seat</div>
+                      <div className="text-slate-400 text-[9px]">Ergonomic study seat</div>
                     </div>
                     <div className="p-2 rounded bg-slate-900 border border-slate-800">
-                      <div className="text-slate-400 text-[10px]">Fluted Acoustic Panel</div>
+                      <div className="text-slate-400 text-[9.5px]">Fluted Acoustic Panel</div>
                       <div className="text-amber-400 font-mono font-bold">450 mm Width</div>
-                      <div className="text-slate-400 text-[9.5px]">PU Asian Paints Matt</div>
+                      <div className="text-slate-400 text-[9px]">PU Asian Paints Matt</div>
+                    </div>
+                    <div className="p-2 rounded bg-slate-900 border border-slate-800">
+                      <div className="text-slate-400 text-[9.5px]">Profile Frame</div>
+                      <div className="text-amber-400 font-mono font-bold">Brushed Gold ALU</div>
+                      <div className="text-slate-400 text-[9px]">Hafele Alumilux</div>
                     </div>
                   </div>
                 </div>
@@ -640,7 +732,201 @@ export const ImageToCadPlanGeneratorModal: React.FC<ImageToCadPlanGeneratorModal
                           </text>
                         </g>
                       )}
+
+                      {/* GFC APPROVAL STAMP IN VECTOR CAD */}
+                      {gfcStampActive && (
+                        <g id="vectorGfcStamp" transform="translate(420, 20)">
+                          <rect x="0" y="0" width="180" height="46" fill="#450a0a" fillOpacity="0.85" stroke="#ef4444" strokeWidth="1.5" rx="2" />
+                          <rect x="2" y="2" width="176" height="42" fill="none" stroke="#ef4444" strokeWidth="0.8" strokeDasharray="3 1.5" />
+                          <text x="90" y="14" fill="#fca5a5" fontSize="8" fontWeight="bold" fontFamily="monospace" textAnchor="middle">★ GOOD FOR CONSTRUCTION (GFC) ★</text>
+                          <text x="90" y="24" fill="#f87171" fontSize="7" fontFamily="monospace" textAnchor="middle">ROOM: MBR WARDROBE • REV: NO : - 02</text>
+                          <text x="90" y="33" fill="#e2e8f0" fontSize="6.5" fontFamily="monospace" textAnchor="middle">DESIGNER: APARANJI DIVYA • PAGE NO: 5</text>
+                          <text x="90" y="41" fill="#4ade80" fontSize="6" fontWeight="bold" fontFamily="monospace" textAnchor="middle">NOTE: ALL DIMENSIONS IN MM • TOL: ±1.5MM</text>
+                        </g>
+                      )}
                     </svg>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB CONTENT 2.5: OFFICIAL GFC TRANSMITTAL & RELEASE AUTHORIZATION */}
+              {outputTab === 'gfc' && (
+                <div className="flex-1 overflow-y-auto space-y-3 pr-1 text-xs">
+                  {/* GFC RELEASE STATUS BANNER */}
+                  <div className="p-3.5 bg-gradient-to-r from-red-950/70 via-slate-900 to-red-950/40 border-2 border-red-600/70 rounded-lg shadow-lg">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-red-600 text-white font-black text-sm flex items-center justify-center border-2 border-white shadow-md animate-pulse">
+                          GFC
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-bold text-sm text-red-200 uppercase tracking-wide">
+                              Good For Construction (GFC) Transmittal
+                            </h4>
+                            <span className="bg-red-600 text-white font-mono font-black text-[9px] px-2 py-0.5 rounded">
+                              OFFICIALLY STAMPED
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-slate-300 mt-0.5 font-mono">
+                            Drawing No: <b className="text-amber-300">DRW-MBR-005</b> • Revision: <b className="text-red-400">No : - 02 (GFC)</b> • Page: <b className="text-white">5 of 12</b>
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => {
+                            setGfcTransmittedToSite(true);
+                            setNotification('GFC Package Transmitted to Site Execution (Module 7)!');
+                            setTimeout(() => setNotification(null), 3500);
+                          }}
+                          className={`px-3 py-1.5 rounded font-bold text-xs flex items-center gap-1.5 transition shadow-sm ${
+                            gfcTransmittedToSite
+                              ? 'bg-emerald-600 text-white cursor-default'
+                              : 'bg-red-600 hover:bg-red-500 text-white'
+                          }`}
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>{gfcTransmittedToSite ? 'Transmitted to Site (Module 7)' : 'Transmit to Site Execution'}</span>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setGfcTransmittedToFactory(true);
+                            setNotification('GFC Cutting List & DXF Dispatched to Factory CNC (Module 6)!');
+                            setTimeout(() => setNotification(null), 3500);
+                          }}
+                          className={`px-3 py-1.5 rounded font-bold text-xs flex items-center gap-1.5 transition shadow-sm ${
+                            gfcTransmittedToFactory
+                              ? 'bg-emerald-600 text-white cursor-default'
+                              : 'bg-amber-500 hover:bg-amber-400 text-slate-950'
+                          }`}
+                        >
+                          <Wrench className="w-3.5 h-3.5" />
+                          <span>{gfcTransmittedToFactory ? 'Dispatched to Factory (Module 6)' : 'Dispatch to Factory CNC'}</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ATTACHED GFC TITLE BLOCK DETAILS GRID */}
+                  <div className="bg-slate-900 border border-slate-800 rounded-lg p-3 space-y-2">
+                    <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                      <span className="font-bold text-white text-xs flex items-center gap-1.5">
+                        <FileCheck className="w-4 h-4 text-red-500" />
+                        <span>Architectural Drawing Title Block Metadata (From Attachment)</span>
+                      </span>
+                      <span className="text-[10px] font-mono text-amber-400">
+                        ROYALWOOD.STUDIO • ARCHITECTURAL CONSULTANCY
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs font-mono">
+                      <div className="p-2 bg-slate-950 rounded border border-slate-800">
+                        <div className="text-slate-400 text-[10px] uppercase">CLIENT NAME</div>
+                        <div className="text-white font-bold truncate mt-0.5">{project.clientName || 'Build Storys Client'}</div>
+                        <div className="text-slate-400 text-[10px] mt-1">CLIENT ID: <span className="text-slate-200">{project.projectCode || 'CLI-2026-088'}</span></div>
+                      </div>
+
+                      <div className="p-2 bg-slate-950 rounded border border-slate-800">
+                        <div className="text-slate-400 text-[10px] uppercase">ROOM NAME</div>
+                        <div className="text-amber-400 font-bold text-sm mt-0.5">MBR WARDROBE</div>
+                        <div className="text-slate-400 text-[10px] mt-1">ZONE: Master Suite Bed Wall</div>
+                      </div>
+
+                      <div className="p-2 bg-slate-950 rounded border border-slate-800">
+                        <div className="text-slate-400 text-[10px] uppercase">DESIGNER</div>
+                        <div className="text-emerald-400 font-bold mt-0.5">APARANJI DIVYA</div>
+                        <div className="text-slate-400 text-[10px] mt-1">SIGN-OFF: Certified Lead Architect</div>
+                      </div>
+
+                      <div className="p-2 bg-slate-950 rounded border border-slate-800">
+                        <div className="text-slate-400 text-[10px] uppercase">REVISION &amp; DATE</div>
+                        <div className="text-red-400 font-bold mt-0.5">No : - 02 (GFC)</div>
+                        <div className="text-slate-400 text-[10px] mt-1">DATE: <span className="text-slate-200">September 2026</span></div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 pt-1 text-[11px] font-mono">
+                      <div className="p-2 bg-slate-950/80 rounded border border-slate-800/80">
+                        <span className="text-amber-400 font-bold">NOTE: All Dimensions are in MM</span>
+                        <p className="text-[10px] text-slate-400 mt-0.5">Do not scale drawing. Read written dimensions only.</p>
+                      </div>
+                      <div className="p-2 bg-slate-950/80 rounded border border-slate-800/80">
+                        <span className="text-slate-300 font-bold">PAGE NO : 5 OF 12</span>
+                        <p className="text-[10px] text-slate-400 mt-0.5">Package C: Custom Joinery & Wardrobe Elevations</p>
+                      </div>
+                      <div className="p-2 bg-slate-950/80 rounded border border-slate-800/80">
+                        <span className="text-emerald-400 font-bold">TOLERANCE: ±1.5 mm</span>
+                        <p className="text-[10px] text-slate-400 mt-0.5">Fabrication standard IS 5533:2018 for modular carcass</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 5 CRITICAL CALLOUTS SPECIFICATION AUDIT */}
+                  <div className="p-3 bg-slate-900 border border-slate-800 rounded-lg space-y-2">
+                    <h5 className="font-bold text-amber-400 text-xs flex items-center gap-1.5">
+                      <Ruler className="w-3.5 h-3.5" />
+                      <span>5 Critical GFC Engineering Callouts Locked for Site Installation</span>
+                    </h5>
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-2 text-[11px]">
+                      <div className="p-2 bg-slate-950 rounded border border-slate-800">
+                        <span className="text-red-400 font-bold font-mono text-[10px]">1. FLUTED PANELS</span>
+                        <div className="text-white font-bold mt-0.5">450 mm Width</div>
+                        <div className="text-slate-400 text-[9.5px]">PU Asian Paints Matt Warm Walnut</div>
+                      </div>
+                      <div className="p-2 bg-slate-950 rounded border border-slate-800">
+                        <span className="text-red-400 font-bold font-mono text-[10px]">2. SHELVES LEVEL</span>
+                        <div className="text-white font-bold mt-0.5">2150 mm Top Datum</div>
+                        <div className="text-slate-400 text-[9.5px]">25mm floating carcass with 369/32 clearance</div>
+                      </div>
+                      <div className="p-2 bg-slate-950 rounded border border-slate-800">
+                        <span className="text-red-400 font-bold font-mono text-[10px]">3. COUNTERTOP</span>
+                        <div className="text-white font-bold mt-0.5">+715 mm FFL</div>
+                        <div className="text-slate-400 text-[9.5px]">20mm Kalingastone Solid Quartz Worktop</div>
+                      </div>
+                      <div className="p-2 bg-slate-950 rounded border border-slate-800">
+                        <span className="text-red-400 font-bold font-mono text-[10px]">4. DRAWER HEIGHT</span>
+                        <div className="text-white font-bold mt-0.5">130 mm Drawer Front</div>
+                        <div className="text-slate-400 text-[9.5px]">Blum soft-close tandembox under-mount</div>
+                      </div>
+                      <div className="p-2 bg-slate-950 rounded border border-slate-800">
+                        <span className="text-red-400 font-bold font-mono text-[10px]">5. ALU PROFILE</span>
+                        <div className="text-white font-bold mt-0.5">Brushed Gold ALU</div>
+                        <div className="text-slate-400 text-[9.5px]">Hafele Alumilux frame with tinted glass</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* GFC APPROVAL CERTIFICATE & SIGNATURES */}
+                  <div className="p-3 bg-slate-900 border border-slate-800 rounded-lg flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div className="space-y-0.5 font-mono text-[10.5px]">
+                      <div className="text-slate-400">GFC TRANSMITTAL CERTIFICATE: <b className="text-white">BS-GFC-2026-088-05</b></div>
+                      <div className="text-slate-400">ISSUED BY: <b className="text-emerald-400">BUILD STORYS CENTRAL ENGINEERING DEPT</b></div>
+                      <div className="text-emerald-400">STATUS: APPROVED FOR MANUFACTURING AND ON-SITE ERECTION</div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={handleDownloadDxf}
+                        className="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs flex items-center gap-1.5"
+                      >
+                        <Download className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Download GFC DXF</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setNotification('GFC Drawing Certificate printed to job file.');
+                          setTimeout(() => setNotification(null), 3000);
+                        }}
+                        className="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs flex items-center gap-1.5"
+                      >
+                        <Printer className="w-3.5 h-3.5 text-sky-400" />
+                        <span>Print GFC Sheet</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
