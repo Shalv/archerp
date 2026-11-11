@@ -170,6 +170,7 @@ interface Props {
   activeConcept?: DesignConcept | null;
   onNavigateToDrawings?: () => void;
   onNavigateToBOQ?: () => void;
+  onOpenImageToCadModal?: () => void;
 }
 
 export const AISubmodulesTray: React.FC<Props> = ({
@@ -177,7 +178,8 @@ export const AISubmodulesTray: React.FC<Props> = ({
   currentUser,
   activeConcept,
   onNavigateToDrawings,
-  onNavigateToBOQ
+  onNavigateToBOQ,
+  onOpenImageToCadModal
 }) => {
   const [selectedSubmoduleId, setSelectedSubmoduleId] = useState<string>('plan_intel');
   const [activeFeedbackPrompt, setActiveFeedbackPrompt] = useState<string>('Extend study desk to 900mm and add brushed gold aluminum glass shutter.');
@@ -228,6 +230,28 @@ export const AISubmodulesTray: React.FC<Props> = ({
             <ArrowRight className="w-3 h-3" />
           </button>
         </div>
+      </div>
+
+      {/* Vision to CAD Converter Banner */}
+      <div className="bg-gradient-to-r from-amber-50 via-amber-100/70 to-orange-50 border-b border-amber-300 p-2.5 px-3 flex items-center justify-between flex-wrap gap-2 text-xs">
+        <div className="flex items-center gap-2">
+          <span className="bg-amber-400 text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded uppercase shadow-xs">
+            VISION → CAD
+          </span>
+          <span className="font-bold text-slate-900">
+            Image-to-CAD Technical Plan Engine:
+          </span>
+          <span className="text-slate-600 hidden md:inline">
+            If customer gives the 3D concept render/photo (Image 1), the system synthesizes the 2D CAD elevation plan with millimeter dimensions (Image 2).
+          </span>
+        </div>
+        <button
+          onClick={onOpenImageToCadModal}
+          className="px-3 py-1 rounded bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-xs flex items-center gap-1.5 transition"
+        >
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>Launch Image-to-CAD (Image 1 → 2)</span>
+        </button>
       </div>
 
       {/* Notice Banner */}
@@ -347,6 +371,14 @@ export const AISubmodulesTray: React.FC<Props> = ({
                 <span className="text-slate-500">Hydraulic Loft + Internal Carcass Section</span>
               </div>
             </div>
+
+            <button
+              onClick={onOpenImageToCadModal}
+              className="w-full mt-2 py-2 px-3 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-400 hover:from-amber-300 hover:to-orange-300 text-slate-950 font-black text-xs rounded shadow-xs flex items-center justify-center gap-2 transition"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Convert Customer 3D Inspiration Render to 2D Technical CAD Plan (Image 1 → Image 2)</span>
+            </button>
           </div>
         )}
 

@@ -52,6 +52,7 @@ import {
   Info
 } from 'lucide-react';
 import { ProjectRecord, UserSession } from '../types/erp';
+import { ImageToCadPlanGeneratorModal } from './floorplan/ImageToCadPlanGeneratorModal';
 import {
   DataLinkageMetadata,
   FurnitureJoineryDrawingDetail,
@@ -118,6 +119,7 @@ export const AIDrawingDocumentationView: React.FC<Props> = ({
     simulateDesignChangeCascade('EXTEND_WARDROBE_TO_3000MM')
   );
   const [isSignOffApplied, setIsSignOffApplied] = useState<boolean>(false);
+  const [imageToCadModalOpen, setImageToCadModalOpen] = useState<boolean>(false);
 
   // Action toast state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -225,6 +227,15 @@ export const AIDrawingDocumentationView: React.FC<Props> = ({
 
           {/* Action Button Bar */}
           <div className="flex items-center gap-2 flex-wrap">
+            <button
+              onClick={() => setImageToCadModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-black shadow-xs transition-colors"
+              title="Convert Customer 3D Render (Image 1) to 2D Technical Plan (Image 2)"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>AI Image ➔ CAD Plan (Image 1 → 2)</span>
+            </button>
+
             <button
               onClick={handleRunValidation}
               disabled={isValidating}
@@ -1516,6 +1527,20 @@ export const AIDrawingDocumentationView: React.FC<Props> = ({
           </div>
         </div>
       )}
+
+      {/* AI IMAGE-TO-CAD TECHNICAL PLAN GENERATOR MODAL (IMAGE 1 -> IMAGE 2) */}
+      <ImageToCadPlanGeneratorModal
+        isOpen={imageToCadModalOpen}
+        onClose={() => setImageToCadModalOpen(false)}
+        project={project}
+        currentUser={currentUser}
+        onNavigateTab={onNavigateTab}
+        onApplyDrawingToProject={(drawing) => {
+          setSelectedFurnitureId('FUR-WRD-001');
+          setActivePackage('PACKAGE_C_FURNITURE_JOINERY');
+          showNotification(`Applied ${drawing.title} to Project Technical Drawing Set!`);
+        }}
+      />
     </div>
   );
 };

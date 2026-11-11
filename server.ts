@@ -40,7 +40,8 @@ import {
   extractRoomsFromPlan,
   getAiStatus,
   renderRoom,
-  writeConceptNarrative
+  writeConceptNarrative,
+  extractCadPlanFromVisualReference
 } from './src/server/geminiStudioService';
 import { mongoDBService } from './src/server/mongoService';
 import { 
@@ -1952,6 +1953,17 @@ export async function createApp(isServerless: boolean = false) {
       });
     } catch (err: any) {
       res.status(500).json({ error: err.message || 'Failed to build the presentation pack.' });
+    }
+  });
+
+  // Multimodal Image-to-CAD Technical Plan Extraction
+  app.post('/api/design-studio/:projectId/image-to-cad', async (req: Request, res: Response) => {
+    try {
+      const { base64, mimeType, imageUrl, roomHint } = req.body || {};
+      const result = await extractCadPlanFromVisualReference({ base64, mimeType, imageUrl, roomHint });
+      res.json(result);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Image-to-CAD conversion failed.' });
     }
   });
 

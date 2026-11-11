@@ -42,6 +42,7 @@ import { ProjectRecord, UserSession } from '../../types/erp';
 import { apiJson, ApiUnavailableError, isApiUnavailable } from '../../utils/apiClient';
 import { VILLA253_MEDIA_LIBRARY } from '../../data/villa253MediaLibrary';
 import { AISubmodulesTray } from './AISubmodulesTray';
+import { ImageToCadPlanGeneratorModal } from '../floorplan/ImageToCadPlanGeneratorModal';
 
 import {
   BudgetBand,
@@ -154,6 +155,7 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
     changeType: 'COLOUR_ONLY',
     instruction: ''
   });
+  const [isImageToCadOpen, setIsImageToCadOpen] = useState(false);
 
   const api = async (path: string, method: string, body?: any) =>
     apiJson<DesignStudioSession>(`/api/design-studio/${project.id}${path}`, {
@@ -533,6 +535,7 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
         activeConcept={focusConcept || null}
         onNavigateToDrawings={() => onNavigateTab?.('ai_drawings')}
         onNavigateToBOQ={() => onNavigateTab?.('boq')}
+        onOpenImageToCadModal={() => setIsImageToCadOpen(true)}
       />
 
       {error && (
@@ -1515,6 +1518,15 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
           </div>
         </div>
       )}
+
+      {/* AI IMAGE-TO-CAD TECHNICAL PLAN GENERATOR MODAL (IMAGE 1 -> IMAGE 2) */}
+      <ImageToCadPlanGeneratorModal
+        isOpen={isImageToCadOpen}
+        onClose={() => setIsImageToCadOpen(false)}
+        project={project}
+        currentUser={currentUser}
+        onNavigateTab={onNavigateTab}
+      />
 
       <style>{`.input{width:100%;border:1px solid #cbd5e1;border-radius:4px;padding:4px 6px;font-size:11px;background:#fff}`}</style>
     </div>
