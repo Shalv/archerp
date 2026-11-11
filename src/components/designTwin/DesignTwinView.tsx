@@ -33,6 +33,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { ProjectRecord, UserSession } from '../../types/erp';
+import { apiJson, isApiUnavailable } from '../../utils/apiClient';
 import {
   ASSET_TYPE_LABEL,
   AssetType,
@@ -90,40 +91,37 @@ export const DesignTwinView: React.FC<Props> = ({ project, currentUser }) => {
   });
   const [lastRevision, setLastRevision] = useState<TwinRevision | null>(null);
 
-  const api = async (path: string, method: string, body?: any) => {
-    const res = await fetch(`/api/design-twin/${project.id}${path}`, {
+  const api = async (path: string, method: string, body?: any) =>
+    apiJson<any>(`/api/design-twin/${project.id}${path}`, {
       method,
-      headers: { 'Content-Type': 'application/json' },
       body: body ? JSON.stringify(body) : undefined
     });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      const err: any = new Error(data?.error || 'Request failed.');
-      err.payload = data;
-      throw err;
-    }
-    return data;
-  };
 
   const load = async () => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`/api/design-twin/${project.id}`);
-      const data = await res.json();
-      if (!res.ok) {
+      const data = await apiJson<DesignTwin>(`/api/design-twin/${project.id}`).catch((err: any) => {
+        if (err?.payload?.code === 'TWIN_NOT_BUILT') return null;
+        throw err;
+      });
+      if (!data) {
         setTwin(null);
-        if (data?.code !== 'TWIN_NOT_BUILT') setError(data?.error || 'Could not load the design twin.');
       } else {
         setTwin(data);
         if (!selectedElementId && data.rooms?.[0]?.elements?.[0]) {
           setSelectedElementId(data.rooms[0].elements[0].id);
         }
       }
-      const mats = await fetch(`/api/design-twin/${project.id}/materials`);
-      if (mats.ok) setMaterials(await mats.json());
+      const mats = await apiJson<any>(`/api/design-twin/${project.id}/materials`).catch(() => null);
+      if (mats) setMaterials(mats);
     } catch (e: any) {
-      setError(e.message);
+      setTwin(null);
+      setError(
+        isApiUnavailable(e)
+          ? e.message
+          : e?.message || 'Could not load the design twin.'
+      );
     } finally {
       setLoading(false);
     }
@@ -354,6 +352,44 @@ export const DesignTwinView: React.FC<Props> = ({ project, currentUser }) => {
 
         {/* ------------------------------------------------ element package */}
         <section className="xl:col-span-6 space-y-3">
+          <div className="bg-white border border-slate-200 rounded p-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-1.5">
+              <h3 className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-[#0F6CBD]" /> Project drawings &amp; images ({twin.projectDrawings?.length || 0})
+              </h3>
+              <span className="text-[10px] text-slate-500">
+                Floor plans, CAD files and site media at {twin.designVersion}
+              </span>
+            </div>
+            <div className="mt-1.5 flex gap-1.5 overflow-x-auto pb-1">
+              {(twin.projectDrawings || []).map(drawing => (
+                <a
+                  key={drawing.id}
+                  href={drawing.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 w-28 border border-slate-200 rounded overflow-hidden hover:border-[#0F6CBD]"
+                  title={`${drawing.title} — ${drawing.notes || ''}`}
+                >
+                  <div className="h-14 bg-slate-50 flex items-center justify-center overflow-hidden">
+                    {drawing.url.endsWith('.pdf') || drawing.url.endsWith('.dxf') ? (
+                      <FileWarning className="w-4 h-4 text-slate-400" />
+                    ) : (
+                      <img src={drawing.url} alt={drawing.title} className="w-full h-full object-cover" />
+                    )}
+                  </div>
+                  <div className="p-1">
+                    <div className="text-[8px] uppercase text-slate-400">{drawing.kind.replace('_', ' ')}</div>
+                    <div className="text-[9px] text-slate-700 leading-tight line-clamp-2">{drawing.title}</div>
+                  </div>
+                </a>
+              ))}
+              {!twin.projectDrawings?.length && (
+                <p className="text-[10px] text-slate-500 py-3">No project drawings registered.</p>
+              )}
+            </div>
+          </div>
+
           {selected && selectedRoom ? (
             <>
               <div className="bg-white border border-slate-200 rounded p-3">

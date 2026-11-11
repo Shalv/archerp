@@ -17,6 +17,7 @@
  *    material mapping and pricing never depend on it.
  */
 
+import { mediaForRoom, primaryVisualForRoom } from '../data/villa253MediaLibrary';
 import {
   BOQItem,
   MasterRateItem,
@@ -645,6 +646,11 @@ export function generateConcepts(
         indicativeRate: Math.round(m.indicativeRate * template.costFactor)
       }));
 
+      // Prefer the project's own photograph of THIS room over a style reference,
+      // so a concept never shows an unrelated space.
+      const roomMedia = mediaForRoom(room.id, room.roomType);
+      const heroMedia = primaryVisualForRoom(room.id, room.roomType);
+      const secondMedia = roomMedia.find(m => m.id !== heroMedia?.id);
       const imageIndex = idx % template.moodImages.length;
       return {
         roomId: room.id,
@@ -656,8 +662,8 @@ export function generateConcepts(
         furniture: template.furnitureVoice,
         lighting: template.lightingVoice,
         keyFeatures: features,
-        moodImageUrl: template.moodImages[imageIndex],
-        renderImageUrl: template.moodImages[(imageIndex + 1) % template.moodImages.length],
+        moodImageUrl: secondMedia?.url || template.moodImages[imageIndex],
+        renderImageUrl: heroMedia?.url || template.moodImages[(imageIndex + 1) % template.moodImages.length],
         customerInstructionApplied: instruction?.instruction,
         locked: false,
         roomAreaSqFt: room.areaSqFt,

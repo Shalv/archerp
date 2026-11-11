@@ -387,6 +387,36 @@ class DatabaseService {
             parsed.users = [...DEMO_USERS];
           }
 
+          // --- additive migration for existing database files -----------------
+          // A file written before the studio / twin existed would otherwise make
+          // those tabs look empty (and show the old Skyline project). We only ADD
+          // missing demo collections; no existing project, user or record is
+          // touched, and nothing is deleted.
+          const hasVilla = parsed.projects.some(p => p && p.id === 'PROJ-VILLA-253');
+          if (hasVilla) {
+            if (!parsed.designStudioSessions) {
+              parsed.designStudioSessions = JSON.parse(
+                JSON.stringify({ [VILLA253_DESIGN_STUDIO_SESSION.projectId]: VILLA253_DESIGN_STUDIO_SESSION })
+              );
+              console.info('[Build Storys] Added the AI Design Studio session to the existing database.');
+            }
+            if (!parsed.designTwins) {
+              parsed.designTwins = JSON.parse(
+                JSON.stringify({ [VILLA253_DESIGN_TWIN.projectId]: VILLA253_DESIGN_TWIN })
+              );
+              console.info('[Build Storys] Added the Project Design Digital Twin to the existing database.');
+            }
+            if (!parsed.operations) {
+              parsed.operations = JSON.parse(JSON.stringify(VILLA253_OPERATIONS));
+              console.info('[Build Storys] Added the operational registers to the existing database.');
+            }
+          } else {
+            console.warn(
+              '[Build Storys] This database file holds projects other than PROJ-VILLA-253, so the Villa 253 demo data was not injected. ' +
+              'POST /api/system/reset-demo as an admin (or delete data/buildstorys_db.json and restart) to load the demo dataset.'
+            );
+          }
+
           return parsed;
         }
       }

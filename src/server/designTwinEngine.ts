@@ -23,6 +23,7 @@
 
 import { BOQItem } from '../types/erp';
 import { DesignConcept, DesignStudioSession, FloorPlanModel, RoomScheme } from '../types/designStudio';
+import { mediaForRoom, primaryVisualForRoom, projectDrawings as projectMediaDrawings } from '../data/villa253MediaLibrary';
 import {
   AssetApproval,
   AssetSource,
@@ -167,6 +168,45 @@ function dimensionSheetSvg(room: TwinRoom): string {
 <text x="${x}" y="${y - 44}" font-family="Arial" font-size="13" font-weight="bold" fill="#111827">${esc(room.name)} — dimension sheet</text>
 <text x="${x}" y="${y + boxH + 26}" font-family="Arial" font-size="11" fill="#374151">Carpet ${room.geometry.areaSqFt} sq.ft · perimeter ${room.geometry.perimeterFt}' · ceiling ${room.geometry.ceilingHeightFt}'</text>
 <text x="${x}" y="${y + boxH + 42}" font-family="Arial" font-size="10" fill="#6b7280">Source: ${esc(room.floorPlanRoomId)} (${room.geometry.confidence}) · ${room.geometry.verified ? 'VERIFIED' : 'UNVERIFIED'}</text>
+</svg>`);
+}
+
+/**
+ * A derived room view for spaces the project has no photograph for.
+ * Drawn from the verified geometry and the approved finishes - a measured
+ * axonometric, not an invented image.
+ */
+function roomAxonometricSvg(room: TwinRoom, materials: MaterialSpecRecord[], palette: string[]): string {
+  const w = 640;
+  const h = 380;
+  const floor = materials.find(m => /floor|stone|tile|wood|deck/i.test(m.category));
+  const wall = materials.find(m => /paint|veneer|wall|cement/i.test(m.category));
+  const ceil = materials.find(m => /ceiling/i.test(m.category));
+  const floorFill = floor ? colourOf(floor) : '#e7e5e4';
+  const wallFill = wall ? colourOf(wall) : '#f1efe9';
+  const ceilFill = ceil ? colourOf(ceil) : '#fafaf9';
+  const accent = (palette[1] || '#c9a87c').split(' ')[0];
+  const L = room.geometry.lengthFt;
+  const W = room.geometry.widthFt;
+  const H = room.geometry.ceilingHeightFt;
+
+  return svgUri(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="20" y="26" font-family="Arial" font-size="13" font-weight="bold" fill="#111827">${esc(room.name)} — derived room view (${L.toFixed(2)}' × ${W.toFixed(2)}' × ${H.toFixed(2)}')</text>
+<text x="20" y="42" font-family="Arial" font-size="10" fill="#6b7280">No project photograph exists for this space — view generated from verified geometry and approved finishes</text>
+<g transform="translate(40,70)">
+  <polygon points="0,60 260,0 520,60 260,120" fill="${ceilFill}" stroke="#111827" stroke-width="1.5"/>
+  <polygon points="0,60 260,120 260,300 0,240" fill="${wallFill}" stroke="#111827" stroke-width="1.5"/>
+  <polygon points="260,120 520,60 520,240 260,300" fill="${wallFill}" stroke="#111827" stroke-width="1.5" opacity="0.92"/>
+  <polygon points="0,240 260,300 520,240 260,180" fill="${floorFill}" stroke="#111827" stroke-width="1.5"/>
+  <polygon points="60,222 200,260 200,196 60,158" fill="${accent}" opacity="0.28" stroke="${accent}" stroke-width="1"/>
+  <text x="120" y="212" font-family="Arial" font-size="9" fill="#374151">furniture zone</text>
+  <line x1="0" y1="60" x2="0" y2="240" stroke="#111827" stroke-width="2"/>
+  <text x="-4" y="150" text-anchor="end" font-family="Arial" font-size="10" fill="#0F6CBD">${H.toFixed(2)}'</text>
+  <text x="130" y="330" text-anchor="middle" font-family="Arial" font-size="10" fill="#0F6CBD">${L.toFixed(2)}'</text>
+  <text x="470" y="150" font-family="Arial" font-size="10" fill="#0F6CBD">${W.toFixed(2)}'</text>
+</g>
+<text x="20" y="${h - 14}" font-family="Arial" font-size="9" fill="#6b7280">Finishes: ${esc(materials.slice(0, 3).map(m => m.id).join(', ') || 'none')} · ${esc(room.floorPlanRoomId)} · ${room.geometry.verified ? 'VERIFIED' : 'UNVERIFIED'}</text>
 </svg>`);
 }
 
@@ -459,6 +499,19 @@ export function buildDesignTwin(input: BuildTwinInput): DesignTwin {
     };
     prompts.push(renderPrompt);
 
+    const mediaForThisRoom = mediaForRoom(planRoom.id, planRoom.roomType);
+    const heroMedia = primaryVisualForRoom(planRoom.id, planRoom.roomType);
+    const heroIsPhoto = Boolean(heroMedia && (heroMedia.kind === 'PHOTOGRAPH' || heroMedia.kind === 'RENDER'));
+    const derivedView = roomAxonometricSvg(
+      {
+        name: planRoom.name,
+        geometry: { ...planRoom, verified, confidence: planRoom.confidence },
+        floorPlanRoomId: planRoom.id
+      } as unknown as TwinRoom,
+      roomMaterials,
+      palette
+    );
+
     const renderAsset: DesignAssetRecord = {
       id: `AST-${roomId}-RD-001`,
       projectId,
@@ -474,16 +527,23 @@ export function buildDesignTwin(input: BuildTwinInput): DesignTwin {
       approvalStatus: 'APPROVED',
       approvedBy: concept.approvedBy,
       approvedAt: concept.approvedAt,
-      url: scheme.renderImageUrl,
-      provenance: {
-        origin: concept.aiGeneration ? 'Puter.js / studio render' : 'Villa 253 approved render set',
-        method: concept.aiGeneration
-          ? `Generated from the approved room specification (${concept.code} v${concept.version})`
-          : `Selected from the project render set for ${concept.code} v${concept.version}`,
-        generatedAt: concept.aiGeneration?.rendersGeneratedAt || concept.approvedAt,
-        generatedBy: concept.approvedBy,
-        model: concept.aiGeneration?.imageModel
-      },
+      url: heroIsPhoto ? heroMedia!.url : derivedView,
+      provenance: heroIsPhoto
+        ? {
+            origin: heroMedia!.provenance.origin,
+            sourceUrl: heroMedia!.provenance.sourceUrl,
+            licence: heroMedia!.provenance.licence,
+            method: `${heroMedia!.provenance.method} · linked as the approved view for ${concept.code} v${concept.version} (${heroMedia!.id})`,
+            generatedAt: concept.approvedAt,
+            generatedBy: concept.approvedBy
+          }
+        : {
+            origin: 'Derived from geometry',
+            licence: 'Internal project asset',
+            method: `No project photograph exists for this space, so the view was generated from the verified room geometry and its approved finishes (${concept.code} v${concept.version})`,
+            generatedAt: createdAt,
+            generatedBy: 'design-twin-engine'
+          },
       status: 'READY',
       geometryBasis: {
         lengthFt: planRoom.lengthFt,
@@ -496,6 +556,41 @@ export function buildDesignTwin(input: BuildTwinInput): DesignTwin {
     };
     renderPrompt.assetIds.push(renderAsset.id);
     roomAssets.push(renderAsset);
+
+    // Every project image that actually shows this room becomes a reference
+    // asset on the furniture/joinery element, with its library provenance.
+    mediaForThisRoom
+      .filter(media => media.id !== (heroIsPhoto ? heroMedia!.id : ''))
+      .forEach((media, index) => {
+        const referenceAsset: DesignAssetRecord = {
+          id: `AST-${roomId}-FJ-REF${index + 1}`,
+          projectId,
+          roomId,
+          elementId: renderElementId,
+          assetType: media.elementHint === 'DIMENSION_SHEET' ? 'DIMENSION_SHEET' : 'REFERENCE_IMAGE',
+          designVersion,
+          revision,
+          drawingRef: `REF-${roomId}-${index + 1}`,
+          materialRefs: [],
+          source: media.kind === 'CAD_DRAWING' || media.kind === 'PLAN_SHEET' ? 'DERIVED_FROM_GEOMETRY' : 'PROJECT_LIBRARY',
+          approvalStatus: 'APPROVED',
+          parentAssetId: renderAsset.id,
+          url: media.url,
+          provenance: {
+            origin: media.provenance.origin,
+            sourceUrl: media.provenance.sourceUrl,
+            licence: media.provenance.licence,
+            method: `${media.provenance.method} · ${media.id}`,
+            generatedAt: createdAt,
+            generatedBy: 'design-twin-engine'
+          },
+          status: 'READY',
+          notes: media.description
+        };
+        roomAssets.push(referenceAsset);
+        const renderElement = roomElements.find(el => el.id === renderElementId);
+        if (renderElement) renderElement.assetIds.push(referenceAsset.id);
+      });
 
     elementKinds.forEach(kind => {
       const elementId = elementIdFor(kind);
@@ -859,6 +954,25 @@ export function buildDesignTwin(input: BuildTwinInput): DesignTwin {
     rooms,
     materials,
     assets,
+    projectDrawings: projectMediaDrawings().map((media, index) => ({
+      id: `DRW-${String(index + 1).padStart(3, '0')}`,
+      title: media.title,
+      kind: media.kind,
+      url: media.url,
+      designVersion,
+      revision,
+      drawingRef: media.kind === 'CAD_DRAWING' ? `CAD-${String(index + 1).padStart(2, '0')}` : `PL-${String(index + 1).padStart(2, '0')}`,
+      approvalStatus: 'APPROVED' as const,
+      provenance: {
+        origin: media.provenance.origin,
+        sourceUrl: media.provenance.sourceUrl,
+        licence: media.provenance.licence,
+        method: media.provenance.method,
+        generatedAt: createdAt,
+        generatedBy: 'design-twin-engine'
+      },
+      notes: media.description
+    })),
     prompts,
     revisions: [],
     approvals: [

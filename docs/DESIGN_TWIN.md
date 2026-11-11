@@ -77,9 +77,15 @@ There is no stock-photo step anywhere. Every visual is drawn from a record:
 - **mood board** — SVG composed only from that element's material IDs and the approved palette;
 - **construction detail** — SVG build-up in layer sequence from the element's materials;
 - **lighting / electrical / plumbing plan** — SVG point layout from the room geometry and circuit references;
-- **3D render** — the project's own approved render asset (or a Puter render), recorded as `PROJECT_LIBRARY` / `AI_GENERATED` with its prompt reference.
+- **3D render** — the project's own approved render asset (or a Puter render), recorded as `PROJECT_LIBRARY` / `AI_GENERATED` with its prompt reference;
+- **derived room view** — for spaces the project has no photograph of (kitchen, staircase, Bedroom 3), a measured axonometric drawn from the verified geometry and the approved finishes, explicitly labelled "no project photograph exists for this space";
+- **reference images / plan sheets** — every item in `src/data/villa253MediaLibrary.ts` that depicts the room, attached with the library's own provenance and licence.
 
 Because they are generated from records, a swatch or elevation can never depict a material that is not in the specification.
+
+## Project drawings
+
+Whole-villa media lives on `twin.projectDrawings` (the R0 PDF, the editable DXF, the vector plan preview, the facade and the site sketch) with design version, revision, drawing reference, approval and provenance. They are not room-scoped, so they sit beside the rooms rather than inside one.
 
 ## Asset metadata
 
