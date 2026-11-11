@@ -39,6 +39,8 @@ import {
   History
 } from 'lucide-react';
 import { ProjectRecord, UserSession } from '../../types/erp';
+import { apiJson, isApiUnavailable } from '../../utils/apiClient';
+import { VILLA253_MEDIA_LIBRARY } from '../../data/villa253MediaLibrary';
 import {
   DEFAULT_CHAT_MODEL,
   enrichConceptNarrative,
@@ -158,16 +160,11 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
     instruction: ''
   });
 
-  const api = async (path: string, method: string, body?: any) => {
-    const res = await fetch(`/api/design-studio/${project.id}${path}`, {
+  const api = async (path: string, method: string, body?: any) =>
+    apiJson<DesignStudioSession>(`/api/design-studio/${project.id}${path}`, {
       method,
-      headers: { 'Content-Type': 'application/json' },
       body: body ? JSON.stringify(body) : undefined
     });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data?.error || 'Request failed.');
-    return data as DesignStudioSession;
-  };
 
   const run = async (label: string, fn: () => Promise<DesignStudioSession | void>) => {
     setBusy(label);
@@ -185,8 +182,10 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
 
   useEffect(() => {
     run('load', async () => {
-      const res = await fetch(`/api/design-studio/${project.id}`);
-      const data = await res.json();
+      const data = await apiJson<DesignStudioSession>(`/api/design-studio/${project.id}`).catch(err => {
+        if (isApiUnavailable(err)) setError(err.message);
+        return null;
+      });
       if (!data?.projectId) return;
       setSession(data);
       if (data.preferences) setPrefs(data.preferences);
@@ -337,9 +336,7 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
     setBusy('presentation');
     setError('');
     try {
-      const res = await fetch(`/api/design-studio/${project.id}/presentation`);
-      const pack = await res.json();
-      if (!res.ok) throw new Error(pack?.error || 'Could not build the presentation pack.');
+      const pack = await apiJson<any>(`/api/design-studio/${project.id}/presentation`);
       const win = window.open('', '_blank');
       if (!win) throw new Error('Allow pop-ups to open the client presentation.');
       win.document.write(buildPresentationHtml(pack, project));
@@ -523,8 +520,10 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
             </button>
             <button
               onClick={() => run('load', async () => {
-                const res = await fetch(`/api/design-studio/${project.id}`);
-                const data = await res.json();
+                const data = await apiJson<DesignStudioSession>(`/api/design-studio/${project.id}`).catch(err => {
+                  if (isApiUnavailable(err)) setError(err.message);
+                  return null;
+                });
                 if (data?.projectId) setSession(data);
               })}
               className="inline-flex items-center gap-1.5 border border-slate-300 rounded px-2.5 py-1.5 hover:bg-slate-50"
@@ -578,6 +577,40 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
       {/* ------------------------------------------------------- STEP 1 */}
       {step === 'upload' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          <div className="lg:col-span-3 bg-white border border-slate-200 rounded p-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                <Layers className="w-4 h-4 text-[#0F6CBD]" /> Project drawings &amp; images ({VILLA253_MEDIA_LIBRARY.length})
+              </h3>
+              <p className="text-[11px] text-slate-500">
+                Every visual the studio is allowed to use. Nothing is stock - each item is the project's own drawing or render.
+              </p>
+            </div>
+            <div className="mt-2 grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-8 gap-2">
+              {VILLA253_MEDIA_LIBRARY.map(media => (
+                <a
+                  key={media.id}
+                  href={media.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group border border-slate-200 rounded overflow-hidden hover:border-[#0F6CBD]"
+                  title={`${media.title} — ${media.description}`}
+                >
+                  <div className="h-16 bg-slate-50 flex items-center justify-center overflow-hidden">
+                    {media.kind === 'CAD_DRAWING' && media.url.endsWith('.pdf') ? (
+                      <FileText className="w-5 h-5 text-slate-400" />
+                    ) : (
+                      <img src={media.url} alt={media.title} className="w-full h-full object-cover" />
+                    )}
+                  </div>
+                  <div className="p-1">
+                    <div className="text-[8px] uppercase tracking-wide text-slate-400">{media.kind.replace('_', ' ')}</div>
+                    <div className="text-[9px] text-slate-700 leading-tight line-clamp-2">{media.title}</div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
           <div className="lg:col-span-2 bg-white border border-slate-200 rounded p-4 space-y-3">
             <h2 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
               <Upload className="w-4 h-4 text-[#0F6CBD]" /> Upload the floor plan

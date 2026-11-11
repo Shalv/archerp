@@ -349,6 +349,24 @@ export interface TwinApproval {
 // ---------------------------------------------------------------------------
 // 9. THE TWIN
 // ---------------------------------------------------------------------------
+/**
+ * Whole-project drawings and images (R0 PDF, DXF, plan sheets, site sketch).
+ * They are not room-scoped, so they live beside the rooms rather than inside
+ * one - but they still carry design version, revision, provenance and approval.
+ */
+export interface ProjectDrawingRecord {
+  id: string;
+  title: string;
+  kind: 'PHOTOGRAPH' | 'RENDER' | 'CAD_DRAWING' | 'PLAN_SHEET' | 'SKETCH';
+  url: string;
+  designVersion: string;
+  revision: string;
+  drawingRef: string;
+  approvalStatus: AssetApproval;
+  provenance: AssetProvenance;
+  notes?: string;
+}
+
 export interface DesignTwin {
   projectId: string;
   designVersion: string;
@@ -366,6 +384,8 @@ export interface DesignTwin {
   rooms: TwinRoom[];
   materials: MaterialSpecRecord[];
   assets: DesignAssetRecord[];
+  /** Project-level drawings: floor plans, CAD files, site sketch, facade */
+  projectDrawings: ProjectDrawingRecord[];
   prompts: TwinPromptRecord[];
   revisions: TwinRevision[];
   approvals: TwinApproval[];

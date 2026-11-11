@@ -167,6 +167,39 @@ For a stage rehearsal, Puter's `testMode` returns sample output without spending
 
 ---
 
+## 4b. If the studio shows "…is not valid JSON"
+
+That message means the request never reached the Express app — the host answered with its own HTML page.
+Two causes, both fixed here:
+
+1. **No API rewrite on Vercel.** `vercel.json` now maps `/api/:path*` → `/api/index?erpPath=:path*`, which is the
+   entry point `api/index.ts` was written for. Without it every `/api/...` call 404s with an HTML page.
+2. **A cryptic error instead of a real one.** All calls now go through `src/utils/apiClient.ts`, which checks the
+   content type and raises one readable sentence naming the path, the status and the fix — never a JSON parse error.
+
+If you still see it, the deployment is serving an older build: redeploy after merging.
+
+**Stale demo data.** If the app shows `BS-2026-1402` / Skyline instead of Villa 253, the running database file predates
+the new seed. `db.ts` now adds the studio, the twin and the registers to an existing file that already contains
+`PROJ-VILLA-253` (additive only — nothing is deleted). If the file holds a different project entirely it logs a warning
+and leaves your data alone; run `POST /api/system/reset-demo` as an admin, or delete `data/buildstorys_db.json` and restart.
+
+## 4c. Every image and drawing in the demo
+
+`src/data/villa253MediaLibrary.ts` is the single register of the project's own visuals — 15 items, each with the room it
+depicts, its type, provenance and licence:
+
+- **8 photographs/renders** — facade, great room (two views), master suite (two views), Bedroom 2, gazebo (two views)
+- **3 CAD drawings** — the R0 wall-marking PDF, the editable 8-layer DXF, the vector plan preview
+- **3 room plan sheets** — Bedroom 3, kitchen/utility, staircase core
+- **1 site sketch** — massing and orientation from the 30-05-2026 visit
+
+The studio shows the whole register in step 1, and a concept's room visuals now come from the room's own media instead of
+a style template. The twin attaches every media item that shows a room as a `REFERENCE_IMAGE`/`DIMENSION_SHEET` asset, uses
+the room's approved render as its `RENDER_3D`, and lists the five whole-villa drawings in a "Project drawings" strip.
+Rooms with no project photograph (kitchen, staircase, Bedroom 3) get a **derived axonometric view** drawn from their verified
+geometry and approved finishes, labelled as such — never a stock image.
+
 ## 5. What was fixed on the way
 
 - `PROJ-SKYLINE-1402` → `PROJ-VILLA-253` everywhere (app default, users, seeds, D365 panes).
