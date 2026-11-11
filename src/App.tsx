@@ -1109,16 +1109,7 @@ export default function App() {
           >
             Capabilities &amp; Architecture
           </button>
-          <span>•</span>
-          <a
-            href="https://developer.puter.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-violet-700 hover:underline"
-            title="Browser AI for the Design Studio (keyless, user-pays)"
-          >
-            Powered by Puter
-          </a>
+
         </div>
       </footer>
     </div>

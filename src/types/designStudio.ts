@@ -236,7 +236,7 @@ export interface DesignConcept {
   clientRating?: number;
   revisions: ConceptRevision[];
   imagePromptUsed: string;
-  /** Set when Puter.js generated the narrative and/or room renders */
+  /** Set when Gemini generated the narrative and/or room renders */
   aiGeneration?: {
     engine: string;
     narrativeModel?: string;

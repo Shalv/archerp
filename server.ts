@@ -33,6 +33,15 @@ import {
   validateDesignPackage
 } from './src/server/designTwinEngine';
 import { VILLA253_FINISH_LIBRARY } from './src/data/villa253DesignTwin';
+import {
+  AiCallError,
+  AiNotConfiguredError,
+  buildRoomRenderPrompt,
+  extractRoomsFromPlan,
+  getAiStatus,
+  renderRoom,
+  writeConceptNarrative
+} from './src/server/geminiStudioService';
 import { mongoDBService } from './src/server/mongoService';
 import { 
   analyzeCustomerRequirementBrief, 
@@ -958,7 +967,7 @@ export async function createApp(isServerless: boolean = false) {
       });
       if (aiExtraction && typeof aiExtraction === 'object') {
         model.aiExtraction = {
-          engine: String(aiExtraction.engine || 'Puter.js'),
+          engine: String(aiExtraction.engine || 'Gemini'),
           model: aiExtraction.model ? String(aiExtraction.model) : undefined,
           ocrCharacters: Number(aiExtraction.ocrCharacters) || 0,
           confidenceNotes: Array.isArray(aiExtraction.confidenceNotes) ? aiExtraction.confidenceNotes.map(String) : [],
@@ -1054,6 +1063,24 @@ export async function createApp(isServerless: boolean = false) {
       if (!Array.isArray(prefs.lighting) || prefs.lighting.length === 0) {
         return res.status(400).json({ error: 'Select at least one lighting requirement (ambient, task, accent or decorative).' });
       }
+      const carpet = Number(prefs.carpetAreaSqFt);
+      if (!Number.isFinite(carpet) || carpet <= 0) {
+        return res.status(400).json({ error: 'Carpet area must be a positive number - concepts are priced from it.' });
+      }
+      if (carpet > 100000) {
+        return res.status(400).json({ error: 'Carpet area looks wrong (over 1,00,000 sq.ft). Check the units before saving.' });
+      }
+      if (prefs.budgetBand === 'CUSTOM' && !(Number(prefs.customBudgetINR) > 0)) {
+        return res.status(400).json({ error: 'A custom budget band needs the client budget amount.' });
+      }
+      // Two designers on one project must not silently overwrite each other.
+      const expected = req.body?.expectedUpdatedAt;
+      if (expected && session.updatedAt && expected !== session.updatedAt) {
+        return res.status(409).json({
+          error: 'These preferences were changed by someone else while you were editing. Reload the studio and re-apply your edits.',
+          code: 'STALE_SESSION'
+        });
+      }
       const updated = dbService.saveDesignStudioSession({
         ...session,
         stage: session.stage === 'CONCEPTS_GENERATED' || session.stage === 'CUSTOMER_REVIEW' ? session.stage : 'PREFERENCES',
@@ -1079,6 +1106,13 @@ export async function createApp(isServerless: boolean = false) {
       const session = loadStudio(req.params.projectId);
       if (!session.model) return res.status(400).json({ error: 'Analyse and confirm a floor plan before generating concepts.' });
       if (!session.preferences) return res.status(400).json({ error: 'Capture the customer preferences before generating concepts.' });
+      const expected = req.body?.expectedUpdatedAt;
+      if (expected && session.updatedAt && expected !== session.updatedAt) {
+        return res.status(409).json({
+          error: 'The session changed while you were working (another designer saved or generated). Reload before generating.',
+          code: 'STALE_SESSION'
+        });
+      }
       const count = Math.min(Math.max(Number(req.body?.count) || 4, 3), 5);
       const concepts = generateConcepts(req.params.projectId, session.model, session.preferences, count);
       let updated: DesignStudioSession = {
@@ -1148,9 +1182,9 @@ export async function createApp(isServerless: boolean = false) {
   });
 
   /**
-   * Persists AI output produced in the browser by Puter.js against a concept.
-   * The browser does the model calls (keyless, user-pays); the server only
-   * validates and stores the result so it is auditable and shared.
+   * Persists AI output against a concept (manual upload, or a render produced
+   * elsewhere). The Gemini path is /ai-generate; this endpoint stays for
+   * uploaded / manufacturer imagery so every asset keeps one metadata contract.
    * Numbers are NEVER accepted here - only prose and image references.
    */
   app.post('/api/design-studio/:projectId/concepts/:conceptId/ai-enrich', (req: Request, res: Response) => {
@@ -1189,7 +1223,7 @@ export async function createApp(isServerless: boolean = false) {
           return match ? { ...room, renderImageUrl: match.imageUrl } : room;
         }),
         aiGeneration: {
-          engine: String(engine || 'Puter.js'),
+          engine: String(engine || 'Gemini'),
           narrativeModel: narrativeModel ? String(narrativeModel) : concept.aiGeneration?.narrativeModel,
           imageModel: imageModel ? String(imageModel) : concept.aiGeneration?.imageModel,
           narrativeGeneratedAt: cleanNarrative ? new Date().toISOString() : concept.aiGeneration?.narrativeGeneratedAt,
@@ -1213,7 +1247,7 @@ export async function createApp(isServerless: boolean = false) {
         updated,
         user ? user.name : 'Design Studio user',
         'AI_CONTENT_SAVED',
-        `${String(engine || 'Puter.js')}: ${cleanNarrative ? 'narrative' : 'no narrative'}; ${images.length} room render(s)${imageModel ? ` via ${imageModel}` : ''}.`,
+        `${String(engine || 'Gemini')}: ${cleanNarrative ? 'narrative' : 'no narrative'}; ${images.length} room render(s)${imageModel ? ` via ${imageModel}` : ''}.`,
         `Concept ${concept.code} updated: narrative ${cleanNarrative ? `rewritten (${cleanNarrative.split(/\s+/).length} words)` : 'unchanged'}, ${images.length} render(s) stored. Quantities and rates untouched.`
       );
 
@@ -1223,7 +1257,7 @@ export async function createApp(isServerless: boolean = false) {
           'AI_DESIGN_ENRICHED',
           'DESIGN_CONCEPT',
           concept.id,
-          `AI narrative and ${images.length} render(s) generated by ${String(engine || 'Puter.js')} for ${concept.code} v${concept.version}.`
+          `AI narrative and ${images.length} render(s) generated by ${String(engine || 'Gemini')} for ${concept.code} v${concept.version}.`
         );
       }
 
@@ -1257,7 +1291,7 @@ export async function createApp(isServerless: boolean = false) {
   // Step 6: approval locks every room scheme
   app.post('/api/design-studio/:projectId/concepts/:conceptId/approve', (req: Request, res: Response) => {
     try {
-      const user = getUserFromReq(req);
+      const user = requireApprover(req);
       const session = loadStudio(req.params.projectId);
       const concept = session.concepts.find(c => c.id === req.params.conceptId);
       if (!concept) return res.status(404).json({ error: 'Concept not found in this project.' });
@@ -1286,7 +1320,7 @@ export async function createApp(isServerless: boolean = false) {
       dbService.logAudit(user, 'APPROVE_DESIGN_CONCEPT', 'DESIGN_CONCEPT', req.params.projectId, `Approved ${approved.code} ${approved.name} v${approved.version} - ${approved.roomSchemes.length} rooms locked.`);
       res.json(dbService.saveDesignStudioSession(updated));
     } catch (err: any) {
-      res.status(400).json({ error: err.message || 'Failed to approve the concept.' });
+      res.status(err?.status || 400).json({ error: err.message || 'Failed to approve the concept.' });
     }
   });
 
@@ -1561,6 +1595,265 @@ export async function createApp(isServerless: boolean = false) {
       res.json({ twin: saved, asset: result.asset });
     } catch (err: any) {
       res.status(400).json({ error: err.message || 'Failed to attach the asset.' });
+    }
+  });
+
+  // ==========================================================================
+  // GEMINI AI FOR THE DESIGN STUDIO (server-side, key never leaves the server)
+  // ==========================================================================
+  const aiError = (res: Response, err: any) => {
+    if (err instanceof AiNotConfiguredError) {
+      return res.status(503).json({ error: err.message, code: 'AI_NOT_CONFIGURED' });
+    }
+    if (err instanceof AiCallError) {
+      return res.status(err.retryable ? 502 : 400).json({ error: err.message, code: err.upstream || 'AI_CALL_FAILED', retryable: err.retryable });
+    }
+    return res.status(500).json({ error: err?.message || 'AI request failed.' });
+  };
+
+  /** Who may sign off design decisions. Approval is a control, not a button. */
+  const requireApprover = (req: Request): UserSession => {
+    const user = getUserFromReq(req);
+    const allowed =
+      user.role === 'ADMIN' ||
+      user.role === 'PROJECT_MANAGER' ||
+      Boolean(user.permissions?.canApproveBOQ);
+    if (!allowed) {
+      throw Object.assign(
+        new Error('Only an administrator or project manager can approve a design concept or release a package.'),
+        { status: 403 }
+      );
+    }
+    return user;
+  };
+
+  app.get('/api/ai/status', (_req: Request, res: Response) => {
+    res.json(getAiStatus());
+  });
+
+  /** Read an uploaded floor plan with Gemini vision. Nothing is persisted here. */
+  app.post('/api/ai/studio/extract-plan', async (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const { base64, mimeType, fileName } = req.body || {};
+      if (!base64 || !mimeType) {
+        return res.status(400).json({ error: 'Send the file as base64 with its mimeType (image/png, image/jpeg or application/pdf).' });
+      }
+      const approxBytes = Math.round((String(base64).length * 3) / 4);
+      if (approxBytes > 12 * 1024 * 1024) {
+        return res.status(413).json({ error: 'That plan is larger than 12 MB. Compress it or upload a single sheet.' });
+      }
+      const result = await extractRoomsFromPlan({ base64, mimeType, fileName });
+      dbService.logAudit(
+        user,
+        'AI_FLOOR_PLAN_READ',
+        'DESIGN_STUDIO',
+        fileName || 'uploaded-plan',
+        `Gemini ${result.model} read ${result.rooms.length} room(s) with ${result.confidenceNotes.length} note(s) to confirm.`
+      );
+      res.json(result);
+    } catch (err: any) {
+      aiError(res, err);
+    }
+  });
+
+  /**
+   * Generates the concept narrative and/or room renders with Gemini, then
+   * stores them against the concept as PENDING assets.
+   * Quantities, rates and the BOQ are untouched by design.
+   */
+  app.post('/api/design-studio/:projectId/concepts/:conceptId/ai-generate', async (req: Request, res: Response) => {
+    try {
+      const user = getUserFromReq(req);
+      const session = loadStudio(req.params.projectId);
+      const concept = session.concepts.find(c => c.id === req.params.conceptId);
+      if (!concept) return res.status(404).json({ error: 'Concept not found in this project.' });
+      if (concept.status === 'APPROVED') {
+        return res.status(409).json({ error: 'Approved concepts are locked. Reopen the concept before regenerating its narrative or renders.' });
+      }
+      const status = getAiStatus();
+      if (!status.configured) {
+        return res.status(503).json({
+          error: 'Gemini is not configured on the server. Set GEMINI_API_KEY and restart; the deterministic engine still works.',
+          code: 'AI_NOT_CONFIGURED'
+        });
+      }
+      const wantNarrative = req.body?.narrative !== false;
+      const requestedRoomIds: string[] = Array.isArray(req.body?.renderRoomIds) ? req.body.renderRoomIds : [];
+      const maxRenders = Math.min(Math.max(Number(req.body?.maxRenders) || 4, 1), 8);
+      const roomsToRender = concept.roomSchemes
+        .filter(room => (requestedRoomIds.length ? requestedRoomIds.includes(room.roomId) : true))
+        .slice(0, maxRenders);
+
+      const failures: string[] = [];
+      let narrative = '';
+      let narrativeModel = '';
+      let narrativeSanitised = false;
+
+      if (wantNarrative) {
+        try {
+          const result = await writeConceptNarrative({
+            conceptName: concept.name,
+            style: concept.style,
+            budgetBand: concept.budgetBand,
+            palette: concept.palette,
+            rooms: concept.roomSchemes.map(r => ({
+              name: r.roomName,
+              areaSqFt: r.roomAreaSqFt,
+              materials: r.materials.map(m => `${m.category}: ${m.specification}`)
+            })),
+            clientInstructions: concept.roomSchemes
+              .map(r => r.customerInstructionApplied)
+              .filter((v): v is string => Boolean(v)),
+            propertyType: session.preferences?.propertyType
+          });
+          narrative = result.text;
+          narrativeModel = result.model;
+          narrativeSanitised = result.sanitised;
+        } catch (err: any) {
+          failures.push(`Narrative: ${err?.message || 'generation failed'}`);
+        }
+      }
+
+      const roomImages: { roomId: string; imageUrl: string }[] = [];
+      let imageModel = '';
+      for (const room of roomsToRender) {
+        try {
+          const prompt = buildRoomRenderPrompt({
+            conceptName: concept.name,
+            style: concept.style,
+            palette: room.palette.length ? room.palette : concept.palette,
+            roomName: room.roomName,
+            roomType: room.roomType,
+            lengthFt: room.roomAreaSqFt > 0 ? Math.sqrt(room.roomAreaSqFt) : 12,
+            widthFt: room.roomAreaSqFt > 0 ? room.roomAreaSqFt / Math.sqrt(room.roomAreaSqFt) : 10,
+            ceilingHeightFt: room.roomCeilingHeightFt,
+            materials: room.materials.map(m => `${m.category}: ${m.specification}`),
+            furniture: room.furniture,
+            lighting: room.lighting
+          });
+          const render = await renderRoom({ prompt, aspectRatio: '16:9' });
+          roomImages.push({ roomId: room.roomId, imageUrl: render.dataUri });
+          imageModel = render.model;
+        } catch (err: any) {
+          failures.push(`${room.roomName}: ${err?.message || 'render failed'}`);
+        }
+      }
+
+      if (!narrative && roomImages.length === 0) {
+        const notConfigured = failures.every(f => /not configured|API key/i.test(f));
+        return res.status(notConfigured ? 503 : 502).json({
+          error: failures[0] || 'Gemini returned nothing.',
+          code: notConfigured ? 'AI_NOT_CONFIGURED' : 'AI_EMPTY',
+          failures
+        });
+      }
+
+      const roomIds = new Set(concept.roomSchemes.map(r => r.roomId));
+      const unknown = roomImages.find(img => !roomIds.has(img.roomId));
+      if (unknown) return res.status(400).json({ error: `Room ${unknown.roomId} is not part of this concept.` });
+
+      const updatedConcept = {
+        ...concept,
+        narrative: narrative || concept.narrative,
+        roomSchemes: concept.roomSchemes.map(room => {
+          const match = roomImages.find(img => img.roomId === room.roomId);
+          return match ? { ...room, renderImageUrl: match.imageUrl } : room;
+        }),
+        aiGeneration: {
+          engine: 'Gemini',
+          narrativeModel: narrativeModel || concept.aiGeneration?.narrativeModel,
+          imageModel: imageModel || concept.aiGeneration?.imageModel,
+          narrativeGeneratedAt: narrative ? new Date().toISOString() : concept.aiGeneration?.narrativeGeneratedAt,
+          rendersGeneratedAt: roomImages.length ? new Date().toISOString() : concept.aiGeneration?.rendersGeneratedAt,
+          rendersRequested: roomsToRender.length,
+          rendersSucceeded: roomImages.length,
+          failures
+        }
+      };
+
+      let updated: DesignStudioSession = {
+        ...session,
+        concepts: session.concepts.map(c => (c.id === updatedConcept.id ? updatedConcept : c)),
+        boqDraft:
+          session.boqDraft && session.boqDraft.generatedFromConceptId === updatedConcept.id
+            ? undefined
+            : session.boqDraft
+      };
+
+      updated = logPrompt(
+        updated,
+        user.name,
+        'GEMINI_CONTENT_SAVED',
+        `Gemini ${narrativeModel || imageModel}: ${narrative ? 'narrative' : 'no narrative'}; ${roomImages.length} render(s).`,
+        `Concept ${concept.code} updated: narrative ${narrative ? `rewritten (${narrative.split(/\s+/).length} words${narrativeSanitised ? ', price references removed' : ''})` : 'unchanged'}, ${roomImages.length} render(s) stored${failures.length ? `, ${failures.length} failure(s)` : ''}. Quantities and rates untouched.`
+      );
+
+      dbService.logAudit(
+        user,
+        'AI_DESIGN_GENERATED',
+        'DESIGN_CONCEPT',
+        concept.id,
+        `Gemini generated ${narrative ? 'a narrative' : ''}${narrative && roomImages.length ? ' and ' : ''}${roomImages.length} render(s) for ${concept.code} v${concept.version}.`
+      );
+
+      res.json({ session: dbService.saveDesignStudioSession(updated), narrative, narrativeSanitised, renders: roomImages.length, failures });
+    } catch (err: any) {
+      if (err?.status === 403) return res.status(403).json({ error: err.message });
+      aiError(res, err);
+    }
+  });
+
+  /** Hand the approved design over to the Project Design Digital Twin. */
+  app.post('/api/design-studio/:projectId/handoff-to-twin', (req: Request, res: Response) => {
+    try {
+      const user = requireApprover(req);
+      const session = loadStudio(req.params.projectId);
+      if (!session.model?.confirmedAt) {
+        return res.status(400).json({ error: 'Confirm the floor plan model before handing the design over.' });
+      }
+      const concept = session.concepts.find(c => c.id === session.approvedConceptId);
+      if (!concept || concept.status !== 'APPROVED') {
+        return res.status(409).json({ error: 'Approve a design concept first - the twin is built from an approved design only.' });
+      }
+      const project = dbService.getProjectById(req.params.projectId);
+      const boqItems =
+        project?.revisions?.find(r => r.id === project.activeRevisionId)?.items ||
+        session.boqDraft?.items ||
+        [];
+      if (!boqItems.length) {
+        return res.status(400).json({ error: 'Generate the room-wise BOQ first - every twin element needs a BOQ line.' });
+      }
+      const existing = dbService.getDesignTwin(req.params.projectId);
+      if (existing && !req.body?.force) {
+        return res.status(409).json({
+          error: `A design twin already exists at ${existing.designVersion}. Pass force: true to rebuild it from this approved design.`,
+          code: 'TWIN_EXISTS'
+        });
+      }
+      const twin = buildDesignTwin({
+        projectId: req.params.projectId,
+        model: session.model,
+        concept,
+        boqItems,
+        boqRevisionId: session.boqDraft?.revisionId,
+        actor: user.name,
+        requirements: project?.requirement
+          ? [{ id: project.requirement.id, text: `${project.requirement.customerName} brief` }]
+          : []
+      });
+      twin.materials = [...twin.materials, ...VILLA253_FINISH_LIBRARY.map(m => ({ ...m, projectId: req.params.projectId }))];
+      const saved = dbService.saveDesignTwin(twin);
+      dbService.logAudit(
+        user,
+        'DESIGN_HANDED_TO_TWIN',
+        'DESIGN_TWIN',
+        req.params.projectId,
+        `Design ${concept.code} v${concept.version} handed over: ${saved.rooms.length} rooms, ${saved.assets.length} assets at ${saved.designVersion}.`
+      );
+      res.json({ twin: saved, concept: { code: concept.code, version: concept.version } });
+    } catch (err: any) {
+      res.status(err?.status || 400).json({ error: err.message || 'Handover failed.' });
     }
   });
 

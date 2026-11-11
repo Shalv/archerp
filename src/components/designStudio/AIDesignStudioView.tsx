@@ -41,14 +41,7 @@ import {
 import { ProjectRecord, UserSession } from '../../types/erp';
 import { apiJson, isApiUnavailable } from '../../utils/apiClient';
 import { VILLA253_MEDIA_LIBRARY } from '../../data/villa253MediaLibrary';
-import {
-  DEFAULT_CHAT_MODEL,
-  enrichConceptNarrative,
-  extractRoomsFromFloorPlan,
-  getPuterCapability,
-  PuterCapability,
-  renderRoomScheme
-} from '../../services/puterAI';
+
 import {
   BudgetBand,
   ColourPalette,
@@ -148,7 +141,7 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
   const [selectedConceptId, setSelectedConceptId] = useState<string>('');
   const [planFile, setPlanFile] = useState<File | null>(null);
   const [ocrText, setOcrText] = useState<string>('');
-  const [aiCap, setAiCap] = useState<PuterCapability | null>(null);
+  const [aiStatus, setAiStatus] = useState<{ configured: boolean; textModel: string; imageModel: string; note: string } | null>(null);
   const [aiBusy, setAiBusy] = useState<string>('');
   const [aiProgress, setAiProgress] = useState<{ done: number; total: number; label: string }>({ done: 0, total: 0, label: '' });
   const [aiConfirm, setAiConfirm] = useState<DesignConcept | null>(null);
@@ -195,7 +188,7 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
         setStep(data.concepts?.length ? 'review' : 'analysis');
       }
     });
-    getPuterCapability().then(setAiCap).catch(() => setAiCap(null));
+    apiJson<any>('/api/ai/status').then(setAiStatus).catch(() => setAiStatus(null));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project.id]);
 
@@ -332,6 +325,19 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
       return next;
     });
 
+  /** Hands the approved design to the Project Design Digital Twin (design freeze). */
+  const handoffToTwin = () =>
+    run('handoff', async () => {
+      const result = await apiJson<any>(`/api/design-studio/${project.id}/handoff-to-twin`, {
+        method: 'POST',
+        body: JSON.stringify({ force: true })
+      });
+      setNotice(
+        `Design frozen and handed to the twin: ${result.twin.rooms.length} rooms, ${result.twin.assets.length} assets at ${result.twin.designVersion}. Open Project Design Digital Twin to review the drawing package.`
+      );
+      onNavigateTab?.('design_twin');
+    });
+
   const openPresentation = async () => {
     setBusy('presentation');
     setError('');
@@ -348,20 +354,28 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
     }
   };
 
-  // ---------------------------------------------------------------- Puter AI
-  /** Reads the uploaded plan with Puter (OCR + structured extraction), then
-   *  sends ONLY the extracted rooms to the server - the geometry still goes
-   *  through the same model + confirmation gate as a manual entry. */
+  // ---------------------------------------------------------------- Gemini AI
+  /** Reads the uploaded plan with Gemini (server-side vision), then sends ONLY
+   *  the extracted rooms through the same model + confirmation gate as a manual
+   *  entry. The API key stays on the server. */
   const readPlanWithAI = () =>
     run('ai-ocr', async () => {
       if (!planFile) throw new Error('Choose a floor plan file first (PDF, JPG or PNG).');
       setAiBusy('ocr');
-      setAiProgress({ done: 0, total: 2, label: 'Reading the sheet (OCR)' });
+      setAiProgress({ done: 0, total: 2, label: 'Sending the sheet to Gemini' });
       try {
-        const extracted = await extractRoomsFromFloorPlan(planFile, { chatModel: DEFAULT_CHAT_MODEL });
-        setOcrText(extracted.ocrText);
-        setAiProgress({ done: 1, total: 2, label: 'Mapping text to rooms' });
-        if (!extracted.rooms.length) {
+        const base64 = await fileToBase64(planFile);
+        setAiProgress({ done: 1, total: 2, label: 'Gemini is reading the plan' });
+        const extracted = await apiJson<any>('/api/ai/studio/extract-plan', {
+          method: 'POST',
+          body: JSON.stringify({
+            base64,
+            mimeType: planFile.type || mimeTypeFor(planFile.name),
+            fileName: planFile.name
+          })
+        });
+        setOcrText(extracted.rawText || '');
+        if (!extracted.rooms?.length) {
           throw new Error('No dimensioned rooms were found on that sheet. Enter the room table manually, or upload a plan with printed dimensions.');
         }
         const ext = planFile.name.split('.').pop()?.toUpperCase() || 'PDF';
@@ -369,7 +383,7 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
           kind: (['PDF', 'JPG', 'PNG', 'DWG', 'DXF'].includes(ext) ? ext : 'PDF') as FloorPlanSourceKind,
           fileName: planFile.name,
           sizeKb: Math.round(planFile.size / 1024),
-          rooms: extracted.rooms.map(r => ({
+          rooms: extracted.rooms.map((r: any) => ({
             name: r.name,
             lengthFt: r.lengthFt,
             widthFt: r.widthFt,
@@ -379,14 +393,18 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
             confidence: 'AI_INFERRED' as const
           })),
           aiExtraction: {
-            engine: 'Puter.js',
-            model: DEFAULT_CHAT_MODEL,
-            ocrCharacters: extracted.ocrText.length,
-            confidenceNotes: extracted.confidenceNotes
+            engine: 'Gemini',
+            model: extracted.model,
+            ocrCharacters: String(extracted.rawText || '').length,
+            confidenceNotes: extracted.confidenceNotes || []
           }
         });
         setStep('analysis');
-        setNotice(`Puter read ${extracted.rooms.length} rooms from the sheet. Confirm every dimension before generating concepts.`);
+        setNotice(
+          `Gemini read ${extracted.rooms.length} rooms from the sheet` +
+            (extracted.confidenceNotes?.length ? `, with ${extracted.confidenceNotes.length} item(s) to confirm` : '') +
+            '. Confirm every dimension before generating concepts.'
+        );
         return next;
       } finally {
         setAiBusy('');
@@ -394,86 +412,31 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
       }
     });
 
-  /** Generates room renders + a client narrative with Puter, then persists them.
-   *  Quantities, rates and totals are untouched by design. */
-  const runAIEnrich = async (concept: DesignConcept, options: { renders: boolean; narrative: boolean; maxRooms?: number }) => {
+  /** Generates the narrative and/or room renders with Gemini (server-side),
+   *  then stores them against the concept. Quantities and rates are untouched. */
+  const runAIGenerate = async (concept: DesignConcept, options: { renders: boolean; narrative: boolean; maxRooms?: number }) => {
     setAiConfirm(null);
-    setBusy('ai-enrich');
+    setBusy('ai-generate');
     setError('');
     setNotice('');
+    setAiProgress({ done: 0, total: options.renders ? options.maxRooms || 4 : 1, label: 'Gemini is working' });
     try {
-      const roomImages: { roomId: string; imageUrl: string }[] = [];
-      const failures: string[] = [];
-      const roomsToRender = options.renders
-        ? concept.roomSchemes.slice(0, options.maxRooms || 4)
-        : [];
-      let imageModel = '';
-      for (let i = 0; i < roomsToRender.length; i++) {
-        const room = roomsToRender[i];
-        setAiProgress({ done: i, total: roomsToRender.length, label: room.roomName });
-        try {
-          const rendered = await renderRoomScheme({
-            conceptName: concept.name,
-            style: concept.style,
-            palette: room.palette.length ? room.palette : concept.palette,
-            roomName: room.roomName,
-            roomType: room.roomType,
-            lengthFt: Math.sqrt(room.roomAreaSqFt) || 12,
-            widthFt: room.roomAreaSqFt / (Math.sqrt(room.roomAreaSqFt) || 12) || 10,
-            ceilingHeightFt: room.roomCeilingHeightFt,
-            materials: room.materials.map(m => `${m.category}: ${m.specification}`),
-            furniture: room.furniture,
-            lighting: room.lighting
-          });
-          roomImages.push({ roomId: room.roomId, imageUrl: rendered.imageUrl });
-          imageModel = imageModel || 'gpt-image-2.6-flare';
-        } catch (e: any) {
-          failures.push(`${room.roomName}: ${e?.message || 'render failed'}`);
-        }
-      }
-      setAiProgress({ done: roomsToRender.length, total: roomsToRender.length, label: 'Writing the narrative' });
-
-      let narrative = '';
-      if (options.narrative) {
-        try {
-          narrative = await enrichConceptNarrative({
-            conceptName: concept.name,
-            style: concept.style,
-            palette: concept.palette,
-            budgetBand: concept.budgetBand,
-            rooms: concept.roomSchemes.map(r => ({
-              name: r.roomName,
-              areaSqFt: r.roomAreaSqFt,
-              materials: r.materials.map(m => m.category)
-            })),
-            clientInstructions: concept.roomSchemes
-              .map(r => r.customerInstructionApplied)
-              .filter((v): v is string => Boolean(v))
-          });
-        } catch (e: any) {
-          failures.push(`Narrative: ${e?.message || 'generation failed'}`);
-        }
-      }
-
-      if (!narrative && roomImages.length === 0) {
-        throw new Error(failures[0] || 'Puter returned nothing. Check that you are signed in to Puter and have credits.');
-      }
-
-      const next = await api(`/concepts/${concept.id}/ai-enrich`, 'POST', {
-        narrative: narrative || undefined,
-        roomImages,
-        failures,
-        engine: 'Puter.js',
-        narrativeModel: options.narrative ? DEFAULT_CHAT_MODEL : undefined,
-        imageModel: imageModel || undefined
+      const result = await apiJson<any>(`/concepts/${concept.id}/ai-generate`, {
+        method: 'POST',
+        body: JSON.stringify({
+          narrative: options.narrative,
+          renderRoomIds: options.renders ? concept.roomSchemes.slice(0, options.maxRooms || 4).map(r => r.roomId) : [],
+          maxRenders: options.maxRooms || 4
+        })
       });
-      setSession(next);
+      setSession(result.session);
       setNotice(
-        `AI content saved: ${roomImages.length} render(s)${narrative ? ' and a new narrative' : ''}.` +
-          (failures.length ? ` ${failures.length} item(s) failed and were reported.` : '')
+        `Gemini saved ${result.renders || 0} render(s)${result.narrative ? ' and a new narrative' : ''}` +
+          (result.narrativeSanitised ? ' (price references removed)' : '') +
+          (result.failures?.length ? ` · ${result.failures.length} item(s) failed: ${result.failures[0]}` : '')
       );
     } catch (e: any) {
-      setError(e?.message || 'The AI request failed.');
+      setError(e?.message || 'The Gemini request failed.');
     } finally {
       setBusy('');
       setAiBusy('');
@@ -501,14 +464,14 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
           <div className="flex items-center gap-2 text-xs">
             <span
               className={`inline-flex items-center gap-1 rounded border px-2 py-1 text-[10px] font-semibold ${
-                aiCap?.available
-                  ? 'bg-violet-50 text-violet-700 border-violet-200'
+                aiStatus?.configured
+                  ? 'bg-blue-50 text-[#0F6CBD] border-blue-200'
                   : 'bg-slate-50 text-slate-500 border-slate-200'
               }`}
-              title={aiCap?.note || 'Checking Puter AI availability…'}
+              title={aiStatus?.note || 'Checking Gemini availability…'}
             >
               <Sparkles className="w-3 h-3" />
-              {aiCap?.available ? 'Puter AI ready' : 'Deterministic engine'}
+              {aiStatus?.configured ? `Gemini · ${aiStatus.textModel}` : 'Gemini not configured'}
             </span>
             <span className="text-slate-500">{project.projectCode}</span>
             <button
@@ -653,7 +616,7 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
               {aiProgress.total > 0 && (
                 <p className="text-[11px] text-violet-700 mt-1 inline-flex items-center gap-1.5">
                   <Loader2 className="w-3 h-3 animate-spin" />
-                  Puter: {aiProgress.label} ({aiProgress.done}/{aiProgress.total})
+                  Gemini: {aiProgress.label} ({aiProgress.done}/{aiProgress.total})
                 </p>
               )}
               {ocrText && (
@@ -671,13 +634,13 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
               <div className="flex items-center gap-2">
                 <button
                   onClick={readPlanWithAI}
-                  disabled={!planFile || aiBusy === 'ocr' || !aiCap?.available}
+                  disabled={!planFile || aiBusy === 'ocr' || !aiStatus?.configured}
                   title={
-                    aiCap?.available
-                      ? 'Read the uploaded sheet with Puter AI (OCR + structured room extraction)'
-                      : 'Puter AI is not loaded in this browser session'
+                    aiStatus?.configured
+                      ? 'Read the uploaded sheet with Gemini (server-side vision + structured room extraction)'
+                      : 'Gemini is not configured on the server (GEMINI_API_KEY)'
                   }
-                  className="inline-flex items-center gap-1.5 bg-violet-600 text-white text-xs font-semibold rounded px-3 py-2 disabled:opacity-40"
+                  className="inline-flex items-center gap-1.5 bg-[#0F6CBD] text-white text-xs font-semibold rounded px-3 py-2 disabled:opacity-40"
                 >
                   {aiBusy === 'ocr' ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
                   Read plan with AI
@@ -1069,9 +1032,9 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
                     </button>
                     <button
                       onClick={() => setAiConfirm(c)}
-                      disabled={!aiCap?.available || c.status === 'APPROVED' || busy === 'ai-enrich'}
-                      title={c.status === 'APPROVED' ? 'Approved concepts are locked' : 'Generate renders and a narrative with Puter AI'}
-                      className="text-[11px] bg-violet-600 text-white rounded px-2 py-1 disabled:opacity-40 inline-flex items-center gap-1"
+                      disabled={!aiStatus?.configured || c.status === 'APPROVED' || busy === 'ai-generate'}
+                      title={c.status === 'APPROVED' ? 'Approved concepts are locked' : 'Generate renders and a narrative with Gemini'}
+                      className="text-[11px] bg-[#0F6CBD] text-white rounded px-2 py-1 disabled:opacity-40 inline-flex items-center gap-1"
                     >
                       <Sparkles className="w-3 h-3" /> AI
                     </button>
@@ -1215,8 +1178,8 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
                 <div className="flex flex-wrap items-center gap-1.5">
                   <button
                     onClick={() => setAiConfirm(focusConcept)}
-                    disabled={!aiCap?.available || focusConcept.status === 'APPROVED' || busy === 'ai-enrich'}
-                    className="inline-flex items-center gap-1 text-[11px] bg-violet-600 text-white rounded px-2 py-1 disabled:opacity-40"
+                    disabled={!aiStatus?.configured || focusConcept.status === 'APPROVED' || busy === 'ai-generate'}
+                    className="inline-flex items-center gap-1 text-[11px] bg-[#0F6CBD] text-white rounded px-2 py-1 disabled:opacity-40"
                   >
                     <Sparkles className="w-3 h-3" /> Renders + narrative
                   </button>
@@ -1301,6 +1264,15 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
                   <button onClick={() => onNavigateTab?.('budget')} className="inline-flex items-center gap-1.5 border border-slate-300 rounded px-3 py-2 text-xs hover:bg-slate-50">
                     Budget &amp; margin
                   </button>
+                  <button
+                    onClick={handoffToTwin}
+                    disabled={!approved || busy === 'handoff'}
+                    title={approved ? 'Freeze the approved design and build the Project Design Digital Twin' : 'Approve a concept first'}
+                    className="inline-flex items-center gap-1.5 border border-emerald-300 text-emerald-700 rounded px-3 py-2 text-xs hover:bg-emerald-50 disabled:opacity-40"
+                  >
+                    {busy === 'handoff' ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                    Hand off to design twin
+                  </button>
                   <button onClick={openPresentation} className="inline-flex items-center gap-1.5 border border-slate-300 rounded px-3 py-2 text-xs hover:bg-slate-50">
                     <Download className="w-3.5 h-3.5" /> Presentation pack
                   </button>
@@ -1379,23 +1351,23 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
         </div>
       )}
 
-      {/* Puter AI consent + progress modal */}
+      {/* Gemini AI consent + progress modal */}
       {aiConfirm && (
         <div className="fixed inset-0 z-[100] bg-slate-900/50 p-4 flex items-start sm:items-center justify-center overflow-y-auto">
           <div className="bg-white rounded-lg p-4 w-full max-w-md space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-violet-600" /> AI content for {aiConfirm.name}
+                <Sparkles className="w-4 h-4 text-[#0F6CBD]" /> Gemini content for {aiConfirm.name}
               </h3>
               <button onClick={() => setAiConfirm(null)} aria-label="Close"><X className="w-4 h-4 text-slate-500" /></button>
             </div>
             <p className="text-[11px] text-slate-600">
-              Puter.js runs the models from this browser on your signed-in Puter account (user-pays). This will:
+              Gemini runs on the server with the project key — nothing is sent to a third-party browser SDK. This will:
             </p>
             <ul className="text-[11px] text-slate-600 space-y-1 ml-4 list-disc">
-              <li>render up to 4 room images with an image model (1 credit charge each)</li>
-              <li>rewrite the concept narrative with {DEFAULT_CHAT_MODEL}</li>
-              <li>save both against the concept with an audit entry</li>
+              <li>render up to 4 room images with {aiStatus?.imageModel || 'the image model'}</li>
+              <li>rewrite the concept narrative with {aiStatus?.textModel || 'the text model'}</li>
+              <li>store both against the concept with an audit entry</li>
             </ul>
             <p className="text-[11px] text-emerald-700">
               Quantities, rates, totals and the BOQ are not touched - AI only produces prose and images.
@@ -1408,25 +1380,25 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
             <div className="flex flex-wrap justify-end gap-2">
               <button onClick={() => setAiConfirm(null)} className="border border-slate-300 rounded px-3 py-2 text-xs">Cancel</button>
               <button
-                onClick={() => runAIEnrich(aiConfirm, { renders: true, narrative: false, maxRooms: 4 })}
-                disabled={busy === 'ai-enrich'}
-                className="border border-violet-300 text-violet-700 rounded px-3 py-2 text-xs disabled:opacity-40"
+                onClick={() => runAIGenerate(aiConfirm, { renders: true, narrative: false, maxRooms: 4 })}
+                disabled={busy === 'ai-generate'}
+                className="border border-blue-300 text-[#0F6CBD] rounded px-3 py-2 text-xs disabled:opacity-40"
               >
                 Renders only
               </button>
               <button
-                onClick={() => runAIEnrich(aiConfirm, { renders: false, narrative: true })}
-                disabled={busy === 'ai-enrich'}
-                className="border border-violet-300 text-violet-700 rounded px-3 py-2 text-xs disabled:opacity-40"
+                onClick={() => runAIGenerate(aiConfirm, { renders: false, narrative: true })}
+                disabled={busy === 'ai-generate'}
+                className="border border-blue-300 text-[#0F6CBD] rounded px-3 py-2 text-xs disabled:opacity-40"
               >
                 Narrative only
               </button>
               <button
-                onClick={() => runAIEnrich(aiConfirm, { renders: true, narrative: true, maxRooms: 4 })}
-                disabled={busy === 'ai-enrich'}
-                className="bg-violet-600 text-white rounded px-3 py-2 text-xs font-semibold disabled:opacity-40"
+                onClick={() => runAIGenerate(aiConfirm, { renders: true, narrative: true, maxRooms: 4 })}
+                disabled={busy === 'ai-generate'}
+                className="bg-[#0F6CBD] text-white rounded px-3 py-2 text-xs font-semibold disabled:opacity-40"
               >
-                {busy === 'ai-enrich' ? 'Generating…' : 'Generate both'}
+                {busy === 'ai-generate' ? 'Generating…' : 'Generate both'}
               </button>
             </div>
           </div>
@@ -1507,6 +1479,27 @@ export const AIDesignStudioView: React.FC<Props> = ({ project, currentUser, onNa
     </div>
   );
 };
+
+function mimeTypeFor(fileName: string): string {
+  const ext = fileName.split('.').pop()?.toLowerCase() || '';
+  if (ext === 'pdf') return 'application/pdf';
+  if (ext === 'png') return 'image/png';
+  if (ext === 'jpg' || ext === 'jpeg') return 'image/jpeg';
+  if (ext === 'webp') return 'image/webp';
+  return 'application/octet-stream';
+}
+
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = String(reader.result || '');
+      resolve(result.includes(',') ? result.split(',')[1] : result);
+    };
+    reader.onerror = () => reject(new Error('Could not read the selected file.'));
+    reader.readAsDataURL(file);
+  });
+}
 
 const Field: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
   <label className="block text-[11px] text-slate-600">

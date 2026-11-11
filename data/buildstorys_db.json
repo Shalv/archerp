@@ -3075,9 +3075,9 @@
           ],
           "status": "APPROVED",
           "version": 2,
-          "createdAt": "2026-11-11T07:24:48.680Z",
+          "createdAt": "2026-11-11T07:41:55.981Z",
           "createdBy": "AI Design Studio Engine",
-          "presentedAt": "2026-11-11T07:24:48.680Z",
+          "presentedAt": "2026-11-11T07:41:55.981Z",
           "revisions": [
             {
               "id": "REV-V253-DS-01",
@@ -3087,7 +3087,7 @@
               "roomId": "ROOM-V253-LIV-01",
               "changeType": "COLOUR_ONLY",
               "instruction": "Warmer beige on the great-room walls; keep the walnut joinery and all furniture exactly as shown.",
-              "resolvedAt": "2026-11-11T07:24:48.686Z",
+              "resolvedAt": "2026-11-11T07:41:55.986Z",
               "resultSummary": "Palette changed to #F7F6F3 Off-white / #D6D2CB Greige / #8F8B84 Stone / #33322F Charcoal on 1 room(s). Furniture and layout untouched.",
               "versionAfter": 2
             }
@@ -3809,9 +3809,9 @@
           ],
           "status": "PRESENTED",
           "version": 1,
-          "createdAt": "2026-11-11T07:24:48.682Z",
+          "createdAt": "2026-11-11T07:41:55.982Z",
           "createdBy": "AI Design Studio Engine",
-          "presentedAt": "2026-11-11T07:24:48.682Z",
+          "presentedAt": "2026-11-11T07:41:55.982Z",
           "revisions": [],
           "imagePromptUsed": "Interior concept render, warm minimalist, warm palette, marble flooring, room geometry locked to measured plan, Matt laminates, white oak veneer, micro-cement texture, photorealistic, natural daylight, no text, no watermark"
         },
@@ -4526,9 +4526,9 @@
           ],
           "status": "PRESENTED",
           "version": 1,
-          "createdAt": "2026-11-11T07:24:48.682Z",
+          "createdAt": "2026-11-11T07:41:55.982Z",
           "createdBy": "AI Design Studio Engine",
-          "presentedAt": "2026-11-11T07:24:48.682Z",
+          "presentedAt": "2026-11-11T07:41:55.982Z",
           "revisions": [],
           "imagePromptUsed": "Interior concept render, scandinavian light, warm palette, marble flooring, room geometry locked to measured plan, Pale ash veneer, linen upholstery, matt white lacquer, photorealistic, natural daylight, no text, no watermark"
         },
@@ -5243,17 +5243,17 @@
           ],
           "status": "PRESENTED",
           "version": 1,
-          "createdAt": "2026-11-11T07:24:48.682Z",
+          "createdAt": "2026-11-11T07:41:55.982Z",
           "createdBy": "AI Design Studio Engine",
-          "presentedAt": "2026-11-11T07:24:48.682Z",
+          "presentedAt": "2026-11-11T07:41:55.982Z",
           "revisions": [],
           "imagePromptUsed": "Interior concept render, contemporary premium, warm palette, marble flooring, room geometry locked to measured plan, Large-format vitrified stone, matt lacquer, brushed SS trims, photorealistic, natural daylight, no text, no watermark"
         }
       ],
       "promptHistory": [
         {
-          "id": "PROMPT-4-1794381888688",
-          "timestamp": "2026-11-11T07:24:48.688Z",
+          "id": "PROMPT-4-1794382915988",
+          "timestamp": "2026-11-11T07:41:55.988Z",
           "actor": "Rajesh Sharma (Lead QS)",
           "action": "BOQ_GENERATED",
           "prompt": "Convert approved Concept A into a room-wise BOQ using the measured R0 model and the Master Schedule of Rates.",
@@ -5261,8 +5261,8 @@
           "outputSummary": "39 BOQ lines across 7 rooms; subtotal ₹33,08,618.7 before GST."
         },
         {
-          "id": "PROMPT-3-1794381888686",
-          "timestamp": "2026-11-11T07:24:48.686Z",
+          "id": "PROMPT-3-1794382915986",
+          "timestamp": "2026-11-11T07:41:55.986Z",
           "actor": "AI Design Studio Engine",
           "action": "CONCEPTS_GENERATED",
           "prompt": "Generate 4 concepts for 7 rooms: luxury (requested), minimalist, scandinavian, contemporary. Constraints: premium budget, warm palette, marble, maximum storage, Vastu, children.",
@@ -5270,8 +5270,8 @@
           "outputSummary": "4 concepts generated room-wise; Concept A revised once (colour only on the great room) and approved by the client."
         },
         {
-          "id": "PROMPT-2-1794381888641",
-          "timestamp": "2026-11-11T07:24:48.641Z",
+          "id": "PROMPT-2-1794382915942",
+          "timestamp": "2026-11-11T07:41:55.942Z",
           "actor": "Rahul Deshmukh (Sales)",
           "action": "PREFERENCES_CAPTURED",
           "prompt": "Villa, 2205 sq.ft carpet, luxury style, premium budget, warm palette, marble flooring, custom furniture, L-shaped kitchen, ambient + accent lighting, maximum storage, Vastu and children requirements. Room-wise instructions for living, master, kitchen, bedroom 3 and gazebo.",
@@ -5279,8 +5279,8 @@
           "outputSummary": "Structured preference record created - used as hard constraints for concept generation."
         },
         {
-          "id": "PROMPT-1-1794381888641",
-          "timestamp": "2026-11-11T07:24:48.641Z",
+          "id": "PROMPT-1-1794382915942",
+          "timestamp": "2026-11-11T07:41:55.942Z",
           "actor": "Ar. Shruthi (Design Director)",
           "action": "FLOOR_PLAN_ANALYSED",
           "prompt": "Read floor plan Villa253_FloorPlan_Editable_R0.dxf - identify rooms, walls, openings, staircase and decks.",
@@ -5649,7 +5649,7 @@
           "Opening schedule SD1-SD7, SD1A-SD3A, D1-D4, W1-W5, FW1-FW2 mapped to their host rooms.",
           "CAD geometry extracted layer-wise (walls, doors, windows, stair, decks). Room boundaries come from closed wall loops, not from a raster guess."
         ],
-        "analyzedAt": "2026-11-11T07:24:48.639Z",
+        "analyzedAt": "2026-11-11T07:41:55.940Z",
         "confirmedAt": "2026-05-30T18:45:00Z",
         "confirmedBy": "Ar. Rajesh Sharma (site re-measurement, all rooms within 12mm)"
       },
@@ -12629,7 +12629,7 @@
           "supplierRef": "R0 room perimeters and ceiling heights (10'-3\")",
           "notes": "Introduced by Client asked for a walnut veneer feature wall behind the bed (sample SB-04)",
           "approvedBy": "Meera Rao (Lead Interior Designer)",
-          "approvedAt": "2026-11-11T07:24:48.768Z"
+          "approvedAt": "2026-11-11T07:41:56.082Z"
         },
         {
           "id": "MAT-MBR-002-WA-R03",
@@ -12650,7 +12650,7 @@
           "supplierRef": "R0 room perimeters and ceiling heights (10'-3\")",
           "notes": "Introduced by Client reviewed SB-11 and asked to change Wall A from walnut to natural oak",
           "approvedBy": "Meera Rao (Lead Interior Designer)",
-          "approvedAt": "2026-11-11T07:24:48.779Z"
+          "approvedAt": "2026-11-11T07:41:56.093Z"
         }
       ],
       "assets": [
@@ -12720,7 +12720,7 @@
             "origin": "Villa 253 approved render set (Concept A)",
             "licence": "Project asset - approved by the client",
             "method": "Second approved view of the great room · MED-V253-03",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine"
           },
           "status": "READY",
@@ -12740,7 +12740,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -12765,7 +12765,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-WA-13 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -12792,7 +12792,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (25.33' x 19' x 10.25') on the NORTH wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -12826,7 +12826,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -12852,7 +12852,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL A",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -12877,7 +12877,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -12903,7 +12903,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -12929,7 +12929,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -12954,7 +12954,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-WA-13 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -12981,7 +12981,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (25.33' x 19' x 10.25') on the EAST wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13015,7 +13015,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13041,7 +13041,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL B",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13066,7 +13066,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13092,7 +13092,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13118,7 +13118,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13143,7 +13143,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-WA-13 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13170,7 +13170,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (25.33' x 19' x 10.25') on the SOUTH wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13204,7 +13204,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13230,7 +13230,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL C",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13255,7 +13255,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13281,7 +13281,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13307,7 +13307,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13332,7 +13332,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-WA-13 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13359,7 +13359,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (25.33' x 19' x 10.25') on the WEST wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13393,7 +13393,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13419,7 +13419,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL D",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13444,7 +13444,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13470,7 +13470,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13496,7 +13496,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-CE-05 (Saint-Gobain Gyproc / India Gypsum)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13521,7 +13521,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 1 approved material layer(s) on CEILING",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13545,7 +13545,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13570,7 +13570,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CLG-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13596,7 +13596,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-FL-02 (Pidilite Dr. Fixit Fastflex)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13621,7 +13621,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-FL-03 (Botticino Classico (imported) / R.K. Marbles)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13646,7 +13646,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-FL-04 (Parador Trendtime 6 / Squarefoot)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13673,7 +13673,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 3 approved material layer(s) on FLOORING",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13699,7 +13699,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13726,7 +13726,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) WTR-01, FLR-01, FLR-02",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13752,7 +13752,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-DW-12 (Jindal Aluminium / Saint-Gobain Planitherm)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13776,7 +13776,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13801,7 +13801,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) DOR-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13827,7 +13827,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-EL-09 (Polycab / Legrand Arteor / KNX (Gira))",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13852,7 +13852,7 @@
           "provenance": {
             "origin": "Derived service plan",
             "method": "Points laid out from the room geometry and the 2 coordinated circuit(s)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13876,7 +13876,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13901,7 +13901,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) ELE-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13927,7 +13927,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-LT-14 (Wipro Garnet / Havells / KNX dimmable drivers)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13952,7 +13952,7 @@
           "provenance": {
             "origin": "Derived service plan",
             "method": "Points laid out from the room geometry and the 4 coordinated circuit(s)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -13976,7 +13976,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14001,7 +14001,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) LIT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14027,7 +14027,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-FJ-06 (CenturyPly / Hettich / Asian Paints PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14052,7 +14052,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-FJ-07 (CenturyPly / Hettich / Saint-Gobain glass)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14077,7 +14077,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-LIV-001-FJ-08 (CenturyPly BWP / SS 304 / Granite)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14103,7 +14103,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14130,7 +14130,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) WRD-01, JNR-01, JNR-02",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14159,7 +14159,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Dimensioned plan from 25.33' x 19' (CAD_EXTRACTED)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14203,7 +14203,7 @@
             "origin": "Villa 253 approved render set (Concept A)",
             "licence": "Project asset - approved by the client",
             "method": "Approved concept render for the master suite · linked as the approved view for OPT-01-LUXURY v2 (MED-V253-04) · re-approval required after R02 · re-approval required after R03",
-            "generatedAt": "2026-11-11T07:24:48.779Z",
+            "generatedAt": "2026-11-11T07:41:56.093Z",
             "generatedBy": "Aditya & Sneha Kulkarni"
           },
           "status": "READY",
@@ -14216,7 +14216,7 @@
             "sourceRef": "Villa253_FloorPlan_Editable_R0.dxf"
           },
           "approvedBy": "Sneha Kulkarni (client)",
-          "approvedAt": "2026-11-11T07:24:48.804Z"
+          "approvedAt": "2026-11-11T07:41:56.108Z"
         },
         {
           "id": "AST-MBR-002-FJ-REF1",
@@ -14236,7 +14236,7 @@
             "origin": "Villa 253 approved render set (Concept A)",
             "licence": "Project asset - approved by the client",
             "method": "Detail view of the master bed wall · MED-V253-05",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine"
           },
           "status": "READY",
@@ -14256,7 +14256,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14281,7 +14281,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-WA-10 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14308,7 +14308,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (14' x 19' x 10.25') on the NORTH wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14342,7 +14342,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14368,7 +14368,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL A",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14393,7 +14393,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14419,7 +14419,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14445,7 +14445,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14470,7 +14470,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-WA-10 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14497,7 +14497,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (14' x 19' x 10.25') on the EAST wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14531,7 +14531,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14557,7 +14557,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL B",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14582,7 +14582,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14608,7 +14608,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14634,7 +14634,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14659,7 +14659,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-WA-10 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14686,7 +14686,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (14' x 19' x 10.25') on the SOUTH wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14720,7 +14720,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14746,7 +14746,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL C",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14771,7 +14771,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14797,7 +14797,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14823,7 +14823,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14848,7 +14848,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-WA-10 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14875,7 +14875,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (14' x 19' x 10.25') on the WEST wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14909,7 +14909,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14935,7 +14935,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL D",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14960,7 +14960,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -14986,7 +14986,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15012,7 +15012,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-CE-04 (Saint-Gobain Gyproc / India Gypsum)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15037,7 +15037,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 1 approved material layer(s) on CEILING",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15061,7 +15061,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15086,7 +15086,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CLG-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15112,7 +15112,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-FL-02 (Parador Trendtime 6 / Squarefoot)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15137,7 +15137,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-FL-03 (Ipe (Brazilian walnut) / MS sub-frame)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15163,7 +15163,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on FLOORING",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15188,7 +15188,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15214,7 +15214,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) FLR-02, FLR-04",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15240,7 +15240,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-DW-09 (Jindal Aluminium / Saint-Gobain Planitherm)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15264,7 +15264,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15289,7 +15289,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) DOR-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15315,7 +15315,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-EL-07 (Polycab / Legrand Arteor / KNX (Gira))",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15340,7 +15340,7 @@
           "provenance": {
             "origin": "Derived service plan",
             "method": "Points laid out from the room geometry and the 2 coordinated circuit(s)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15364,7 +15364,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15389,7 +15389,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) ELE-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15415,7 +15415,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-LT-11 (Wipro Garnet / Havells / KNX dimmable drivers)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15440,7 +15440,7 @@
           "provenance": {
             "origin": "Derived service plan",
             "method": "Points laid out from the room geometry and the 4 coordinated circuit(s)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15464,7 +15464,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15489,7 +15489,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) LIT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15515,7 +15515,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-FJ-05 (CenturyPly / Hettich / Asian Paints PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15540,7 +15540,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-FJ-06 (CenturyPly BWP / SS 304 / Granite)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15565,7 +15565,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15591,7 +15591,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) WRD-01, JNR-02",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15620,7 +15620,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Dimensioned plan from 14' x 19' (CAD_EXTRACTED)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15698,7 +15698,7 @@
             "origin": "Derived from the R0 DXF geometry",
             "licence": "Project asset",
             "method": "SVG plan sheet for the room · MED-V253-12",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine"
           },
           "status": "READY",
@@ -15718,7 +15718,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15743,7 +15743,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-WA-10 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15770,7 +15770,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (18.92' x 19' x 10.25') on the NORTH wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15804,7 +15804,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15830,7 +15830,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL A",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15855,7 +15855,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15881,7 +15881,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15907,7 +15907,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15932,7 +15932,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-WA-10 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15959,7 +15959,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (18.92' x 19' x 10.25') on the EAST wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -15993,7 +15993,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16019,7 +16019,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL B",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16044,7 +16044,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16070,7 +16070,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16096,7 +16096,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16121,7 +16121,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-WA-10 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16148,7 +16148,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (18.92' x 19' x 10.25') on the SOUTH wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16182,7 +16182,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16208,7 +16208,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL C",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16233,7 +16233,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16259,7 +16259,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16285,7 +16285,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16310,7 +16310,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-WA-10 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16337,7 +16337,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (18.92' x 19' x 10.25') on the WEST wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16371,7 +16371,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16397,7 +16397,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL D",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16422,7 +16422,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16448,7 +16448,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16474,7 +16474,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-CE-04 (Saint-Gobain Gyproc / India Gypsum)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16499,7 +16499,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 1 approved material layer(s) on CEILING",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16523,7 +16523,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16548,7 +16548,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CLG-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16574,7 +16574,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-FL-02 (Parador Trendtime 6 / Squarefoot)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16599,7 +16599,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-FL-03 (Ipe (Brazilian walnut) / MS sub-frame)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16624,7 +16624,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-FL-12 (Native species / Kota stone / Jain Irrigation)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16651,7 +16651,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 3 approved material layer(s) on FLOORING",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16677,7 +16677,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16704,7 +16704,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) FLR-02, FLR-04, LND-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16730,7 +16730,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-DW-09 (Jindal Aluminium / Saint-Gobain Planitherm)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16754,7 +16754,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16779,7 +16779,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) DOR-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16805,7 +16805,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-EL-07 (Polycab / Legrand Arteor / KNX (Gira))",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16830,7 +16830,7 @@
           "provenance": {
             "origin": "Derived service plan",
             "method": "Points laid out from the room geometry and the 2 coordinated circuit(s)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16854,7 +16854,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16879,7 +16879,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) ELE-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16905,7 +16905,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-LT-11 (Wipro Garnet / Havells / KNX dimmable drivers)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16930,7 +16930,7 @@
           "provenance": {
             "origin": "Derived service plan",
             "method": "Points laid out from the room geometry and the 4 coordinated circuit(s)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16954,7 +16954,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -16979,7 +16979,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) LIT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17005,7 +17005,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-FJ-05 (CenturyPly / Hettich / Asian Paints PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17030,7 +17030,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-003-FJ-06 (CenturyPly BWP / SS 304 / Granite)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17055,7 +17055,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17081,7 +17081,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) WRD-01, JNR-02",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17110,7 +17110,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Dimensioned plan from 18.92' x 19' (CAD_EXTRACTED)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17157,7 +17157,7 @@
             "origin": "Derived from geometry",
             "licence": "Internal project asset",
             "method": "No project photograph exists for this space, so the view was generated from the verified room geometry and its approved finishes (OPT-01-LUXURY v2)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine"
           },
           "status": "READY",
@@ -17188,7 +17188,7 @@
             "origin": "Derived from the R0 DXF geometry",
             "licence": "Project asset",
             "method": "SVG plan sheet for the room · MED-V253-13",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine"
           },
           "status": "READY",
@@ -17208,7 +17208,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17233,7 +17233,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-WA-11 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17260,7 +17260,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (14.5' x 9' x 10.25') on the NORTH wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17294,7 +17294,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17320,7 +17320,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL A",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17345,7 +17345,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17371,7 +17371,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17397,7 +17397,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17422,7 +17422,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-WA-11 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17449,7 +17449,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (14.5' x 9' x 10.25') on the EAST wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17483,7 +17483,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17509,7 +17509,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL B",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17534,7 +17534,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17560,7 +17560,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17586,7 +17586,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17611,7 +17611,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-WA-11 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17638,7 +17638,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (14.5' x 9' x 10.25') on the SOUTH wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17672,7 +17672,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17698,7 +17698,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL C",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17723,7 +17723,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17749,7 +17749,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17775,7 +17775,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17800,7 +17800,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-WA-11 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17827,7 +17827,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (14.5' x 9' x 10.25') on the WEST wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17861,7 +17861,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17887,7 +17887,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL D",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17912,7 +17912,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17938,7 +17938,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17964,7 +17964,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-CE-05 (Saint-Gobain Gyproc / India Gypsum)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -17989,7 +17989,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 1 approved material layer(s) on CEILING",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18013,7 +18013,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18038,7 +18038,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CLG-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18064,7 +18064,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-FL-02 (Pidilite Dr. Fixit Fastflex)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18089,7 +18089,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-FL-03 (Botticino Classico (imported) / R.K. Marbles)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18114,7 +18114,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-FL-04 (Kajaria Eternity / Somany Duragres)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18141,7 +18141,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 3 approved material layer(s) on FLOORING",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18167,7 +18167,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18194,7 +18194,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) WTR-01, FLR-01, FLR-03",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18220,7 +18220,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-DW-10 (Jindal Aluminium / Saint-Gobain Planitherm)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18244,7 +18244,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18269,7 +18269,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) DOR-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18295,7 +18295,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-EL-07 (Polycab / Legrand Arteor / KNX (Gira))",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18320,7 +18320,7 @@
           "provenance": {
             "origin": "Derived service plan",
             "method": "Points laid out from the room geometry and the 2 coordinated circuit(s)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18344,7 +18344,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18369,7 +18369,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) ELE-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18395,7 +18395,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-LT-12 (Wipro Garnet / Havells / KNX dimmable drivers)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18420,7 +18420,7 @@
           "provenance": {
             "origin": "Derived service plan",
             "method": "Points laid out from the room geometry and the 4 coordinated circuit(s)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18444,7 +18444,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18469,7 +18469,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) LIT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18495,7 +18495,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-FJ-06 (CenturyPly / Senoplast / Hafele / Silestone)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18519,7 +18519,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18544,7 +18544,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) KIT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18570,7 +18570,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-PH-08 (Astral / Jaquar / Kohler)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18595,7 +18595,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-KIT-004-PH-09 (Daikin VRV / Nitrile insulation)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18621,7 +18621,7 @@
           "provenance": {
             "origin": "Derived service plan",
             "method": "Points laid out from the room geometry and the 4 coordinated circuit(s)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18646,7 +18646,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18672,7 +18672,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) PLB-01, HVAC-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18701,7 +18701,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Dimensioned plan from 14.5' x 9' (CAD_EXTRACTED)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18743,7 +18743,7 @@
             "origin": "Derived from geometry",
             "licence": "Internal project asset",
             "method": "No project photograph exists for this space, so the view was generated from the verified room geometry and its approved finishes (OPT-01-LUXURY v2)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine"
           },
           "status": "READY",
@@ -18774,7 +18774,7 @@
             "origin": "Derived from the R0 DXF geometry",
             "licence": "Project asset",
             "method": "SVG plan sheet for the room · MED-V253-14",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine"
           },
           "status": "READY",
@@ -18794,7 +18794,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-STR-005-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18819,7 +18819,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-STR-005-WA-06 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18846,7 +18846,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (7.5' x 19' x 21.5') on the NORTH wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18880,7 +18880,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18906,7 +18906,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL A",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18931,7 +18931,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18957,7 +18957,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -18983,7 +18983,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-STR-005-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19008,7 +19008,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-STR-005-WA-06 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19035,7 +19035,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (7.5' x 19' x 21.5') on the EAST wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19069,7 +19069,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19095,7 +19095,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL B",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19120,7 +19120,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19146,7 +19146,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19172,7 +19172,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-STR-005-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19197,7 +19197,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-STR-005-WA-06 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19224,7 +19224,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (7.5' x 19' x 21.5') on the SOUTH wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19258,7 +19258,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19284,7 +19284,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL C",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19309,7 +19309,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19335,7 +19335,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19361,7 +19361,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-STR-005-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19386,7 +19386,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-STR-005-WA-06 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19413,7 +19413,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (7.5' x 19' x 21.5') on the WEST wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19447,7 +19447,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19473,7 +19473,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL D",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19498,7 +19498,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19524,7 +19524,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19550,7 +19550,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-STR-005-CE-03 (Saint-Gobain Gyproc / India Gypsum)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19575,7 +19575,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 1 approved material layer(s) on CEILING",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19599,7 +19599,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19624,7 +19624,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CLG-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19650,7 +19650,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-STR-005-FL-02 (Botticino Classico (imported) / R.K. Marbles)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19675,7 +19675,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 1 approved material layer(s) on FLOORING",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19699,7 +19699,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19724,7 +19724,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) FLR-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19750,7 +19750,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-STR-005-DW-05 (Jindal Aluminium / Saint-Gobain Planitherm)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19774,7 +19774,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19799,7 +19799,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) DOR-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19825,7 +19825,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-STR-005-EL-04 (Polycab / Legrand Arteor / KNX (Gira))",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19850,7 +19850,7 @@
           "provenance": {
             "origin": "Derived service plan",
             "method": "Points laid out from the room geometry and the 2 coordinated circuit(s)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19874,7 +19874,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19899,7 +19899,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) ELE-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19925,7 +19925,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-STR-005-LT-07 (Wipro Garnet / Havells / KNX dimmable drivers)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19950,7 +19950,7 @@
           "provenance": {
             "origin": "Derived service plan",
             "method": "Points laid out from the room geometry and the 4 coordinated circuit(s)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19974,7 +19974,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -19999,7 +19999,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) LIT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20028,7 +20028,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Dimensioned plan from 7.5' x 19' (CAD_EXTRACTED)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20105,7 +20105,7 @@
             "origin": "Derived from the R0 DXF geometry",
             "licence": "Project asset",
             "method": "SVG plan sheet for the room · MED-V253-12",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine"
           },
           "status": "READY",
@@ -20125,7 +20125,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20150,7 +20150,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-WA-10 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20177,7 +20177,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (20.67' x 19' x 10.25') on the NORTH wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20211,7 +20211,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20237,7 +20237,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL A",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20262,7 +20262,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20288,7 +20288,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20314,7 +20314,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20339,7 +20339,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-WA-10 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20366,7 +20366,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (20.67' x 19' x 10.25') on the EAST wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20400,7 +20400,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20426,7 +20426,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL B",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20451,7 +20451,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20477,7 +20477,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20503,7 +20503,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20528,7 +20528,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-WA-10 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20555,7 +20555,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (20.67' x 19' x 10.25') on the SOUTH wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20589,7 +20589,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20615,7 +20615,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL C",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20640,7 +20640,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20666,7 +20666,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20692,7 +20692,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20717,7 +20717,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-WA-10 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20744,7 +20744,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (20.67' x 19' x 10.25') on the WEST wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20778,7 +20778,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20804,7 +20804,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL D",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20829,7 +20829,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20855,7 +20855,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20881,7 +20881,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-CE-04 (Saint-Gobain Gyproc / India Gypsum)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20906,7 +20906,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 1 approved material layer(s) on CEILING",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20930,7 +20930,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20955,7 +20955,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CLG-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -20981,7 +20981,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-FL-02 (Parador Trendtime 6 / Squarefoot)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21006,7 +21006,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-FL-03 (Ipe (Brazilian walnut) / MS sub-frame)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21032,7 +21032,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on FLOORING",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21057,7 +21057,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21083,7 +21083,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) FLR-02, FLR-04",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21109,7 +21109,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-DW-09 (Jindal Aluminium / Saint-Gobain Planitherm)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21133,7 +21133,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21158,7 +21158,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) DOR-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21184,7 +21184,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-EL-07 (Polycab / Legrand Arteor / KNX (Gira))",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21209,7 +21209,7 @@
           "provenance": {
             "origin": "Derived service plan",
             "method": "Points laid out from the room geometry and the 2 coordinated circuit(s)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21233,7 +21233,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21258,7 +21258,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) ELE-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21284,7 +21284,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-LT-11 (Wipro Garnet / Havells / KNX dimmable drivers)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21309,7 +21309,7 @@
           "provenance": {
             "origin": "Derived service plan",
             "method": "Points laid out from the room geometry and the 4 coordinated circuit(s)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21333,7 +21333,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21358,7 +21358,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) LIT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21384,7 +21384,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-FJ-05 (CenturyPly / Hettich / Asian Paints PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21409,7 +21409,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-BDR-006-FJ-06 (CenturyPly BWP / SS 304 / Granite)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21434,7 +21434,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21460,7 +21460,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) WRD-01, JNR-02",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21489,7 +21489,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Dimensioned plan from 20.67' x 19' (CAD_EXTRACTED)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21562,7 +21562,7 @@
             "origin": "Villa 253 approved render set (Concept A)",
             "licence": "Project asset - approved by the client",
             "method": "Second approved view of the gazebo terrace · MED-V253-08",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine"
           },
           "status": "READY",
@@ -21582,7 +21582,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-GZB-007-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21607,7 +21607,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-GZB-007-WA-05 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21634,7 +21634,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (24' x 18' x 12.75') on the NORTH wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21668,7 +21668,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21694,7 +21694,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL A",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21719,7 +21719,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21745,7 +21745,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21771,7 +21771,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-GZB-007-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21796,7 +21796,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-GZB-007-WA-05 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21823,7 +21823,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (24' x 18' x 12.75') on the EAST wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21857,7 +21857,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21883,7 +21883,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL B",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21908,7 +21908,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21934,7 +21934,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21960,7 +21960,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-GZB-007-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -21985,7 +21985,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-GZB-007-WA-05 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22012,7 +22012,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (24' x 18' x 12.75') on the SOUTH wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22046,7 +22046,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22072,7 +22072,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL C",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22097,7 +22097,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22123,7 +22123,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22149,7 +22149,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-GZB-007-WA-01 (Biltech AAC / UltraTech OPC 53)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22174,7 +22174,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-GZB-007-WA-05 (Asian Paints Royale / PU)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22201,7 +22201,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (24' x 18' x 12.75') on the WEST wall",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22235,7 +22235,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22261,7 +22261,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL D",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22286,7 +22286,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22312,7 +22312,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22338,7 +22338,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-GZB-007-CE-02 (Burma Teak / MS fabricated plates)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22363,7 +22363,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 1 approved material layer(s) on CEILING",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22387,7 +22387,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22412,7 +22412,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CLG-02",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22438,7 +22438,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-GZB-007-FL-06 (MS fabricated / STP APP membrane / Burma Teak)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22463,7 +22463,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 1 approved material layer(s) on FLOORING",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22487,7 +22487,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22512,7 +22512,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) EXT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22538,7 +22538,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-GZB-007-DW-04 (Jindal Aluminium / Saint-Gobain Planitherm)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22562,7 +22562,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22587,7 +22587,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) DOR-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22613,7 +22613,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-GZB-007-EL-03 (Polycab / Legrand Arteor / KNX (Gira))",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22638,7 +22638,7 @@
           "provenance": {
             "origin": "Derived service plan",
             "method": "Points laid out from the room geometry and the 2 coordinated circuit(s)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22662,7 +22662,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22687,7 +22687,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) ELE-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22713,7 +22713,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-GZB-007-LT-07 (Wipro Garnet / Havells / KNX dimmable drivers)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22738,7 +22738,7 @@
           "provenance": {
             "origin": "Derived service plan",
             "method": "Points laid out from the room geometry and the 4 coordinated circuit(s)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22762,7 +22762,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22787,7 +22787,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) LIT-01",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22816,7 +22816,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Dimensioned plan from 24' x 18' (CAD_EXTRACTED)",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine",
             "licence": "Internal project asset"
           },
@@ -22844,7 +22844,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-WA-01 (Biltech AAC / UltraTech OPC 53) · regenerated for R02 after Client asked for a walnut veneer feature wall behind the bed (sample SB-04)",
-            "generatedAt": "2026-11-11T07:24:48.768Z",
+            "generatedAt": "2026-11-11T07:41:56.082Z",
             "generatedBy": "Meera Rao (Lead Interior Designer)",
             "licence": "Internal project asset"
           },
@@ -22870,7 +22870,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-WA-10 (Asian Paints Royale / PU) · regenerated for R02 after Client asked for a walnut veneer feature wall behind the bed (sample SB-04)",
-            "generatedAt": "2026-11-11T07:24:48.768Z",
+            "generatedAt": "2026-11-11T07:41:56.082Z",
             "generatedBy": "Meera Rao (Lead Interior Designer)",
             "licence": "Internal project asset"
           },
@@ -22897,7 +22897,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (14' x 19' x 10.25') on the NORTH wall · regenerated for R02 after Client asked for a walnut veneer feature wall behind the bed (sample SB-04)",
-            "generatedAt": "2026-11-11T07:24:48.768Z",
+            "generatedAt": "2026-11-11T07:41:56.082Z",
             "generatedBy": "Meera Rao (Lead Interior Designer)",
             "licence": "Internal project asset"
           },
@@ -22932,7 +22932,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element · regenerated for R02 after Client asked for a walnut veneer feature wall behind the bed (sample SB-04)",
-            "generatedAt": "2026-11-11T07:24:48.768Z",
+            "generatedAt": "2026-11-11T07:41:56.082Z",
             "generatedBy": "Meera Rao (Lead Interior Designer)",
             "licence": "Internal project asset"
           },
@@ -22959,7 +22959,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL A · regenerated for R02 after Client asked for a walnut veneer feature wall behind the bed (sample SB-04)",
-            "generatedAt": "2026-11-11T07:24:48.768Z",
+            "generatedAt": "2026-11-11T07:41:56.082Z",
             "generatedBy": "Meera Rao (Lead Interior Designer)",
             "licence": "Internal project asset"
           },
@@ -22985,7 +22985,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element · regenerated for R02 after Client asked for a walnut veneer feature wall behind the bed (sample SB-04)",
-            "generatedAt": "2026-11-11T07:24:48.768Z",
+            "generatedAt": "2026-11-11T07:41:56.082Z",
             "generatedBy": "Meera Rao (Lead Interior Designer)",
             "licence": "Internal project asset"
           },
@@ -23012,7 +23012,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01 · regenerated for R02 after Client asked for a walnut veneer feature wall behind the bed (sample SB-04)",
-            "generatedAt": "2026-11-11T07:24:48.768Z",
+            "generatedAt": "2026-11-11T07:41:56.082Z",
             "generatedBy": "Meera Rao (Lead Interior Designer)",
             "licence": "Internal project asset"
           },
@@ -23039,7 +23039,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-WA-01 (Biltech AAC / UltraTech OPC 53) · regenerated for R02 after Client asked for a walnut veneer feature wall behind the bed (sample SB-04) · regenerated for R03 after Client reviewed SB-11 and asked to change Wall A from walnut to natural oak",
-            "generatedAt": "2026-11-11T07:24:48.779Z",
+            "generatedAt": "2026-11-11T07:41:56.093Z",
             "generatedBy": "Meera Rao (Lead Interior Designer)",
             "licence": "Internal project asset"
           },
@@ -23051,7 +23051,7 @@
           "revision": "R03",
           "supersedes": "AST-MBR-002-WA-M1-R02",
           "approvedBy": "Sneha Kulkarni (client)",
-          "approvedAt": "2026-11-11T07:24:48.804Z"
+          "approvedAt": "2026-11-11T07:41:56.108Z"
         },
         {
           "id": "AST-MBR-002-WA-M2-R03",
@@ -23067,7 +23067,7 @@
           "provenance": {
             "origin": "Material library record",
             "method": "Swatch rendered from material record MAT-MBR-002-WA-10 (Asian Paints Royale / PU) · regenerated for R02 after Client asked for a walnut veneer feature wall behind the bed (sample SB-04) · regenerated for R03 after Client reviewed SB-11 and asked to change Wall A from walnut to natural oak",
-            "generatedAt": "2026-11-11T07:24:48.779Z",
+            "generatedAt": "2026-11-11T07:41:56.093Z",
             "generatedBy": "Meera Rao (Lead Interior Designer)",
             "licence": "Internal project asset"
           },
@@ -23079,7 +23079,7 @@
           "revision": "R03",
           "supersedes": "AST-MBR-002-WA-M2-R02",
           "approvedBy": "Sneha Kulkarni (client)",
-          "approvedAt": "2026-11-11T07:24:48.804Z"
+          "approvedAt": "2026-11-11T07:41:56.108Z"
         },
         {
           "id": "AST-MBR-002-WA-E01-R03",
@@ -23096,7 +23096,7 @@
           "provenance": {
             "origin": "Derived drawing",
             "method": "Elevation drawn from verified geometry (14' x 19' x 10.25') on the NORTH wall · regenerated for R02 after Client asked for a walnut veneer feature wall behind the bed (sample SB-04) · regenerated for R03 after Client reviewed SB-11 and asked to change Wall A from walnut to natural oak",
-            "generatedAt": "2026-11-11T07:24:48.779Z",
+            "generatedAt": "2026-11-11T07:41:56.093Z",
             "generatedBy": "Meera Rao (Lead Interior Designer)",
             "licence": "Internal project asset"
           },
@@ -23116,7 +23116,7 @@
           "revision": "R03",
           "supersedes": "AST-MBR-002-WA-E01-R02",
           "approvedBy": "Sneha Kulkarni (client)",
-          "approvedAt": "2026-11-11T07:24:48.804Z"
+          "approvedAt": "2026-11-11T07:41:56.108Z"
         },
         {
           "id": "AST-MBR-002-WA-B01-R03",
@@ -23133,7 +23133,7 @@
           "provenance": {
             "origin": "Derived board",
             "method": "Composed only from the approved material records and palette of this element · regenerated for R02 after Client asked for a walnut veneer feature wall behind the bed (sample SB-04) · regenerated for R03 after Client reviewed SB-11 and asked to change Wall A from walnut to natural oak",
-            "generatedAt": "2026-11-11T07:24:48.779Z",
+            "generatedAt": "2026-11-11T07:41:56.093Z",
             "generatedBy": "Meera Rao (Lead Interior Designer)",
             "licence": "Internal project asset"
           },
@@ -23145,7 +23145,7 @@
           "revision": "R03",
           "supersedes": "AST-MBR-002-WA-B01-R02",
           "approvedBy": "Sneha Kulkarni (client)",
-          "approvedAt": "2026-11-11T07:24:48.804Z"
+          "approvedAt": "2026-11-11T07:41:56.108Z"
         },
         {
           "id": "AST-MBR-002-WA-D01-R03",
@@ -23162,7 +23162,7 @@
           "provenance": {
             "origin": "Derived detail",
             "method": "Build-up drawn from 2 approved material layer(s) on WALL A · regenerated for R02 after Client asked for a walnut veneer feature wall behind the bed (sample SB-04) · regenerated for R03 after Client reviewed SB-11 and asked to change Wall A from walnut to natural oak",
-            "generatedAt": "2026-11-11T07:24:48.779Z",
+            "generatedAt": "2026-11-11T07:41:56.093Z",
             "generatedBy": "Meera Rao (Lead Interior Designer)",
             "licence": "Internal project asset"
           },
@@ -23174,7 +23174,7 @@
           "revision": "R03",
           "supersedes": "AST-MBR-002-WA-D01-R02",
           "approvedBy": "Sneha Kulkarni (client)",
-          "approvedAt": "2026-11-11T07:24:48.804Z"
+          "approvedAt": "2026-11-11T07:41:56.108Z"
         },
         {
           "id": "AST-MBR-002-WA-S01-R03",
@@ -23190,7 +23190,7 @@
           "provenance": {
             "origin": "Specification register",
             "method": "Composed from the approved material records and construction notes of this element · regenerated for R02 after Client asked for a walnut veneer feature wall behind the bed (sample SB-04) · regenerated for R03 after Client reviewed SB-11 and asked to change Wall A from walnut to natural oak",
-            "generatedAt": "2026-11-11T07:24:48.779Z",
+            "generatedAt": "2026-11-11T07:41:56.093Z",
             "generatedBy": "Meera Rao (Lead Interior Designer)",
             "licence": "Internal project asset"
           },
@@ -23203,7 +23203,7 @@
           "revision": "R03",
           "supersedes": "AST-MBR-002-WA-S01-R02",
           "approvedBy": "Sneha Kulkarni (client)",
-          "approvedAt": "2026-11-11T07:24:48.804Z"
+          "approvedAt": "2026-11-11T07:41:56.108Z"
         },
         {
           "id": "AST-MBR-002-WA-Q01-R03",
@@ -23219,7 +23219,7 @@
           "provenance": {
             "origin": "BOQ register",
             "method": "Linked to BOQ line(s) CIV-01, PNT-01 · regenerated for R02 after Client asked for a walnut veneer feature wall behind the bed (sample SB-04) · regenerated for R03 after Client reviewed SB-11 and asked to change Wall A from walnut to natural oak",
-            "generatedAt": "2026-11-11T07:24:48.779Z",
+            "generatedAt": "2026-11-11T07:41:56.093Z",
             "generatedBy": "Meera Rao (Lead Interior Designer)",
             "licence": "Internal project asset"
           },
@@ -23232,7 +23232,7 @@
           "revision": "R03",
           "supersedes": "AST-MBR-002-WA-Q01-R02",
           "approvedBy": "Sneha Kulkarni (client)",
-          "approvedAt": "2026-11-11T07:24:48.804Z"
+          "approvedAt": "2026-11-11T07:41:56.108Z"
         },
         {
           "id": "AST-MBR-002-WA-U22",
@@ -23254,7 +23254,7 @@
             "sourceUrl": "https://example.invalid/bord/natural-oak-crown-cut",
             "licence": "Manufacturer marketing image, used with permission for this project",
             "method": "Manufacturer photograph of the approved crown-cut oak veneer",
-            "generatedAt": "2026-11-11T07:24:48.814Z",
+            "generatedAt": "2026-11-11T07:41:56.127Z",
             "generatedBy": "Meera Rao (Lead Interior Designer)"
           },
           "status": "READY",
@@ -23275,7 +23275,7 @@
             "origin": "Villa 253 project photographic set",
             "licence": "Project asset - internal and client presentation use",
             "method": "Site photograph taken for the project record",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine"
           },
           "notes": "Exterior view of the north-facing 24-type villa; shows the SD1 great-room glazing and the first-floor balcony."
@@ -23294,7 +23294,7 @@
             "sourceUrl": "/api/cad/villa253.pdf",
             "licence": "Project document",
             "method": "Issued PDF, downloaded from the project CAD register",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine"
           },
           "notes": "VILLA_253_WALL_MARKING_10_10_24_REV0.pdf - all seven spaces dimensioned, 1:100. The authority for every quantity."
@@ -23313,7 +23313,7 @@
             "sourceUrl": "/api/cad/villa253.dxf",
             "licence": "Project document",
             "method": "Editable DXF generated from the R0 dimension set",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine"
           },
           "notes": "Villa253_FloorPlan_Editable_R0.dxf - layers A-WALL, A-DOOR, A-WIND, A-STRS, A-DECK, A-DIMS, A-TEXT, A-NOTE."
@@ -23331,7 +23331,7 @@
             "origin": "Derived from the R0 DXF geometry",
             "licence": "Project asset",
             "method": "SVG rendered from the R0 CAD layers",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine"
           },
           "notes": "Vector preview of the R0 plan with the seven spaces and the opening schedule."
@@ -23349,7 +23349,7 @@
             "origin": "Site survey record",
             "licence": "Project asset",
             "method": "Sketched on site against the R0 print",
-            "generatedAt": "2026-11-11T07:24:48.690Z",
+            "generatedAt": "2026-11-11T07:41:55.990Z",
             "generatedBy": "design-twin-engine"
           },
           "notes": "Hand sketch used during the 30-05-2026 site visit to confirm the north orientation and deck extents."
@@ -23362,7 +23362,7 @@
           "elementId": "LIV-001-FJ",
           "text": "Interior concept render, modern luxury, warm palette, marble flooring, room geometry locked to measured plan, Italian marble, natural veneer, brushed bronze hardware, photorealistic, natural daylight, no text, no watermark",
           "model": "project-render-set",
-          "createdAt": "2026-11-11T07:24:48.690Z",
+          "createdAt": "2026-11-11T07:41:55.990Z",
           "createdBy": "Ar. Shruthi (Design Director)",
           "assetIds": [
             "AST-LIV-001-RD-001"
@@ -23401,7 +23401,7 @@
           "elementId": "MBR-002-FJ",
           "text": "Interior concept render, modern luxury, warm palette, marble flooring, room geometry locked to measured plan, Italian marble, natural veneer, brushed bronze hardware, photorealistic, natural daylight, no text, no watermark",
           "model": "project-render-set",
-          "createdAt": "2026-11-11T07:24:48.690Z",
+          "createdAt": "2026-11-11T07:41:55.990Z",
           "createdBy": "Ar. Shruthi (Design Director)",
           "assetIds": [
             "AST-MBR-002-RD-001"
@@ -23437,7 +23437,7 @@
           "elementId": "BDR-003-FJ",
           "text": "Interior concept render, modern luxury, warm palette, marble flooring, room geometry locked to measured plan, Italian marble, natural veneer, brushed bronze hardware, photorealistic, natural daylight, no text, no watermark",
           "model": "project-render-set",
-          "createdAt": "2026-11-11T07:24:48.690Z",
+          "createdAt": "2026-11-11T07:41:55.990Z",
           "createdBy": "Ar. Shruthi (Design Director)",
           "assetIds": [
             "AST-BDR-003-RD-001"
@@ -23474,7 +23474,7 @@
           "elementId": "KIT-004-FJ",
           "text": "Interior concept render, modern luxury, warm palette, marble flooring, room geometry locked to measured plan, Italian marble, natural veneer, brushed bronze hardware, photorealistic, natural daylight, no text, no watermark",
           "model": "project-render-set",
-          "createdAt": "2026-11-11T07:24:48.690Z",
+          "createdAt": "2026-11-11T07:41:55.990Z",
           "createdBy": "Ar. Shruthi (Design Director)",
           "assetIds": [
             "AST-KIT-004-RD-001"
@@ -23511,7 +23511,7 @@
           "elementId": "STR-005-FJ",
           "text": "Interior concept render, modern luxury, warm palette, marble flooring, room geometry locked to measured plan, Italian marble, natural veneer, brushed bronze hardware, photorealistic, natural daylight, no text, no watermark",
           "model": "project-render-set",
-          "createdAt": "2026-11-11T07:24:48.690Z",
+          "createdAt": "2026-11-11T07:41:55.990Z",
           "createdBy": "Ar. Shruthi (Design Director)",
           "assetIds": [
             "AST-STR-005-RD-001"
@@ -23543,7 +23543,7 @@
           "elementId": "BDR-006-FJ",
           "text": "Interior concept render, modern luxury, warm palette, marble flooring, room geometry locked to measured plan, Italian marble, natural veneer, brushed bronze hardware, photorealistic, natural daylight, no text, no watermark",
           "model": "project-render-set",
-          "createdAt": "2026-11-11T07:24:48.690Z",
+          "createdAt": "2026-11-11T07:41:55.990Z",
           "createdBy": "Ar. Shruthi (Design Director)",
           "assetIds": [
             "AST-BDR-006-RD-001"
@@ -23579,7 +23579,7 @@
           "elementId": "GZB-007-FJ",
           "text": "Interior concept render, modern luxury, warm palette, marble flooring, room geometry locked to measured plan, Italian marble, natural veneer, brushed bronze hardware, photorealistic, natural daylight, no text, no watermark",
           "model": "project-render-set",
-          "createdAt": "2026-11-11T07:24:48.690Z",
+          "createdAt": "2026-11-11T07:41:55.990Z",
           "createdBy": "Ar. Shruthi (Design Director)",
           "assetIds": [
             "AST-GZB-007-RD-001"
@@ -23610,7 +23610,7 @@
         {
           "id": "REV-MBR-002-WA-R02",
           "projectId": "PROJ-VILLA-253",
-          "requestedAt": "2026-11-11T07:24:48.768Z",
+          "requestedAt": "2026-11-11T07:41:56.082Z",
           "requestedBy": "Meera Rao (Lead Interior Designer)",
           "scope": "ELEMENT",
           "scopeId": "MBR-002-WA",
@@ -23663,7 +23663,7 @@
         {
           "id": "REV-MBR-002-WA-R03",
           "projectId": "PROJ-VILLA-253",
-          "requestedAt": "2026-11-11T07:24:48.779Z",
+          "requestedAt": "2026-11-11T07:41:56.093Z",
           "requestedBy": "Meera Rao (Lead Interior Designer)",
           "scope": "ELEMENT",
           "scopeId": "MBR-002-WA",
@@ -23716,7 +23716,7 @@
         {
           "id": "REV-PKG-V1.2",
           "projectId": "PROJ-VILLA-253",
-          "requestedAt": "2026-11-11T07:24:48.823Z",
+          "requestedAt": "2026-11-11T07:41:56.137Z",
           "requestedBy": "Rajesh Sharma (Lead Quantity Surveyor)",
           "scope": "PACKAGE",
           "scopeId": "PROJ-VILLA-253",
@@ -24142,7 +24142,7 @@
           "level": "ELEMENT",
           "scopeId": "MBR-002-WA",
           "by": "Sneha Kulkarni (client)",
-          "at": "2026-11-11T07:24:48.804Z",
+          "at": "2026-11-11T07:41:56.108Z",
           "designVersion": "V1.2",
           "note": "Assets re-approved at V1.2"
         },
@@ -24151,7 +24151,7 @@
           "level": "PACKAGE",
           "scopeId": "PROJ-VILLA-253",
           "by": "Rajesh Sharma (Lead Quantity Surveyor)",
-          "at": "2026-11-11T07:24:48.823Z",
+          "at": "2026-11-11T07:41:56.137Z",
           "designVersion": "V1.2",
           "note": "Package re-issued; 375 asset(s) stamped"
         },
@@ -24160,16 +24160,16 @@
           "level": "PACKAGE",
           "scopeId": "PROJ-VILLA-253",
           "by": "Ar. Shruthi (Design Director)",
-          "at": "2026-11-11T07:24:48.840Z",
+          "at": "2026-11-11T07:41:56.164Z",
           "designVersion": "V1.2",
           "note": "10/10 checks passed"
         }
       ],
       "packageStatus": "APPROVED_FOR_EXECUTION",
-      "createdAt": "2026-11-11T07:24:48.690Z",
-      "updatedAt": "2026-11-11T07:24:48.840Z",
+      "createdAt": "2026-11-11T07:41:55.990Z",
+      "updatedAt": "2026-11-11T07:41:56.164Z",
       "validation": {
-        "validatedAt": "2026-11-11T07:24:48.828Z",
+        "validatedAt": "2026-11-11T07:41:56.141Z",
         "validatedBy": "Rajesh Sharma (Lead Quantity Surveyor)",
         "designVersion": "V1.2",
         "passedCount": 10,

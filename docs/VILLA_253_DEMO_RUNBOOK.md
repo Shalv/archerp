@@ -23,14 +23,15 @@ src/data/villa253DesignStudio.ts         NEW  seeded AI Design Studio session fo
 src/types/designStudio.ts                NEW  studio types
 src/server/designStudioEngine.ts         NEW  geometry-preserving generation engine
 src/components/designStudio/AIDesignStudioView.tsx  NEW  the studio UI (6-step workflow)
-src/services/puterAI.ts                  NEW  Puter.js AI wrapper (chat, image, OCR) - keyless, browser-side
+src/server/geminiStudioService.ts        NEW  Gemini vision / narrative / render service (server-side, GEMINI_API_KEY)
 src/types/designTwin.ts                  NEW  design-twin registry contract (rooms, elements, assets, revisions)
 src/server/designTwinEngine.ts           NEW  build / validate / revise / re-issue / approve / publish engine
 src/data/villa253DesignTwin.ts           NEW  seeded Villa 253 twin + approved finish library
 src/components/designTwin/DesignTwinView.tsx  NEW  property tree, element package, validation gate, asset drawer
 docs/DESIGN_TWIN.md                      NEW  traceability architecture, IDs, ten checks, revision behaviour
 index.html                               MODIFIED  loads https://js.puter.com/v2/
-docs/PUTER_AI_INTEGRATION.md             NEW  AI integration guide, error model, privacy/cost notes
+docs/GEMINI_AI.md                        NEW  Gemini setup, models, guards and failure behaviour
+docs/M04C_AUDIT.md                       NEW  audit of the AI Design Studio module against the studio process
 
 src/data/crmSeedData.ts                  REPLACED  re-exports the Villa 253 pipeline
 src/data/costTraceabilityData.ts         REPLACED  ledger derived from the Rev 1 BOQ
@@ -152,16 +153,16 @@ Open **Stage 2 → AI Floor Plan-to-Design Studio**. The seeded session for Vill
 
 Also demo: **Client presentation** (top-right) opens a print-ready pack — hero view, room-wise schemes with palettes and specifications, alternatives table, preliminary BOQ and the "visual concept, not an execution drawing" disclaimer. The **prompt & approval history** at the bottom of step 6 is the audit trail the brief asks for (prompt, engine, actor, timestamp, output).
 
-### AI with Puter.js (optional, on by default)
+### AI with Gemini (server-side)
 
-`index.html` loads `https://js.puter.com/v2/`, so the browser can call 500+ models with **no API key** — the signed-in Puter account pays for its own usage. The studio header shows a chip: **Puter AI ready** or **Deterministic engine**.
+Set `GEMINI_API_KEY` in the environment and restart. The studio header shows **Gemini · gemini-2.5-flash** or **Gemini not configured**; the key never reaches the browser and no third-party SDK is loaded.
 
-- **Step 1 → "Read plan with AI"**: OCRs the uploaded PDF/JPG/PNG (Textract for images, Mistral OCR for PDFs), has a model map the text to rooms with a JSON schema, then sends those rooms through the *same* model + confirmation gate. The provenance (engine, model, characters read, the model's own confidence notes) is stored on the model and its warnings are merged into the uncertainty list.
-- **Step 4/5 → "AI" or "Renders + narrative"**: renders up to four room images from a geometry-aware prompt (`25.33 ft by 19 ft, 10.25 ft ceiling`) and rewrites the concept narrative. A consent modal states what will be generated before it runs; each image is a credit charge.
-- **What AI cannot touch**: quantities, rates, wastage, markups, GST, totals, the BOQ. The `/ai-enrich` endpoint accepts a narrative and image URLs only, and refuses an approved (locked) concept.
-- **When it is unavailable** (script blocked, offline, no credits): every button degrades to the deterministic path and the chip says so — the demo never silently pretends.
+- **Step 1 → "Read plan with AI"**: the file is posted to `POST /api/ai/studio/extract-plan`, where Gemini vision returns rooms in feet with a `confidenceNotes` list. Dimensions outside a plausible range are clamped and flagged, and nothing is priced until you confirm the room table in step 2.
+- **Step 4/5 → "AI" / "Renders + narrative"**: `POST /api/design-studio/:id/concepts/:cid/ai-generate` writes the narrative and renders up to four room images with `gemini-2.5-flash-image`, then stores them on the concept with an audit entry.
+- **Guards**: a narrative that contains a price has the price stripped and is flagged; AI never writes a quantity, rate or BOQ line; approved concepts are locked; only an admin or project manager can approve a design or release a package.
+- **When it is unavailable** (no key, quota, permission denied): every button degrades to the deterministic engine and the chip says so.
 
-For a stage rehearsal, Puter's `testMode` returns sample output without spending credits. Full guide: `docs/PUTER_AI_INTEGRATION.md`.
+Full guide: `docs/GEMINI_AI.md`. Audit findings: `docs/M04C_AUDIT.md`.
 
 **Honest scope note for the demo:** without pressing an AI button, the analysis step is deterministic. It reads room geometry from the project's measured rooms, from dimensions the user types, or from the structured room list the CAD/image path supplies — it does not OCR an arbitrary photo on its own. If you upload an unseen plan, confirm the room table in step 2 before generating; that gate is deliberate, and it is also what makes the BOQ defensible. Wiring a real OCR/CV service or Gemini Vision into `POST /api/design-studio/:id/floor-plan` is a drop-in replacement — the model contract stays the same.
 
