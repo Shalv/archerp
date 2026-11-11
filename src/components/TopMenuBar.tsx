@@ -212,6 +212,26 @@ export const TopMenuBar: React.FC<TopMenuBarProps> = ({
           badgeColor: 'bg-purple-50 text-purple-700 border border-purple-200'
         },
         {
+          id: 'design_studio',
+          tabKey: 'design_studio',
+          name: 'AI Floor Plan-to-Design Studio',
+          shortDesc: 'Upload plan -> concepts -> approval -> BOQ',
+          icon: Sparkles,
+          code: 'M04-C',
+          badge: 'New',
+          badgeColor: 'bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold'
+        },
+        {
+          id: 'design_twin',
+          tabKey: 'design_twin',
+          name: 'Project Design Digital Twin',
+          shortDesc: 'Room → wall → asset traceability, validation & release',
+          icon: Layers,
+          code: 'M04-D',
+          badge: 'Registry',
+          badgeColor: 'bg-slate-100 text-slate-700 border border-slate-300 font-semibold'
+        },
+        {
           id: 'materials',
           tabKey: 'materials',
           name: 'Material & Sample Approvals',

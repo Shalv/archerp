@@ -12,7 +12,7 @@ import {
 } from '../types/floorplanSpatial';
 
 export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
-  projectId: 'PROJ-SKYLINE-1402',
+  projectId: 'PROJ-VILLA-253',
   projectTitle: 'Skyline Residency Flat 1402 (2BHK)',
   customerInput: {
     floorPlanFileName: 'Customer_2BHK_Architectural_Plan_Rev2.pdf',
@@ -1441,7 +1441,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-001',
       conceptVersionCode: 'VCP-v1.0',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-LIV-01',
       roomName: 'Living & Dining Forum',
@@ -1519,7 +1519,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-002',
       conceptVersionCode: 'VCP-v1.1',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-LIV-01',
       roomName: 'Living & Dining Forum',
@@ -1619,7 +1619,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-LIV-OPT2',
       conceptVersionCode: 'VCP-v2.0',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-LIV-01',
       roomName: 'Living & Dining Forum',
@@ -1706,7 +1706,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-LIV-OPT3',
       conceptVersionCode: 'VCP-v3.0',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-LIV-01',
       roomName: 'Living & Dining Forum',
@@ -1772,7 +1772,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-LIV-OPT4',
       conceptVersionCode: 'VCP-v4.0',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-LIV-01',
       roomName: 'Living & Dining Forum',
@@ -1838,7 +1838,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-LIV-OPT5',
       conceptVersionCode: 'VCP-v5.0',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-LIV-01',
       roomName: 'Living & Dining Forum',
@@ -1904,7 +1904,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-BED2-OPT1',
       conceptVersionCode: 'VCP-v6.0',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-BED2-01',
       roomName: 'Bedroom 2 / WFH Study Suite',
@@ -1970,7 +1970,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-BED2-OPT2',
       conceptVersionCode: 'VCP-v6.1',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-BED2-01',
       roomName: 'Bedroom 2 / WFH Study Suite',
@@ -2016,7 +2016,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-BED2-OPT3',
       conceptVersionCode: 'VCP-v6.2',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-BED2-01',
       roomName: 'Bedroom 2 / WFH Study Suite',
@@ -2062,7 +2062,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-MBED-OPT1',
       conceptVersionCode: 'VCP-v7.0',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-MBED-01',
       roomName: 'Master Bedroom Suite',
@@ -2118,7 +2118,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-MBED-OPT2',
       conceptVersionCode: 'VCP-v7.1',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-MBED-01',
       roomName: 'Master Bedroom Suite',
@@ -2174,7 +2174,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-BED2-OPT4',
       conceptVersionCode: 'VCP-v6.3',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-BED2-01',
       roomName: 'Bedroom 2 / WFH Study Suite',
@@ -2230,7 +2230,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-BED2-OPT5',
       conceptVersionCode: 'VCP-v6.4',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-BED2-01',
       roomName: 'Bedroom 2 / WFH Study Suite',
@@ -2286,7 +2286,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-MBED-OPT3',
       conceptVersionCode: 'VCP-v7.2',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-MBED-01',
       roomName: 'Master Bedroom Suite',
@@ -2342,7 +2342,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-MBED-OPT4',
       conceptVersionCode: 'VCP-v7.3',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-MBED-01',
       roomName: 'Master Bedroom Suite',
@@ -2398,7 +2398,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-MBED-OPT5',
       conceptVersionCode: 'VCP-v7.4',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-MBED-01',
       roomName: 'Master Bedroom Suite',
@@ -2454,7 +2454,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-KIT-OPT1',
       conceptVersionCode: 'VCP-v8.0',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-KIT-01',
       roomName: 'Culinary Kitchen & Breakfast Bar',
@@ -2510,7 +2510,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-KIT-OPT2',
       conceptVersionCode: 'VCP-v8.1',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-KIT-01',
       roomName: 'Culinary Kitchen & Breakfast Bar',
@@ -2556,7 +2556,7 @@ export const INITIAL_2BHK_SPATIAL_SESSION: TwoStepSpatialDesignSession = {
     {
       id: 'VCP-KIT-OPT3',
       conceptVersionCode: 'VCP-v8.2',
-      projectId: 'PROJ-SKYLINE-1402',
+      projectId: 'PROJ-VILLA-253',
       floorPlanVersion: 'FP-v2.1-VERIFIED',
       roomId: 'ROOM-KIT-01',
       roomName: 'Culinary Kitchen & Breakfast Bar',

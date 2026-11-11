@@ -127,7 +127,7 @@ export const CustomerTrainingModal: React.FC<CustomerTrainingModalProps> = ({
           title: 'Promote Lead to Active Job Card',
           action: 'After completing feasibility, click "Promote to Job Card (Project)".',
           uiElements: ['Project Code Generator', 'Customer Directory Link', 'Initial Budget Freeze'],
-          expectedResult: 'System provisions an official project record (e.g. PROJ-SKYLINE-1402) and creates customer profile.',
+          expectedResult: 'System provisions an official project record (e.g. PROJ-VILLA-253) and creates customer profile.',
           tips: 'All subsequent design, BOQ, and billing will reference this generated Project Code.'
         }
       ],
@@ -1388,7 +1388,7 @@ export const CustomerTrainingModal: React.FC<CustomerTrainingModalProps> = ({
           stepNumber: 2,
           title: 'Assign Project Access Restrictions',
           action: 'Under "Assigned Projects", select the specific project codes the user can access.',
-          uiElements: ['All Projects (Global Access)', 'Specific Project Multi-Select (e.g. PROJ-SKYLINE-1402, PROJ-VILLA-90)'],
+          uiElements: ['All Projects (Global Access)', 'Specific Project Multi-Select (e.g. PROJ-VILLA-253, PROJ-VILLA-90)'],
           expectedResult: 'User will only see and access authorized Job Cards upon logging in.',
           tips: 'Site Engineers should be restricted to their assigned job sites to ensure data privacy.'
         },

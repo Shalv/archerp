@@ -70,6 +70,28 @@ export const ERP_MODULES_REGISTRY: ERPModuleMeta[] = [
     iconName: 'Sparkles'
   },
   {
+    id: 42,
+    code: 'M04-C',
+    name: 'AI Floor Plan-to-Design Studio',
+    stage: 'SURVEY_DESIGN',
+    stageLabel: '2. Survey & Design',
+    priority: 'Essential',
+    keyFunctionality: 'Upload a floor plan (PDF/JPG/PNG/DWG/DXF) or enter dimensions, capture structured customer preferences, generate 3-5 room-wise concepts from the same geometry, revise and approve, then convert the approved design into a room-wise BOQ.',
+    tabKey: 'design_studio',
+    iconName: 'Sparkles'
+  },
+  {
+    id: 43,
+    code: 'M04-D',
+    name: 'Project Design Digital Twin',
+    stage: 'SURVEY_DESIGN',
+    stageLabel: '2. Survey & Design',
+    priority: 'Essential',
+    keyFunctionality: 'One registry per project: floor → room → element (Wall A-D, ceiling, flooring, doors, electrical, lighting, furniture, plumbing) → linked assets with material IDs, design revision, provenance and approval. Ten-check package validation and a release gate that blocks anything unverified or unapproved.',
+    tabKey: 'design_twin',
+    iconName: 'Layers'
+  },
+  {
     id: 5,
     code: 'M05',
     name: 'Material & Sample Approvals',

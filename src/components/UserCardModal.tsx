@@ -171,7 +171,7 @@ export const UserCardModal: React.FC<UserCardModalProps> = ({
     status: 'ACTIVE',
     avatar: 'US',
     notes: '',
-    assignedProjectIds: ['PROJ-SKYLINE-1402'],
+    assignedProjectIds: ['PROJ-VILLA-253'],
     permissions: { ...ROLE_DEFAULT_PERMISSIONS.ESTIMATOR }
   });
 
@@ -203,7 +203,7 @@ export const UserCardModal: React.FC<UserCardModalProps> = ({
         status: 'ACTIVE',
         avatar: 'NU',
         notes: 'New user created by ' + currentUser.name,
-        assignedProjectIds: ['PROJ-SKYLINE-1402'],
+        assignedProjectIds: ['PROJ-VILLA-253'],
         permissions: { ...ROLE_DEFAULT_PERMISSIONS.ESTIMATOR }
       });
     }
@@ -313,7 +313,7 @@ export const UserCardModal: React.FC<UserCardModalProps> = ({
       status: formData.status || 'ACTIVE',
       avatar: formData.avatar || initials,
       permissions: formData.permissions as UserPermissions,
-      assignedProjectIds: formData.assignedProjectIds || ['PROJ-SKYLINE-1402'],
+      assignedProjectIds: formData.assignedProjectIds || ['PROJ-VILLA-253'],
       notes: formData.notes?.trim() || ''
     };
 

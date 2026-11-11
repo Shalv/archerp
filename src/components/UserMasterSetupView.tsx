@@ -87,7 +87,7 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
   const [formStatus, setFormStatus] = useState<'ACTIVE' | 'INACTIVE' | 'SUSPENDED'>('ACTIVE');
   const [formPermissions, setFormPermissions] = useState<UserPermissions>({ ...ROLE_DEFAULT_PERMISSIONS.ESTIMATOR });
   const [formAllowedModules, setFormAllowedModules] = useState<string[]>([]);
-  const [formAssignedProjects, setFormAssignedProjects] = useState<string[]>(['PROJ-SKYLINE-1402']);
+  const [formAssignedProjects, setFormAssignedProjects] = useState<string[]>(['PROJ-VILLA-253']);
   const [formNotes, setFormNotes] = useState('');
   const [activeSetupTab, setActiveSetupTab] = useState<'GENERAL' | 'SECURITY' | 'PERMISSIONS' | 'MODULES' | 'ALLOCATION'>('GENERAL');
   const [isSaving, setIsSaving] = useState(false);
@@ -96,7 +96,7 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
   // Fallback projects if none passed
   const availableProjects: Array<{ id: string; projectCode?: string; title: string; clientName: string; stage?: string }> = 
     projects && projects.length > 0 ? projects : [
-      { id: 'PROJ-SKYLINE-1402', projectCode: 'PRJ-SKYLINE-1402', title: 'Skyline Penthouse Luxury Interiors', clientName: 'Vikram Malhotra', stage: 'EXECUTION_ONGOING' },
+      { id: 'PROJ-VILLA-253', projectCode: 'BS-2026-V253', title: 'Villa 253 (Karjat) Turnkey Interiors', clientName: 'Aditya & Sneha Kulkarni', stage: 'EXECUTION_ONGOING' },
       { id: 'PROJ-MALABAR-0801', projectCode: 'PRJ-MALABAR-0801', title: 'Malabar Coastal Villa Renovation', clientName: 'Ananya Deshmukh', stage: 'APPROVED_BUDGET' },
       { id: 'PROJ-ECO-2204', projectCode: 'PRJ-ECO-2204', title: 'Ecospace Office Tower Fit-out', clientName: 'Horizon Tech Park Ltd', stage: 'CONTRACT_AWARDED' }
     ];
@@ -146,7 +146,7 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
     setFormStatus('ACTIVE');
     setFormPermissions({ ...ROLE_DEFAULT_PERMISSIONS.ESTIMATOR });
     setFormAllowedModules(['M01', 'M02', 'M03', 'M04', 'M05', 'M06', 'M07', 'M08', 'M10', 'M12', 'M13', 'M16', 'M17', 'M25', 'M26']);
-    setFormAssignedProjects(['PROJ-SKYLINE-1402']);
+    setFormAssignedProjects(['PROJ-VILLA-253']);
     setFormNotes('');
     setActiveSetupTab('GENERAL');
     setIsSetupModalOpen(true);
@@ -166,7 +166,7 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
     setFormStatus(user.status || 'ACTIVE');
     setFormPermissions({ ...ROLE_DEFAULT_PERMISSIONS[user.role], ...user.permissions });
     setFormAllowedModules(user.allowedModuleIds || []);
-    setFormAssignedProjects(user.assignedProjectIds || ['PROJ-SKYLINE-1402']);
+    setFormAssignedProjects(user.assignedProjectIds || ['PROJ-VILLA-253']);
     setFormNotes(user.notes || '');
     setActiveSetupTab('GENERAL');
     setIsSetupModalOpen(true);
@@ -629,7 +629,7 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
                               </span>
                             ))
                           ) : (
-                            <span className="text-[10px] text-[#8A8886] italic">Skyline Default</span>
+                            <span className="text-[10px] text-[#8A8886] italic">Villa 253 Default</span>
                           )}
                         </div>
                         {user.notes ? (
@@ -1187,7 +1187,7 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
                         <span className="text-slate-300">|</span>
                         <button
                           type="button"
-                          onClick={() => setFormAssignedProjects(['PROJ-SKYLINE-1402'])}
+                          onClick={() => setFormAssignedProjects(['PROJ-VILLA-253'])}
                           className="text-xs text-[#0F6CBD] hover:underline font-semibold"
                         >
                           Primary Only
@@ -1244,7 +1244,7 @@ export const UserMasterSetupView: React.FC<UserMasterSetupViewProps> = ({
                         value={formNotes}
                         onChange={(e) => setFormNotes(e.target.value)}
                         className="w-full px-3 py-2 text-xs border border-[#C8C6C4] rounded focus:border-[#0F6CBD] focus:outline-none bg-white font-sans"
-                        placeholder="e.g. Lead Quantity Surveyor for Skyline Penthouse; Responsible for MEP vendor tender evaluations, civil milestone signoffs, and change order approvals..."
+                        placeholder="e.g. Lead Quantity Surveyor for Villa 253; Responsible for MEP vendor tender evaluations, civil milestone signoffs, and change order approvals..."
                       />
                       <span className="text-[10px] text-[#605E5C] mt-0.5 block">
                         These work assignments and project allocations remain stored permanently with this user's profile and persist across future logins.

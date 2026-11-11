@@ -129,7 +129,7 @@ export const INITIAL_CUSTOMER_DISCOVERY: CustomerDiscoveryData = {
   mobile: '+91 98201 44592',
   email: 'vikram.malhotra@skylineventures.in',
   whatsapp: '+91 98201 44592',
-  projectLocation: 'Skyline Seaface Towers, Unit 1402, Worli, Mumbai',
+  projectLocation: 'Villa 253, The Meadows (Phase 2), Karjat, Maharashtra',
   preferredCommunication: 'WHATSAPP',
   decisionMakers: 'Vikram Malhotra & Radhika Malhotra (Spouse)',
   expectedStartDate: '2026-04-01',

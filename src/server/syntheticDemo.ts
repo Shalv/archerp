@@ -607,7 +607,7 @@ export function getSyntheticDemoProject(): ProjectRecord {
     projectId,
     boqRevisionId: rev1Id,
     customerName: 'Mr. Vikram & Ananya Malhotra',
-    projectTitle: '3BHK Turnkey Interior Execution - Skyline Residences Unit 1402',
+    projectTitle: '3BHK Turnkey Interior Execution - Villa 253 (Karjat)',
     siteAddress: 'Flat 1402, Tower B, Skyline Residences, Sector 65, Gurugram, Haryana',
     selectedPackageTier: 'STANDARD',
     quotationDate: '2026-03-03',
